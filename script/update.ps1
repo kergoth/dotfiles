@@ -1,8 +1,25 @@
+# Detect VCS type
+$repodir = $PSScriptRoot | Split-Path -Parent
+$use_jj = 0
+if ((Test-Path "$repodir/.jj") -and (Get-Command jj -ErrorAction SilentlyContinue)) {
+    $use_jj = 1
+    $vcs = "jj"
+} else {
+    $vcs = "git"
+}
+
 Write-Host "Updating chezmoi"
 chezmoi upgrade
 
 Write-Host "Updating dotfiles repository"
-chezmoi update -R
+if ($use_jj -eq 1) {
+    Set-Location $repodir
+    jj git fetch
+    # Don't use chezmoi update (it would try to use git), just apply
+    chezmoi apply -R
+} else {
+    chezmoi update -R
+}
 
 # Exit if we don't have the nix command
 if (-not (Get-Command nix -ErrorAction SilentlyContinue)) {
@@ -60,7 +77,6 @@ if (-not $env:HOME) {
 }
 
 $sourcedir = "$HOME/.config/home-manager"
-$repodir = $PSScriptRoot | Split-Path -Parent
 
 $tmpfile = [System.IO.Path]::GetTempFileName()
 try {
@@ -118,7 +134,12 @@ try {
 
     Write-Host "Committing Home Manager updates"
     Set-Location $repodir
-    git commit -F .git/COMMIT_EDITMSG home/dot_config/home-manager/private_flake.lock
+    if ($use_jj -eq 1) {
+        $commitMsg = Get-Content "$repodir/.git/COMMIT_EDITMSG" -Raw
+        jj commit -m $commitMsg home/dot_config/home-manager/private_flake.lock
+    } else {
+        git commit -F .git/COMMIT_EDITMSG home/dot_config/home-manager/private_flake.lock
+    }
 
     Invoke-HM @("switch")
     Invoke-HM @("expire-generations", "-30 days")
@@ -126,8 +147,12 @@ try {
 } catch {
     Write-Error "An error occurred: $_"
     Set-Location $sourcedir
-    git checkout HEAD -- home/dot_config/home-manager/private_flake.lock
-    chezmoi apply "$sourcedir/private_flake.lock"
+    if ($use_jj -eq 1) {
+        # jj automatically handles uncommitted changes
+    } else {
+        git checkout HEAD -- home/dot_config/home-manager/private_flake.lock
+        chezmoi apply "$sourcedir/private_flake.lock"
+    }
 } finally {
     # Clean up the temporary file
     if (Test-Path $tmpfile) {

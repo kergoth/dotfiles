@@ -6,11 +6,25 @@ scriptdir=$(cd "$(dirname "$0")" && pwd -P)
 sourcedir=$(dirname "$scriptdir")
 PATH="$PATH:$scriptdir:$sourcedir/scripts"
 
+# Detect VCS type
+use_jj=0
+if [ -d "$sourcedir/.jj" ] && command -v jj >/dev/null 2>&1; then
+    use_jj=1
+    vcs="jj"
+else
+    vcs="git"
+fi
+
 on_exit() {
     if [ -n "$tmpfile" ]; then
         rm -f "$tmpfile"
     fi
-    (cd "$sourcedir" && git checkout HEAD -- home/dot_config/home-manager/private_flake.lock &>/dev/null)
+    if [ "$use_jj" -eq 1 ]; then
+        # jj automatically handles uncommitted changes
+        :
+    else
+        (cd "$sourcedir" && git checkout HEAD -- home/dot_config/home-manager/private_flake.lock &>/dev/null)
+    fi
 }
 
 nix() {
@@ -34,7 +48,20 @@ echo >&2 "Updating chezmoi"
 chezmoi upgrade || :
 
 echo >&2 "Updating dotfiles repository"
-chezmoi update -R
+if [ "$use_jj" -eq 1 ]; then
+    (cd "$sourcedir" && jj git fetch)
+    # Don't use chezmoi update (it would try to use git), just apply
+    chezmoi apply -R
+else
+    # Check if we're on a branch before attempting update
+    if (cd "$sourcedir" && git symbolic-ref -q HEAD >/dev/null); then
+        chezmoi update -R
+    else
+        echo >&2 "Warning: Not on a branch, skipping git pull. Fetching only."
+        (cd "$sourcedir" && git fetch)
+        chezmoi apply -R
+    fi
+fi
 
 if ! command -v nix >/dev/null 2>&1; then
     echo >&2 "Error: nix must be installed to update Home Manager packages"
@@ -79,7 +106,12 @@ if [ -s "$tmpfile" ]; then
 fi
 
 echo >&2 "Committing Home Manager updates"
-(cd "$sourcedir" && git commit -F .git/COMMIT_EDITMSG home/dot_config/home-manager/private_flake.lock)
+if [ "$use_jj" -eq 1 ]; then
+    commit_msg=$(cat "$sourcedir/.git/COMMIT_EDITMSG")
+    (cd "$sourcedir" && jj commit -m "$commit_msg" home/dot_config/home-manager/private_flake.lock)
+else
+    (cd "$sourcedir" && git commit -F .git/COMMIT_EDITMSG home/dot_config/home-manager/private_flake.lock)
+fi
 
 hm switch
 hm expire-generations "-30 days"
