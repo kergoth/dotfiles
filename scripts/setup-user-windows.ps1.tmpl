@@ -50,6 +50,14 @@ if (-not (Test-Path "$env:XDG_BIN_HOME/uv")) {
     Invoke-RestMethod -Uri https://astral.sh/uv/install.ps1 | Invoke-Expression
 }
 
+# Install rust
+scoop install rust
+
+# Install atuin
+if (-not (Get-Command atuin -ErrorAction SilentlyContinue)) {
+    cargo install --git https://github.com/atuinsh/atuin.git --branch main
+}
+
 # Windows-specific
 scoop install gow
 scoop install npiperelay

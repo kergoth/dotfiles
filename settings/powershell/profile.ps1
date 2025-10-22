@@ -194,6 +194,11 @@ Set-PsFzfOption -TabExpansion
 # Use fd for paths for FZF
 Set-PsFzfOption -EnableFd
 
+# Atuin integration
+if (Get-Command -Name atuin -ErrorAction SilentlyContinue) {
+    atuin init powershell | Out-String | Invoke-Expression
+}
+
 if (Get-Command zoxide -ErrorAction SilentlyContinue) {
   Invoke-Expression (& {
       $hook = if ($PSVersionTable.PSVersion.Major -lt 6) { 'prompt' } else { 'pwd' }

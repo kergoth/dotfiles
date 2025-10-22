@@ -239,6 +239,7 @@ chezmoi update -R
 - [python](https://www.python.org): A programming language that lets you work quickly and integrate systems more effectively.
 - [uv](https://github.com/astral-sh/uv): An extremely fast Python package installer and resolver, written in Rust.
 
+- [atuin](https://github.com/ellie/atuin): ✨ Magical shell history.
 - [bat](https://github.com/sharkdp/bat): A cat(1) clone with syntax highlighting and Git integration.
   - [bat-extras](https://github.com/eth-p/bat-extras): Scripts that integrate bat with various command line tools.
 - [choose](https://github.com/theryangeary/choose): A human-friendly and fast alternative to cut and (sometimes) awk.
@@ -275,9 +276,6 @@ chezmoi update -R
 - [nix](https://nixos.org): Nix is a tool that takes a unique approach to package management and system configuration.
 
 #### CLI Software on Linux, macOS, and FreeBSD
-
-- [atuin](https://github.com/ellie/atuin): ✨ Magical shell history.
-  - On Windows, atuin can be used via WSL. [PowerShell support](https://github.com/atuinsh/atuin/issues/84) is available in a [pending pull request](https://github.com/atuinsh/atuin/pull/2543).
 
 - [patchutils](http://cyberelk.net/tim/software/patchutils/): A small collection of programs that operate on patch files.
   - On Windows, patchutils can be used via either WSL or MSYS2 (which can be installed via scoop and run as `msys2`, ex. `msys2 -c 'exec filterdiff "$@"' -`).
