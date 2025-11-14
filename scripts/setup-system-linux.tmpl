@@ -14,11 +14,7 @@ need_sudo
 
 if ! has nix; then
 {{   if .ephemeral -}}
-    curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install linux \
-      --determinate \
-      --extra-conf "sandbox = false" \
-      --init none \
-      --no-confirm
+    curl --proto '=https' --tlsv1.2 -sSf -L | bash -s -- --no-daemon
 {{   else -}}
     install_nix
 {{   end -}}
