@@ -79,7 +79,9 @@
     nvd
   ] ++ lib.optionals stdenv.isDarwin [
     qemu
+{{- if .containers }}
     colima
+{{- end }}
     duti
     lima
     mas
