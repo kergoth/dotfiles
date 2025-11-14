@@ -14,7 +14,7 @@ need_sudo
 
 if ! has nix; then
 {{   if .ephemeral -}}
-    curl -fsSL https://install.determinate.systems/nix | sh -s -- install --determinate --no-confirm --init none
+    curl -fsSL https://install.determinate.systems/nix | sh -s -- install --determinate --no-confirm -- --init none
 {{   else -}}
     install_nix
 {{   end -}}

@@ -260,7 +260,7 @@ install_nix() {
         sudorun systemctl start nix-daemon
     elif uname -n | grep -qF lima; then
         if ! has nix; then
-            curl -fsSL https://install.determinate.systems/nix | sh -s -- install --determinate --no-confirm --init none
+            curl -fsSL https://install.determinate.systems/nix | sh -s -- install --determinate --no-confirm -- --init none
         fi
     else
         if ! has nix; then
