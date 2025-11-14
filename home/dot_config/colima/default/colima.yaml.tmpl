@@ -1,0 +1,27 @@
+{{- $host := .chezmoi.hostname -}}
+{{- $profiles := .vmProfiles -}}
+{{- $default := .vmDefaultProfile -}}
+{{- $cfg := index $profiles $host | default $default -}}
+
+# Colima default profile configuration.
+# This is the main Docker VM. Resources here effectively become
+# Docker's limits inside the VM.
+
+cpu: {{ $cfg.colima_cpus }}
+memory: {{ $cfg.colima_mem_gib }}
+disk: {{ $cfg.vm_disk_gib }}
+
+runtime: docker
+
+# Use vz where available (Apple Silicon). Fall back otherwise.
+{{- if and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "arm64") }}
+vmType: vz
+arch: aarch64
+{{- end }}
+
+# Example additional options (uncomment/tweak if you want):
+# kubernetes: false
+# dns:
+#   - "1.1.1.1"
+#   - "8.8.8.8"
+

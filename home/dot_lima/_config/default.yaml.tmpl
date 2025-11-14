@@ -1,0 +1,25 @@
+{{- $host := .chezmoi.hostname -}}
+{{- $profiles := .vmProfiles -}}
+{{- $default := .vmDefaultProfile -}}
+{{- $cfg := index $profiles $host | default $default -}}
+
+# Global Lima defaults for this host.
+# Per-VM lima.yaml and CLI flags still override these.
+
+cpus: {{ $cfg.lima_cpus }}
+memory: "{{ $cfg.lima_mem_gib }}GiB"
+disk: "{{ $cfg.vm_disk_gib }}GiB"
+
+# Forward my SSH agent
+ssh:
+  forwardAgent: true
+
+# I prefer podman or docker to containerd
+containerd:
+  system: false
+  user: false
+
+# Upgrade the instance on boot
+# Reboot after upgrade if required
+# 🟢 Builtin default: false
+upgradePackages: null

@@ -1,0 +1,15 @@
+vmProfiles:
+  vaelin:
+    # 2018 MacBook Pro, 16GB RAM, 12 cores, 1TB disk
+    lima_cpus: 6
+    lima_mem_gib: 8
+    colima_cpus: 6
+    colima_mem_gib: 8
+    vm_disk_gib: 128
+
+vmDefaultProfile:
+  lima_cpus: 4
+  lima_mem_gib: 8
+  colima_cpus: 4
+  colima_mem_gib: 8
+  vm_disk_gib: 120
