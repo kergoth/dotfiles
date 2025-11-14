@@ -204,6 +204,12 @@ if ! [ -e ~/.config/chezmoi/chezmoi.toml ] || echo "$@" | grep -Eq '\--prompt|--
     chmod 0600 "$HOME/.config/chezmoi/chezmoi.toml"
 fi
 
+if [ -t 1 ]; then
+    noninteractive=
+else
+    noninteractive="--no-tty --no-pager"
+fi
+
 # Run any chezmoi scripts which install tooling, for use by the setup scripts
 #   Note that 'chezmoi apply' expects paths relative to the source, ignoring any
 #   .chezmoiroot, so we apply that directly here.
@@ -215,4 +221,4 @@ chezmoi managed --include=scripts --path-style=source-relative ~/.chezmoiscripts
         cat
     fi |
     tr '\n' '\0' |
-    xargs -0 chezmoi apply --include=scripts --source-path
+    xargs -0 chezmoi apply --include=scripts --source-path $noninteractive
