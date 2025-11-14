@@ -14,7 +14,8 @@ need_sudo
 
 if ! has nix; then
 {{   if .ephemeral -}}
-    curl --proto '=https' --tlsv1.2 -sSf -L https://nixos.org/nix/install | bash -s -- --no-daemon
+    curl --proto '=https' --tlsv1.2 -sSf -L https://nixos.org/nix/install |
+        bash -s -- --no-daemon
 {{   else -}}
     install_nix
 {{   end -}}
