@@ -12,7 +12,7 @@
 set -euo pipefail
 
 for file in nix/nix.conf.tmpl home-manager/home.nix.tmpl \
-            home-manager/flake.nix.tmpl home-manager/flake.lock; do
+            home-manager/flake.nix.tmpl home-manager/private_flake.lock; do
     src="$CHEZMOI_SOURCE_DIR/dot_config/$file"
     dest="$CHEZMOI_HOME_DIR/.config/${file%.tmpl}"
     if ! [ -e "$dest" ] || [ "$src" -nt "$dest" ]; then
