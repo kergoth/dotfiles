@@ -1,0 +1,16 @@
+[user]
+name = "{{ .name }}"
+email = "{{ .email }}"
+
+[diff]
+tool = "delta"
+
+[ui]
+pager = "delta"
+diff-formatter = ":git"
+
+[aliases]
+dlog = ["log", "-r"]
+l = ["log", "-r", "(trunk()..@):: | (trunk()..@)-"]
+fresh = ["new", "trunk()"]
+tug = ["bookmark", "move", "--from", "heads(::@- & bookmarks())", "--to", "@-"]
