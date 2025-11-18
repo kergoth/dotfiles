@@ -1,6 +1,12 @@
 { config, pkgs, ... }:
 
-{
+let
+  # Choose the right pinentry program depending on platform
+  pinentry =
+    if pkgs.stdenv.isDarwin then pkgs.pinentry_mac
+    else if pkgs.stdenv.isLinux then pkgs.pinentry
+    else null;  # Windows is handled differently
+in {
   # The home-manager manual is at:
   #
   #   https://rycee.gitlab.io/home-manager/release-notes.html
@@ -103,6 +109,17 @@
     fzf.enable = true;
     jq.enable = true;
     bat.enable = true;
+
+    # gnupg
+    gpg.enable = true;
+  };
+
+  # Enable gpg-agent with pinentry
+  services.gpg-agent = {
+    enable = true;
+    pinentry.package = pinentry;
+    defaultCacheTtl = 3600;
+    maxCacheTtl = 72000;
   };
 
   nix.nixPath = ["nixpkgs=flake:nixpkgs"];
