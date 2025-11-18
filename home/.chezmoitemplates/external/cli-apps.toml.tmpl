@@ -58,7 +58,7 @@
 {{ if eq $os "windows" }}
 {{   $choose_suffix = "pc-windows-gnu" }}
 {{ else if eq $os "linux" }}
-{{   $choose_suffix = "unknown-linux-musl" }}
+{{   $choose_suffix = "unknown-linux-gnu" }}
 {{ end }}
 {{ if ne $choose_suffix "" }}
 ["{{ $binpath }}/choose{{ $binsuffix }}"]
