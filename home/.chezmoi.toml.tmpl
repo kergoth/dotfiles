@@ -18,7 +18,7 @@
 {{- $user_setup := true -}}{{/* true if this user should be set up beyond just dotfiles */}}
 {{- $macos_split_user := true -}}{{/* true if this is a macOS machine that should have a separate user for admin tasks */}}
 {{- $macos_admin_user := "archet" -}}{{/* the username of the admin user on macOS */}}
-{{- $use_nix := false -}}{{/* true if this machine should use Nix. default to true on Linux hosts */}}
+{{- $use_nix := true -}}{{/* true if this machine should use Nix. default to true*/}}
 {{/* device usage flags */}}
 {{- $coding := true -}}{{/* true if this device will be used for coding, beyond just shell scripting */}}
 {{- $containers := false -}}{{/* true if this machine should have a container runtime installed */}}
@@ -29,8 +29,8 @@
 {{- $ebook_library := false -}}{{/* true if this device will be used to manage my ebook library */}}
 
 {{- if eq .chezmoi.os "linux" }}
-{{-   if and (not $steamdeck) (not (eq $osid "linux-chimera")) -}}
-{{-     $use_nix = true }}
+{{-   if (not $steamdeck) (not (eq $osid "linux-chimera")) -}}
+{{-     $use_nix = false }}
 {{-   end }}
 {{- end }}
 
@@ -83,7 +83,6 @@
 {{-   else if $steamdeck -}}
 {{-     $gaming = true -}}
 {{-     $personal = true -}}
-{{-     $use_nix = false }}
 {{/*    prompt for emulation by default */}}
 {{-     $prompt = true -}}
 {{-   else if $windows_sandbox -}}
