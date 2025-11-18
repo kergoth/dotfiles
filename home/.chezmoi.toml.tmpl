@@ -123,6 +123,15 @@
 {{-   $secrets = true -}}
 {{- end -}}
 
+{{- $signing_key := ""}}
+{{- if .secrets -}}
+{{-   if .personal -}}
+{{-     $signing_key = "934796281287D8BD66EF26F4BCC304A4E9BFE3CF" }}
+{{-   else if .work }}
+{{-     $signing_key = "A01D173066E4C7D41B59ACCE48653F77ACF5559E" }}
+{{-   end }}
+{{- end }}
+
 {{- $emupath := "" }}
 {{- $sdmount := "" }}
 {{- if $steamdeck }}
@@ -204,6 +213,9 @@ scriptTempDir = "~/tmp"
     retroarch_config_path = ""
 {{-   end }}
 {{- end }}
+
+[data.git]
+    signing_key = "{{ $signing_key }}"
 
 [data.external]
     refreshPeriod = "168h"

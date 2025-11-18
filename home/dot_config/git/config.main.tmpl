@@ -1,11 +1,4 @@
-{{- $signingKey := ""}}
-{{- if .secrets -}}
-{{-   if .personal -}}
-{{-     $signingKey = "934796281287D8BD66EF26F4BCC304A4E9BFE3CF" }}
-{{-   else if .work }}
-{{-     $signingKey = "4FF90C5834F7D0290B9C254AA3F86002F03EE587" }}
-{{-   end }}
-{{- end }}
+{{- $signingKey := .git.signing_key }}
 # vim: set noet sts=0 ft=gitconfig:
 [core]
 	excludesfile = ~/.config/git/ignore
