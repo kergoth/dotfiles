@@ -1,6 +1,8 @@
 {{- $nixarch := .chezmoi.arch -}}
 {{- if eq .chezmoi.arch "amd64" -}}
-{{-   $nixarch = "x86_64" -}}
+  {{- $nixarch = "x86_64" -}}
+{{- else if or (eq .chezmoi.arch "arm64") (eq .chezmoi.arch "aarch64") -}}
+  {{- $nixarch = "aarch64" -}}
 {{- end -}}
 {
   description = "Home Manager configuration of {{ .chezmoi.username }}";
