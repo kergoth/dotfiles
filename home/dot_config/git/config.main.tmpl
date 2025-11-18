@@ -50,21 +50,12 @@
 {{- if eq .email "kergoth@gmail.com" }}
 	identity = gmail
 {{- end }}
-{{- if eq .email "chris.larson@siemens.com" }}
-	identity = siemens
-{{- end }}
 
 [sendemail.gmail]
 	smtpserver = smtp.googlemail.com
 	smtpencryption = tls
 	smtpserverport = 587
 	smtpuser = kergoth@gmail.com
-
-[sendemail.siemens]
-        smtpEncryption = tls
-        smtpServer = smtp.siemens.com
-        smtpUser = i4plIBF6LKUYv76R
-        smtpServerPort = 587
 
 {{ if $signingKey -}}
 [gpg]
