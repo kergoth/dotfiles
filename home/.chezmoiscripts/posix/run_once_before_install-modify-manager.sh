@@ -11,8 +11,13 @@ tmpdir=$(mktemp -d -t install-package-manager.XXXXXX)
 trap 'rm -rf "$tmpdir"' EXIT INT TERM
 
 
-modify_version=3.5.1
+modify_version=3.5.3
 arch=$(uname -m)
+case "$arch" in
+    arm64)
+        arch=aarch64
+        ;;
+esac
 case "$(uname -s)" in
 Darwin)
     os=apple-darwin
