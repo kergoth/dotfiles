@@ -172,11 +172,9 @@ defaults write com.apple.SafariTechnologyPreview ShowOverlayStatusBar -bool TRUE
 defaults write com.apple.Safari AlwaysRestoreSessionAtLaunch -bool true
 defaults write com.apple.SafariTechnologyPreview AlwaysRestoreSessionAtLaunch -bool true
 
-# Disable autofill
+# Disable password and credit card autofill
 defaults write com.apple.Safari AutoFillCreditCardData -bool false
 defaults write com.apple.SafariTechnologyPreview AutoFillCreditCardData -bool false
-defaults write com.apple.Safari AutoFillMiscellaneousForms -bool false
-defaults write com.apple.SafariTechnologyPreview AutoFillMiscellaneousForms -bool false
 defaults write com.apple.Safari AutoFillPasswords -bool false
 defaults write com.apple.SafariTechnologyPreview AutoFillPasswords -bool false
 

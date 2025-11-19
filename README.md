@@ -305,7 +305,7 @@ chezmoi update -R
 #### CLI Software on macOS
 
 - [lima](https://github.com/lima-vm/lima): Linux virtual machines, typically on macOS, for running containerd.
-- [colima](https://github.com/abiosoft/colima): Container runtimes on macOS (and Linux) with minimal setup.
+- [colima](https://github.com/abiosoft/colima): Container runtimes on macOS (and Linux) with minimal setup. _Conditional: This is installed when a container runtime is enabled._
 - [duti](https://github.com/moretension/duti): A command-line tool to select default applications for document types and URL schemes on Mac OS X.
 - [mas](https://github.com/mas-cli/mas): Mac App Store command line interface.
 - [reattach-to-user-namespace](https://github.com/ChrisJohnsen/tmux-MacOSX-pasteboard): Reattach to the per-user bootstrap namespace. This is needed for tools like tmux, though tmux 2.6+ apparently incorporates this functionality already.
@@ -394,6 +394,7 @@ chezmoi update -R
 - [Shifty](https://shifty.natethompson.io/): Menu bar app that provides more control over Night Shift.
 - If the gaming flag is enabled:
   - [Steam Link](https://store.steampowered.com/steamlink/about): Stream your Steam games.
+- [SwiftBar](https://swiftbar.app/)]: Powerful macOS menu bar customization tool. _Conditional: This is installed when a container runtime is enabled, as I use this to start/stop colima._
 - [SwiftDefaultApps](https://github.com/Lord-Kamina/SwiftDefaultApps) (Open-Source): A preference pane will let you view and change default application associations.
 - [SyncThing](https://syncthing.net/) ([Open-Source](https://github.com/syncthing/)): A continuous file synchronization program.
 - [Transmission Remote GUI](https://github.com/transmission-remote-gui/transgui) (Open-Source): A feature rich cross platform Transmission BitTorrent client. Faster and has more functionality than the built-in web GUI.
@@ -572,7 +573,6 @@ chezmoi update -R
 - [Pages](https://www.apple.com/pages/): Documents that stand apart. Available via Mac App Store.
 - [PhotoSweeper](https://overmacs.com): A fast & powerful duplicate photos cleaner for Mac. Available via brew as `photosweeper-x`.
 - [Pixelmator Classic](https://www.pixelmator.com/mac/): Powerful, full-featured image editor for Mac. Available via Mac App Store.
-- [SwiftBar](https://swiftbar.app/)]: Powerful macOS menu bar customization tool.
 - [TaskExplorer](https://objective-see.org/products/taskexplorer.html): Explore all the tasks (processes) running on your Mac with TaskExplorer.
 - [Textual](https://www.codeux.com/textual/): Application for interacting with Internet Relay Chat (IRC) chatrooms. Available via brew.
 - [Wineskin](https://github.com/Gcenx/WineskinServer): A user-friendly tool used to make ports of Microsoft Windows software to macOS. Available via brew as `gcenx/wine/unofficial-wineskin`.
