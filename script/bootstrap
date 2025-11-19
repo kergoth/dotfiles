@@ -175,19 +175,10 @@ if ! [ -e "$DOTFILES_DIR/.chezmoiroot" ]; then
     exit 1
 fi
 
-for subdir in ~/.local/share/chezmoi ~/.dotfiles; do
-    if [ "$subdir" = "$DOTFILES_DIR" ]; then
-        continue
-    fi
-    if [ -h "$subdir" ]; then
-        rm -f "$subdir"
-    elif [ -e "$subdir" ]; then
-        echo >&2 "Error: $subdir exists and is not a symlink"
-        exit 1
-    fi
-    mkdir -p "$(dirname "$subdir")"
-    ln -sf "$DOTFILES_DIR" "$subdir"
-done
+if ! [ -e ~/.local/share/chezmoi ]; then
+    rm -f ~/.local/share/chezmoi
+    ln -sf "$DOTFILES_DIR" ~/.local/share/chezmoi
+fi
 
 if ! command -v chezmoi >/dev/null 2>&1; then
     echo >&2 "Installing chezmoi"
