@@ -4,6 +4,14 @@ set -eu
 
 PATH="$(cd "$(dirname "$0")" && pwd -P):$PATH"
 
+dry_run=
+case "$1" in
+    -n)
+        dry_run=1
+        shift
+        ;;
+esac
+
 app_dir="$1"
 new_app_id="$2"
 
@@ -13,4 +21,8 @@ duti-all -n "$app_dir" \
         echo "duti -vs $new_app_id $uti $role"
     done \
     | sed -e 's/ *$//' \
-    | tr '\n' '\0' | xargs -0 -n 1 -I"{}" sh -c "{}"
+    | if [ -n "$dry_run" ]; then
+        cat
+    else
+        tr '\n' '\0' | xargs -0 -n 1 -I"{}" sh -c "{}"
+    fi
