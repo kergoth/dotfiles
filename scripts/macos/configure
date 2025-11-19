@@ -263,23 +263,25 @@ defaults write com.apple.dock wvous-tr-modifier -int 0
 # Disable font smoothing
 defaults -currentHost write -g AppleFontSmoothing -int 0
 
-# Select 2x display scaling for better font rendering
-/usr/bin/python3 -m venv "$tmpdir/venv"
-(
-	# shellcheck disable=SC1091
-	. "$tmpdir/venv/bin/activate"
+if echo "$HOST" | grep -Fx "vaelin.local"; then
+    # Select 2x display scaling for better font rendering
+    /usr/bin/python3 -m venv "$tmpdir/venv"
+    (
+    	# shellcheck disable=SC1091
+    	. "$tmpdir/venv/bin/activate"
 
-	pip install wheel
-	pip install pyobjc-core pyobjc-framework-Cocoa pyobjc-framework-Quartz
+    	pip install wheel
+    	pip install pyobjc-core pyobjc-framework-Cocoa pyobjc-framework-Quartz
 
-	site="$(python3 -c 'import site; print(site.getsitepackages()[0])')"
-	if ! [ -e "$site/display_manager_lib.py" ]; then
-		mkdir -p "$site"
-		curl -Lfso "$site/display_manager_lib.py" "https://raw.githubusercontent.com/univ-of-utah-marriott-library-apple/display_manager/stable/display_manager_lib.py"
-	fi
+    	site="$(python3 -c 'import site; print(site.getsitepackages()[0])')"
+    	if ! [ -e "$site/display_manager_lib.py" ]; then
+    		mkdir -p "$site"
+    		curl -Lfso "$site/display_manager_lib.py" "https://raw.githubusercontent.com/univ-of-utah-marriott-library-apple/display_manager/stable/display_manager_lib.py"
+    	fi
 
-	python3 "$scriptdir"/set-resolution-scale-2.py
-)
+    	python3 "$scriptdir"/set-resolution-scale-2.py
+    )
+fi
 
 killall Dock
 killall SystemUIServer
