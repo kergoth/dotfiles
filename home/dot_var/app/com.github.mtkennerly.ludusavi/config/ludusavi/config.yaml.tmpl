@@ -8,8 +8,6 @@ manifest:
   secondary:
     - url: "https://raw.githubusercontent.com/BloodShed-Oni/ludusavi-extra-manifests/main/BS_ex-manifest.yaml"
       enable: true
-    - url: "https://raw.githubusercontent.com/hblamo/ludusavi-emudeck-manifest/main/manifest.yml"
-      enable: true
     - url: "https://raw.githubusercontent.com/BloodShed-Oni/ludusavi-extra-manifests/main/BS_software-manifest.yaml"
       enable: true
     - url: "https://github.com/hvmzx/ludusavi-manifests/raw/refs/heads/main/non-steam-manifest.yml"
@@ -35,6 +33,16 @@ roots:
     path: {{ .chezmoi.homeDir }}/Games/sdos
   - store: other
     path: {{ .chezmoi.homeDir }}/Games/swin
+  - store: other
+    path: {{ .chezmoi.homeDir }}/Games/Linux
+  - store: other
+    path: {{ .chezmoi.homeDir }}/Games/Windows
+  - store: other
+    path: {{ .chezmoi.homeDir }}/Games/gog
+  - store: other
+    path: {{ .chezmoi.homeDir }}/Games/amazon
+  - store: other
+    path: {{ .chezmoi.homeDir }}/Games/epic
   - store: other
     path: {{ .sdcard_mount }}/Games/Linux
   - store: other
