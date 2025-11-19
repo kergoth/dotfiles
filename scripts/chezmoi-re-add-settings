@@ -12,6 +12,7 @@ nlxargs () {
 
 if [[ "${1:-}" = "-n" ]]; then
     dry_run=1
+    shift
 else
     dry_run=0
 fi
@@ -28,19 +29,24 @@ else
     target="$HOME"
 fi
 
-rg -l '\{.*include.*"settings/' "$source" |
-    nlxargs chezmoi target-path |
-    if [ -n "$exclude" ]; then
-        grep -Ev "$exclude"
-    else
-        cat
-    fi |
-    nlxargs chezmoi managed --include=files |
-    sed -e "s#^#$target/#" |
-    nlxargs chezmoi status |
-    grep '^M' |
-    cut -d" " -f2- |
-    while read -r target_path; do
+if [ $# -eq 0 ]; then
+    rg -l '\{.*include.*"settings/' "$source" |
+        nlxargs chezmoi target-path |
+        if [ -n "$exclude" ]; then
+            grep -Ev "$exclude"
+        else
+            cat
+        fi |
+        nlxargs chezmoi managed --include=files |
+        sed -e "s#^#$target/#" |
+        nlxargs chezmoi status |
+        grep '^M' |
+        cut -d" " -f2-
+else
+    for arg; do
+        echo "$arg"
+    done
+fi | while read -r target_path; do
         target_path="$target/$target_path"
         source_path=$(chezmoi source-path "$target_path")
         settings_path="$(sed -n -e 's#.*"\(settings/[^"]*\)".*#\1#p' "$source_path")"
