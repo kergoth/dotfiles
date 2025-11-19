@@ -397,7 +397,6 @@ chezmoi update -R
   - [Steam Link](https://store.steampowered.com/steamlink/about): Stream your Steam games.
 - [SwiftDefaultApps](https://github.com/Lord-Kamina/SwiftDefaultApps) (Open-Source): A preference pane will let you view and change default application associations.
 - [SyncThing](https://syncthing.net/) ([Open-Source](https://github.com/syncthing/)): A continuous file synchronization program.
-- [The Unarchiver](https://macpaw.com/download/the-unarchiver): Unpack archive files.
 - [Transmission Remote GUI](https://github.com/transmission-remote-gui/transgui) (Open-Source): A feature rich cross platform Transmission BitTorrent client. Faster and has more functionality than the built-in web GUI.
 - [UnPlugged](https://apps.apple.com/us/app/unplugged/id423123087?mt=12&uo=4&at=10l4tL)
 - [WhatsYourSign](https://objective-see.org/products/whatsyoursign.html): Add a menu item to Finder to display a file's cryptographic information.
