@@ -3,9 +3,11 @@ cask_args appdir: "~/Applications"
 tap "homebrew/cask-fonts"
 tap "homebrew/cask-versions"
 
+# cli tools
 brew "mas"
 brew "trash"
 
+# apps
 cask "apparency"
 cask "appcleaner"
 cask "betterzip"
@@ -13,8 +15,6 @@ cask "brooklyn"
 cask "carbon-copy-cloner@6"
 cask "daisydisk"
 cask "discord"
-cask "dteoh-devdocs"
-cask "jordanbaird-ice"
 cask "keepingyouawake"
 cask "keka"
 cask "kitty"
@@ -22,6 +22,28 @@ cask "maccy"
 cask "obsidian"
 cask "omnioutliner"
 cask "popclip"
+cask "raycast"
+cask "reader"
+cask "rectangle"
+cask "shifty"
+cask "soulver2"
+cask "suspicious-package"
+cask "swiftdefaultappsprefpane"
+cask "syncthing-app"
+cask "vivaldi"
+cask "visual-studio-code"
+cask "zed"
+
+{{ if not .work -}}
+mas "Declutter", id: 1574021257
+mas "Deliveries", id: 290986013
+mas "LilyView", id: 529490330
+mas "UnPlugged", id: 423123087
+mas "WiFi Explorer", id: 494803304
+mas "WiFi Signal", id: 525912054
+{{- end }}
+
+# quicklook plugins
 cask "qlcolorcode"
 cask "qlimagesize"
 cask "qlmarkdown"
@@ -30,33 +52,14 @@ cask "qlstephen"
 cask "quicklook-csv"
 cask "quicklook-json"
 cask "quicklookase"
-cask "raycast"
-cask "reader"
-cask "rectangle"
-cask "shifty"
-cask "soulver2"
-cask "suspicious-package"
-{{- if .containers }}
-cask "swiftbar"
-{{- end }}
-cask "swiftdefaultappsprefpane"
-cask "syncthing-app"
-cask "transmission-remote-gui"
-cask "visual-studio-code"
-cask "vivaldi"
 cask "webpquicklook"
-cask "zed"
 
+# safari extensions
+{{ if not .work -}}
 mas "1Password for Safari", id: 1569813296
 mas "AdGuard for Safari", id: 1440147259
-mas "Declutter", id: 1574021257
-mas "Deliveries", id: 290986013
 mas "Hush", id: 1544743900
 mas "Kagi for Safari", id: 1622835804
-mas "LilyView", id: 529490330
-mas "MusicHarbor", id: 1440405750
-mas "PiPer", id: 1421915518
-mas "Play", id: 1596506190
 mas "Privacy Redirect", id: 1578144015
 mas "Refined GitHub", id: 1519867270
 mas "Save to Reader", id: 1640236961
@@ -65,24 +68,59 @@ mas "Shut Up", id: 1015043880
 mas "Social Fixer for Facebook", id: 1562017526
 mas "StopTheMadness Pro", id: 6471380298
 mas "Tampermonkey Classic", id: 1482490089
-mas "Toolkit for YNAB", id: 1592912837
 mas "uBlock Origin Lite", id: 6745342698
-mas "UnPlugged", id: 423123087
 mas "Userscripts-Mac-App", id: 1463298887
 mas "Vinegar", id: 1591303229
-mas "WiFi Explorer", id: 494803304
-mas "WiFi Signal", id: 525912054
+{{- end }}
 
+# coding
+{{ if .coding -}}
+cask "dteoh-devdocs"
+{{- end }}
+
+# containers
+{{ if .containers -}}
+cask "swiftbar"
+{{- end }}
+
+# ebook_library
 {{ if .ebook_library -}}
 cask "calibre"
 {{- end }}
+
+# ephemeral
+{{ if .ephemeral -}}
+# add ephemeral-specific items here
+{{- end }}
+
+# gaming
 {{ if and .gaming (not .work) -}}
 cask "steam"
 mas "Steam Link", id: 1246969117
 {{- end }}
-{{ if .video -}}
-cask "vlc"
+
+# music
+{{ if and .music (not .work) -}}
+mas "MusicHarbor", id: 1440405750
 {{- end }}
+
+# music_library
+{{ if .music_library -}}
+# add music library apps here
+{{- end }}
+
+# personal
+{{ if .personal -}}
+cask "transmission-remote-gui"
+{{- end }}
+
+# video
+{{ if and .video (not .work) -}}
+cask "vlc"
+mas "Play", id: 1596506190
+{{- end }}
+
+# work
 {{ if .work -}}
 cask "slack"
 cask "zoom"
