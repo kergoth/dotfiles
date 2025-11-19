@@ -1,0 +1,74 @@
+{{- $key_name := "" -}
+{{- if .personal -}}
+{{-   $key_name = "personal" -}}
+{{- end -}}
+{{- if .work -}}
+{{-   $key_name = "work" -}}
+{{- end -}}
+{{- $signing_key := .git.signing_key -}}
+{{- if $key_name -}}
+#requires -version 5.0
+$ErrorActionPreference = "Stop"
+
+# Set GNUPGHOME
+$env:GNUPGHOME = "{{ .gnupg.home }}"
+
+if (-not (Test-Path $env:GNUPGHOME)) {
+    New-Item -ItemType Directory -Path $env:GNUPGHOME | Out-Null
+}
+
+# Best-effort permission tightening on Windows
+try {
+    icacls $env:GNUPGHOME /inheritance:d | Out-Null
+    icacls $env:GNUPGHOME /grant "$($env:USERNAME):(OI)(CI)F" | Out-Null
+    icacls $env:GNUPGHOME /remove *S-1-5-11 *S-1-5-18 *S-1-5-32-544 *S-1-5-32-545 | Out-Null
+} catch {
+    Write-Error "Warning: could not fully harden GNUPGHOME permissions: $_"
+}
+
+function Import-Key {
+    param(
+        [Parameter(Mandatory=$true)][string]$Fingerprint,
+        [Parameter(Mandatory=$true)][string]$Encrypted
+    )
+
+    $exists = & gpg --list-secret-keys $Fingerprint 2>$null
+    if ($LASTEXITCODE -eq 0) {
+        Write-Error "Secret key $Fingerprint already imported."
+        return
+    }
+
+    Write-Error "Importing secret key $Fingerprint ..."
+    chezmoi decrypt $Encrypted | gpg --import -
+}
+
+function Import-Pub {
+    param(
+        [Parameter(Mandatory=$true)][string]$Fingerprint,
+        [Parameter(Mandatory=$true)][string]$Encrypted
+    )
+
+    $exists = & gpg --list-keys $Fingerprint 2>$null
+    if ($LASTEXITCODE -eq 0) {
+        Write-Error "Public key $Fingerprint already imported."
+        return
+    }
+
+    Write-Error "Importing public key $Fingerprint ..."
+    chezmoi decrypt $Encrypted | gpg --import -
+}
+
+function Import-Ownertrust {
+    param([Parameter(Mandatory=$true)][string]$Encrypted)
+
+    Write-Error "Importing ownertrust..."
+    chezmoi decrypt $Encrypted | gpg --import-ownertrust
+}
+
+Write-Error "Handling GnuPG key '{{ $key_name }}' ({{ $signing_key }})"
+Import-Key "{{ $signing_key }}" "{{ .chezmoi.workingTree }}/settings/gnupg/{{ $key_name }}/secret.asc.age"
+Import-Pub "{{ $signing_key }}" "{{ .chezmoi.workingTree }}/settings/gnupg/{{ $key_name }}/public.asc.age"
+Import-Ownertrust "{{ .chezmoi.workingTree }}/settings/gnupg/{{ $key_name }}/ownertrust.asc.age"
+
+Write-Error "GnuPG setup complete."
+{{- end }}

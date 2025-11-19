@@ -1,0 +1,56 @@
+{{- $key_name := "" -}}
+{{- if .personal -}}
+{{-   $key_name = "personal" -}}
+{{- end -}}
+{{- if .work -}}
+{{-   $key_name = "work" -}}
+{{- end -}}
+{{- $signing_key := .git.signing_key -}}
+{{- if $key_name -}}
+#!/usr/bin/env sh
+set -euo pipefail
+
+export GNUPGHOME="{{ .gnupg.home }}"
+
+mkdir -p "$GNUPGHOME"
+chmod 700 "$GNUPGHOME"
+
+import_key() {
+    local fp="$1"
+    local enc="$2"
+
+    if gpg --list-secret-keys "$fp" >/dev/null 2>&1; then
+        echo >&2 "Secret key $fp already imported."
+        return
+    fi
+
+    echo >&2 "Importing secret key $fp ..."
+    chezmoi decrypt "$enc" | gpg --import -
+}
+
+import_pub() {
+    local fp="$1"
+    local enc="$2"
+
+    if gpg --list-keys "$fp" >/dev/null 2>&1; then
+        echo >&2 "Public key $fp already imported."
+        return
+    fi
+
+    echo >&2 "Importing public key $fp ..."
+    chezmoi decrypt "$enc" | gpg --import -
+}
+
+import_ownertrust() {
+    local enc="$1"
+    echo >&2 "Importing ownertrust..."
+    chezmoi decrypt "$enc" | gpg --import-ownertrust
+}
+
+echo >&2 Handling GnuPG key '{{ $key_name }}' ({{ $signing_key }})"
+import_key "{{ $signing_key }}" "{{ .chezmoi.workingTree }}/settings/gnupg/{{ $key_name }}/secret.asc.age"
+import_pub "{{ $signing_key }}" "{{ .chezmoi.workingTree }}/settings/gnupg/{{ $key_name }}/public.asc.age"
+import_ownertrust "{{ .chezmoi.workingTree }}/settings/gnupg/{{ $key_name }}/ownertrust.asc.age"
+
+echo >&2 "GnuPG setup complete."
+{{- end }}
