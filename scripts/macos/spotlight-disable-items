@@ -1,0 +1,134 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+usage() {
+    cat <<'EOF'
+Disable Spotlight categories whose names match one or more regex patterns.
+
+Usage:
+    spotlight-disable-items [options] <regex> [<regex> ...]
+
+Examples:
+    spotlight-disable-items 'MENU_WEBSEARCH|MENU_SPOTLIGHT_SUGGESTIONS'
+    spotlight-disable-items 'WEBSEARCH' 'SUGGEST' 'NEWS'
+
+Options:
+    -g, --disable-global-suggestions
+        When running as root, also set:
+            /Library/Preferences/com.apple.Spotlight SuggestionsEnabled = false
+
+    -h, --help
+        Show this help and exit.
+EOF
+}
+
+DISABLE_GLOBAL_SUGGESTIONS=0
+PATTERN_REGEX=
+
+process_arguments() {
+    local arg
+    local first=1
+
+    if [ "$#" -eq 0 ]; then
+        usage >&2
+        exit 1
+    fi
+
+    while [ "$#" -gt 0 ]; do
+        arg=$1
+        shift
+
+        case $arg in
+            -h|--help)
+                usage
+                exit 0
+                ;;
+            -g|--disable-global-suggestions)
+                DISABLE_GLOBAL_SUGGESTIONS=1
+                ;;
+            -*)
+                echo "Unknown option: $arg" >&2
+                usage >&2
+                exit 1
+                ;;
+            *)
+                if [ "$first" -eq 1 ]; then
+                    PATTERN_REGEX=$arg
+                    first=0
+                else
+                    PATTERN_REGEX="${PATTERN_REGEX}|${arg}"
+                fi
+                ;;
+        esac
+    done
+
+    if [ "$first" -eq 1 ]; then
+        echo "Error: at least one regex pattern is required." >&2
+        usage >&2
+        exit 1
+    fi
+}
+
+disable_spotlight_items() {
+    local tmp_plist
+    local tmp_json
+
+    tmp_plist=$(mktemp "${TMPDIR:-/tmp}/spotlight.XXXXXX.plist")
+    tmp_json=$(mktemp "${TMPDIR:-/tmp}/spotlight.XXXXXX.json")
+
+    cleanup() {
+        rm -f "$tmp_plist" "$tmp_json"
+    }
+    trap cleanup EXIT
+
+    if ! defaults export com.apple.spotlight - >"$tmp_plist" 2>/dev/null; then
+        echo "Error: com.apple.spotlight preferences not found." >&2
+        exit 1
+    fi
+
+    plutil -convert json -o "$tmp_json" "$tmp_plist"
+
+    if ! jq -e 'has("orderedItems")' "$tmp_json" >/dev/null; then
+        echo "Error: 'orderedItems' missing; Spotlight prefs structure likely changed." >&2
+        echo "Top-level keys:" >&2
+        jq 'keys' "$tmp_json" >&2
+        exit 1
+    fi
+
+    jq --arg re "$PATTERN_REGEX" '
+      .orderedItems |= map(
+        if (.name | type == "string") and (.name | test($re; "i")) then
+          .enabled = 0
+        else
+          .
+        end
+      )
+    ' "$tmp_json" > "${tmp_json}.new"
+
+    mv "${tmp_json}.new" "$tmp_json"
+    plutil -convert xml1 -o "$tmp_plist" "$tmp_json"
+    defaults import com.apple.spotlight "$tmp_plist"
+}
+
+disable_global_suggestions_if_requested() {
+    if [ "$DISABLE_GLOBAL_SUGGESTIONS" -ne 1 ]; then
+        return 0
+    fi
+
+    if [ "$(id -u)" -ne 0 ]; then
+        echo "Skipping system-wide SuggestionsEnabled change (not root)." >&2
+        return 0
+    fi
+
+    defaults write /Library/Preferences/com.apple.Spotlight SuggestionsEnabled -bool false || true
+}
+
+main() {
+    process_arguments "$@"
+    disable_spotlight_items
+    disable_global_suggestions_if_requested
+    killall mds >/dev/null 2>&1 || true
+}
+
+main "$@"
