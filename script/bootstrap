@@ -179,17 +179,14 @@ for subdir in ~/.local/share/chezmoi ~/.dotfiles; do
     if [ "$subdir" = "$DOTFILES_DIR" ]; then
         continue
     fi
-    if ! [ -h "$subdir" ]; then
-        # Symlink to ~/.local/share/chezmoi to let chezmoi find the hook scripts
-        if [ -h "$subdir" ]; then
-            rm -f "$subdir"
-        elif [ -e "$subdir" ]; then
-            echo >&2 "Error: $subdir exists and is not a symlink"
-            exit 1
-        fi
-        mkdir -p "$(dirname "$subdir")"
-        ln -sf "$DOTFILES_DIR" "$subdir"
+    if [ -h "$subdir" ]; then
+        rm -f "$subdir"
+    elif [ -e "$subdir" ]; then
+        echo >&2 "Error: $subdir exists and is not a symlink"
+        exit 1
     fi
+    mkdir -p "$(dirname "$subdir")"
+    ln -sf "$DOTFILES_DIR" "$subdir"
 done
 
 if ! command -v chezmoi >/dev/null 2>&1; then
