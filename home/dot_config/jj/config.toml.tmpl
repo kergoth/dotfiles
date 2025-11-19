@@ -1,3 +1,4 @@
+{{- $signingKey := .git.signing_key }}
 [user]
 name = "{{ .name }}"
 email = "{{ .email }}"
@@ -8,6 +9,13 @@ tool = "delta"
 [ui]
 pager = "delta"
 diff-formatter = ":git"
+
+{{ if $signingKey -}}
+[signing]
+backend = "gpg"
+behavior = "own"
+key = {{ $signingKey | quote }}
+{{- end }}
 
 [aliases]
 dlog = ["log", "-r"]
