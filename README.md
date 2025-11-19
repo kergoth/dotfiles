@@ -355,8 +355,6 @@ chezmoi update -R
 - [Visual Studio Code](https://code.visualstudio.com) ([Open-Source](https://github.com/Microsoft/vscode)): Open-source code editor.
 - [Vivaldi](https://vivaldi.com/): Web browser with built-in email client focusing on customization and control.
 - [VLC](https://www.videolan.org/vlc/download-macosx.html) ([Open-Source](https://code.videolan.org/videolan/vlc)): A free and open source cross-platform multimedia player.
-- If the work flag is enabled:
-  - [Microsoft Teams](https://www.microsoft.com/en/microsoft-teams/group-chat-software/): Meet, chat, call, and collaborate in just one place.
 - If the gaming flag is enabled:
   - [Steam](https://store.steampowered.com): A digital distribution platform for purchasing and playing video games.
 
@@ -392,6 +390,9 @@ chezmoi update -R
 - [Readwise Reader](https://readwise.io/read): Save everything to one place, highlight like a pro, and replace several apps with Reader.
 - [Rectangle](https://rectangleapp.com) ([Open-Source](https://github.com/rxhanson/Rectangle)): Move and resize windows in macOS using keyboard shortcuts or snap areas.
 - [Shifty](https://shifty.natethompson.io/): Menu bar app that provides more control over Night Shift.
+- If the work flag is enabled:
+  - [Slack](https://slack.com/): Team communication and collaboration platform.
+  - [Zoom](https://zoom.us/): Video conferencing and online meetings.
 - If the gaming flag is enabled:
   - [Steam Link](https://store.steampowered.com/steamlink/about): Stream your Steam games.
 - [SwiftBar](https://swiftbar.app/)]: Powerful macOS menu bar customization tool. _Conditional: This is installed when a container runtime is enabled, as I use this to start/stop colima._
