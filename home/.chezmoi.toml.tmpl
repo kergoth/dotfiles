@@ -124,11 +124,17 @@
 {{- end -}}
 
 {{- $signing_key := ""}}
+{{- $age_recipient := "" }}
+{{- $age_key_op_uuid := "" }}
 {{- if $secrets -}}
 {{-   if $personal -}}
 {{-     $signing_key = "934796281287D8BD66EF26F4BCC304A4E9BFE3CF" }}
+{{-     $age_recipient = "age1yk2uuwjysqsx6fyrwuexzjpzt6nnx6zwz8m59uw4aaem9mejqedsqdwfwp" }}
+{{-     $age_key_op_uuid = "h7mysvujmfbob42gz4ncwypwkq" }}
 {{-   else if $work }}
 {{-     $signing_key = "A01D173066E4C7D41B59ACCE48653F77ACF5559E" }}
+{{-     $age_recipient = "age1pqwlee59dsnv3n4whp0tchjc7xu39cpujk6j79jjgdl8ue0tga0qfuwke0" }}
+{{-     $age_key_op_uuid = "xyqtvjumcefyvmvsmbspxyagzi" }}
 {{-   end }}
 {{- end }}
 
@@ -160,6 +166,12 @@ sourceDir = {{ .chezmoi.sourceDir | quote }}
 {{- if eq $osid "linux" }}
 scriptTempDir = "~/tmp"
 {{- end }}
+
+encryption = "age"
+
+[age]
+    identity = {{ joinPath .chezmoi.homeDir ".config" "chezmoi" "age.key" | quote }}
+    recipient = {{ $age_recipient | quote }}
 
 [data]
     name = "Christopher Larson"
@@ -223,3 +235,7 @@ scriptTempDir = "~/tmp"
 [data.1password]
     # Refresh 1password documents weekly
     refreshPeriod = 604800
+
+# 1Password UUID to bootstrap the age key if needed
+[data.age]
+    key_op_uuid = {{ $age_key_op_uuid | quote }}

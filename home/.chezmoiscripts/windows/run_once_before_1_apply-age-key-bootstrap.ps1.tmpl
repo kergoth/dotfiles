@@ -1,0 +1,39 @@
+{{- if .secrets -}}
+{{- $ageKeyPath := .chezmoi.config.age.identity -}}
+{{- $st := stat $ageKeyPath -}}
+
+{{- if and $st (gt $st.size 0) -}}
+{{- /* empty output: script won't run */ -}}
+{{- else -}}
+function Set-UserOnlyFileAccess {
+  param(
+    [Parameter(Mandatory)] [string]$Pathname
+  )
+  # This does not use Get-Acl/Set-Acl, as Set-Acl requires the user to have
+  # SeSecurityPrivilege, which should not be necessary for this operation.
+  icacls $Pathname /grant ${env:USERNAME}:rw | Out-Null
+  # Disable inheritance from folders
+  icacls $Pathname /inheritance:d | Out-Null
+  # Remove default groups (Authenticated Users, System, Administrators, Users)
+  icacls $Pathname /remove *S-1-5-11 *S-1-5-18 *S-1-5-32-544 *S-1-5-32-545 | Out-Null
+}
+
+$AgeKeyPath = "{{ $ageKeyPath }}"
+$Dir = Split-Path $AgeKeyPath
+
+if (!(Test-Path $Dir)) {
+    New-Item -ItemType Directory -Path $Dir | Out-Null
+}
+
+Write-Host "Installing age key to $AgeKeyPath ..."
+
+@'
+{{ onepasswordDocument .age.key_op_uuid -}}
+'@ | Set-Content -Path $AgeKeyPath -Encoding ascii -NoNewline
+
+# Tighten file permissions to user-only, like Unix chmod 600
+Set-UserOnlyFileAccess -Pathname $AgeKeyPath
+
+Write-Host "Age key installed to $AgeKeyPath"
+{{- end -}}
+{{- end -}}

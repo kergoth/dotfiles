@@ -1,0 +1,23 @@
+{{- if .secrets -}}
+{{- $ageKeyPath := .chezmoi.config.age.identity -}}
+{{- $st := stat $ageKeyPath -}}
+
+{{- if and $st (gt $st.size 0) -}}
+{{- /* empty output: no script */ -}}
+{{- else -}}
+#!/usr/bin/env sh
+set -euo pipefail
+
+AGE_KEY_PATH="{{ $ageKeyPath }}"
+
+mkdir -p "$(dirname "$AGE_KEY_PATH")"
+
+echo >&2 "Installing age key to $AGE_KEY_PATH ..."
+cat > "$AGE_KEY_PATH" <<'AGE_EOF'
+{{ onepasswordDocument .age.key_op_uuid -}}
+AGE_EOF
+
+chmod 600 "$AGE_KEY_PATH"
+echo >&2 "Age key installed to $AGE_KEY_PATH"
+{{ end -}}
+{{- end -}}
