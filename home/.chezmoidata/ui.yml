@@ -1,0 +1,7 @@
+ui:
+  global:
+    macos:
+      dock_tilesize: 48
+  vaelin:
+    macos:
+      dock_tilesize: 36

@@ -1,6 +1,10 @@
 #!/usr/bin/env chezmoi-exec
 #!/usr/bin/env bash
 
+{{- $host := .chezmoi.hostname }}
+{{- $default_tilesize := dig "ui" "global" "macos" "dock_tilesize" 48 . }}
+{{- $dock_tilesize := dig "ui" $host "macos" "dock_tilesize" $default_tilesize . }}
+
 scriptdir="$(cd "$(dirname "$0")" && pwd -P)"
 tmpdir="$(mktemp -d -t "${0##*/}.XXXXXX")" || exit 1
 trap 'rm -rf "$tmpdir"' EXIT INT TERM
@@ -195,7 +199,7 @@ defaults write com.apple.ActivityMonitor SortDirection -int 0
 ## Personal preferences
 # Autohide
 defaults write com.apple.dock autohide -bool true
-defaults write com.apple.dock tilesize -int 36
+defaults write com.apple.dock tilesize -int {{ $dock_tilesize }}
 
 # Hide desktop icons completely
 defaults write com.apple.finder CreateDesktop -bool false
