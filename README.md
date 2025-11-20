@@ -409,19 +409,13 @@ chezmoi update -R
 ##### Safari Extensions
 
 - [1Password for Safari](https://apps.apple.com/us/app/1password-for-safari/id1569813296?mt=12&uo=4&at=10l4tL)
-- [AdGuard for Safari](https://apps.apple.com/us/app/adguard-for-safari/id1440147259?mt=12&uo=4&at=10l4tL) ([Open-Source](https://github.com/AdguardTeam/AdguardForSafari))
 - [Hush](https://apps.apple.com/us/app/hush-nag-blocker/id1544743900?uo=4&at=10l4tL) ([Open-Source](https://github.com/oblador/hush))
 - [Kagi for Safari](https://apps.apple.com/us/app/kagi-for-safari/id1622835804): Kagi search for Safari.
-- [PiPer](https://apps.apple.com/us/app/piper/id1421915518?mt=12&uo=4&at=10l4tL) ([Open-Source](https://github.com/amarcu5/PiPer))
 - [Privacy Redirect](https://apps.apple.com/us/app/privacy-redirect/id1578144015?uo=4&at=10l4tL) ([Open-Source](https://github.com/smmr-software/privacy-redirect-safari))
-- [Social Fixer for Facebook](https://apps.apple.com/app/social-fixer-for-facebook/id1562017526)
 - [SessionRestore](https://apps.apple.com/us/app/sessionrestore-for-safari/id1463334954?mt=12&uo=4&at=10l4tL)
-- [Shut Up](https://apps.apple.com/us/app/shut-up-comment-blocker/id1015043880?uo=4&at=10l4tL)
 - [StopTheMadness Pro](https://apps.apple.com/us/app/stopthemadness-pro/id6471380298): A Safari extension that stops web site annoyances and privacy violations.
-- [Tampermonkey](https://www.onlinedown.net/soft/1229995.htm)
-- [Toolkit for YNAB](https://apps.apple.com/us/app/toolkit-for-ynab/id1592912837?mt=12&uo=4&at=10l4tL) ([Open-Source](https://github.com/toolkit-for-ynab/toolkit-for-ynab))
+- [Tampermonkey Classic](https://apps.apple.com/us/app/tampermonkey-classic/id1482490089?mt=12&uo=4&at=10l4tL): Temporary replacement for Userscripts while it's being updated.
 - [uBlock Origin Lite](https://apps.apple.com/us/app/ublock-origin-lite/id6745342698): An efficient content blocker for Safari.
-- [Userscripts](https://apps.apple.com/us/app/userscripts/id1463298887?uo=4&at=10l4tL) ([Open-Source](https://github.com/quoid/userscripts))
 - [Vinegar](https://apps.apple.com/us/app/vinegar-tube-cleaner/id1591303229?uo=4&at=10l4tL)
 
 ##### QuickLook Plugins
@@ -557,10 +551,14 @@ chezmoi update -R
 - [czkawka](https://github.com/qarmin/czkawka): Multi functional app to find duplicates, empty folders, similar images etc.
 - [dupeGuru](https://dupeguru.voltaicideas.net): A cross-platform GUI tool to find duplicate files in a system.
 - [HandBrake](https://handbrake.fr/): The open source video transcoder. Available via brew as `handbrake` and winget as `HandBrake.HandBrake`.
+- [jDownloader](https://jdownloader.org): A download management tool. Available via brew as `jdownloader`.
 - [Kegworks](https://github.com/Kegworks-App/Kegworks): A user-friendly tool used to make wine wrapped ports of Windows software for macOS. Formerly Wineskin Winery.
+- [LocalSend](https://localsend.org): Share files to nearby devices. Available via brew as `localsend`, winget as `LocalSend.LocalSend`, and scoop as `localsend`.
 - [Malwarebytes](https://www.malwarebytes.com): Warns about malware, adware and spyware.
 - [MusicBrainz Picard](https://picard.musicbrainz.org): A cross-platform music tagger. Available via brew as `musicbrainz-picard`, nix as `picard`, Microsoft Store, winget as `MusicBrainz.Picard`, and scoop as `picard`.
+- [Ollama](https://ollama.com): Get up and running with large language models locally. Available via brew as `ollama`.
 - [Steam](https://store.steampowered.com): A digital distribution platform. Available via brew, nix, and winget as `Valve.Steam`.
+- [Subler](https://subler.org): A macOS app to mux and tag mp4 files. Available via brew as `subler`.
 - [Transmission](https://transmissionbt.com): A Fast, Easy and Free Bittorrent Client for macOS, Windows and Linux.
 - [Video Duplicate Finder](https://github.com/0x90d/videoduplicatefinder): Cross-platform software to find duplicated video (and image) files on hard disk based on similiarity.
 
@@ -746,7 +744,14 @@ chezmoi update -R
 
 ### Formerly-Used Browser Extensions
 
+- [AdGuard for Safari](https://apps.apple.com/us/app/adguard-for-safari/id1440147259?mt=12&uo=4&at=10l4tL) ([Open-Source](https://github.com/AdguardTeam/AdguardForSafari)): Replaced with uBlock Origin Lite for more efficient ad blocking.
+- [PiPer](https://apps.apple.com/us/app/piper/id1421915518?mt=12&uo=4&at=10l4tL) ([Open-Source](https://github.com/amarcu5/PiPer)): Picture-in-Picture for Safari. No longer needed.
+- [Refined GitHub](https://apps.apple.com/us/app/refined-github/id1519867270?mt=12&uo=4&at=10l4tL): GitHub interface improvements. Removed in favor of userscript.
+- [Shut Up](https://apps.apple.com/us/app/shut-up-comment-blocker/id1015043880?uo=4&at=10l4tL): Comment blocker. No longer needed.
+- [Social Fixer for Facebook](https://apps.apple.com/app/social-fixer-for-facebook/id1562017526): Replaced with userscript version.
+- [Toolkit for YNAB](https://apps.apple.com/us/app/toolkit-for-ynab/id1592912837?mt=12&uo=4&at=10l4tL) ([Open-Source](https://github.com/toolkit-for-ynab/toolkit-for-ynab)): YNAB enhancements. No longer needed.
 - [uBlacklist for Safari](https://apps.apple.com/us/app/ublacklist-for-safari/id1547912640?uo=4&at=10l4tL) ([Open-Source](https://github.com/HoneyLuka/uBlacklist/tree/safari-port/safari-project))
+- [Userscripts](https://apps.apple.com/us/app/userscripts/id1463298887?uo=4&at=10l4tL) ([Open-Source](https://github.com/quoid/userscripts)): Temporarily replaced with Tampermonkey Classic while waiting for updates. Will switch back in the future.
 
 ## Implementation Notes
 
