@@ -51,8 +51,8 @@ if app_installed_directly "Keka"; then
         duti-switch "$archive_app" "$bundle_id"
     fi
 
-    # Belt-and-suspenders: explicitly map common archive extensions
-    # so we also cover formats Archive Utility doesn't own.
+    # Explicitly map common archive extensions so we also cover formats Archive
+    # Utility doesn't own.
     for ext in \
         zip \
         7z \
