@@ -1,0 +1,120 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+usage() {
+    cat <<EOF
+Usage: ${0##*/} [OPTIONS]
+
+Check for Homebrew casks with missing .app files.
+
+Options:
+    -v          Verbose output (show cask name and expected app path)
+    -c          Clean up by running brew uninstall --cask
+    -z          Pass --zap to brew uninstall (requires -c)
+    -h          Show this help message
+
+Default output: one cask name per line
+Verbose output: cask_name /path/to/expected.app
+EOF
+}
+
+process_arguments() {
+    verbose=0
+    clean=0
+    zap=0
+
+    while getopts "vczh" opt; do
+        case $opt in
+            v) verbose=1 ;;
+            c) clean=1 ;;
+            z) zap=1 ;;
+            h)
+                usage
+                exit 0
+                ;;
+            *)
+                usage >&2
+                exit 1
+                ;;
+        esac
+    done
+
+    if [ $zap -eq 1 ] && [ $clean -eq 0 ]; then
+        echo "Error: -z requires -c" >&2
+        exit 1
+    fi
+}
+
+check_missing_casks() {
+    local cask
+    local app
+    local app_path
+    local found
+    local missing_casks
+    local uninstall_args
+    local line
+
+    missing_casks=()
+
+    # Get all installed casks and their app artifacts in one call
+    while IFS=$'\t' read -r cask app; do
+        if [ -z "$cask" ] || [ -z "$app" ]; then
+            continue
+        fi
+
+        found=0
+        for app_path in "/Applications/$app" "$HOME/Applications/$app"; do
+            if [ -e "$app_path" ]; then
+                found=1
+                break
+            fi
+        done
+
+        if [ "$found" -eq 0 ]; then
+            # Not in expected locations, search subfolders with mdfind
+            if mdfind -onlyin /Applications -name "$app" 2>/dev/null | grep -q . || \
+               mdfind -onlyin "$HOME/Applications" -name "$app" 2>/dev/null | grep -q .; then
+                found=1
+            fi
+        fi
+
+        if [ "$found" -eq 0 ]; then
+            missing_casks+=("$cask:$app_path")
+        fi
+    done < <(brew info --json=v2 --installed 2>/dev/null | jq -r '.[].[] | select(.artifacts) | select(.artifacts[] | has("app")) | [.token, (.artifacts[] | select(.app) | .app[0])] | join("\t")')
+
+    if [ ${#missing_casks[@]} -eq 0 ]; then
+        return 0
+    fi
+
+    if [ $clean -eq 1 ]; then
+        uninstall_args=(--cask --force)
+        if [ $zap -eq 1 ]; then
+            uninstall_args+=(--zap)
+        fi
+
+        for entry in "${missing_casks[@]}"; do
+            cask="${entry%%:*}"
+            brew uninstall "${uninstall_args[@]}" "$cask"
+        done
+    else
+        for entry in "${missing_casks[@]}"; do
+            cask="${entry%%:*}"
+            app_path="${entry#*:}"
+
+            if [ $verbose -eq 1 ]; then
+                echo "$cask $app_path"
+            else
+                echo "$cask"
+            fi
+        done
+    fi
+}
+
+main() {
+    process_arguments "$@"
+    check_missing_casks
+}
+
+main "$@"
