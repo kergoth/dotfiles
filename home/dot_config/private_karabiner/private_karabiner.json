@@ -357,6 +357,17 @@
                         "description": "Caps Lock to Escape on single press, Control on press and hold.",
                         "manipulators": [
                             {
+                                "conditions": [
+                                  {
+                                    "type": "device_unless",
+                                    "identifiers": [
+                                      {
+                                        "vendor_id": 65261,
+                                        "product_id": 24672
+                                      }
+                                    ]
+                                  }
+                                ],
                                 "from": {
                                     "key_code": "caps_lock",
                                     "modifiers": { "optional": ["any"] }
@@ -371,6 +382,17 @@
                         "description": "Control to Caps Lock on single press, 'Hyper Key' on press and hold. (rev 2)",
                         "manipulators": [
                             {
+                                "conditions": [
+                                  {
+                                    "type": "device_unless",
+                                    "identifiers": [
+                                      {
+                                        "vendor_id": 65261,
+                                        "product_id": 24672
+                                      }
+                                    ]
+                                  }
+                                ],
                                 "from": {
                                     "key_code": "left_control",
                                     "modifiers": { "optional": ["any"] }
