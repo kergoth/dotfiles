@@ -132,11 +132,6 @@ Install-Scoop-IfNotPresent pwsh Microsoft.PowerShell | Out-Null
 if (Install-Scoop-IfNotPresent powertoys Microsoft.PowerToys) {
     Invoke-Expression -Command "C:\Users\WDAGUtilityAccount\scoop\apps\powertoys\current\install-context.ps1"
 }
-if (Install-Scoop-IfNotPresent vscode Microsoft.VisualStudioCode) {
-    reg import "$env:SCOOP\apps\vscode\current\install-context.reg" | Out-Null
-    reg import "$env:SCOOP\apps\vscode\current\install-associations.reg" | Out-Null
-    reg import "$env:SCOOP\apps\vscode\current\install-github-integration.reg" | Out-Null
-}
 if (Install-Scoop-IfNotPresent windows-terminal Microsoft.WindowsTerminal) {
     reg import "$env:SCOOP\apps\windows-terminal\current\install-context.reg" | Out-Null
 }
