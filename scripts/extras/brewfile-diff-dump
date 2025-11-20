@@ -26,12 +26,21 @@ if [ ! -f "$brewfile" ]; then
     exit 1
 fi
 
+export HOMEBREW_NO_AUTO_UPDATE=1
+
 brewfile_dump() {
+    echo 'cask_args appdir: "~/Applications"'
+    echo
+
     if echo "$brewfile" | grep -q '\.tmpl$' && command -v chezmoi &>/dev/null; then
         chezmoi execute-template <"$brewfile"
     else
         cat "$brewfile"
-    fi
+    fi |
+        grep -v '^cask_args' |
+        grep -v '^#' |
+        grep -v '^ *$' |
+        sort -uf
 }
 
 bundle_dump() {
@@ -39,7 +48,9 @@ bundle_dump() {
     echo
     brew bundle dump --file=- |
         grep -v '^vscode' |
-        sed -e 's#, args: { appdir: "~/Applications" }##'
+        sed -e 's#, args: { appdir: "~/Applications" }##' |
+        grep -v '^ *$' |
+        sort -uf
 }
 
 diff_highlight() {
