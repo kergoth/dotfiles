@@ -116,6 +116,8 @@
 {{- $email := "kergoth@gmail.com" -}}
 {{- if $work -}}
 {{-   $email = "chris.larson@pano.ai" -}}
+{{/*  I don't use a split-user setup at work */}}
+{{-   $macos_split_user = false -}}
 {{- end -}}
 
 {{- $secrets := false -}}
