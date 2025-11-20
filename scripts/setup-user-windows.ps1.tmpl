@@ -105,6 +105,12 @@ uv tool install git-imerge
 # Disk tools
 scoop install dua
 
+# AI Tools
+if (-not (Get-Command claude -ErrorAction SilentlyContinue)) {
+    Write-Output "Installing Claude Code"
+    Invoke-RestMethod https://claude.ai/install.ps1 | Invoke-Expression
+}
+
 {{ if .work -}}
 # Bug tracking and workflow
 scoop install jira-cli

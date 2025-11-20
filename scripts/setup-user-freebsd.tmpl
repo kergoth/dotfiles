@@ -20,6 +20,12 @@ cargo_check atuin atuin
 go_check github.com/ankitpokhrel/jira-cli/...@latest jira
 {{- end }}
 
+# Install Claude Code via npm
+if ! has claude; then
+    msg "Installing Claude Code via npm"
+    npm install -g @anthropic-ai/claude-code
+fi
+
 # As we don't support nix, install asdf for local environments
 if ! command -v asdf >/dev/null 2>&1; then
     install-asdf

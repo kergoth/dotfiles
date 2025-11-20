@@ -125,6 +125,12 @@ if ! has zed; then
 fi
 {{- end }}
 
+# Install Claude Code
+if ! has claude; then
+    msg "Installing Claude Code"
+    curl -fsSL https://claude.ai/install.sh | bash
+fi
+
 # Install PowerShell modules, if needed
 if has pwsh; then
     msg "Installing PowerShell modules"
