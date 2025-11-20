@@ -30,7 +30,7 @@ while getopts x:nh opt; do
 done
 shift $((OPTIND - 1))
 
-excluded_pattern="^($(echo "${excluded_utis[*]}" | tr ' ' '|' | sed -e 's/\./\\./g'))$"
+excluded_pattern="^(dyn.*|$(echo "${excluded_utis[*]}" | tr ' ' '|' | sed -e 's/\./\\./g'))$"
 app_dir="$1"
 new_app_id="$2"
 
