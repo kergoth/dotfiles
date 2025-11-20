@@ -31,10 +31,6 @@ defaults write -g AppleShowAllExtensions -bool true
 # Disable crash reporter (the dialog which appears after an application crashes and prompts to report the problem to Apple):
 defaults write com.apple.CrashReporter DialogType none
 
-# Enable Firewall
-defaults write ~/Library/Preferences/com.apple.alf allowsignedenabled -bool false
-defaults write ~/Library/Preferences/com.apple.alf globalstate -bool true
-
 # Expand the save dialog by default in all applications
 defaults write -g NSNavPanelExpandedStateForSaveMode -bool true
 
