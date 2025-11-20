@@ -377,7 +377,6 @@ chezmoi update -R
 - [Calibre](https://calibre-ebook.com) ([Open-Source](https://github.com/kovidgoyal/calibre)): E-books management software.
 - [DaisyDisk](https://daisydiskapp.com): Disk space visualizer. Get a visual breakdown of your disk space in form of an interactive map, reveal the biggest space wasters, and remove them with a simple drag and drop.
 - [DevDocs for macOS](https://github.com/dteoh/devdocs-macos) (Open-Source): An unofficial [DevDocs API Documentation](https://devdocs.io/) viewer for macOS.
-- [GPG Suite](https://gpgtools.org) ([Open-Source](https://github.com/orgs/GPGTools/repositories)): Tools to protect your emails and files.
 - [Ice](https://icemenubar.app) ([Open-Source](https://github.com/jordanbaird/Ice)): Powerful menu bar manager for macOS.
 - [Karabiner-Elements](https://karabiner-elements.pqrs.org) ([Open-Source](https://github.com/pqrs-org/Karabiner-Elements)): A powerful and stable keyboard customizer for macOS.
 - [Keka](https://www.keka.io/en/) ([Open-Source](https://github.com/aonez/Keka)): The macOS file archiver.
@@ -422,7 +421,6 @@ chezmoi update -R
 
 - [Apparency](https://www.mothersruin.com/software/Apparency/): Preview the contents of a macOS app
 - [BetterZip](https://betterzip.com): A trialware file archiver. I only install this for the QuickLook plugin.
-- [QLVideo](https://github.com/Marginal/QLVideo) (Open-Source): Preview most types of video files, as well as their thumbnails, cover art and metadata
 - [Suspicious Package](https://www.mothersruin.com/software/SuspiciousPackage/): Preview the contents of a standard Apple installer package
 
 #### GUI Software on Windows
@@ -552,6 +550,10 @@ chezmoi update -R
 - [Subler](https://subler.org): A macOS app to mux and tag mp4 files. Available via brew as `subler`.
 - [Transmission](https://transmissionbt.com): A Fast, Easy and Free Bittorrent Client for macOS, Windows and Linux.
 - [Video Duplicate Finder](https://github.com/0x90d/videoduplicatefinder): Cross-platform software to find duplicated video (and image) files on hard disk based on similiarity.
+
+#### As Needed GUI Software for Windows and macOS
+
+- [SD Card Formatter](https://www.sdcard.org/downloads/formatter/): Official SD Memory Card Formatter from the SD Association for formatting SD/SDHC/SDXC cards.
 
 #### As Needed GUI Software for macOS
 
