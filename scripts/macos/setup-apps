@@ -7,7 +7,7 @@ PATH="$scriptdir:$scriptdir/../scripts:$PATH"
 
 app_path() {
     for dir in /Applications ~/Applications /Applications/Utility ~/Applications/Utility; do
-        if [ -d "$dir/$1.sapp" ]; then
+        if [ -d "$dir/$1.app" ]; then
             echo "$dir/$1.app"
             return 0
         fi
