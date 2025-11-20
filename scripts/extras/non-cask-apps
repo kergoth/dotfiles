@@ -1,0 +1,263 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+usage() {
+    cat <<EOF
+Usage: ${0##*/} [OPTIONS]
+
+List macOS apps in /Applications and ~/Applications that are not installed via Homebrew casks.
+
+Options:
+    -v          Verbose output (show full app path, and category when known)
+    -h          Show this help message
+EOF
+}
+
+process_arguments() {
+    verbose=0
+
+    while getopts ":hv" opt; do
+        case "$opt" in
+            h)
+                usage
+                exit 0
+                ;;
+            v)
+                verbose=1
+                ;;
+            \?)
+                echo "Unknown option: -$OPTARG" >&2
+                usage >&2
+                exit 1
+                ;;
+        esac
+    done
+}
+
+check_dependencies() {
+    missing=0
+
+    if ! command -v brew >/dev/null 2>&1; then
+        echo "Error: brew not found in PATH" >&2
+        missing=1
+    fi
+
+    if ! command -v jq >/dev/null 2>&1; then
+        echo "Error: jq not found in PATH" >&2
+        missing=1
+    fi
+
+    if ! command -v mdfind >/dev/null 2>&1; then
+        echo "Error: mdfind not found" >&2
+        missing=1
+    fi
+
+    if [ "$missing" -ne 0 ]; then
+        exit 1
+    fi
+}
+
+# Hardcoded list of apps to ignore (preinstalled / Apple apps, etc.)
+# Compare against leaf name: e.g. "Safari.app"
+declare -a IGNORED_APPS=(
+    "App Store.app"
+    "Safari.app"
+    "Mail.app"
+    "Calendar.app"
+    "Contacts.app"
+    "FaceTime.app"
+    "Messages.app"
+    "Music.app"
+    "TV.app"
+    "Podcasts.app"
+    "Books.app"
+    "Photos.app"
+    "Preview.app"
+    "Notes.app"
+    "Reminders.app"
+    "Maps.app"
+    "News.app"
+    "Stocks.app"
+    "Home.app"
+    "Voice Memos.app"
+    "Photo Booth.app"
+    "QuickTime Player.app"
+    "System Settings.app"
+    "System Preferences.app"
+    "Shortcuts.app"
+)
+
+is_ignored_app() {
+    app_name=$1
+
+    for ignored in "${IGNORED_APPS[@]}"; do
+        if [ "$app_name" = "$ignored" ]; then
+            return 0
+        fi
+    done
+
+    return 1
+}
+
+declare -A CASK_APPS
+
+gather_cask_apps() {
+    # Same jq pattern as your original script; we only use the .app name (second column)
+    while IFS=$'\t' read -r token app_name; do
+        app_name=${app_name##*/}
+        CASK_APPS["$app_name"]=1
+    done < <(
+        brew info --json=v2 --installed 2>/dev/null \
+        | jq -r '.[].[] | select(.artifacts) | select(.artifacts[] | has("app")) | [.token, (.artifacts[] | select(.app) | .app[0])] | join("\t")'
+    )
+}
+
+is_cask_app() {
+    app_name=$1
+
+    if [ "${CASK_APPS[$app_name]+exists}" ]; then
+        return 0
+    fi
+
+    return 1
+}
+
+gather_installed_apps() {
+    tmpfile=$(mktemp)
+
+    if [ -d /Applications ]; then
+        mdfind 'kMDItemContentType == "com.apple.application-bundle"' -onlyin /Applications >>"$tmpfile" || true
+    fi
+
+    if [ -d "$HOME/Applications" ]; then
+        mdfind 'kMDItemContentType == "com.apple.application-bundle"' -onlyin "$HOME/Applications" >>"$tmpfile" || true
+    fi
+
+    sort -u "$tmpfile" | while IFS= read -r app_path; do
+        # Canonicalize: remove nested paths and keep only the outermost Foo.app
+        #   /Applications/Parallels Desktop.app/Contents/Applications/Parallels Link.app
+        # → /Applications/Parallels Desktop.app
+        primary_app="${app_path%%.app*}.app"
+
+        if [ -d "$primary_app" ]; then
+            echo "$primary_app"
+        fi
+    done
+
+    rm -f "$tmpfile"
+}
+
+get_cf_bundle_identifier() {
+    app_path=$1
+    plist="$app_path/Contents/Info.plist"
+    bundle_id=""
+
+    if [ -f "$plist" ]; then
+        if [ -x /usr/libexec/PlistBuddy ]; then
+            bundle_id=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$plist" 2>/dev/null || true)
+        else
+            plist_no_ext=${plist%.plist}
+            bundle_id=$(defaults read "$plist_no_ext" CFBundleIdentifier 2>/dev/null || true)
+        fi
+    fi
+
+    printf '%s\n' "$bundle_id"
+}
+
+get_app_category() {
+    app_path=$1
+    bundle_id=$(get_cf_bundle_identifier "$app_path")
+
+    if [ -n "$bundle_id" ]; then
+        # Safari Web App
+        if [[ "$bundle_id" == com.apple.Safari.WebApp* ]]; then
+            echo "safari-web-app"
+            return 0
+        fi
+    fi
+
+    # Automator app detection
+    if [ -e "$app_path/Contents/MacOS/Automator Application Stub" ] || [ -e "$app_path/Contents/MacOS/droplet" ]; then
+        echo "automator-app"
+        return 0
+    fi
+
+    # Wine app detection
+    if [ -e "$app_path/Contents/MacOS/startwine" ]; then
+        echo "wine-app"
+        return 0
+    fi
+
+    # Wineskin app detection
+    if [ -e "$app_path/Contents/MacOS/WineskinLauncher" ]; then
+        echo "wineskin-app"
+        return 0
+    fi
+
+    # Fluid app detection
+    if [ -e "$app_path/Contents/MacOS/FluidApp" ]; then
+        echo "fluid-app"
+        return 0
+    fi
+
+    # Platypus app detection
+    settings_plist="$app_path/Contents/Resources/AppSettings.plist"
+    if [ -f "$settings_plist" ]; then
+        if [ -x /usr/libexec/PlistBuddy ]; then
+            creator=$(/usr/libexec/PlistBuddy -c 'Print :Creator' "$settings_plist" 2>/dev/null || true)
+        else
+            plist_no_ext=${settings_plist%.plist}
+            creator=$(defaults read "$plist_no_ext" Creator 2>/dev/null || true)
+        fi
+
+        if [[ "$creator" == Platypus-* ]]; then
+            echo "platypus-app"
+            return 0
+        fi
+    fi
+
+    return 1
+}
+
+list_unmanaged_apps() {
+    tmpout=$(mktemp)
+
+    while IFS= read -r app_path; do
+        app_name=${app_path##*/}
+
+        is_ignored_app "$app_name" && continue
+        is_cask_app "$app_name" && continue
+
+        if [ "$verbose" -eq 1 ]; then
+            category=""
+            if category=$(get_app_category "$app_path"); then
+                printf '%s\t%s\n' "$app_path" "$category" >>"$tmpout"
+            else
+                # Emit with empty category for uniform sorting
+                printf '%s\t\n' "$app_path" >>"$tmpout"
+            fi
+        else
+            echo "$app_name" >>"$tmpout"
+        fi
+    done < <(gather_installed_apps)
+
+    if [ "$verbose" -eq 1 ]; then
+        # Sort by category (field 2), then by path (field 1), both case-insensitive
+        sort -s -t $'\t' -k2,2f -k1,1f "$tmpout"
+    else
+        # Sort case-insensitive alphabetically
+        sort -f "$tmpout"
+    fi
+
+    rm -f "$tmpout"
+}
+
+main() {
+    process_arguments "$@"
+    check_dependencies
+    gather_cask_apps
+    list_unmanaged_apps
+}
+
+main "$@"
