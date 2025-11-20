@@ -59,6 +59,8 @@ fi
 msg "Installing applications with homebrew"
 brewfile_install "$scriptdir/macos/Brewfile.admin"
 
+{{ if not .work -}}
+# The IT department has their own security tools, so skip the ones I use
 CASKROOM="$("$HOMEBREW_PREFIX/bin/brew" --caskroom)"
 if [ -d "$CASKROOM"/whatsyoursign ]; then
     find "$CASKROOM"/whatsyoursign -name WhatsYourSign\ Installer.app -print0 |
@@ -66,6 +68,7 @@ if [ -d "$CASKROOM"/whatsyoursign ]; then
 fi
 
 install-oversight
+{{- end }}
 
 # Configuration
 . "$scriptdir/macos/configure-admin"
