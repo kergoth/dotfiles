@@ -760,6 +760,12 @@ chezmoi update -R
 - [uBlacklist for Safari](https://apps.apple.com/us/app/ublacklist-for-safari/id1547912640?uo=4&at=10l4tL) ([Open-Source](https://github.com/HoneyLuka/uBlacklist/tree/safari-port/safari-project))
 - [Userscripts](https://apps.apple.com/us/app/userscripts/id1463298887?uo=4&at=10l4tL) ([Open-Source](https://github.com/quoid/userscripts)): Temporarily replaced with Tampermonkey Classic while waiting for updates. Will switch back in the future.
 
+### Intentionally Avoided Software
+
+Software that I've used in the past but now actively avoid due to specific issues or problems.
+
+- [Balena Etcher](https://www.balena.io/etcher/): USB/SD card imaging tool. Caused frequent corruption on SD cards, so I avoid it and use other tools like `dd`, Raspberry Pi Imager, or Rufus instead.
+
 ## Implementation Notes
 
 - Chezmoi is used to apply my dotfiles changes.
