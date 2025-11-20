@@ -2,6 +2,9 @@
 
 set -euo pipefail
 
+tmpdir=$(mktemp -d -t "${0##*/}.XXXXXX")
+trap 'rm -rf "$tmpdir"' EXIT INT TERM
+
 usage() {
     cat <<'EOF'
 Disable Spotlight categories whose names match one or more regex patterns.
@@ -71,16 +74,8 @@ process_arguments() {
 }
 
 disable_spotlight_items() {
-    local tmp_plist
-    local tmp_json
-
-    tmp_plist=$(mktemp "${TMPDIR:-/tmp}/spotlight.XXXXXX.plist")
-    tmp_json=$(mktemp "${TMPDIR:-/tmp}/spotlight.XXXXXX.json")
-
-    cleanup() {
-        rm -f "$tmp_plist" "$tmp_json"
-    }
-    trap cleanup EXIT
+    local tmp_plist="$tmpdir/spotlight.plist"
+    local tmp_json="$tmpdir/spotlight.json"
 
     if ! defaults export com.apple.spotlight - >"$tmp_plist" 2>/dev/null; then
         echo "Error: com.apple.spotlight preferences not found." >&2
