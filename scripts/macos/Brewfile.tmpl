@@ -14,6 +14,9 @@ cask "raycast"
 cask "rectangle"
 cask "zed"
 
+# llm apps
+cask "claude-code"
+
 {{ if not .work -}}
 # Commercial Apps I own personally
 cask "daisydisk"
@@ -44,23 +47,17 @@ mas "LilyView", id: 529490330
 mas "UnPlugged", id: 423123087
 mas "WiFi Explorer", id: 494803304
 mas "WiFi Signal", id: 525912054
-{{- end }}
-
-# llm apps
-cask "claude-code"
 
 # quicklook extensions (the ql extension is the only part I care about)
+# there are largely for security reasons, so are excluded from work machines
 cask "apparency"
 cask "suspicious-package"
 
-{{ if not .work -}}
 # potential license concerns for commercial use
 # note: betterzip's extension requires macOS 10.9 or later
 cask "betterzip"
-{{- end }}
 
 # safari extensions
-{{ if not .work -}}
 mas "1Password for Safari", id: 1569813296
 mas "Declutter", id: 1574021257
 mas "Hush", id: 1544743900
