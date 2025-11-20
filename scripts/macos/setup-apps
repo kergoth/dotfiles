@@ -78,7 +78,6 @@ done <<END
 Raycast
 Ice
 Karabiner-Elements
-Rectangle
 OverSight
 ReiKey
 END
@@ -95,6 +94,7 @@ Shifty
 Syncthing
 UnPlugged
 WiFi Signal
+Rectangle
 END
 
 if appcleaner="$(app_path "AppCleaner")"; then
