@@ -422,17 +422,8 @@ chezmoi update -R
 
 - [Apparency](https://www.mothersruin.com/software/Apparency/): Preview the contents of a macOS app
 - [BetterZip](https://betterzip.com): A trialware file archiver. I only install this for the QuickLook plugin.
-- [QLColorCode](https://github.com/anthonygelibert/QLColorCode) (Open-Source): A Quick Look plug-in that renders source code with syntax highlighting
-- [qlImageSize](https://github.com/Nyx0uf/qlImageSize) (Open-Source): Display image size and resolution
-- [QLMarkDown](https://github.com/toland/qlmarkdown) (Open-Source): Preview Markdown files
-- [QLPrettyPatch](https://github.com/atnan/QLPrettyPatch) (Open-Source): QuickLook generator for patch files
-- [QLStephen](https://github.com/whomwah/qlstephen) (Open-Source): Preview plain text files without or with unknown file extension. Example: README, CHANGELOG, index.styl, etc
 - [QLVideo](https://github.com/Marginal/QLVideo) (Open-Source): Preview most types of video files, as well as their thumbnails, cover art and metadata
-- [quicklook-csv](https://github.com/p2/quicklook-csv) (Open-Source): A QuickLook plugin for CSV files
-- [QuickLookJSON](http://www.sagtau.com/quicklookjson.html): A useful quick look plugin to preview JSON files
-- [QuickLookASE](https://github.com/rsodre/QuickLookASE) (Open-Source): Preview Adobe ASE Color Swatches generated with Adobe Photoshop, Adobe Illustrator, Adobe Color CC, Spectrum, COLOURlovers, Prisma, among many others
 - [Suspicious Package](https://www.mothersruin.com/software/SuspiciousPackage/): Preview the contents of a standard Apple installer package
-- [WebPQuickLook](https://github.com/emin/WebPQuickLook) (Open-Source): QuickLook plugin for WebP image files
 
 #### GUI Software on Windows
 
@@ -661,21 +652,30 @@ chezmoi update -R
 
 ### Formerly-Used macOS Software
 
-- [CleanMyDrive 2](https://apps.apple.com/us/app/cleanmydrive-2/id523620159?mt=12&uo=4&at=10l4tL)
-- [f.lux](https://justgetflux.com): Software to make your life better. Replaced by macOS Night Shift.
-- [Itsycal for Mac](https://www.mowglii.com/itsycal/): A tiny menu bar calendar. I mostly just click on the date/time and see the calendar widget in the notification panel now.
-- [Hidden Bar](https://apps.apple.com/us/app/hidden-bar/id1452453066?mt=12&uo=4&at=10l4tL) ([Open-Source](https://github.com/dwarvesf/hidden)): Hide menubar items. Replaced by **Ice**.
-- [GoodLinks](https://apps.apple.com/us/app/goodlinks/id1474335294?uo=4&at=10l4tL): Save links, read later. Replaced by **Readwise Reader**.
-- [Jumpcut](https://jumpcut.sourceforge.io): Clipboard manager.
-- [TotalFinder](https://totalfinder.binaryage.com): Finder enhancement.
-- [FlyCut](https://apps.apple.com/us/app/flycut-clipboard-manager/id442160987?mt=12&uo=4&at=10l4tL): Clipboard manager.
-- [QuickSilver](https://qsapp.com): Launcher.
-- [MacDown](https://macdown.uranusjr.com): Markdown editor.
 - [Bartender](https://www.macbartender.com): Organize your menu bar icons. Replaced by Hidden bar, then Ice.
+- [CleanMyDrive 2](https://apps.apple.com/us/app/cleanmydrive-2/id523620159?mt=12&uo=4&at=10l4tL)
+- [Colloquy](https://colloquy.app) ([Source](https://github.com/colloquy/colloquy)): An advanced IRC, SILC & ICB client.
+- [f.lux](https://justgetflux.com): Software to make your life better. Replaced by macOS Night Shift.
+- [FlyCut](https://apps.apple.com/us/app/flycut-clipboard-manager/id442160987?mt=12&uo=4&at=10l4tL): Clipboard manager.
+- [GoodLinks](https://apps.apple.com/us/app/goodlinks/id1474335294?uo=4&at=10l4tL): Save links, read later. Replaced by **Readwise Reader**.
+- [Hidden Bar](https://apps.apple.com/us/app/hidden-bar/id1452453066?mt=12&uo=4&at=10l4tL) ([Open-Source](https://github.com/dwarvesf/hidden)): Hide menubar items. Replaced by **Ice**.
+- [Itsycal for Mac](https://www.mowglii.com/itsycal/): A tiny menu bar calendar. I mostly just click on the date/time and see the calendar widget in the notification panel now.
+- [Jumpcut](https://jumpcut.sourceforge.io): Clipboard manager.
+- [LimeChat](http://limechat.net/mac/) ([Open-Source](http://github.com/psychs/limechat)): An IRC client for Mac OS X.
+- [MacDown](https://macdown.uranusjr.com): Markdown editor.
 - [MacVim](https://macvim-dev.github.io/macvim): Vim - the text editor - for macOS
 - [Magnet](https://magnet.crowdcafe.com): Organize your workspace. Replaced by Rectangle.
-- [LimeChat](http://limechat.net/mac/) ([Open-Source](http://github.com/psychs/limechat)): An IRC client for Mac OS X.
-- [Colloquy](https://colloquy.app) ([Source](https://github.com/colloquy/colloquy)): An advanced IRC, SILC & ICB client.
+- [QLColorCode](https://github.com/anthonygelibert/QLColorCode) (Open-Source): QuickLook plugin for syntax highlighting source code. No longer maintained.
+- [qlImageSize](https://github.com/Nyx0uf/qlImageSize) (Open-Source): QuickLook plugin to display image size and resolution. No longer needed.
+- [QLMarkDown](https://github.com/toland/qlmarkdown) (Open-Source): QuickLook plugin for Markdown files. No longer maintained.
+- [QLPrettyPatch](https://github.com/atnan/QLPrettyPatch) (Open-Source): QuickLook plugin for patch files. No longer maintained.
+- [QLStephen](https://github.com/whomwah/qlstephen) (Open-Source): QuickLook plugin for plain text files without extensions. No longer maintained.
+- [quicklook-csv](https://github.com/p2/quicklook-csv) (Open-Source): QuickLook plugin for CSV files. No longer maintained.
+- [QuickLookASE](https://github.com/rsodre/QuickLookASE) (Open-Source): QuickLook plugin for Adobe ASE Color Swatches. No longer needed.
+- [QuickLookJSON](http://www.sagtau.com/quicklookjson.html): QuickLook plugin for JSON files. No longer maintained.
+- [QuickSilver](https://qsapp.com): Launcher.
+- [TotalFinder](https://totalfinder.binaryage.com): Finder enhancement.
+- [WebPQuickLook](https://github.com/emin/WebPQuickLook) (Open-Source): QuickLook plugin for WebP image files. No longer needed.
 
 ### Formerly-Used Linux Software
 
