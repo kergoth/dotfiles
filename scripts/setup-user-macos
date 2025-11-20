@@ -11,7 +11,7 @@ PATH="$scriptdir/macos:$scriptdir:$PATH"
 
 if ! [ -x "$HOMEBREW_PREFIX/bin/brew" ]; then
     msg "Installing homebrew"
-    install-brew -s "$HOMEBREW_PREFIX" || {
+    run install-brew -s "$HOMEBREW_PREFIX" || {
         rm -rf "$HOMEBREW_PREFIX"
         die "Failed to install homebrew"
     }
@@ -34,7 +34,7 @@ fi
 
 # Install UV for python tooling
 if ! [ -e ~/.local/bin/uv ] || ! [ -e ~/.local/bin/uvx ]; then
-    curl -LsSf https://astral.sh/uv/install.sh | sh
+    run sh -c 'curl -LsSf https://astral.sh/uv/install.sh | sh'
 fi
 
 # Install PowerShell modules and prompt, if needed
@@ -42,11 +42,11 @@ if has pwsh; then
     msg "Installing PowerShell modules"
     # Ignore failure, as these are not critical to my workflow, and can fail due
     # to transient network issues.
-    pwsh -NoProfile "$scriptdir/install-pwsh-modules.ps1" || :
+    run pwsh -NoProfile "$scriptdir/install-pwsh-modules.ps1" || :
 
     if ! brew list --formula | grep -qFx starship; then
         msg "Installing PowerShell prompt"
-        "$HOMEBREW_PREFIX/bin/brew" install starship
+        run "$HOMEBREW_PREFIX/bin/brew" install starship
     fi
 fi
 
@@ -56,10 +56,10 @@ if [ -d ~/.ssh/keys ] && [ $(find ~/.ssh/keys -maxdepth 1 -type f -not -name '*.
     find ~/.ssh/keys -maxdepth 1 \( -type f -not -name '*.pub' -not -name '*.ppk' -not -name .DS_Store \) |
         while read -r key; do
             if ! [ -e "$key.pub" ]; then
-                ssh-keygen -y -f "$key" >"$key.pub"
+                run ssh-keygen -y -f "$key" >"$key.pub"
             fi
             if ! ssh-add -T "$key.pub"; then
-                ssh-add --apple-use-keychain "$key" || :
+                run ssh-add --apple-use-keychain "$key" || :
             fi
         done
 fi
