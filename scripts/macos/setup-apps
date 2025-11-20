@@ -64,7 +64,7 @@ if app_installed_directly "Keka"; then
         zst \
         zstd
     do
-        duti -vs "$bundle_id" ".$ext" viewer
+        duti -vs "$bundle_id" "$ext" viewer
     done
 fi
 
