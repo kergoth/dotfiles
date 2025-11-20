@@ -96,6 +96,9 @@ mas "Steam Link", id: 1246969117
 {{ if and .music (not .work) -}}
 mas "MusicHarbor", id: 1440405750
 {{- end }}
+{{ if and .work (not .music) -}}
+cask "notunes"
+{{- end }}
 
 # music_library
 {{ if and .music_library (not .work) -}}
