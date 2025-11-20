@@ -7,7 +7,8 @@
 {{- end -}}
 {{- $signing_key := .git.signing_key -}}
 {{- if $key_name -}}
-#!/usr/bin/env sh
+#!/usr/bin/env bash
+
 set -euo pipefail
 
 export GNUPGHOME="{{ .gnupg.home }}"
@@ -47,7 +48,7 @@ import_ownertrust() {
     chezmoi decrypt "$enc" | gpg --import-ownertrust
 }
 
-echo >&2 Handling GnuPG key '{{ $key_name }}' ({{ $signing_key }})"
+echo >&2 "Handling GnuPG key '{{ $key_name }}' ({{ $signing_key }})"
 import_key "{{ $signing_key }}" "{{ .chezmoi.workingTree }}/settings/gnupg/{{ $key_name }}/secret.asc.age"
 import_pub "{{ $signing_key }}" "{{ .chezmoi.workingTree }}/settings/gnupg/{{ $key_name }}/public.asc.age"
 import_ownertrust "{{ .chezmoi.workingTree }}/settings/gnupg/{{ $key_name }}/ownertrust.asc.age"
