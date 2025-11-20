@@ -556,10 +556,13 @@ chezmoi update -R
 #### As Needed GUI Software for macOS
 
 - [Adapter](https://macroplant.com/adapter): Convert Video, Audio and Images. Available via brew as `adapter`.
+- [AmorphousDiskMark](https://katsurashareware.com/amorphousdiskmark/): Disk benchmark utility. Available via brew as `amorphousdiskmark`.
 - [Apple Configurator](https://support.apple.com/apple-configurator): Configure and deploy iPhone, iPad, and Apple TV. Available via Mac App Store.
 - [Audio Overload](https://www.bannister.org/software/ao.htm): Emulator for retro video game music. Available via brew as `audio-overload`.
+- [Blackmagic Disk Speed Test](https://apps.apple.com/us/app/blackmagic-disk-speed-test/id425264550): Test your disk performance. Available via Mac App Store.
 - [Burn](https://burn-osx.sourceforge.io/Pages/English/home.html): Simple but advanced burning for Mac OS X. Optional, as disk images can be burned with Finder or hdiutil. Available via brew as `burn`.
 - [Byword](https://bywordapp.com): Markdown editor. Available via Mac App Store.
+- [Exporter](https://apps.apple.com/us/app/exporter/id1099120373): Export Apple Notes to various formats. Available via Mac App Store.
 - [Gemini 2](https://macpaw.com/gemini): The intelligent duplicate file finder. Available via brew as `gemini`.
 - [Kindle](https://www.amazon.com/kindle-dbs/fd/kcp): Read Kindle books on your Mac. Available via brew as `kindle`.
 - [KnockKnock](https://objective-see.org/products/knockknock.html): See what's persistently installed on your Mac.
