@@ -23,15 +23,6 @@ add_login() {
     osascript -e "tell application \"System Events\" to make login item at end with properties {path:\"$1\", hidden:false}"
 }
 
-if app_installed_directly "Path Finder"; then
-    duti -vs com.cocoatech.PathFinder public.folder viewer
-fi
-
-if app_installed_directly "Send to Kindle"; then
-    duti -vs com.amazon.SendToKindle .mobi viewer
-    duti -vs com.amazon.SendToKindle .azw viewer
-fi
-
 if app_installed_directly "Transmission Remote GUI"; then
     duti -vs com.transgui .torrent viewer
 fi
@@ -99,7 +90,6 @@ while read -r app; do
     fi
 done <<END
 BlockBlock Helper
-coconutBattery
 PopClip
 Shifty
 Syncthing
@@ -122,10 +112,6 @@ if oversight="$(app_path "OverSight")"; then
 fi
 
 # Launch the apps with extensions that need to be registered
-if app="$(app_path "QLMarkdown")"; then
-    xattr -r -d com.apple.quarantine "$app"
-    open -g "$app"
-fi
 if app="$(app_path "QuickLook Video")"; then
     xattr -r -d com.apple.quarantine "$app"
     open -g "$app"
