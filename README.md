@@ -556,16 +556,23 @@ chezmoi update -R
 #### As Needed GUI Software for macOS
 
 - [Adapter](https://macroplant.com/adapter): Convert Video, Audio and Images. Available via brew as `adapter`.
+- [Apple Configurator](https://support.apple.com/apple-configurator): Configure and deploy iPhone, iPad, and Apple TV. Available via Mac App Store.
+- [Audio Overload](https://www.bannister.org/software/ao.htm): Emulator for retro video game music. Available via brew as `audio-overload`.
 - [Burn](https://burn-osx.sourceforge.io/Pages/English/home.html): Simple but advanced burning for Mac OS X. Optional, as disk images can be burned with Finder or hdiutil. Available via brew as `burn`.
+- [Byword](https://bywordapp.com): Markdown editor. Available via Mac App Store.
 - [Gemini 2](https://macpaw.com/gemini): The intelligent duplicate file finder. Available via brew as `gemini`.
+- [Kindle](https://www.amazon.com/kindle-dbs/fd/kcp): Read Kindle books on your Mac. Available via brew as `kindle`.
 - [KnockKnock](https://objective-see.org/products/knockknock.html): See what's persistently installed on your Mac.
+- [Marked 2](https://marked2app.com): Markdown previewer. Available via brew as `marked`.
 - [MuffinTerm](https://apps.apple.com/us/app/muffinterm/id1583236494): A terminal emulator for macOS crafted for the classic BBS experience.
 - [Numbers](https://www.apple.com/numbers/): Create impressive spreadsheets. Available via Mac App Store.
 - [Onyx](https://www.titanium-software.fr/en/onyx.html): Verify system files structure, run miscellaneous maintenance and more. Available via brew as `onyx`.
 - [Pages](https://www.apple.com/pages/): Documents that stand apart. Available via Mac App Store.
 - [PhotoSweeper](https://overmacs.com): A fast & powerful duplicate photos cleaner for Mac. Available via brew as `photosweeper-x`.
 - [Pixelmator Classic](https://www.pixelmator.com/mac/): Powerful, full-featured image editor for Mac. Available via Mac App Store.
+- [SiteSucker](https://ricks-apps.com/osx/sitesucker/): Download websites from the Internet. Available via Mac App Store.
 - [TaskExplorer](https://objective-see.org/products/taskexplorer.html): Explore all the tasks (processes) running on your Mac with TaskExplorer.
+- [TestFlight](https://developer.apple.com/testflight/): Test beta versions of apps. Available via Mac App Store.
 - [Textual](https://www.codeux.com/textual/): Application for interacting with Internet Relay Chat (IRC) chatrooms. Available via brew.
 - [Wineskin](https://github.com/Gcenx/WineskinServer): A user-friendly tool used to make ports of Microsoft Windows software to macOS. Available via brew as `gcenx/wine/unofficial-wineskin`.
 - [XLD](https://tmkk.undo.jp/xld/index_e.html): Lossless audio decoder.
