@@ -1,42 +1,43 @@
 cask_args appdir: "~/Applications"
 
-tap "homebrew/cask-fonts"
-tap "homebrew/cask-versions"
-
 # cli tools
-brew "mas"
 brew "trash"
 
 # apps
-cask "apparency"
 cask "appcleaner"
-cask "betterzip"
-cask "claude-code"
-cask "daisydisk"
-cask "discord"
 cask "keepingyouawake"
 cask "keka"
 cask "kitty"
 cask "maccy"
 cask "obsidian"
-cask "omnioutliner"
-cask "popclip"
 cask "raycast"
-cask "reader"
 cask "rectangle"
-cask "shifty"
-cask "soulver2"
-cask "suspicious-package"
-cask "swiftdefaultappsprefpane"
-cask "syncthing-app"
-cask "vivaldi"
-cask "visual-studio-code"
 cask "zed"
 
 {{ if not .work -}}
+# Commercial Apps I own personally
+cask "daisydisk"
+cask "omnioutliner"
+cask "popclip"
+cask "soulver2"
+
+# Not at all related to work
+cask "discord"
+cask "vivaldi"
+
+# I don't use work machines at night, so don't use Night Shift
+cask "shifty"
+
+# I don't want personal content on work machines
+cask "reader"
+cask "syncthing-app"
+
+# Not necessary enough to install on work machines
 cask "jordanbaird-ice"
 
-mas "Declutter", id: 1574021257
+# No iCloud at work
+brew "mas"
+
 mas "Deliveries", id: 290986013
 mas "LilyView", id: 529490330
 mas "UnPlugged", id: 423123087
@@ -44,9 +45,23 @@ mas "WiFi Explorer", id: 494803304
 mas "WiFi Signal", id: 525912054
 {{- end }}
 
+# llm apps
+cask "claude-code"
+
+# quicklook extensions (the ql extension is the only part I care about)
+cask "apparency"
+cask "suspicious-package"
+
+{{ if not .work -}}
+# potential license concerns for commercial use
+# note: betterzip's extension requires macOS 10.9 or later
+cask "betterzip"
+{{- end }}
+
 # safari extensions
 {{ if not .work -}}
 mas "1Password for Safari", id: 1569813296
+mas "Declutter", id: 1574021257
 mas "Hush", id: 1544743900
 mas "Kagi for Safari", id: 1622835804
 mas "Privacy Redirect", id: 1578144015
@@ -69,13 +84,8 @@ cask "swiftbar"
 {{- end }}
 
 # ebook_library
-{{ if .ebook_library -}}
+{{ if and .ebook_library (not .work) -}}
 cask "calibre"
-{{- end }}
-
-# ephemeral
-{{ if .ephemeral -}}
-# add ephemeral-specific items here
 {{- end }}
 
 # gaming
@@ -90,13 +100,16 @@ mas "MusicHarbor", id: 1440405750
 {{- end }}
 
 # music_library
-{{ if .music_library -}}
-# add music library apps here
+{{ if and .music_library (not .work) -}}
+# add music library apps here (i.e. beets)
 {{- end }}
 
 # personal
 {{ if .personal -}}
+{{   if and (not .ephemeral) (not (env "CONTAINER_ID")) -}}
+# No need for a screen saver in a VM or container
 cask "brooklyn"
+{{-   end }}
 cask "transmission-remote-gui"
 {{- end }}
 

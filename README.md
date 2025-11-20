@@ -354,7 +354,6 @@ chezmoi update -R
 - [1Password](https://1password.com): A password manager developed by AgileBits.
 - [Discord](https://discord.com): A VoIP and instant messaging social platform.
 - [Obsidian](https://obsidian.md): A powerful knowledge base that works on top of a local folder of plain text Markdown files. Available on Linux, macOS, and Windows via brew, scoop, flatpak, or [download](https://obsidian.md/download).
-- [Visual Studio Code](https://code.visualstudio.com) ([Open-Source](https://github.com/Microsoft/vscode)): Open-source code editor.
 - [Vivaldi](https://vivaldi.com/): Web browser with built-in email client focusing on customization and control.
 - [VLC](https://www.videolan.org/vlc/download-macosx.html) ([Open-Source](https://code.videolan.org/videolan/vlc)): A free and open source cross-platform multimedia player.
 - If the gaming flag is enabled:
@@ -397,7 +396,6 @@ chezmoi update -R
 - If the gaming flag is enabled:
   - [Steam Link](https://store.steampowered.com/steamlink/about): Stream your Steam games.
 - [SwiftBar](https://swiftbar.app/)]: Powerful macOS menu bar customization tool. _Conditional: This is installed when a container runtime is enabled, as I use this to start/stop colima._
-- [SwiftDefaultApps](https://github.com/Lord-Kamina/SwiftDefaultApps) (Open-Source): A preference pane will let you view and change default application associations.
 - [SyncThing](https://syncthing.net/) ([Open-Source](https://github.com/syncthing/)): A continuous file synchronization program.
 - [Transmission Remote GUI](https://github.com/transmission-remote-gui/transgui) (Open-Source): A feature rich cross platform Transmission BitTorrent client. Faster and has more functionality than the built-in web GUI.
 - [UnPlugged](https://apps.apple.com/us/app/unplugged/id423123087?mt=12&uo=4&at=10l4tL)
@@ -656,6 +654,7 @@ chezmoi update -R
 - [VirtualBox](https://www.virtualbox.org): Powerful x86 and AMD64/Intel64 virtualization software for creating and managing virtual machines.
 - [Vagrant](https://www.vagrantup.com): Tool for building and managing virtual machines.
 - [Sublime Text](https://www.sublimetext.com): Text editor.
+- [Visual Studio Code](https://code.visualstudio.com) ([Open-Source](https://github.com/Microsoft/vscode)): Open-source code editor. Replaced by **Zed**.
 - [Alacritty](https://alacritty.org): Terminal emulator.
 - [Bear](https://bear.app): A beautiful, flexible writing app for crafting notes and prose.
 - [Simplenote](https://simplenote.com): An easy way to keep notes, lists, ideas, and more.
@@ -686,6 +685,7 @@ chezmoi update -R
 - [QuickLookASE](https://github.com/rsodre/QuickLookASE) (Open-Source): QuickLook plugin for Adobe ASE Color Swatches. No longer needed.
 - [QuickLookJSON](http://www.sagtau.com/quicklookjson.html): QuickLook plugin for JSON files. No longer maintained.
 - [QuickSilver](https://qsapp.com): Launcher.
+- [SwiftDefaultApps](https://github.com/Lord-Kamina/SwiftDefaultApps) (Open-Source): A preference pane to view and change default application associations. Last release in 2019.
 - [TotalFinder](https://totalfinder.binaryage.com): Finder enhancement.
 - [WebPQuickLook](https://github.com/emin/WebPQuickLook) (Open-Source): QuickLook plugin for WebP image files. No longer needed.
 

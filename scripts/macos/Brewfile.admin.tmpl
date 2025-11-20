@@ -1,13 +1,20 @@
 tap "kergoth/misc"
 
-cask "1password"
-cask "blockblock"
+cask "karabiner-elements"
+
+{{ if not .work -}}
+# Commercial Apps I own personally
 cask "carbon-copy-cloner@6"
+
+# I don't want personal content on work machines
+cask "1password"
+
+# The IT department has their own security tools, so skip the ones I use
 cask "karabiner-elements"
 cask "lulu"
 cask "reikey"
 cask "whatsyoursign"
 
-{{ if not .work -}}
+# I don't use this at work
 cask "parallels"
 {{- end }}
