@@ -30,8 +30,12 @@ brewfile_install() {
     local brewfile="$1"
     if [ -f "$brewfile" ]; then
         run "$HOMEBREW_PREFIX/bin/brew" bundle --no-upgrade install --file="$brewfile"
+    elif [ -f "$brewfile.tmpl.age" ]; then
+        cat "$brewfile.tmpl.age" | chezmoi decrypt | chezmoi execute-template | run "$HOMEBREW_PREFIX/bin/brew" bundle --no-upgrade install --file=-
     elif [ -f "$brewfile.tmpl" ]; then
         cat "$brewfile.tmpl" | chezmoi execute-template | run "$HOMEBREW_PREFIX/bin/brew" bundle --no-upgrade install --file=-
+    elif [ -f "$brewfile.age" ]; then
+        cat "$brewfile.age" | chezmoi decrypt | run "$HOMEBREW_PREFIX/bin/brew" bundle --no-upgrade install --file=-
     else
         msg "No $brewfile found"
         return 1
