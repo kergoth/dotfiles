@@ -533,6 +533,7 @@ chezmoi update -R
 
 ### As Needed GUI Software
 
+- [86Box](https://86box.net/): Emulator for vintage IBM PC and compatibles. Available via brew as `86box` and direct download.
 - [Raspberry Pi Imager](https://www.raspberrypi.org/downloads/): Imaging utility to install operating systems to a microSD card. Available via brew as `raspberry-pi-imager`, winget as `RaspberryPiFoundation.RaspberryPiImager`, and scoop as `extras/raspberry-pi-imager`.
 - [Battle.net](https://us.shop.battle.net/en-us?from=root): Blizzard games client. Available via brew as `battle-net`.
 - [CPDT (Cross Platform Disk Test)](https://www.magesw.com/cpdt/): A disk benchmarking tool for Windows, macOS, and Linux. Available via direct download.
@@ -583,7 +584,7 @@ chezmoi update -R
 - [SiteSucker](https://ricks-apps.com/osx/sitesucker/): Download websites from the Internet. Available via Mac App Store.
 - [TaskExplorer](https://objective-see.org/products/taskexplorer.html): Explore all the tasks (processes) running on your Mac with TaskExplorer.
 - [TestFlight](https://developer.apple.com/testflight/): Test beta versions of apps. Available via Mac App Store.
-- [Wineskin](https://github.com/Gcenx/WineskinServer): A user-friendly tool used to make ports of Microsoft Windows software to macOS. Available via brew as `gcenx/wine/unofficial-wineskin`.
+- [UTM](https://mac.getutm.app/) ([Open-Source](https://github.com/utmapp/UTM)): Virtual machine manager for macOS. Available via brew as `utm` and Mac App Store.
 - [XLD](https://tmkk.undo.jp/xld/index_e.html): Lossless audio decoder.
 
 #### As Needed GUI Software for Windows (All are available via winget)
@@ -696,6 +697,7 @@ chezmoi update -R
 - [Textual](https://www.codeux.com/textual/): Application for interacting with Internet Relay Chat (IRC) chatrooms. Available via brew.
 - [TotalFinder](https://totalfinder.binaryage.com): Finder enhancement.
 - [WebPQuickLook](https://github.com/emin/WebPQuickLook) (Open-Source): QuickLook plugin for WebP image files. No longer needed.
+- [Wineskin Winery](https://github.com/Gcenx/WineskinServer): A user-friendly tool used to make ports of Microsoft Windows software to macOS. Replaced by **Kegworks**.
 
 ### Formerly-Used Linux Software
 
