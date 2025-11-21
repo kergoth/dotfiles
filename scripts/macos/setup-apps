@@ -19,6 +19,38 @@ app_installed_directly() {
     app_path "$1" >/dev/null
 }
 
+app_is_running() {
+    local app_name="$1"
+    local count
+
+    count=$(osascript <<EOF
+tell application "System Events"
+    count (every process whose name is "$app_name")
+end tell
+EOF
+)
+    [ "$count" -gt 0 ]
+}
+
+open_app_if_not_running() {
+    local target="$1"
+    local app_name
+
+    # If we were given a .app path, derive the process name from it
+    if [[ "$target" == *.app || "$target" == */*.app ]]; then
+        app_name=$(basename "$target" .app)
+        if ! app_is_running "$app_name"; then
+            open -g -a "$target"
+        fi
+    else
+        # Treat as an application name resolvable by Launch Services
+        app_name="$target"
+        if ! app_is_running "$app_name"; then
+            open -g -a "$app_name"
+        fi
+    fi
+}
+
 add_login() {
     osascript -e "tell application \"System Events\" to make login item at end with properties {path:\"$1\", hidden:false}"
 }
@@ -71,7 +103,7 @@ fi
 # Open these apps so they set up auto-start for themselves
 while read -r app; do
     if app_installed_directly "$app"; then
-        open -ga "$app"
+        open_app_if_not_running "$app"
     fi
 done <<END
 1Password
@@ -85,7 +117,7 @@ END
 while read -r app; do
     if app_file_path="$(app_path "$app")"; then
         add_login "$app_file_path"
-        open -ga "$app"
+        open_app_if_not_running "$app"
     fi
 done <<END
 BlockBlock Helper
@@ -99,11 +131,11 @@ Rectangle
 END
 
 if appcleaner="$(app_path "AppCleaner")"; then
-    open -g "$appcleaner/Contents/Library/LoginItems/AppCleaner SmartDelete.app"
+    open_app_if_not_running "$appcleaner/Contents/Library/LoginItems/AppCleaner SmartDelete.app"
 fi
 
 if ccc="$(app_path "Carbon Copy Cloner")"; then
-    open -g "$ccc/Contents/Library/LoginItems/CCC Dashboard.app"
+    open_app_if_not_running "$ccc/Contents/Library/LoginItems/CCC Dashboard.app"
 fi
 
 if oversight="$(app_path "OverSight")"; then
