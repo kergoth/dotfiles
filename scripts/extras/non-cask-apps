@@ -201,6 +201,15 @@ get_app_category() {
         return 0
     fi
 
+    # Safari extension detection
+    if [ -n "$(find "$app_path" -wholename '*.appex/Contents/Info.plist')" ]; then
+        ext=$(list_safari_extension_types "$app_path" | tr '\n' '+' | sed -e 's/+$//')
+        if [ -n "$ext" ]; then
+            echo "safari-$ext"
+            return 0
+        fi
+    fi
+
     # Platypus app detection
     settings_plist="$app_path/Contents/Resources/AppSettings.plist"
     if [ -f "$settings_plist" ]; then
@@ -218,6 +227,21 @@ get_app_category() {
     fi
 
     return 1
+}
+
+list_safari_extension_types() {
+    local app="$1"
+
+    find "$app" -wholename '*.appex/Contents/Info.plist' |
+            while read -r plist; do
+                id=$(cat "$plist" | grep -A1 'NSExtensionPointIdentifier' | tail -n +2 | sed -e 's/[[:space:]]*<string>//; s#</string>##')
+                case "$id" in
+                    com.apple.Safari.extension|com.apple.Safari.content-blocker|com.apple.Safari.web-extension)
+                        printf '%s\n' "${id#com.apple.Safari.}"
+                    ;;
+                esac
+            done |
+            sort -u
 }
 
 list_unmanaged_apps() {
