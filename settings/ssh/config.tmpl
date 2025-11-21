@@ -16,9 +16,6 @@ IdentityFile ~/.ssh/keys/frey
 IdentityFile ~/.ssh/keys/work
 {{-   end }}
 {{- end }}
-{{- if eq .chezmoi.os "darwin" }}
-UseKeychain yes
-{{- end }}
 {{- if ne .chezmoi.os "windows" }}
 ControlMaster auto
 ControlPersist yes
