@@ -22,3 +22,13 @@ dlog = ["log", "-r"]
 l = ["log", "-r", "(trunk()..@):: | (trunk()..@)-"]
 fresh = ["new", "trunk()"]
 tug = ["bookmark", "move", "--from", "heads(::@- & bookmarks())", "--to", "@-"]
+fetch   = ['git', 'fetch', '--all-remotes']
+evolve = ['rebase', '--skip-emptied', '-d', 'trunk()']
+sync = ["util", "exec", "--", "bash", "-c", """
+set -e
+
+jj fetch
+jj evolve
+jj tug
+jj git push
+""", ""]
