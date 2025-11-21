@@ -1,1 +1,23 @@
-{{-  template "onepasswordInclude.tmpl" (merge (dict "settingsFile" "settings/ssh/config.tmpl") .)  -}}
+Protocol 2
+SendEnv LANG LC_*
+HashKnownHosts yes
+ServerAliveInterval 60
+Compression yes
+ForwardX11 no
+NoHostAuthenticationForLocalhost yes
+AddKeysToAgent yes
+UseKeychain yes
+ControlMaster auto
+ControlPersist yes
+ControlPath ~/.ssh/socket.%r@%h:%p
+
+{{- if .personal }}
+IdentityFile ~/.ssh/keys/frey
+{{- else if .work }}
+IdentityFile ~/.ssh/keys/work
+{{- end }}
+
+Include ~/.config/colima/ssh_config
+Include ~/.lima/default/ssh.config
+Include ~/.lima/docker/ssh.config
+Include ~/.ssh/config.d/*

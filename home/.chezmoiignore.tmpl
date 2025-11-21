@@ -74,6 +74,7 @@ Library/Caches/zsh/functions/*
 .config/chezmoi/age.key
 {{- if not .ephemeral }}
 {{-   if .personal }}
+.ssh/config.d/work
 {{-     if not .steamdeck }}
 !.ssh/keys/frey*
 {{-     else }}
@@ -81,6 +82,7 @@ Library/Caches/zsh/functions/*
 {{-     end }}
 {{-   end }}
 {{-   if .work }}
+.ssh/config.d/personal
 !.ssh/keys/work*
 {{-   end }}
 {{- end }}
@@ -153,7 +155,6 @@ AppData/Roaming/gnupg/*
 .config/systemd/user/deck-backup.service
 .config/systemd/user/deck-backup.timer
 .config/systemd/user/check-backup.service
-.config/rclone/rclone.conf
 .config/restic/exclude.txt
 .config/restic/password.txt
 .config/rsync/exclude.txt
