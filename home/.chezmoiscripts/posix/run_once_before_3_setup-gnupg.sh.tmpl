@@ -31,7 +31,7 @@ import_key() {
 
 import_pub() {
     local fp="$1"
-    local enc="$2"
+    local file="$2"
 
     if gpg --list-keys "$fp" >/dev/null 2>&1; then
         echo >&2 "Public key $fp already imported."
@@ -39,7 +39,7 @@ import_pub() {
     fi
 
     echo >&2 "Importing public key $fp ..."
-    chezmoi decrypt "$enc" | gpg --import -
+    gpg --import "$file"
 }
 
 import_ownertrust() {
@@ -48,9 +48,14 @@ import_ownertrust() {
     chezmoi decrypt "$enc" | gpg --import-ownertrust
 }
 
-echo >&2 "Handling GnuPG key '{{ $key_name }}' ({{ $signing_key }})"
+# Import both public keys for signature verification
+echo >&2 "Importing public keys for signature verification..."
+import_pub "{{ .gnupg.personal_key }}" "{{ .chezmoi.workingTree }}/settings/gnupg/personal/public.asc"
+import_pub "{{ .gnupg.work_key }}" "{{ .chezmoi.workingTree }}/settings/gnupg/work/public.asc"
+
+# Import the secret key only for the active context
+echo >&2 "Handling GnuPG secret key '{{ $key_name }}' ({{ $signing_key }})"
 import_key "{{ $signing_key }}" "{{ .chezmoi.workingTree }}/settings/gnupg/{{ $key_name }}/secret.asc.age"
-import_pub "{{ $signing_key }}" "{{ .chezmoi.workingTree }}/settings/gnupg/{{ $key_name }}/public.asc.age"
 import_ownertrust "{{ .chezmoi.workingTree }}/settings/gnupg/{{ $key_name }}/ownertrust.asc.age"
 
 echo >&2 "GnuPG setup complete."

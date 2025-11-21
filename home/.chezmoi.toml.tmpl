@@ -125,16 +125,18 @@
 {{-   $secrets = true -}}
 {{- end -}}
 
+{{- $personal_key := "934796281287D8BD66EF26F4BCC304A4E9BFE3CF" }}
+{{- $work_key := "200D2E078ACE95127185EA9D21E425D83915ACB4" }}
 {{- $signing_key := ""}}
 {{- $age_recipient := "" }}
 {{- $age_key_op_uuid := "" }}
 {{- if $secrets -}}
 {{-   if $personal -}}
-{{-     $signing_key = "934796281287D8BD66EF26F4BCC304A4E9BFE3CF" }}
+{{-     $signing_key = $personal_key }}
 {{-     $age_recipient = "age1yk2uuwjysqsx6fyrwuexzjpzt6nnx6zwz8m59uw4aaem9mejqedsqdwfwp" }}
 {{-     $age_key_op_uuid = "h7mysvujmfbob42gz4ncwypwkq" }}
 {{-   else if $work }}
-{{-     $signing_key = "200D2E078ACE95127185EA9D21E425D83915ACB4" }}
+{{-     $signing_key = $work_key }}
 {{-     $age_recipient = "age1pqwlee59dsnv3n4whp0tchjc7xu39cpujk6j79jjgdl8ue0tga0qfuwke0" }}
 {{-     $age_key_op_uuid = "xyqtvjumcefyvmvsmbspxyagzi" }}
 {{-   end }}
@@ -235,9 +237,6 @@ encryption = "age"
 {{-   end }}
 {{- end }}
 
-[data.git]
-    signing_key = "{{ $signing_key }}"
-
 [data.external]
     refreshPeriod = "168h"
 
@@ -245,9 +244,14 @@ encryption = "age"
     # Refresh 1password documents weekly
     refreshPeriod = 604800
 
-# 1Password UUID to bootstrap the age key if needed
 [data.age]
+    # 1Password UUID to bootstrap the age key if needed
     key_op_uuid = {{ $age_key_op_uuid | quote }}
 
 [data.gnupg]
     home = {{ $gnupg_home | quote }}
+    personal_key = {{ $personal_key | quote }}
+    work_key = {{ $work_key | quote }}
+
+[data.git]
+    signing_key = {{ $signing_key | quote }}

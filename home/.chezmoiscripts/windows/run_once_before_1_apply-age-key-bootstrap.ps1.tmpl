@@ -5,6 +5,8 @@
 {{- if and $st (gt $st.size 0) -}}
 {{- /* empty output: script won't run */ -}}
 {{- else -}}
+# Age key: {{ $st }}
+
 function Set-UserOnlyFileAccess {
   param(
     [Parameter(Mandatory)] [string]$Pathname
