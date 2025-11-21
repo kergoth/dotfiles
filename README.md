@@ -535,6 +535,7 @@ chezmoi update -R
 
 - [Raspberry Pi Imager](https://www.raspberrypi.org/downloads/): Imaging utility to install operating systems to a microSD card. Available via brew as `raspberry-pi-imager`, winget as `RaspberryPiFoundation.RaspberryPiImager`, and scoop as `extras/raspberry-pi-imager`.
 - [Battle.net](https://us.shop.battle.net/en-us?from=root): Blizzard games client. Available via brew as `battle-net`.
+- [CPDT (Cross Platform Disk Test)](https://www.magesw.com/cpdt/): A disk benchmarking tool for Windows, macOS, and Linux. Available via direct download.
 - [czkawka](https://github.com/qarmin/czkawka): Multi functional app to find duplicates, empty folders, similar images etc.
 - [dupeGuru](https://dupeguru.voltaicideas.net): A cross-platform GUI tool to find duplicate files in a system.
 - [HandBrake](https://handbrake.fr/): The open source video transcoder. Available via brew as `handbrake` and winget as `HandBrake.HandBrake`.
@@ -546,6 +547,7 @@ chezmoi update -R
 - [Ollama](https://ollama.com): Get up and running with large language models locally. Available via brew as `ollama`.
 - [Steam](https://store.steampowered.com): A digital distribution platform. Available via brew, nix, and winget as `Valve.Steam`.
 - [Subler](https://subler.org): A macOS app to mux and tag mp4 files. Available via brew as `subler`.
+- [SyncTERM](https://syncterm.bbsdev.net/): BBS terminal program. Available via brew as `syncterm` and direct download for Windows.
 - [Transmission](https://transmissionbt.com): A Fast, Easy and Free Bittorrent Client for macOS, Windows and Linux.
 - [Video Duplicate Finder](https://github.com/0x90d/videoduplicatefinder): Cross-platform software to find duplicated video (and image) files on hard disk based on similiarity.
 
@@ -557,12 +559,15 @@ chezmoi update -R
 
 - [Adapter](https://macroplant.com/adapter): Convert Video, Audio and Images. Available via brew as `adapter`.
 - [AmorphousDiskMark](https://katsurashareware.com/amorphousdiskmark/): Disk benchmark utility. Available via brew as `amorphousdiskmark`.
+- [AnyToISO](https://www.crystalidea.com/anytoiso): Convert CD/DVD images to ISO format or extract files from them. Available via brew as `anytoiso`.
 - [Apple Configurator](https://support.apple.com/apple-configurator): Configure and deploy iPhone, iPad, and Apple TV. Available via Mac App Store.
 - [Audio Overload](https://www.bannister.org/software/ao.htm): Emulator for retro video game music. Available via brew as `audio-overload`.
 - [Blackmagic Disk Speed Test](https://apps.apple.com/us/app/blackmagic-disk-speed-test/id425264550): Test your disk performance. Available via Mac App Store.
 - [Burn](https://burn-osx.sourceforge.io/Pages/English/home.html): Simple but advanced burning for Mac OS X. Optional, as disk images can be burned with Finder or hdiutil. Available via brew as `burn`.
 - [Byword](https://bywordapp.com): Markdown editor. Available via Mac App Store.
+- [DeltaPatcher](https://github.com/marco-calautti/DeltaPatcher): GUI and CLI application for creating and applying BPS, IPS, UPS, and xdelta3 binary patches. Available via brew as `deltapatcher`.
 - [Exporter](https://apps.apple.com/us/app/exporter/id1099120373): Export Apple Notes to various formats. Available via Mac App Store.
+- [Fluid](https://fluidapp.com): Turn Your Favorite Web Apps into Real Mac Apps. Available via brew as `fluid`.
 - [Gemini 2](https://macpaw.com/gemini): The intelligent duplicate file finder. Available via brew as `gemini`.
 - [Kindle](https://www.amazon.com/kindle-dbs/fd/kcp): Read Kindle books on your Mac. Available via brew as `kindle`.
 - [KnockKnock](https://objective-see.org/products/knockknock.html): See what's persistently installed on your Mac.
@@ -573,10 +578,11 @@ chezmoi update -R
 - [Pages](https://www.apple.com/pages/): Documents that stand apart. Available via Mac App Store.
 - [PhotoSweeper](https://overmacs.com): A fast & powerful duplicate photos cleaner for Mac. Available via brew as `photosweeper-x`.
 - [Pixelmator Classic](https://www.pixelmator.com/mac/): Powerful, full-featured image editor for Mac. Available via Mac App Store.
+- [Platypus](https://sveinbjorn.org/platypus): Create native Mac applications from command line scripts. Available via brew as `platypus`.
+- [Pocket Sync](https://github.com/neil-morrison44/pocket-sync): Manage your Analogue Pocket's games, saves, and more. Available via brew as `pocket-sync`.
 - [SiteSucker](https://ricks-apps.com/osx/sitesucker/): Download websites from the Internet. Available via Mac App Store.
 - [TaskExplorer](https://objective-see.org/products/taskexplorer.html): Explore all the tasks (processes) running on your Mac with TaskExplorer.
 - [TestFlight](https://developer.apple.com/testflight/): Test beta versions of apps. Available via Mac App Store.
-- [Textual](https://www.codeux.com/textual/): Application for interacting with Internet Relay Chat (IRC) chatrooms. Available via brew.
 - [Wineskin](https://github.com/Gcenx/WineskinServer): A user-friendly tool used to make ports of Microsoft Windows software to macOS. Available via brew as `gcenx/wine/unofficial-wineskin`.
 - [XLD](https://tmkk.undo.jp/xld/index_e.html): Lossless audio decoder.
 
@@ -585,6 +591,7 @@ chezmoi update -R
 - [Autoruns](https://learn.microsoft.com/en-us/sysinternals/downloads/autoruns) (from [Sysinternals](https://learn.microsoft.com/en-us/sysinternals/)): See what programs are configured to startup automatically when your system boots and you login.
 - [BleachBit](https://www.bleachbit.org): Clean Your System and Free Disk Space. Available via winget as `BleachBit.BleachBit`.
 - [Exact Audio Copy](https://www.exactaudiocopy.de): Audio grabber for audio CDs using standard CD and DVD-ROM drives
+- [foobar2000](https://www.foobar2000.org): Advanced freeware audio player. Available via winget as `PeterPawlowski.foobar2000` and scoop as `foobar2000`.
 - [ImDisk](https://sourceforge.net/projects/imdisk-toolkit/): Mount image files of hard drive, cd-rom or floppy.
 - [ImgBurn](https://www.imgburn.com): A lightweight CD / DVD / HD DVD / Blu-ray burning application. Available via winget as `LIGHTNINGUK.ImgBurn`.
 - [Paint.NET](https://getpaint.net): Free image and photo editing software for Windows. Available via scoop as `paint.net` and winget as `dotPDNLLC.paintdotnet`.
@@ -686,6 +693,7 @@ chezmoi update -R
 - [QuickLookJSON](http://www.sagtau.com/quicklookjson.html): QuickLook plugin for JSON files. No longer maintained.
 - [QuickSilver](https://qsapp.com): Launcher.
 - [SwiftDefaultApps](https://github.com/Lord-Kamina/SwiftDefaultApps) (Open-Source): A preference pane to view and change default application associations. Last release in 2019.
+- [Textual](https://www.codeux.com/textual/): Application for interacting with Internet Relay Chat (IRC) chatrooms. Available via brew.
 - [TotalFinder](https://totalfinder.binaryage.com): Finder enhancement.
 - [WebPQuickLook](https://github.com/emin/WebPQuickLook) (Open-Source): QuickLook plugin for WebP image files. No longer needed.
 
@@ -700,7 +708,6 @@ chezmoi update -R
 ### Formerly-Used Windows Software
 
 - [ACDSee](https://en.wikipedia.org/wiki/ACDSee). Loved this as an ultralight image viewer in the past, but it grew bloated over time, so was replaced by Irfan View or XnView, as needed.
-- [foobar2000](https://www.foobar2000.org): This is a great music player, but I use Apple Music and iTunes for streaming, and beets for my music library for portable devices, so this is no longer needed.
 - [Winamp](https://en.wikipedia.org/wiki/Winamp): This was the way before I switched to foobar2000 long ago.
 - [ConEMU](https://conemu.github.io): Terminal emulator.
 - [Console2](https://sourceforge.net/projects/console/): Terminal emulator.
