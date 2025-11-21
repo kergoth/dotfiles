@@ -57,7 +57,14 @@ if ! [ -x "$HOMEBREW_PREFIX/bin/brew" ]; then
 fi
 
 msg "Installing applications with homebrew"
-brewfile_install "$scriptdir/macos/Brewfile.admin"
+brewfile_install "$scriptdir/macos/Brewfile-admin"
+
+if [ -d "$scriptdir/macos/Brewfile-admin.d" ]; then
+    find "$scriptdir/macos/Brewfile-admin.d" -type f -not -name .keep -not -name .DS_Store |
+        while read -r brewfile; do
+            brewfile_install "$brewfile"
+        done
+fi
 
 {{ if not .work -}}
 # The IT department has their own security tools, so skip the ones I use
@@ -71,4 +78,4 @@ install-oversight
 {{- end }}
 
 # Configuration
-"$scriptdir/macos/configure-admin.tmpl"
+#"$scriptdir/macos/configure-admin.tmpl"

@@ -27,6 +27,13 @@ if [ "$(sw_vers -productVersion | cut -d. -f1)" -lt 14 ]; then
     brewfile_install "$scriptdir/macos/Brewfile-pre-Sonoma"
 fi
 
+if [ -d "$scriptdir/macos/Brewfile.d" ]; then
+    find "$scriptdir/macos/Brewfile.d" -type f -not -name .keep -not -name .DS_Store |
+        while read -r brewfile; do
+            brewfile_install "$brewfile"
+        done
+fi
+
 # Dotfiles
 if [ -z "${CHEZMOI:-}" ]; then
     "$repodir/script/setup"
@@ -64,8 +71,8 @@ if [ -d ~/.ssh/keys ] && [ $(find ~/.ssh/keys -maxdepth 1 -type f -not -name '*.
         done
 fi
 
-msg "Configuring"
-"$scriptdir/macos/configure.tmpl"
+#msg "Configuring"
+#"$scriptdir/macos/configure.tmpl"
 "$scriptdir/macos/setup-apps"
 
 msg "Configuring complete"
