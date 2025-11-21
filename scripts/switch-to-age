@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+for source_path; do
+    target_path=$(abspath "$(chezmoi target-path "$source_path")")
+    echo "$target_path"
+    mv -v "$source_path" "$source_path.bak"
+    chezmoi add --encrypt "$target_path"
+done
