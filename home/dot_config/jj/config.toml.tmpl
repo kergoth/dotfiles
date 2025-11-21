@@ -26,6 +26,6 @@ fetch   = ['git', 'fetch', '--all-remotes']
 evolve = ['rebase', '--skip-emptied', '-d', 'trunk()']
 purr = ["util", "exec", "--", "bash", "-c", "jj fetch && jj evolve"]
 gpush = ["util", "exec", "--", "bash", "-c", "jj tug && jj git push"]
-sync = ["util", "exec", "--", "bash", "-c", "jj purr && jj gpush"]
+sync = ["util", "exec", "--", "bash", "-c", "jj fetch && jj evolve && jj tug && jj git push"]
 # Shorthand
 d = ["diff"]
