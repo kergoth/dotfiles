@@ -24,11 +24,8 @@ fresh = ["new", "trunk()"]
 tug = ["bookmark", "move", "--from", "heads(::@- & bookmarks())", "--to", "@-"]
 fetch   = ['git', 'fetch', '--all-remotes']
 evolve = ['rebase', '--skip-emptied', '-d', 'trunk()']
-sync = ["util", "exec", "--", "bash", "-c", """
-set -e
-
-jj fetch
-jj evolve
-jj tug
-jj git push
-""", ""]
+purr = ["util", "exec", "--", "bash", "-c", "jj fetch && jj evolve"]
+gpush = ["util", "exec", "--", "bash", "-c", "jj tug && jj git push"]
+sync = ["util", "exec", "--", "bash", "-c", "jj purr && jj gpush"]
+# Shorthand
+d = ["diff"]
