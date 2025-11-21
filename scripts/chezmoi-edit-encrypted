@@ -1,0 +1,24 @@
+#!/bin/sh
+
+set -e
+
+tmpfile=$(mktemp -t "${0##*/}.XXXXXX")
+trap 'rm -rf "$tmpfile"' EXIT INT TERM
+
+if [ $# -ne 1 ]; then
+    echo "Usage: ${0##*/} FILE_PATH" >&2
+    exit 1
+fi
+
+filepath="$1"
+chezmoi decrypt "$filepath" >"$tmpfile" || {
+    echo "Failed to decrypt $filepath" >&2
+    exit 1
+}
+${VISUAL:-${EDITOR:-vi}} "$tmpfile"
+chezmoi encrypt "$tmpfile" >"$filepath.new" || {
+    rm -f "$filepath.new"
+    echo "Failed to encrypt $filepath" >&2
+    exit 1
+}
+mv "$filepath.new" "$filepath"
