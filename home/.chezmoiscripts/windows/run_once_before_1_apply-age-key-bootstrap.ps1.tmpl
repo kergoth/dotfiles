@@ -1,10 +1,7 @@
 {{- if .secrets -}}
-{{- $ageKeyPath := .chezmoi.config.age.identity -}}
-{{- $st := stat $ageKeyPath -}}
-
-{{- if and $st (gt $st.size 0) -}}
-{{- /* empty output: script won't run */ -}}
-{{- else -}}
+{{-   $ageKeyPath := .chezmoi.config.age.identity -}}
+{{-   $st := stat $ageKeyPath -}}
+{{-   if or (not $st) (eq $st.size 0) -}}
 # Age key: {{ $st }}
 
 function Set-UserOnlyFileAccess {
@@ -37,5 +34,5 @@ Write-Host "Installing age key to $AgeKeyPath ..."
 Set-UserOnlyFileAccess -Pathname $AgeKeyPath
 
 Write-Host "Age key installed to $AgeKeyPath"
-{{- end -}}
+{{-   end -}}
 {{- end -}}

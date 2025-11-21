@@ -1,10 +1,7 @@
 {{- if .secrets -}}
-{{- $ageKeyPath := .chezmoi.config.age.identity -}}
-{{- $st := stat $ageKeyPath -}}
-
-{{- if and $st (gt $st.size 0) -}}
-{{- /* empty output: no script */ -}}
-{{- else -}}
+{{-   $ageKeyPath := .chezmoi.config.age.identity -}}
+{{-   $st := stat $ageKeyPath -}}
+{{-   if or (not $st) (eq $st.size 0) -}}
 #!/usr/bin/env sh
 set -euo pipefail
 
@@ -20,5 +17,5 @@ AGE_EOF
 
 chmod 600 "$AGE_KEY_PATH"
 echo >&2 "Age key installed to $AGE_KEY_PATH"
-{{ end -}}
+{{-   end -}}
 {{- end -}}
