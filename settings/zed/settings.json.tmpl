@@ -7,6 +7,10 @@
 // custom settings, run the `open default settings` command
 // from the command palette or from `Zed` application menu.
 {
+  "icon_theme": "Material Icon Theme",
+  "preferred_line_length": 112,
+  "middle_click_paste": false,
+  "auto_indent_on_paste": false,
   "outline_panel": {
     "dock": "right"
   },
@@ -80,11 +84,11 @@
     "default_profile": "write",
     "always_allow_tool_actions": true,
     "default_model": {
-      "provider": "google",
-      "model": "gemini-2.5-flash"
+      "provider": "copilot_chat",
+      "model": "gpt-4o"
     },
   },
-  "theme": "Aura Dark",
+  "theme": "Dracula",
   "buffer_font_family": "MesloLGS NF",
   "buffer_font_features": {
     "calt": true
@@ -126,6 +130,7 @@
   "current_line_highlight": "gutter", // Highlight the gutter only
   "file_scan_exclusions": [
     "**/.git",
+    "**/.jj",
     "**/.svn",
     "**/.hg",
     "**/CVS",
@@ -197,7 +202,10 @@
     "auto_fold_dirs": true
   },
   // Enable Soft Wrap by default.
-  "soft_wrap": "editor_width",
+  "soft_wrap": "preferred_line_length",
+  "wrap_guides": [
+    80,
+  ],
   "telemetry": {
     // Do not send debug info like crash reports.
     "diagnostics": false,
