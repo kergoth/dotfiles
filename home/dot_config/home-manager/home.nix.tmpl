@@ -123,4 +123,10 @@ in {
   };
 
   nix.nixPath = ["nixpkgs=flake:nixpkgs"];
+
+  # Disable linking apps into ~/Applications/Home Manager Apps
+  targets.darwin.linkApps.enable = false;
+
+  # Future-proof: if/when you bump home.stateVersion so copyApps becomes the default
+  targets.darwin.copyApps.enable = false;
 }
