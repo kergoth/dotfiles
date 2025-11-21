@@ -7,8 +7,9 @@ email = "{{ .email }}"
 tool = "delta"
 
 [ui]
-pager = "delta"
+default-command = "l"
 diff-formatter = ":git"
+pager = "delta"
 
 {{ if $signingKey -}}
 [signing]
