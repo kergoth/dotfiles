@@ -211,6 +211,11 @@ ES-DE
 .config/deck-backup/config.d/enable
 {{ end }}
 
+# Personal-only files
+{{ if .work }}
+.config/rclone/rclone.conf
+{{ end }}
+
 # I don't track files for this with chezmoi
 .code-terminal
 .vscode
