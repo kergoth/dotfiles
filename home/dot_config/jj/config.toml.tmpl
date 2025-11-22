@@ -30,3 +30,5 @@ gpush = ["util", "exec", "--", "bash", "-c", "jj tug && jj git push"]
 sync = ["util", "exec", "--", "bash", "-c", "jj fetch && jj evolve && jj tug && jj git push"]
 # Shorthand
 d = ["diff"]
+ci = ["commit"]
+cm = ["commit", "-m"]
