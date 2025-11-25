@@ -2,6 +2,12 @@
 {{- if eq .chezmoi.os "windows" -}}
 {{-   $binpath = "AppData/Local/Programs/bin" -}}
 {{- end -}}
+{{- $zsh_completions_version := (gitHubLatestRelease "zsh-users/zsh-completions").TagName }}
+{{- $fzf_tab_version := (gitHubLatestRelease "Aloxaf/fzf-tab").TagName }}
+{{- $history_search_version := (gitHubLatestRelease "zsh-users/zsh-history-substring-search").TagName }}
+{{- $nix_shell_version := (gitHubLatestRelease "chisui/zsh-nix-shell").TagName }}
+{{- $nix_completions_version := (gitHubLatestRelease "nix-community/nix-zsh-completions").TagName }}
+{{- $powerlevel10k_version := (gitHubLatestRelease "romkatv/powerlevel10k").TagName }}
 
 [".config/zsh/functions/manydots-magic"]
 type = "file"
@@ -29,38 +35,38 @@ refreshPeriod = "{{ .external.refreshPeriod }}"
 
 [".config/zsh/plugins/completions"]
 type = "archive"
-url = "https://github.com/zsh-users/zsh-completions/archive/master.tar.gz"
+url = "https://github.com/zsh-users/zsh-completions/archive/refs/tags/{{ $zsh_completions_version }}.tar.gz"
 exact = true
 stripComponents = 1
-refreshPeriod = "{{ .external.refreshPeriod }}"
+refreshPeriod = "0"
 
 [".config/zsh/plugins/fzf-tab"]
 type = "archive"
-url = "https://github.com/Aloxaf/fzf-tab/archive/master.tar.gz"
+url = "https://github.com/Aloxaf/fzf-tab/archive/refs/tags/{{ $fzf_tab_version }}.tar.gz"
 exact = true
 stripComponents = 1
-refreshPeriod = "{{ .external.refreshPeriod }}"
+refreshPeriod = "0"
 
 [".config/zsh/plugins/history-substring-search"]
 type = "archive"
-url = "https://github.com/zsh-users/zsh-history-substring-search/archive/master.tar.gz"
+url = "https://github.com/zsh-users/zsh-history-substring-search/archive/refs/tags/{{ $history_search_version }}.tar.gz"
 exact = true
 stripComponents = 1
-refreshPeriod = "{{ .external.refreshPeriod }}"
+refreshPeriod = "0"
 
 [".config/zsh/plugins/nix-shell"]
 type = "archive"
-url = "https://github.com/chisui/zsh-nix-shell/archive/master.tar.gz"
+url = "https://github.com/chisui/zsh-nix-shell/archive/refs/tags/{{ $nix_shell_version }}.tar.gz"
 exact = true
 stripComponents = 1
-refreshPeriod = "{{ .external.refreshPeriod }}"
+refreshPeriod = "0"
 
 [".config/zsh/plugins/nix-zsh-completions"]
 type = "archive"
-url = "https://github.com/nix-community/nix-zsh-completions/archive/master.tar.gz"
+url = "https://github.com/nix-community/nix-zsh-completions/archive/refs/tags/{{ $nix_completions_version }}.tar.gz"
 exact = true
 stripComponents = 1
-refreshPeriod = "{{ .external.refreshPeriod }}"
+refreshPeriod = "0"
 
 [".config/zsh/plugins/syntax-highlighting"]
 type = "archive"
@@ -85,10 +91,10 @@ refreshPeriod = "{{ .external.refreshPeriod }}"
 
 [".config/zsh/themes/powerlevel10k"]
 type = "archive"
-url = "https://github.com/romkatv/powerlevel10k/archive/master.tar.gz"
+url = "https://github.com/romkatv/powerlevel10k/archive/refs/tags/{{ $powerlevel10k_version }}.tar.gz"
 exact = true
 stripComponents = 1
-refreshPeriod = "{{ .external.refreshPeriod }}"
+refreshPeriod = "0"
 
 [".local/bin/zsh_sort_timings"]
 type = "file"

@@ -45,13 +45,14 @@ exact = true
 stripComponents = 1
 refreshPeriod = "{{ $refreshPeriod }}"
 
+{{- $gitextras_version := (gitHubLatestRelease "tj/git-extras").TagName }}
 [".local/bin/git-alias"]
 type = "archive-file"
-url = "https://github.com/tj/git-extras/archive/master.tar.gz"
+url = "https://github.com/tj/git-extras/archive/refs/tags/{{ $gitextras_version }}.tar.gz"
 path = "bin/git-alias"
 exact = true
 stripComponents = 1
-refreshPeriod = "{{ $refreshPeriod }}"
+refreshPeriod = "0"
 
 [".local/bin/linux-bundle-clone"]
 type = "file"
