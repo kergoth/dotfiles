@@ -18,7 +18,7 @@
 type = "archive-file"
 url = "https://github.com/eth-p/bat-extras/releases/download/v{{- $bat_extras_version -}}/bat-extras-{{- index $splitver 0 -}}.{{- index $splitver 1 -}}.{{- index $splitver 2 -}}.zip"
 path = "{{ . }}"
-refreshPeriod = "{{ $refreshPeriod }}"
+refreshPeriod = "0"
 stripComponents = 1
 executable = true
 {{ end }}

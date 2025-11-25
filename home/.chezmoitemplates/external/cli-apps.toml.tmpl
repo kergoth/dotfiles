@@ -24,7 +24,7 @@
   stripComponents = 1
   path = "{{ . }}"
   executable = true
-  refreshPeriod = "{{ $refreshPeriod }}"
+  refreshPeriod = "0"
 {{   end -}}
 {{ end }}
 
@@ -48,7 +48,7 @@
   stripComponents = 1
 {{- end }}
   executable = true
-  refreshPeriod = "{{ $refreshPeriod }}"
+  refreshPeriod = "0"
 {{   end -}}
 {{ end }}
 
@@ -65,7 +65,7 @@
 type = "file"
 url = "https://github.com/theryangeary/choose/releases/download/v{{ $choose_version }}/choose-{{ $binarch }}-{{ $choose_suffix }}"
 executable = true
-refreshPeriod = "{{ $refreshPeriod }}"
+refreshPeriod = "0"
 {{ end }}
 
 {{/* Install rusage */}}
@@ -92,7 +92,7 @@ url = "https://github.com/x-motemen/ghq/releases/download/v{{ $ghq_version }}/gh
 path = "ghq{{ $binsuffix }}"
 stripComponents = 1
 executable = true
-refreshPeriod = "{{ $refreshPeriod }}"
+refreshPeriod = "0"
 {{ end }}
 
 {{/* Install shellcheck */}}
@@ -112,7 +112,7 @@ url = "https://github.com/koalaman/shellcheck/releases/download/v{{ $shellcheck_
 path = "shellcheck{{ $binsuffix }}"
 stripComponents = 1
 executable = true
-refreshPeriod = "{{ $refreshPeriod }}"
+refreshPeriod = "0"
 {{ end }}
 
 {{ if .steamdeck }}
@@ -124,7 +124,7 @@ type = "file"
 url = "https://github.com/restic/restic/releases/download/v{{ $restic_version }}/restic_{{ $restic_version }}_{{ $os }}_{{ $arch }}.bz2"
 filter.command = "bzcat"
 executable = true
-refreshPeriod = "{{ $refreshPeriod }}"
+refreshPeriod = "0"
 
 {{/* Install rclone on the Steam Deck */}}
 ["{{ $binpath }}/rclone{{ $binsuffix }}"]
