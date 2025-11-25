@@ -3,7 +3,8 @@
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
@@ -49,3 +50,6 @@ __pycache__
 
 # Vim
 Session.vim
+
+# Assistants
+**/.claude/settings.local.json
