@@ -48,8 +48,23 @@ if [ -e "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]; then
     source "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
 fi
 
+fpath=(
+  $ZDOTDIR/plugins/completions/src
+  $ZDOTDIR/plugins/*/(N)
+  $ZDOTDIR/functions
+  $XDG_DATA_HOME/zsh/functions
+  $XDG_CACHE_HOME/zsh/functions
+  $XDG_CACHE_HOME/zsh/completions
+  $XDG_DATA_HOME/zsh/completions
+  $XDG_CONFIG_HOME/*/zsh-functions(N)
+  $XDG_CACHE_HOME/zsh/completions
+  $XDG_DATA_HOME/homebrews/*/share/zsh/site-functions(N)
+  $HOMEBREW_PREFIX/share/zsh/site-functions
+  $HOMEBREWS_HOME/*/share/zsh/site-functions(N)
+  $HOMEBREW_PREFIX/opt/*/share/zsh/site-functions(N)
+  $fpath
+)
+
 # De-duplication & Normalization
 path=( ${(u)^path:A}(N-/) )
-
-# add plugins & topic directories to fpath
-fpath=($ZDOTDIR/plugins/completions/src $ZDOTDIR/plugins/*/(N) $ZDOTDIR/functions $XDG_DATA_HOME/zsh/functions $XDG_CACHE_HOME/zsh/functions $XDG_CACHE_HOME/zsh/completions $XDG_DATA_HOME/zsh/completions $XDG_CONFIG_HOME/*/zsh-functions(N) $XDG_CACHE_HOME/zsh/completions $XDG_DATA_HOME/homebrews/*/share/zsh/site-functions(N) $HOMEBREW_PREFIX/share/zsh/site-functions $HOMEBREWS_HOME/*/share/zsh/site-functions(N) $HOMEBREW_PREFIX/opt/*/share/zsh/site-functions(N) $fpath)
+fpath=( ${(u)fpath} )
