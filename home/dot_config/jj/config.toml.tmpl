@@ -6,13 +6,6 @@ email = "{{ .email }}"
 [diff]
 tool = "delta"
 
-[ui]
-diff.format = "git"
-
-[colors]
-"diff removed token" = { fg = "bright red", bg = "#400000", underline = false }
-"diff added token" = { fg = "bright green", bg = "#003000", underline = false }
-
 [git]
 push-new-bookmarks = true
 
@@ -20,6 +13,10 @@ push-new-bookmarks = true
 default-command = "l"
 diff-formatter = ":git"
 pager = "delta"
+
+[colors]
+"diff removed token" = { fg = "bright red", bg = "#400000", underline = false }
+"diff added token" = { fg = "bright green", bg = "#003000", underline = false }
 
 {{ if $signingKey -}}
 [signing]
