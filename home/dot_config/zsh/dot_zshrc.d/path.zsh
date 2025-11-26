@@ -2,7 +2,7 @@ fpath=($ZDOTDIR/functions $fpath)
 
 path=(
   $HOME/bin
-  $XDG_DATA_HOME/../bin(N:A)
+  $XDG_DATA_HOME/../bin
   $HOME/.nix/shims
   $HOMEBREW_PREFIX/bin
   $HOMEBREW_PREFIX/sbin
@@ -27,15 +27,15 @@ if [[ -n $CARGO_HOME ]]; then
 fi
 
 # FreeBSD
-path=($path /usr/local/llvm*/bin(N))
+path=($path /usr/local/llvm*/bin)
 
 # SteamDeck
-path=($path $HOME/stl/prefix(N))
+path=($path $HOME/stl/prefix)
 
 if [[ $OSTYPE =~ darwin ]]; then
     path=(
-        $HOME/Library/Perl/*/bin(N)
-        $HOME/Library/Python/*/bin(N)
+        $HOME/Library/Perl/*/bin
+        $HOME/Library/Python/*/bin
         $HOMEBREW_PREFIX/opt/ccache/libexec
         $path
         /System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources
