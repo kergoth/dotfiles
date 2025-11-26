@@ -6,17 +6,24 @@ Compression yes
 ForwardX11 no
 NoHostAuthenticationForLocalhost yes
 AddKeysToAgent yes
-ControlMaster auto
-ControlPersist yes
-ControlPath ~/.ssh/socket.%r@%h:%p
-
 {{- if .personal }}
 IdentityFile ~/.ssh/keys/frey
 {{- else if .work }}
 IdentityFile ~/.ssh/keys/work
 {{- end }}
+{{- if ne .chezmoi.os "windows" }}
+ControlMaster auto
+ControlPersist yes
+ControlPath ~/.ssh/socket.%r@%h:%p
+{{- end }}
 
+{{ if eq .chezmoi.os "darwin" }}
+{{-   if glob ".config/colima/ssh_config" }}
 Include ~/.config/colima/ssh_config
-Include ~/.lima/default/ssh.config
-Include ~/.lima/docker/ssh.config
+{{-   end }}
+{{-   $lima_configs := glob ".lima/*/ssh.config" }}
+{{-   range $lima_config := $lima_configs }}
+Include ~/{{ $lima_config }}
+{{-   end }}
+{{- end }}
 Include ~/.ssh/config.d/*
