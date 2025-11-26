@@ -3,7 +3,6 @@ fpath=($ZDOTDIR/functions $fpath)
 path=(
   $HOME/bin
   $XDG_DATA_HOME/../bin
-  $HOME/.nix/shims
   $HOMEBREW_PREFIX/bin
   $HOMEBREW_PREFIX/sbin
   /opt/homebrew/bin
@@ -45,14 +44,7 @@ fi
 typeset -gxT PYTHONPATH pythonpath
 path=($POETRY_HOME/bin $path)
 
-# Nix
-if [ -d ~/.nix ]; then
-    home_nix=1
-else
-    home_nix=
-fi
-
-# Home Manager session vars
+# Home Manager
 if [ -e "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]; then
     source "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
 fi
