@@ -5,7 +5,6 @@ path=(
   $XDG_DATA_HOME/../bin
   $HOMEBREW_PREFIX/bin
   $HOMEBREW_PREFIX/sbin
-  /opt/homebrew/bin
   /usr/local/{bin,sbin}
   $path
   /usr/bin/core_perl
