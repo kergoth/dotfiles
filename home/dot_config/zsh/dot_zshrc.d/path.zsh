@@ -6,21 +6,11 @@ path=(
   /usr/local/{bin,sbin}
   $path
   /usr/bin/core_perl
+  # FreeBSD
+  /usr/local/llvm*/bin
+  # Steam Deck
+  $HOME/stl/prefix
 )
-
-if [[ -n $GOPATH ]]; then
-    path=($GOPATH/bin $path)
-fi
-
-if [[ -n $CARGO_HOME ]]; then
-    path=($CARGO_HOME/bin $path)
-fi
-
-# FreeBSD
-path=($path /usr/local/llvm*/bin)
-
-# SteamDeck
-path=($path $HOME/stl/prefix)
 
 if [[ $OSTYPE = WSL ]]; then
     path=(${0:h:A}/scripts-wsl $path)
@@ -30,6 +20,14 @@ if [[ $OSTYPE = WSL ]]; then
 
     # adb
     path=($WslDisks/c/Android/android-sdk/platform-tools $path)
+fi
+
+if [[ -n $GOPATH ]]; then
+    path=($GOPATH/bin $path)
+fi
+
+if [[ -n $CARGO_HOME ]]; then
+    path=($CARGO_HOME/bin $path)
 fi
 
 # Home Manager
