@@ -41,7 +41,6 @@ if [[ $OSTYPE = WSL ]]; then
 fi
 
 typeset -gxT PYTHONPATH pythonpath
-path=($POETRY_HOME/bin $path)
 
 # Home Manager
 if [ -e "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]; then
