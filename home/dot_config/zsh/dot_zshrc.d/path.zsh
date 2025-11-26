@@ -36,7 +36,6 @@ if [[ $OSTYPE =~ darwin ]]; then
     path=(
         $HOME/Library/Perl/*/bin
         $HOME/Library/Python/*/bin
-        $HOMEBREW_PREFIX/opt/ccache/libexec
         $path
         /System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources
     )
