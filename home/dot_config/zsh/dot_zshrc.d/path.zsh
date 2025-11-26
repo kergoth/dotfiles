@@ -1,5 +1,3 @@
-fpath=($ZDOTDIR/functions $fpath)
-
 path=(
   $HOME/bin
   $XDG_DATA_HOME/../bin
@@ -9,12 +7,6 @@ path=(
   $path
   /usr/bin/core_perl
 )
-if [[ -n $commands[manpath] ]]; then
-  MANPATH=$(MANPATH= manpath)
-else
-  MANPATH=/usr/local/man:/usr/local/share/man:/usr/man:/usr/share/man
-fi
-manpath=($XDG_DATA_HOME/man $manpath)
 
 if [[ -n $GOPATH ]]; then
     path=($GOPATH/bin $path)
@@ -40,14 +32,25 @@ if [[ $OSTYPE = WSL ]]; then
     path=($WslDisks/c/Android/android-sdk/platform-tools $path)
 fi
 
-typeset -gxT PYTHONPATH pythonpath
-
 # Home Manager
 if [ -e "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]; then
     source "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
 fi
 
+# Add a 'pythonpath' paired array like path/fpath
+typeset -gxT PYTHONPATH pythonpath
+
+# Set 'man' search path if needed
+if [[ -n $commands[manpath] ]]; then
+  MANPATH=$(MANPATH= manpath)
+else
+  MANPATH=/usr/local/man:/usr/local/share/man:/usr/man:/usr/share/man
+fi
+manpath=($XDG_DATA_HOME/man $manpath)
+
+# Set function path
 fpath=(
+  $ZDOTDIR/functions
   $ZDOTDIR/plugins/completions/src
   $ZDOTDIR/plugins/*/(N)
   $ZDOTDIR/functions
