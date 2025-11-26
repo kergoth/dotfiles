@@ -32,14 +32,6 @@ path=($path /usr/local/llvm*/bin)
 # SteamDeck
 path=($path $HOME/stl/prefix)
 
-if [[ $OSTYPE =~ darwin ]]; then
-    path=(
-        $HOME/Library/Perl/*/bin
-        $HOME/Library/Python/*/bin
-        $path
-    )
-fi
-
 if [[ $OSTYPE = WSL ]]; then
     path=(${0:h:A}/scripts-wsl $path)
 
