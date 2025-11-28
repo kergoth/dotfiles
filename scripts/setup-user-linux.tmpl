@@ -64,8 +64,6 @@ fi
     # Can't install via release binary: unar, zstd, patchutils
 
     # Core tools
-    eget_install direnv/direnv
-    eget_install junegunn/fzf
     eget_install jqlang/jq jq -a '^linux64'
     eget_install sharkdp/bat bat -a tar
     eget_install eza-community/eza eza -a .tar.gz
@@ -107,9 +105,6 @@ fi
     # Disk tools
     eget_install Byron/dua-cli dua
     eget_install muesli/duf duf -a tar
-
-    # Linting and formatting
-    eget_install mvdan/sh shfmt
 )
 {{- end }}
 

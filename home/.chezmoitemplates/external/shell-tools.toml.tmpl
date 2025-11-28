@@ -1,0 +1,64 @@
+{{/* CLI tools with shell integration */}}
+{{- $os := .chezmoi.os -}}
+{{- $arch := .chezmoi.arch -}}
+{{- $binarch := $arch -}}
+{{- $refreshPeriod := .external.refreshPeriod -}}
+{{- if eq .chezmoi.arch "amd64" -}}
+{{-   $binarch = "x86_64" -}}
+{{- else if eq .chezmoi.arch "arm64" -}}
+{{-   $binarch = "aarch64" -}}
+{{- end -}}
+{{- $binpath := ".local/bin" -}}
+{{- $binsuffix := "" -}}
+{{- if eq $os "windows" -}}
+{{-   $binpath = "AppData/Local/Programs/bin" -}}
+{{-   $binsuffix = ".exe" -}}
+{{- end -}}
+
+{{/* Direnv */}}
+{{- $direnv_version := (gitHubLatestRelease "direnv/direnv").TagName -}}
+
+{{/* Skip for Nix and Chimera Linux */}}
+{{ if not (or .use_nix (eq .osid "linux-chimera")) }}
+
+["{{ $binpath }}/direnv{{ $binsuffix }}"]
+  type = "file"
+  url = "https://github.com/direnv/direnv/releases/download/{{ $direnv_version }}/direnv.{{ $os }}-{{ $arch }}"
+  executable = true
+  refreshPeriod = "{{ $refreshPeriod }}"
+
+{{ end }}
+
+{{/* Fzf */}}
+{{- $fzf_version := (gitHubLatestRelease "junegunn/fzf").TagName -}}
+{{- $fzf_version_no_v := trimPrefix "v" $fzf_version -}}
+{{- $fzf_ext := "tar.gz" -}}
+{{- if eq $os "windows" -}}
+{{-   $fzf_ext = "zip" -}}
+{{- end -}}
+
+{{/* Skip for Nix and Chimera Linux */}}
+{{ if not (or .use_nix (eq .osid "linux-chimera")) }}
+
+["{{ $binpath }}/fzf{{ $binsuffix }}"]
+  type = "archive-file"
+  url = "https://github.com/junegunn/fzf/releases/download/{{ $fzf_version }}/fzf-{{ $fzf_version_no_v }}-{{ $os }}_{{ $arch }}.{{ $fzf_ext }}"
+  path = "fzf{{ $binsuffix }}"
+  executable = true
+  refreshPeriod = "{{ $refreshPeriod }}"
+
+{{ end }}
+
+{{/* Shfmt */}}
+{{- $shfmt_version := (gitHubLatestRelease "mvdan/sh").TagName -}}
+
+{{/* Skip for Nix, FreeBSD, and Chimera Linux */}}
+{{ if not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera")) }}
+
+["{{ $binpath }}/shfmt{{ $binsuffix }}"]
+  type = "file"
+  url = "https://github.com/mvdan/sh/releases/download/{{ $shfmt_version }}/shfmt_{{ $shfmt_version }}_{{ $os }}_{{ $arch }}{{ $binsuffix }}"
+  executable = true
+  refreshPeriod = "{{ $refreshPeriod }}"
+
+{{ end }}
