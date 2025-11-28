@@ -323,6 +323,12 @@ chezmoi update -R
 
 - [socat](http://www.dest-unreach.org/socat/): Multipurpose relay for bidirectional data transfer. This is required for [npiperelay](https://github.com/jstarks/npiperelay).
 
+##### CLI Software on Chimera Linux
+
+- [podman](https://podman.io): A daemonless container engine for developing, managing, and running OCI Containers. _Conditional: This is installed when the containers flag is enabled._
+- [podman-compose](https://github.com/containers/podman-compose): A script to run docker-compose.yml using podman. _Conditional: This is installed when the containers flag is enabled._
+  - Note: Chimera Linux uses podman instead of docker due to potential compatibility issues with docker on its BSD userland.
+
 #### CLI Software on Windows
 
 - [gow](https://github.com/bmatzelle/gow): Unix command line utilities installer for Windows.
