@@ -499,6 +499,7 @@ chezmoi update -R
 - [petname](https://github.com/dustinkirkland/petname): Generate human readable random names. Available via pypi and cargo.
 - [procs](https://github.com/dalance/procs): A modern replacement for ps written in Rust. Available via brew, nix, scoop, and cargo.
 - [pup](https://github.com/ericchiang/pup): A command line tool for processing HTML. Available via brew, nix, and go.
+- [qemu](https://www.qemu.org): A generic and open source machine emulator and virtualizer. Available via brew, nix, scoop, FreeBSD Ports, winget (as SoftwareFreedomConservancy.QEMU), apk on chimera linux.
 - [rclone](https://github.com/rclone/rclone): Rsync for cloud storage. Available via brew, nix, and scoop.
 - [rust](https://www.rust-lang.org): A multi-paradigm, general-purpose programming language.
 - [titlecase](https://github.com/wezm/titlecase): A small tool that capitalizes English text. Available via cargo.
