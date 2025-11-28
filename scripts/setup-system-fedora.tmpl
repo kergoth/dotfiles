@@ -1,3 +1,22 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+scriptdir=$(cd "$(dirname "$0")" && pwd -P)
+PATH="$scriptdir/debian:$scriptdir/linux:$scriptdir:$PATH"
+
+# shellcheck source=./common.sh
+. "$scriptdir/common.sh" || exit 1
+
+# Install xz for nix
+if ! has xz; then
+    sudorun yum -y install --no-interactive xz
+fi
+
+# Install zsh
+if ! has zsh; then
+    sudorun yum -y install --no-interactive zsh
+fi
 
 # Install neovim
-yum -y install --no-interactive neovim
+sudorun yum -y install --no-interactive neovim
