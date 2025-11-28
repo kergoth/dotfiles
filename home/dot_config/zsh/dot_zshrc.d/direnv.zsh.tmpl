@@ -1,0 +1,6 @@
+{{- $direnv := includeTemplate "find-tool" (dict "root" . "tool" "direnv") }}
+{{- if $direnv -}}
+# direnv integration (found at: {{ $direnv }})
+{{ output $direnv "hook" "zsh" | trim }}
+{{- else }}
+{{- end -}}

@@ -1,0 +1,10 @@
+{{- $zoxide := includeTemplate "find-tool" (dict "root" . "tool" "zoxide") }}
+{{- if $zoxide -}}
+# zoxide integration (found at: {{ $zoxide }})
+{{ output $zoxide "init" "zsh" | trim }}
+
+# z as non-interactive, zz as interactive
+unalias z 2>/dev/null || :
+alias zz=zi
+{{- else }}
+{{- end -}}

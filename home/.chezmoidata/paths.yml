@@ -1,0 +1,24 @@
+paths:
+  home_bins:
+    - bin
+    - .local/bin
+    - go/bin
+    - .local/share/go/bin
+    - .cargo/bin
+    - .local/share/cargo/bin
+    - .nix-profile/bin
+
+  system_bins_darwin:
+    - /opt/homebrew/bin
+    - /usr/local/bin
+    - /opt/local/bin
+
+  system_bins_linux:
+    - /usr/local/bin
+    - /opt/bin
+
+  system_bins_freebsd:
+    - /usr/local/bin
+
+  system_bins_windows:
+    - C:/ProgramData/scoop/shims

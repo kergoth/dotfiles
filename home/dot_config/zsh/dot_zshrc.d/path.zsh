@@ -7,7 +7,7 @@ path=(
   $path
   /usr/bin/core_perl
   # FreeBSD
-  /usr/local/llvm*/bin
+  "/usr/local/llvm*/bin"
   # Steam Deck
   $HOME/stl/prefix
 )

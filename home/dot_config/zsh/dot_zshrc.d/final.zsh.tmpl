@@ -1,22 +1,15 @@
-if (( $+commands[atuin] )); then
-    atuin_cache="$XDG_CACHE_HOME/zsh/atuin.zsh"
-    if [[ ! -e $atuin_cache ]]; then
-        mkdir -p $XDG_CACHE_HOME/zsh
-        atuin init zsh --disable-up-arrow >$atuin_cache || rm -f $atuin_cache
-    fi
-    source $atuin_cache
-    unset atuin_cache
-elif (( $+commands[mcfly] )); then
-    MCFLY_PATH="$(command -v mcfly)"
-
-    mcfly_cache="$XDG_CACHE_HOME/mcfly/env.zsh"
-    if [[ ! -e $mcfly_cache ]]; then
-        mkdir -p $XDG_CACHE_HOME/mcfly
-        mcfly init zsh >$mcfly_cache || rm -f $mcfly_cache
-    fi
-    source $mcfly_cache
-    unset mcfly_cache
-fi
+{{- $atuin := includeTemplate "find-tool" (dict "root" . "tool" "atuin") }}
+{{- if $atuin -}}
+# atuin integration (found at: {{ $atuin }})
+{{ output $atuin "init" "zsh" "--disable-up-arrow" | trim }}
+{{- else }}
+{{-   $mcfly := includeTemplate "find-tool" (dict "root" . "tool" "mcfly") }}
+{{-   if $mcfly -}}
+# mcfly integration (found at: {{ $mcfly }})
+export MCFLY_PATH="{{ $mcfly }}"
+{{ output $mcfly "init" "zsh" | trim }}
+{{-   end }}
+{{- end }}
 zmodload zsh/terminfo
 
 # create a zkbd compatible hash;

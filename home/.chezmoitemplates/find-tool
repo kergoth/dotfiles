@@ -1,0 +1,51 @@
+{{- /* Template: find-tool
+     Arguments (dict):
+       - root: context (required) - Root context (pass as "root" .)
+       - tool: string (required) - Tool name to find
+       - platform_paths: string (optional) - Key for platform-specific paths in paths.yml
+       - system_paths: bool (optional, default: true) - Include system paths
+       - fallback: string (optional) - Default if not found
+     Returns: string - Path to executable or empty string
+
+     Example usage:
+       {{ includeTemplate "find-tool" (dict "root" . "tool" "zoxide") }}
+       {{ includeTemplate "find-tool" (dict "root" . "tool" "atuin" "platform_paths" "atuin_paths") }}
+       {{ includeTemplate "find-tool" (dict "root" . "tool" "python3" "fallback" "/usr/bin/python3") }}
+*/ -}}
+
+{{- $root := .root -}}
+{{- $tool := .tool -}}
+
+{{- $result := lookPath $tool -}}
+{{- if not $result -}}
+{{-   $search_paths := list -}}
+{{-   range $root.paths.home_bins -}}
+{{-     $search_paths = append $search_paths (joinPath $root.chezmoi.homeDir .) -}}
+{{-   end -}}
+
+{{-   if hasKey . "platform_paths" -}}
+{{-     $platform_key := printf "%s_%s" .platform_paths $root.chezmoi.os -}}
+{{-     $platform_paths := index $root.paths $platform_key | default list -}}
+{{-       range $platform_paths -}}
+{{-     $search_paths = append $search_paths . -}}
+{{-     end -}}
+{{-   end -}}
+
+{{-   if not (and (hasKey . "system_paths") (not .system_paths)) -}}
+{{-     if eq $root.chezmoi.os "darwin" -}}
+{{-       $search_paths = concat $search_paths ($root.paths.system_bins_macos | default list) -}}
+{{-     else if eq $root.chezmoi.os "linux" -}}
+{{-       $search_paths = concat $search_paths ($root.paths.system_bins_linux | default list) -}}
+{{-     else if eq $root.chezmoi.os "freebsd" -}}
+{{-       $search_paths = concat $search_paths ($root.paths.system_bins_freebsd | default list) -}}
+{{-     else if eq $root.chezmoi.os "windows" -}}
+{{-       $search_paths = concat $search_paths ($root.paths.system_bins_windows | default list) -}}
+{{-     end -}}
+{{-   end -}}
+
+{{-   $result = findExecutable $tool $search_paths -}}
+{{-   if and (not $result) (hasKey . "fallback") -}}
+{{-     $result = .fallback -}}
+{{-   end -}}
+{{- end -}}
+{{- $result -}}
