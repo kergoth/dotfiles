@@ -6,15 +6,15 @@ Compression yes
 ForwardX11 no
 NoHostAuthenticationForLocalhost yes
 AddKeysToAgent yes
-{{- if .personal }}
-IdentityFile ~/.ssh/keys/frey
-{{- else if .work }}
-IdentityFile ~/.ssh/keys/work
-{{- end }}
 {{- if ne .chezmoi.os "windows" }}
 ControlMaster auto
 ControlPersist yes
 ControlPath ~/.ssh/socket.%r@%h:%p
+{{- end }}
+{{- if .personal }}
+IdentityFile ~/.ssh/keys/frey
+{{- else if .work }}
+IdentityFile ~/.ssh/keys/work
 {{- end }}
 
 {{ if eq .chezmoi.os "darwin" }}
