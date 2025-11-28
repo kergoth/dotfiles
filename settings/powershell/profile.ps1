@@ -301,14 +301,6 @@ function Set-Location-Create {
 }
 New-Alias mcd Set-Location-Create -Force
 
-# Replace the `sl` Set-Location alias in favor of the sapling command
-if (Test-Path alias:sl) {
-  $slcmd = Get-Command -CommandType Application -Name Set-Location -ErrorAction SilentlyContinue
-  if ($slcmd) {
-    Set-Alias -Name Set-Location -Value ($slcmd | Select-Object -First 1).Path -Force -Option Constant,ReadOnly,AllScope
-  }
-}
-
 # Convenience
 New-Alias Reload-Profile '& $profile' -Force
 

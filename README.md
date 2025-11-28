@@ -287,10 +287,6 @@ chezmoi update -R
 - [tmux](https://github.com/tmux/tmux): An open-source terminal multiplexer.
   - There are no good options for tmux or tmux-equivalent on Windows. The closest you can get is just splits in Windows Terminal, which doesn't give you the ability to disconnect.
 
-#### CLI Software on Linux (non-Chimera), macOS, and Windows
-
-- [sapling](https://sapling-scm.com): A Scalable, User-Friendly Source Control System.
-
 #### CLI Software on Linux (non-Chimera), macOS, FreeBSD, and Windows
 
 - [unar](https://theunarchiver.com/command-line): Universal archives extractor. Available via brew, nix, and scoop.
@@ -628,7 +624,8 @@ chezmoi update -R
 ### Formerly-Used CLI Software
 
 - [pipx](https://pypi.org/project/pipx/): Install and run python applications in isolated environments. Superceded by **uv tool** in my workflows.
-- [git-branchless](https://github.com/arxanas/git-branchless): High-velocity, monorepo-scale workflow for Git. I rarely used this, and there are other options for this workflow, such as **sapling**.
+- [git-branchless](https://github.com/arxanas/git-branchless): High-velocity, monorepo-scale workflow for Git. I rarely used this, and there are other options for this workflow.
+- [sapling](https://sapling-scm.com): A Scalable, User-Friendly Source Control System. Evaluated but not actively used in my workflows.
 - [GNU Screen](https://www.gnu.org/software/screen): A terminal multiplexer. Replaced by tmux.
 - [Bitlbee](https://www.bitlbee.org): An IRC to other chat networks gateway.
 - [Centericq](https://en.wikipedia.org/wiki/Centericq): A text mode menu- and window-driven instant messaging interface.
