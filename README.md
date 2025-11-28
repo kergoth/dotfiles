@@ -256,6 +256,7 @@ chezmoi update -R
 - [git-imerge](https://github.com/mhagger/git-imerge): Incremental merge for git.
 - [git-revise](https://github.com/mystor/git-revise): A handy tool for doing efficient in-memory commit rebases & fixups.
 - [jira-cli](https://github.com/ankitpokhrel/jira-cli) (_Only on Work machines_): Feature-rich interactive Jira command line.
+- [jujutsu](https://github.com/jj-vcs/jj) ([Open-Souce](https://github.com/jj-vcs/jj)): Git-compatible VCS that is both simple and powerful.
 - [jq](https://github.com/stedolan/jq): A lightweight and flexible command-line JSON processor.
 - [ripgrep](https://github.com/BurntSushi/ripgrep): A line-oriented search tool that recursively searches the current directory for a regex pattern.
 - [rusage.com](https://justine.lol/rusage/): Provides the best possible way to report resource usage statistics when launching command line programs.
