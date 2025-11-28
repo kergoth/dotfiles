@@ -33,7 +33,7 @@
 
 {{-   if not (and (hasKey . "system_paths") (not .system_paths)) -}}
 {{-     if eq $root.chezmoi.os "darwin" -}}
-{{-       $search_paths = concat $search_paths ($root.paths.system_bins_macos | default list) -}}
+{{-       $search_paths = concat $search_paths ($root.paths.system_bins_darwin | default list) -}}
 {{-     else if eq $root.chezmoi.os "linux" -}}
 {{-       $search_paths = concat $search_paths ($root.paths.system_bins_linux | default list) -}}
 {{-     else if eq $root.chezmoi.os "freebsd" -}}
