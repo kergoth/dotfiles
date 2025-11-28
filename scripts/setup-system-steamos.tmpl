@@ -1,5 +1,8 @@
 #!/usr/bin/env chezmoi-exec
 #!/usr/bin/env bash
+#
+# Create an SD-card compatibility symlink so as to retain compatibility with
+# ludusavi backups and restores.
 
 sdmount={{ .sdcard_mount | quote }}
 if [ -n "$sdmount" ] && ! [ -e /run/media/deck/82ae51b4-6e05-46ef-a0df-604905557e43 ]; then
