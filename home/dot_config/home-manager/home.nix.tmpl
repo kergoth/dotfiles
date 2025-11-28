@@ -83,6 +83,7 @@ in {
     # Nix tools
     nvd
   ] ++ lib.optionals stdenv.isDarwin [
+    darwin.trash
     qemu
 {{- if .containers }}
     colima
