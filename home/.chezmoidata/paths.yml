@@ -12,13 +12,19 @@ paths:
     - /opt/homebrew/bin
     - /usr/local/bin
     - /opt/local/bin
+    - /usr/bin
+    - /bin
 
   system_bins_linux:
     - /usr/local/bin
     - /opt/bin
+    - /usr/bin
+    - /bin
 
   system_bins_freebsd:
     - /usr/local/bin
+    - /usr/bin
+    - /bin
 
   system_bins_windows:
     - C:/ProgramData/scoop/shims
