@@ -123,10 +123,11 @@ fi || ret=$?
 
 if ! [ -e ~/.local/bin/git-imerge ]; then
     uv tool install git-imerge
-fi
+fi || ret=$?
+
 if ! [ -e ~/.local/bin/git-revise ]; then
     uv tool install git-revise
-fi
+fi  || ret=$?
 {{- end }}
 
 # Install PowerShell modules, if needed
