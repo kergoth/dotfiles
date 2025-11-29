@@ -4,7 +4,7 @@ let
   # Choose the right pinentry program depending on platform
   pinentry =
     if pkgs.stdenv.isDarwin then pkgs.pinentry_mac
-    else if pkgs.stdenv.isLinux then pkgs.pinentry
+    else if pkgs.stdenv.isLinux then pkgs.pinentry-curses
     else null;  # Windows is handled differently
 in {
   # The home-manager manual is at:
