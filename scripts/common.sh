@@ -239,6 +239,23 @@ gos_install() {
     fi
 }
 
+eget_install() {
+    local repo="$1"
+    shift
+    local cmd="${1:-$(basename "$repo")}"
+    shift
+
+    if [ ! -e "$HOME/.local/bin/$cmd" ]; then
+        echo >&2 "Installing $cmd via $repo"
+        if eget -a '^gnu' --to="$tmpdir/$cmd" "$@" "$repo"; then
+            mv "$tmpdir/$cmd" "$HOME/.local/bin/$cmd"
+        else
+            echo >&2 "Error downloading and installing $cmd via $repo"
+            return 1
+        fi
+    fi
+}
+
 NIXPKGS=${NIXPKGS:-https://nixos.org/channels/nixpkgs-unstable}
 
 install_nix() {

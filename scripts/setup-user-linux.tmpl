@@ -12,23 +12,6 @@ trap 'rm -rf "$tmpdir"' EXIT INT TERM
 # shellcheck source=./common.sh
 . "$scriptdir/common.sh" || exit 1
 
-eget_install() {
-    local repo="$1"
-    shift
-    local cmd="${1:-$(basename "$repo")}"
-    shift
-
-    if [ ! -e "$HOME/.local/bin/$cmd" ]; then
-        echo >&2 "Installing $cmd via $repo"
-        if eget -a '^gnu' --to="$tmpdir/$cmd" "$@" "$repo"; then
-            mv "$tmpdir/$cmd" "$HOME/.local/bin/$cmd"
-        else
-            echo >&2 "Error downloading and installing $cmd via $repo"
-            return 1
-        fi
-    fi
-}
-
 ret=0
 
 {{- if and .user_setup (not .use_nix) -}}
