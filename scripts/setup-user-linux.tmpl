@@ -79,12 +79,6 @@ ret=0
     eget_install cli/cli gh -a tar
     eget_install tummychow/git-absorb
     eget_install jj-vcs/jj jj
-    if ! [ -e ~/.local/bin/git-imerge ]; then
-        uv tool install git-imerge
-    fi
-    if ! [ -e ~/.local/bin/git-revise ]; then
-        uv tool install git-revise
-    fi
 
     {{- if .work }}
     # Bug tracking and workflow
@@ -111,16 +105,29 @@ if ! has claude; then
     curl -fsSL https://claude.ai/install.sh | bash
 fi
 
+# Dotfiles
+if [ -z "${CHEZMOI:-}" ]; then
+    "$repodir/script/setup" || ret=$?
+fi
+
+# The 'uv' installed tools must be done after dotfiles setup to ensure 'uv' is
+# available. As a result, dtrx, imerge, and revise will be unavailable during
+# the 'chezmoi apply'.
+
 # Install dtrx, if unar is missing
 if ! has unar && ! has dtrx; then
     msg "Installing dtrx"
     uv tool install dtrx
 fi || ret=$?
 
-# Dotfiles
-if [ -z "${CHEZMOI:-}" ]; then
-    "$repodir/script/setup" || ret=$?
+{{- if not .use_nix }}
+if ! [ -e ~/.local/bin/git-imerge ]; then
+    uv tool install git-imerge
 fi
+if ! [ -e ~/.local/bin/git-revise ]; then
+    uv tool install git-revise
+fi
+{{- end }}
 
 # Install PowerShell modules, if needed
 if has pwsh; then
