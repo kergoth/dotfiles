@@ -269,10 +269,6 @@ chezmoi update -R
 - [zoxide](https://github.com/ajeetdsouza/zoxide): A smarter cd command, inspired by z and autojump.
 - [zstd](http://www.zstd.net/): Zstandard - Fast real-time compression algorithm.
 
-#### CLI Software on Linux Only
-
-- [glab](https://gitlab.com/gitlab-org/cli) (_Only on Work machines_): A GitLab CLI tool bringing GitLab to your command line.
-
 #### CLI Software on Linux and macOS
 
 - [nix](https://nixos.org): Nix is a tool that takes a unique approach to package management and system configuration.
@@ -495,6 +491,7 @@ chezmoi update -R
 - [ffmpeg](https://ffmpeg.org): A complete, cross-platform solution to record, convert and stream audio and video. Available via brew, nix, and scoop.
 - [flint](https://github.com/pengwynn/flint): Check your project for common sources of contributor friction. Available via brew as `flint-checker` and go.
 - [git-filter-repo](https://github.com/newren/git-filter-repo): Quickly rewrite git repository history (filter-branch replacement).
+- [glab](https://gitlab.com/gitlab-org/cli): A GitLab CLI tool bringing GitLab to your command line. Available via system packages (Arch: `glab`, FreeBSD: `glab`), Nix, Homebrew, MacPorts, scoop, winget (`GLab.GLab`), and eget.
 - [go](https://go.dev): An open source programming language supported by Google
 - [hexyl](https://github.com/sharkdp/hexyl): A simple hex viewer for the terminal. Available via brew, nix, and cargo.
 - [htop](https://htop.dev): An interactive process viewer. Available via brew and nix.
