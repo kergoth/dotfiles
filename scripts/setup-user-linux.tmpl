@@ -31,7 +31,7 @@ eget_install() {
 
 ret=0
 
-{{- if not .use_nix }}
+{{- if and .user_setup (not .use_nix) -}}
 # Install tools
 (
     cd "$tmpdir"
@@ -89,7 +89,6 @@ ret=0
     eget_install Byron/dua-cli dua
     eget_install muesli/duf duf -a tar
 )
-{{- end }}
 
 {{ if and (not .headless) (not .steamdeck) (not (env "CONTAINER_ID")) -}}
 # Install any non-Nix GUI Applications
@@ -104,12 +103,14 @@ if ! has claude; then
     msg "Installing Claude Code"
     curl -fsSL https://claude.ai/install.sh | bash
 fi
+{{- end }}
 
 # Dotfiles
 if [ -z "${CHEZMOI:-}" ]; then
     "$repodir/script/setup" || ret=$?
 fi
 
+{{- if and .user_setup (not .use_nix) -}}
 # The 'uv' installed tools must be done after dotfiles setup to ensure 'uv' is
 # available. As a result, dtrx, imerge, and revise will be unavailable during
 # the 'chezmoi apply'.
@@ -120,7 +121,6 @@ if ! has unar && ! has dtrx; then
     uv tool install dtrx
 fi || ret=$?
 
-{{- if not .use_nix }}
 if ! [ -e ~/.local/bin/git-imerge ]; then
     uv tool install git-imerge
 fi
