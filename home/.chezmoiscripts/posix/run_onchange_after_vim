@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-set -euo pipefail
-
-"${CHEZMOI_HOME_DIR:-$HOME}"/.config/vim/script/update -b

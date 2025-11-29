@@ -1,0 +1,11 @@
+{{- $vim := includeTemplate "find-tool" (dict "root" . "tool" "vim") }}
+{{- if not $vim -}}
+{{-   $vim := includeTemplate "find-tool" (dict "root" . "tool" "nvim") }}
+{{- end }}
+{{- if $vim -}}
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+"${CHEZMOI_HOME_DIR:-$HOME}"/.config/vim/script/update -b
+{{- end }}
