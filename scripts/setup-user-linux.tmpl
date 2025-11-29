@@ -92,12 +92,6 @@ fi
     fi
 
     {{- if .work }}
-    if ! [ -e ~/.local/bin/glab ]; then
-        gget --stdout gitlab.com/gitlab-org/cli "glab_*_$(uname -s | tr '[:upper:]' '[:lower:]')_amd64*tar*gz" |
-            tar --strip-components=1 -zxvf - bin/glab &&
-            mv glab ~/.local/bin/glab
-    fi
-
     # Bug tracking and workflow
     eget_install ankitpokhrel/jira-cli
     {{- end }}
