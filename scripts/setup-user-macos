@@ -39,11 +39,6 @@ if [ -z "${CHEZMOI:-}" ]; then
     "$repodir/script/setup"
 fi
 
-# Install UV for python tooling
-if ! [ -e ~/.local/bin/uv ] || ! [ -e ~/.local/bin/uvx ]; then
-    run sh -c 'curl -LsSf https://astral.sh/uv/install.sh | sh'
-fi
-
 # Install PowerShell modules and prompt, if needed
 if has pwsh; then
     msg "Installing PowerShell modules"

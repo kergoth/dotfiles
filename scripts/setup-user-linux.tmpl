@@ -31,11 +31,6 @@ eget_install() {
 
 ret=0
 
-# Install UV for python tooling
-if ! [ -e ~/.local/bin/uv ] || ! [ -e ~/.local/bin/uvx ]; then
-    curl -LsSf https://astral.sh/uv/install.sh | sh
-fi
-
 {{- if not .use_nix }}
 # Install tools
 (
