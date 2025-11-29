@@ -75,7 +75,11 @@ refreshPeriod = "0"
 {{ end }}
 
 {{/* Install rusage */}}
-["{{ $binpath }}/rusage.com"]
+{{ $rusage_suffix := "" }}
+{{ if eq $os "windows" }}
+{{   $rusage_suffix = ".com" }}
+{{ end }}
+["{{ $binpath }}/rusage{{ $rusage_suffix }}"]
 type = "file"
 url = "https://justine.lol/rusage/rusage.com"
 executable = true
