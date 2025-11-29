@@ -28,6 +28,8 @@
 {{   end -}}
 {{ end }}
 
+{{- if not (eq .chezmoi.os "freebsd") }}
+
 {{/* Install uv/uvx */}}
 {{- $uv_suffix := "" }}
 {{- $uv_version := (gitHubLatestRelease "astral-sh/uv").TagName | trimPrefix "v" }}
@@ -50,6 +52,8 @@
   executable = true
   refreshPeriod = "0"
 {{   end -}}
+{{ end }}
+
 {{ end }}
 
 {{/* Install choose */}}
