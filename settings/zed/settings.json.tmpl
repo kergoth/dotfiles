@@ -20,32 +20,10 @@
   "features": {
     "edit_prediction_provider": "zed"
   },
-{{- if eq .hostname "vaelin" }}
-  "ssh_connections": [
-    {
-      "host": "kergothsdeck",
-      "args": [
-        "-A"
-      ],
-      "projects": [
-        {
-          "paths": [
-            "~/.dotfiles"
-          ]
-        }
-      ]
-    },
-    {
-      "host": "cosca",
-      "projects": [
-        {
-          "paths": [
-            "/volumeUSB1/usbshare/Downloads/ROMs"
-          ]
-        }
-      ]
-    }
-  ],
+  "ssh_connections": {{- if .work }}
+  {{ include (joinPath .chezmoi.workingTree "settings/zed/settings-ssh-work.json.age") | decrypt | indent 2 }}
+{{- else if .personal }}
+  {{ include (joinPath .chezmoi.workingTree "settings/zed/settings-ssh-personal.json") | indent 2 }}
 {{- end }}
   "agent": {
     "inline_assistant_model": {

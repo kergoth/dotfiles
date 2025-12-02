@@ -1,0 +1,25 @@
+  [
+    {
+      "host": "kergothsdeck",
+      "args": [
+        "-A"
+      ],
+      "projects": [
+        {
+          "paths": [
+            "~/.dotfiles"
+          ]
+        }
+      ]
+    },
+    {
+      "host": "cosca",
+      "projects": [
+        {
+          "paths": [
+            "/volumeUSB1/usbshare/Downloads/ROMs"
+          ]
+        }
+      ]
+    }
+  ],
