@@ -156,8 +156,12 @@ Library/Caches/zsh/functions/*
 .config/.jira/.config.yml
 
 {{/* common secrets */}}
-.local/share/gnupg/*
-AppData/Roaming/gnupg/*
+.local/share/gnupg
+AppData/Roaming/gnupg
+{{- end }}
+
+{{- if not .wsl2 }}
+.local/share/gnupg
 {{- end }}
 
 {{ if not .steamdeck }}
