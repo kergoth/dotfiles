@@ -8,6 +8,7 @@ export HOMEBREW_PREFIX
 PATH="$HOMEBREW_PREFIX/bin:$XDG_DATA_HOME/../bin:$HOME/.nix-profile/bin:$PATH"
 OSX_ADMIN_LOGNAME="${OSX_ADMIN_LOGNAME-admin}"
 HOMEBREW_ADMIN_PREFIX="${HOMEBREW_ADMIN_PREFIX:-/Users/Shared/homebrew}"
+export USER="${USER:-${LOGNAME:-}}"
 
 has() {
     command -v "$@" >/dev/null 2>&1
