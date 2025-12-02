@@ -53,10 +53,12 @@ echo >&2 "Importing public keys for signature verification..."
 import_pub "{{ .gnupg.personal_key }}" "{{ .chezmoi.workingTree }}/settings/gnupg/personal/public.asc"
 import_pub "{{ .gnupg.work_key }}" "{{ .chezmoi.workingTree }}/settings/gnupg/work/public.asc"
 
+{{- if .secrets -}}
 # Import the secret key only for the active context
 echo >&2 "Handling GnuPG secret key '{{ $key_name }}' ({{ $signing_key }})"
 import_key "{{ $signing_key }}" "{{ .chezmoi.workingTree }}/settings/gnupg/{{ $key_name }}/secret.asc.age"
 import_ownertrust "{{ .chezmoi.workingTree }}/settings/gnupg/{{ $key_name }}/ownertrust.asc.age"
+{{- end }}
 
 echo >&2 "GnuPG setup complete."
 {{- end }}
