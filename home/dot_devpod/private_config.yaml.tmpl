@@ -9,6 +9,9 @@ contexts:
       DOTFILES_URL:
         userProvided: true
         value: https://github.com/kergoth/dotfiles
+      GPG_AGENT_FORWARDING:
+        userProvided: true
+        value: "true"
       SSH_CONFIG_PATH:
         userProvided: true
         value: {{ .chezmoi.destDir }}/.ssh/config.d/devpod
