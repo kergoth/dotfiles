@@ -155,6 +155,12 @@ required_dependencies
 if [ -z "${DOTFILES_DIR:-}" ]; then
     if [ -h ~/.local/share/chezmoi ]; then
         DOTFILES_DIR="$(readlink ~/.local/share/chezmoi)"
+        case "$DOTFILES_DIR" in
+        /*) ;;
+        *)
+            DOTFILES_DIR="$HOME/.local/share/$DOTFILES_DIR"
+            ;;
+        esac
     else
         scriptdir=$(dirname "$0")
         if [ -n "$scriptdir" ]; then
@@ -178,7 +184,7 @@ fi
 if ! [ -e ~/.local/share/chezmoi ]; then
     rm -f ~/.local/share/chezmoi
     mkdir -p ~/.local/share
-    ln -sf "$DOTFILES_DIR" ~/.local/share/chezmoi
+    ln -rsf "$DOTFILES_DIR" ~/.local/share/chezmoi
 fi
 
 if ! command -v chezmoi >/dev/null 2>&1; then
