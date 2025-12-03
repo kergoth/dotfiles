@@ -2,3 +2,4 @@ __pycache__
 .zed
 Brewfile.lock.json
 others
+.devpod-internal
