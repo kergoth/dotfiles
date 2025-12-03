@@ -2,13 +2,6 @@
 {{- if $atuin -}}
 # atuin integration (found at: {{ $atuin }})
 {{ output $atuin "init" "zsh" "--disable-up-arrow" | trim }}
-{{- else }}
-{{-   $mcfly := includeTemplate "find-tool" (dict "root" . "tool" "mcfly") }}
-{{-   if $mcfly -}}
-# mcfly integration (found at: {{ $mcfly }})
-export MCFLY_PATH="{{ $mcfly }}"
-{{ output $mcfly "init" "zsh" | trim }}
-{{-   end }}
 {{- end }}
 zmodload zsh/terminfo
 

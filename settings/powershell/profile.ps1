@@ -325,10 +325,6 @@ if (Test-Path $env:SCOOP) {
 
 $env:Path += ";$env:USERPROFILE/.cargo/bin"
 
-if (Test-Path "$env:USERPROFILE/.pyenv") {
-  $env:PYENV = "$env:USERPROFILE/.pyenv/pyenv-win"
-  $env:Path += ";$env:PYENV/bin;$env:PYENV/shims"
-}
 if (-not (Get-Command python -ErrorAction SilentlyContinue)) {
   if (Test-Path "C:\Python38") {
     $env:Path = "C:\Python38;" + $env:Path
