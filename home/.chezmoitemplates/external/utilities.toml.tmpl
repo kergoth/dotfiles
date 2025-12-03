@@ -1,0 +1,114 @@
+{{/* System utilities */}}
+{{- $os := .chezmoi.os -}}
+{{- $arch := .chezmoi.arch -}}
+{{- $binarch := $arch -}}
+{{- $refreshPeriod := .external.refreshPeriod -}}
+{{- if eq .chezmoi.arch "amd64" -}}
+{{-   $binarch = "x86_64" -}}
+{{- else if eq .chezmoi.arch "arm64" -}}
+{{-   $binarch = "aarch64" -}}
+{{- end -}}
+{{- $binpath := ".local/bin" -}}
+{{- $binsuffix := "" -}}
+{{- if eq $os "windows" -}}
+{{-   $binpath = "AppData/Local/Programs/bin" -}}
+{{-   $binsuffix = ".exe" -}}
+{{- end -}}
+
+{{/* Duf - disk usage utility with excellent FreeBSD support */}}
+{{- $duf_version := (gitHubLatestRelease "muesli/duf").TagName | trimPrefix "v" -}}
+{{- $duf_ext := "tar.gz" -}}
+{{- $duf_arch := $arch -}}
+{{- if eq $arch "amd64" -}}
+{{-   $duf_arch = "x86_64" -}}
+{{- end -}}
+{{- if eq $os "windows" -}}
+{{-   $duf_ext = "zip" -}}
+{{- end -}}
+
+{{/* Pattern 1: HAS FreeBSD binaries - skip only Nix and Chimera */}}
+{{ if not (or .use_nix (eq .osid "linux-chimera")) }}
+
+["{{ $binpath }}/duf{{ $binsuffix }}"]
+  type = "archive-file"
+  url = "https://github.com/muesli/duf/releases/download/v{{ $duf_version }}/duf_{{ $duf_version }}_{{ $os }}_{{ $duf_arch }}.{{ $duf_ext }}"
+  path = "duf{{ $binsuffix }}"
+  executable = true
+  refreshPeriod = "0"
+
+{{ end }}
+
+{{/* Dua - disk usage analyzer (Rust-based) */}}
+{{- $dua_version := (gitHubLatestRelease "Byron/dua-cli").TagName -}}
+{{- $dua_target := "" -}}
+{{- $dua_ext := "tar.gz" -}}
+{{- if eq $os "darwin" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $dua_target = "x86_64-apple-darwin" -}}
+{{-   end -}}
+{{/* macOS arm64 has no binaries - use Nix/Homebrew fallback */}}
+{{- else if eq $os "linux" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $dua_target = "x86_64-unknown-linux-musl" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $dua_target = "aarch64-unknown-linux-musl" -}}
+{{-   else if eq $arch "arm" -}}
+{{-     $dua_target = "arm-unknown-linux-gnueabihf" -}}
+{{-   end -}}
+{{- else if eq $os "windows" -}}
+{{-   $dua_ext = "zip" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $dua_target = "x86_64-pc-windows-msvc" -}}
+{{-   else if eq $arch "386" -}}
+{{-     $dua_target = "i686-pc-windows-msvc" -}}
+{{-   end -}}
+{{- end -}}
+
+{{/* Skip for Nix, FreeBSD, Chimera Linux, and macOS arm64 (no binaries) */}}
+{{ if and (ne $dua_target "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
+
+["{{ $binpath }}/dua{{ $binsuffix }}"]
+  type = "archive-file"
+  url = "https://github.com/Byron/dua-cli/releases/download/{{ $dua_version }}/dua-{{ $dua_version }}-{{ $dua_target }}.{{ $dua_ext }}"
+  path = "dua{{ $binsuffix }}"
+  executable = true
+  refreshPeriod = "0"
+  stripComponents = 1
+
+{{ end }}
+
+{{/* Tealdeer - tldr client for quick command documentation */}}
+{{- $tealdeer_version := (gitHubLatestRelease "tealdeer-rs/tealdeer").TagName -}}
+{{- $tealdeer_file := "" -}}
+{{- if eq $os "darwin" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $tealdeer_file = "macos-x86_64" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $tealdeer_file = "macos-aarch64" -}}
+{{-   end -}}
+{{- else if eq $os "linux" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $tealdeer_file = "linux-x86_64-musl" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $tealdeer_file = "linux-aarch64-musl" -}}
+{{-   else if eq $arch "arm" -}}
+{{-     $tealdeer_file = "linux-armv7-musleabihf" -}}
+{{-   else if eq $arch "386" -}}
+{{-     $tealdeer_file = "linux-i686-musl" -}}
+{{-   end -}}
+{{- else if eq $os "windows" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $tealdeer_file = "windows-x86_64-msvc.exe" -}}
+{{-   end -}}
+{{- end -}}
+
+{{/* Skip for Nix, FreeBSD, and Chimera Linux - Plain binary files */}}
+{{ if and (ne $tealdeer_file "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
+
+["{{ $binpath }}/tldr{{ $binsuffix }}"]
+  type = "file"
+  url = "https://github.com/tealdeer-rs/tealdeer/releases/download/{{ $tealdeer_version }}/tealdeer-{{ $tealdeer_file }}"
+  executable = true
+  refreshPeriod = "0"
+
+{{ end }}

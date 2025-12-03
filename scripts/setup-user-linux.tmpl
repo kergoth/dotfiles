@@ -30,47 +30,7 @@ ret=0
             mv eget ~/.local/bin/
     fi
 
-    if ! [ -e ~/.local/bin/gget ]; then
-        # Install gget
-        curl -Lo gget https://github.com/dpb587/gget/releases/download/v0.6.1/gget-0.6.1-linux-amd64 &&
-            echo "d1c92e0e28576876bd46d3689b50c0f31df45299  gget" |
-            shasum -c &&
-            chmod +x gget
-        mv gget ~/.local/bin/
-    fi
-
     # Can't install via release binary: unar, zstd, patchutils
-
-    # Core tools
-    eget_install jqlang/jq jq -a '^linux64'
-    eget_install sharkdp/bat bat -a tar
-    eget_install eza-community/eza eza -a .tar.gz
-    eget_install theryangeary/choose choose
-    eget_install sharkdp/fd
-    eget_install BurntSushi/ripgrep rg
-    eget_install ajeetdsouza/zoxide
-    eget_install chmln/sd
-    eget_install ms-jpq/sad sad -a '^deb'
-    eget_install dbrgn/tealdeer
-
-    # Shell
-    eget_install atuinsh/atuin atuin -a tar
-
-    # SCM & Related
-    eget_install dandavison/delta
-    eget_install Wilfred/difftastic difft
-    eget_install cli/cli gh -a tar
-    eget_install tummychow/git-absorb
-    eget_install jj-vcs/jj jj
-
-    {{- if .work }}
-    # Bug tracking and workflow
-    eget_install ankitpokhrel/jira-cli
-    {{- end }}
-
-    # Disk tools
-    eget_install Byron/dua-cli dua
-    eget_install muesli/duf duf -a tar
 )
 
 {{ if and (not .headless) (not .steamdeck) (not (env "CONTAINER_ID")) -}}

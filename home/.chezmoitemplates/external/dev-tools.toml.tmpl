@@ -1,0 +1,52 @@
+{{/* Development tools - Category 5 from Issue #8 Migration Plan */}}
+{{- $os := .chezmoi.os -}}
+{{- $arch := .chezmoi.arch -}}
+{{- $binarch := $arch -}}
+{{- $refreshPeriod := .external.refreshPeriod -}}
+{{- if eq .chezmoi.arch "amd64" -}}
+{{-   $binarch = "x86_64" -}}
+{{- else if eq .chezmoi.arch "arm64" -}}
+{{-   $binarch = "aarch64" -}}
+{{- end -}}
+{{- $binpath := ".local/bin" -}}
+{{- $binsuffix := "" -}}
+{{- if eq $os "windows" -}}
+{{-   $binpath = "AppData/Local/Programs/bin" -}}
+{{-   $binsuffix = ".exe" -}}
+{{- end -}}
+
+{{/* Shfmt - shell formatter */}}
+{{- $shfmt_version := (gitHubLatestRelease "mvdan/sh").TagName -}}
+
+{{/* Skip for Nix, FreeBSD, and Chimera Linux */}}
+{{ if not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera")) }}
+
+["{{ $binpath }}/shfmt{{ $binsuffix }}"]
+  type = "file"
+  url = "https://github.com/mvdan/sh/releases/download/{{ $shfmt_version }}/shfmt_{{ $shfmt_version }}_{{ $os }}_{{ $arch }}{{ $binsuffix }}"
+  executable = true
+  refreshPeriod = "0"
+
+{{ end }}
+
+{{/* Shellcheck - shell linter */}}
+{{- $shellcheck_version := (gitHubLatestRelease "koalaman/shellcheck").TagName | trimPrefix "v" -}}
+{{- $shellcheck_suffix := "" -}}
+{{- if eq $os "linux" -}}
+{{-   $shellcheck_suffix = printf ".linux.%s.tar.xz" $binarch -}}
+{{- else if eq $os "darwin" -}}
+{{-   $shellcheck_suffix = printf ".darwin.%s.tar.xz" $binarch -}}
+{{- end -}}
+
+{{/* Skip for Nix, FreeBSD, Chimera Linux, and Windows (no binary available) */}}
+{{ if and (ne $shellcheck_suffix "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
+
+["{{ $binpath }}/shellcheck{{ $binsuffix }}"]
+  type = "archive-file"
+  url = "https://github.com/koalaman/shellcheck/releases/download/v{{ $shellcheck_version }}/shellcheck-v{{ $shellcheck_version }}{{ $shellcheck_suffix }}"
+  path = "shellcheck{{ $binsuffix }}"
+  executable = true
+  refreshPeriod = "0"
+  stripComponents = 1
+
+{{ end }}

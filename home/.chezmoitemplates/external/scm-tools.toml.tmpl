@@ -1,0 +1,267 @@
+{{/* SCM and Git-related tools - Category 4 from Issue #8 Migration Plan */}}
+{{- $os := .chezmoi.os -}}
+{{- $arch := .chezmoi.arch -}}
+{{- $binarch := $arch -}}
+{{- $refreshPeriod := .external.refreshPeriod -}}
+{{- if eq .chezmoi.arch "amd64" -}}
+{{-   $binarch = "x86_64" -}}
+{{- else if eq .chezmoi.arch "arm64" -}}
+{{-   $binarch = "aarch64" -}}
+{{- end -}}
+{{- $binpath := ".local/bin" -}}
+{{- $binsuffix := "" -}}
+{{- if eq $os "windows" -}}
+{{-   $binpath = "AppData/Local/Programs/bin" -}}
+{{-   $binsuffix = ".exe" -}}
+{{- end -}}
+
+{{/* Ghq - Git repository manager */}}
+{{- $ghq_version := (gitHubLatestRelease "x-motemen/ghq").TagName | trimPrefix "v" -}}
+{{- $ghq_suffix := "" -}}
+{{- if eq $os "windows" -}}
+{{-   $ghq_suffix = printf "windows_%s.zip" $arch -}}
+{{- else if eq $os "linux" -}}
+{{-   $ghq_suffix = printf "linux_%s.zip" $arch -}}
+{{- else if eq $os "darwin" -}}
+{{-   $ghq_suffix = printf "darwin_%s.zip" $arch -}}
+{{- end -}}
+
+{{/* Skip for Nix, FreeBSD, and Chimera Linux */}}
+{{ if and (ne $ghq_suffix "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
+
+["{{ $binpath }}/ghq{{ $binsuffix }}"]
+  type = "archive-file"
+  url = "https://github.com/x-motemen/ghq/releases/download/v{{ $ghq_version }}/ghq_{{ $ghq_suffix }}"
+  path = "ghq{{ $binsuffix }}"
+  executable = true
+  refreshPeriod = "0"
+  stripComponents = 1
+
+{{ end }}
+
+{{/* Delta - diff viewer with syntax highlighting */}}
+{{- $delta_version := (gitHubLatestRelease "dandavison/delta").TagName -}}
+{{- $delta_target := "" -}}
+{{- $delta_ext := "tar.gz" -}}
+{{- if eq $os "darwin" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $delta_target = "x86_64-apple-darwin" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $delta_target = "aarch64-apple-darwin" -}}
+{{-   end -}}
+{{- else if eq $os "linux" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $delta_target = "x86_64-unknown-linux-musl" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $delta_target = "aarch64-unknown-linux-gnu" -}}
+{{-   else if eq $arch "arm" -}}
+{{-     $delta_target = "arm-unknown-linux-gnueabihf" -}}
+{{-   else if eq $arch "386" -}}
+{{-     $delta_target = "i686-unknown-linux-gnu" -}}
+{{-   end -}}
+{{- else if eq $os "windows" -}}
+{{-   $delta_ext = "zip" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $delta_target = "x86_64-pc-windows-msvc" -}}
+{{-   end -}}
+{{- end -}}
+
+{{/* Skip for Nix, FreeBSD, and Chimera Linux */}}
+{{ if and (ne $delta_target "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
+
+["{{ $binpath }}/delta{{ $binsuffix }}"]
+  type = "archive-file"
+  url = "https://github.com/dandavison/delta/releases/download/{{ $delta_version }}/delta-{{ $delta_version }}-{{ $delta_target }}.{{ $delta_ext }}"
+  path = "delta{{ $binsuffix }}"
+  executable = true
+  refreshPeriod = "0"
+  stripComponents = 1
+
+{{ end }}
+
+{{/* GitHub CLI (gh) - official GitHub command-line tool */}}
+{{- $gh_version := (gitHubLatestRelease "cli/cli").TagName -}}
+{{- $gh_os := $os -}}
+{{- $gh_ext := "tar.gz" -}}
+{{- $gh_arch := "" -}}
+
+{{/* gh uses 'macOS' instead of 'darwin' and .zip for macOS */}}
+{{- if eq $os "darwin" -}}
+{{-   $gh_os = "macOS" -}}
+{{-   $gh_ext = "zip" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $gh_arch = "amd64" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $gh_arch = "arm64" -}}
+{{-   end -}}
+{{- else if eq $os "linux" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $gh_arch = "amd64" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $gh_arch = "arm64" -}}
+{{-   else if eq $arch "386" -}}
+{{-     $gh_arch = "386" -}}
+{{-   end -}}
+{{- else if eq $os "windows" -}}
+{{-   $gh_ext = "zip" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $gh_arch = "amd64" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $gh_arch = "arm64" -}}
+{{-   else if eq $arch "386" -}}
+{{-     $gh_arch = "386" -}}
+{{-   end -}}
+{{- end -}}
+
+{{/* Skip for Nix, FreeBSD, and Chimera Linux */}}
+{{ if and (ne $gh_arch "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
+
+["{{ $binpath }}/gh{{ $binsuffix }}"]
+  type = "archive-file"
+  url = "https://github.com/cli/cli/releases/download/{{ $gh_version }}/gh_{{ trimPrefix "v" $gh_version }}_{{ $gh_os }}_{{ $gh_arch }}.{{ $gh_ext }}"
+  path = "gh{{ $binsuffix }}"
+  executable = true
+  refreshPeriod = "0"
+  stripComponents = 2
+
+{{ end }}
+
+{{/* Jj (jujutsu) - Git-compatible VCS */}}
+{{- $jj_version := (gitHubLatestRelease "jj-vcs/jj").TagName -}}
+{{- $jj_target := "" -}}
+{{- $jj_ext := "tar.gz" -}}
+{{- if eq $os "darwin" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $jj_target = "x86_64-apple-darwin" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $jj_target = "aarch64-apple-darwin" -}}
+{{-   end -}}
+{{- else if eq $os "linux" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $jj_target = "x86_64-unknown-linux-musl" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $jj_target = "aarch64-unknown-linux-musl" -}}
+{{-   end -}}
+{{- else if eq $os "windows" -}}
+{{-   $jj_ext = "zip" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $jj_target = "x86_64-pc-windows-msvc" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $jj_target = "aarch64-pc-windows-msvc" -}}
+{{-   end -}}
+{{- end -}}
+
+{{/* Skip for Nix, FreeBSD, and Chimera Linux */}}
+{{ if and (ne $jj_target "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
+
+["{{ $binpath }}/jj{{ $binsuffix }}"]
+  type = "archive-file"
+  url = "https://github.com/jj-vcs/jj/releases/download/{{ $jj_version }}/jj-{{ $jj_version }}-{{ $jj_target }}.{{ $jj_ext }}"
+  path = "jj{{ $binsuffix }}"
+  executable = true
+  refreshPeriod = "0"
+  stripComponents = 1
+
+{{ end }}
+
+{{/* Difftastic - structural diff tool */}}
+{{- $difft_version := (gitHubLatestRelease "Wilfred/difftastic").TagName -}}
+{{- $difft_target := "" -}}
+{{- $difft_ext := "tar.gz" -}}
+{{- if eq $os "darwin" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $difft_target = "x86_64-apple-darwin" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $difft_target = "aarch64-apple-darwin" -}}
+{{-   end -}}
+{{- else if eq $os "linux" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $difft_target = "x86_64-unknown-linux-musl" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $difft_target = "aarch64-unknown-linux-gnu" -}}
+{{-   end -}}
+{{- else if eq $os "windows" -}}
+{{-   $difft_ext = "zip" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $difft_target = "x86_64-pc-windows-msvc" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $difft_target = "aarch64-pc-windows-msvc" -}}
+{{-   end -}}
+{{- end -}}
+
+{{/* Skip for Nix, FreeBSD, and Chimera Linux - Note: NO version in filename! */}}
+{{ if and (ne $difft_target "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
+
+["{{ $binpath }}/difft{{ $binsuffix }}"]
+  type = "archive-file"
+  url = "https://github.com/Wilfred/difftastic/releases/download/{{ $difft_version }}/difft-{{ $difft_target }}.{{ $difft_ext }}"
+  path = "difft{{ $binsuffix }}"
+  executable = true
+  refreshPeriod = "0"
+  stripComponents = 0
+
+{{ end }}
+
+{{/* Git-absorb - auto-create fixup commits */}}
+{{- $absorb_version := (gitHubLatestRelease "tummychow/git-absorb").TagName -}}
+{{- $absorb_target := "" -}}
+{{- $absorb_ext := "tar.gz" -}}
+{{- if eq $os "darwin" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $absorb_target = "x86_64-apple-darwin" -}}
+{{-   end -}}
+{{/* macOS arm64 has no binaries - use Nix/Homebrew/cargo fallback */}}
+{{- else if eq $os "linux" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $absorb_target = "x86_64-unknown-linux-musl" -}}
+{{-   else if eq $arch "arm" -}}
+{{-     $absorb_target = "arm-unknown-linux-gnueabihf" -}}
+{{-   end -}}
+{{/* Linux arm64 has no binaries - use Nix/cargo fallback */}}
+{{- else if eq $os "windows" -}}
+{{-   $absorb_ext = "zip" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $absorb_target = "x86_64-pc-windows-msvc" -}}
+{{-   end -}}
+{{- end -}}
+
+{{/* Skip for Nix, FreeBSD, Chimera, and arm64 (no binaries) */}}
+{{ if and (ne $absorb_target "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
+
+["{{ $binpath }}/git-absorb{{ $binsuffix }}"]
+  type = "archive-file"
+  url = "https://github.com/tummychow/git-absorb/releases/download/{{ $absorb_version }}/git-absorb-{{ $absorb_version }}-{{ $absorb_target }}.{{ $absorb_ext }}"
+  path = "git-absorb{{ $binsuffix }}"
+  executable = true
+  refreshPeriod = "0"
+  stripComponents = 1
+
+{{ end }}
+
+{{/* Jira CLI - Atlassian Jira command-line tool (ankitpokhrel/jira-cli) */}}
+{{- $jira_version := (gitHubLatestRelease "ankitpokhrel/jira-cli").TagName -}}
+{{- $jira_os := $os -}}
+{{- $jira_arch := $arch -}}
+{{- $jira_ext := "tar.gz" -}}
+{{- if eq $os "darwin" -}}
+{{-   $jira_os = "macOS" -}}
+{{- end -}}
+{{- if eq $arch "amd64" -}}
+{{-   $jira_arch = "x86_64" -}}
+{{- end -}}
+{{- if eq $os "windows" -}}
+{{-   $jira_ext = "zip" -}}
+{{- end -}}
+
+{{/* Skip for Nix, FreeBSD, and Chimera Linux - Uses macOS/linux/windows naming */}}
+{{ if not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera")) }}
+
+["{{ $binpath }}/jira{{ $binsuffix }}"]
+  type = "archive-file"
+  url = "https://github.com/ankitpokhrel/jira-cli/releases/download/{{ $jira_version }}/jira_{{ $jira_version | trimPrefix "v" }}_{{ $jira_os }}_{{ $jira_arch }}.{{ $jira_ext }}"
+  path = "bin/jira{{ $binsuffix }}"
+  executable = true
+  refreshPeriod = "0"
+  stripComponents = 1
+
+{{ end }}

@@ -1,0 +1,256 @@
+{{/* Core CLI utilities - Category 2 from Issue #8 Migration Plan */}}
+{{- $os := .chezmoi.os -}}
+{{- $arch := .chezmoi.arch -}}
+{{- $binarch := $arch -}}
+{{- $refreshPeriod := .external.refreshPeriod -}}
+{{- if eq .chezmoi.arch "amd64" -}}
+{{-   $binarch = "x86_64" -}}
+{{- else if eq .chezmoi.arch "arm64" -}}
+{{-   $binarch = "aarch64" -}}
+{{- end -}}
+{{- $binpath := ".local/bin" -}}
+{{- $binsuffix := "" -}}
+{{- if eq $os "windows" -}}
+{{-   $binpath = "AppData/Local/Programs/bin" -}}
+{{-   $binsuffix = ".exe" -}}
+{{- end -}}
+
+{{/* Jq - JSON processor */}}
+{{- $jq_version := (gitHubLatestRelease "jqlang/jq").TagName -}}
+{{- $jq_os := $os -}}
+{{- if eq $os "darwin" -}}
+{{-   $jq_os = "macos" -}}
+{{- end -}}
+
+{{/* Skip for Nix, FreeBSD, and Chimera Linux */}}
+{{ if not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera")) }}
+
+["{{ $binpath }}/jq{{ $binsuffix }}"]
+  type = "file"
+  url = "https://github.com/jqlang/jq/releases/download/{{ $jq_version }}/jq-{{ $jq_os }}-{{ $arch }}{{ $binsuffix }}"
+  executable = true
+  refreshPeriod = "0"
+
+{{ end }}
+
+{{/* Bat - cat with syntax highlighting */}}
+{{- $bat_version := (gitHubLatestRelease "sharkdp/bat").TagName -}}
+{{- $bat_target := "" -}}
+{{- $bat_ext := "tar.gz" -}}
+{{- if eq $os "darwin" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $bat_target = "x86_64-apple-darwin" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $bat_target = "aarch64-apple-darwin" -}}
+{{-   end -}}
+{{- else if eq $os "linux" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $bat_target = "x86_64-unknown-linux-musl" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $bat_target = "aarch64-unknown-linux-gnu" -}}
+{{-   else if eq $arch "arm" -}}
+{{-     $bat_target = "arm-unknown-linux-musleabihf" -}}
+{{-   else if eq $arch "386" -}}
+{{-     $bat_target = "i686-unknown-linux-musl" -}}
+{{-   end -}}
+{{- else if eq $os "windows" -}}
+{{-   $bat_ext = "zip" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $bat_target = "x86_64-pc-windows-msvc" -}}
+{{-   else if eq $arch "386" -}}
+{{-     $bat_target = "i686-pc-windows-msvc" -}}
+{{-   end -}}
+{{- end -}}
+
+{{/* Skip for Nix, FreeBSD, and Chimera Linux */}}
+{{ if and (ne $bat_target "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
+
+["{{ $binpath }}/bat{{ $binsuffix }}"]
+  type = "archive-file"
+  url = "https://github.com/sharkdp/bat/releases/download/{{ $bat_version }}/bat-{{ $bat_version }}-{{ $bat_target }}.{{ $bat_ext }}"
+  path = "bat{{ $binsuffix }}"
+  executable = true
+  refreshPeriod = "0"
+  stripComponents = 1
+
+{{ end }}
+
+{{/* Ripgrep - fast grep replacement */}}
+{{- $rg_version := (gitHubLatestRelease "BurntSushi/ripgrep").TagName -}}
+{{- $rg_target := "" -}}
+{{- $rg_ext := "tar.gz" -}}
+{{- if eq $os "darwin" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $rg_target = "x86_64-apple-darwin" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $rg_target = "aarch64-apple-darwin" -}}
+{{-   end -}}
+{{- else if eq $os "linux" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $rg_target = "x86_64-unknown-linux-musl" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $rg_target = "aarch64-unknown-linux-gnu" -}}
+{{-   else if eq $arch "arm" -}}
+{{-     $rg_target = "armv7-unknown-linux-gnueabihf" -}}
+{{-   end -}}
+{{- else if eq $os "windows" -}}
+{{-   $rg_ext = "zip" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $rg_target = "x86_64-pc-windows-msvc" -}}
+{{-   else if eq $arch "386" -}}
+{{-     $rg_target = "i686-pc-windows-msvc" -}}
+{{-   end -}}
+{{- end -}}
+
+{{/* Skip for Nix, FreeBSD, and Chimera Linux */}}
+{{ if and (ne $rg_target "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
+
+["{{ $binpath }}/rg{{ $binsuffix }}"]
+  type = "archive-file"
+  url = "https://github.com/BurntSushi/ripgrep/releases/download/{{ $rg_version }}/ripgrep-{{ $rg_version }}-{{ $rg_target }}.{{ $rg_ext }}"
+  path = "rg{{ $binsuffix }}"
+  executable = true
+  refreshPeriod = "0"
+  stripComponents = 1
+
+{{ end }}
+
+{{/* Fd - fast find replacement */}}
+{{- $fd_version := (gitHubLatestRelease "sharkdp/fd").TagName -}}
+{{- $fd_target := "" -}}
+{{- $fd_ext := "tar.gz" -}}
+{{- if eq $os "darwin" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $fd_target = "x86_64-apple-darwin" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $fd_target = "aarch64-apple-darwin" -}}
+{{-   end -}}
+{{- else if eq $os "linux" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $fd_target = "x86_64-unknown-linux-musl" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $fd_target = "aarch64-unknown-linux-gnu" -}}
+{{-   else if eq $arch "arm" -}}
+{{-     $fd_target = "arm-unknown-linux-musleabihf" -}}
+{{-   else if eq $arch "386" -}}
+{{-     $fd_target = "i686-unknown-linux-musl" -}}
+{{-   end -}}
+{{- else if eq $os "windows" -}}
+{{-   $fd_ext = "zip" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $fd_target = "x86_64-pc-windows-msvc" -}}
+{{-   else if eq $arch "386" -}}
+{{-     $fd_target = "i686-pc-windows-msvc" -}}
+{{-   end -}}
+{{- end -}}
+
+{{/* Skip for Nix, FreeBSD, and Chimera Linux */}}
+{{ if and (ne $fd_target "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
+
+["{{ $binpath }}/fd{{ $binsuffix }}"]
+  type = "archive-file"
+  url = "https://github.com/sharkdp/fd/releases/download/{{ $fd_version }}/fd-{{ $fd_version }}-{{ $fd_target }}.{{ $fd_ext }}"
+  path = "fd{{ $binsuffix }}"
+  executable = true
+  refreshPeriod = "0"
+  stripComponents = 1
+
+{{ end }}
+
+{{/* Choose - field selector */}}
+{{- $choose_version := (gitHubLatestRelease "theryangeary/choose").TagName | trimPrefix "v" -}}
+{{- $choose_suffix := "" -}}
+{{- if eq $os "windows" -}}
+{{-   $choose_suffix = "pc-windows-gnu" -}}
+{{- else if eq $os "linux" -}}
+{{-   $choose_suffix = "unknown-linux-gnu" -}}
+{{- else if eq $os "darwin" -}}
+{{-   if eq $arch "arm64" -}}
+{{-     $choose_suffix = "apple-darwin" -}}
+{{-   end -}}
+{{/* macOS x86_64 has no binaries - use Nix fallback */}}
+{{- end -}}
+
+{{/* Skip for Nix, FreeBSD, Chimera Linux, and macOS x86_64 (no binaries) */}}
+{{ if and (ne $choose_suffix "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
+
+["{{ $binpath }}/choose{{ $binsuffix }}"]
+  type = "file"
+  url = "https://github.com/theryangeary/choose/releases/download/v{{ $choose_version }}/choose-{{ $binarch }}-{{ $choose_suffix }}"
+  executable = true
+  refreshPeriod = "0"
+
+{{ end }}
+
+{{/* Sd - intuitive search & replace (sed alternative) */}}
+{{- $sd_version := (gitHubLatestRelease "chmln/sd").TagName -}}
+{{- $sd_target := "" -}}
+{{- $sd_ext := "tar.gz" -}}
+{{- if eq $os "darwin" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $sd_target = "x86_64-apple-darwin" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $sd_target = "aarch64-apple-darwin" -}}
+{{-   end -}}
+{{- else if eq $os "linux" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $sd_target = "x86_64-unknown-linux-musl" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $sd_target = "aarch64-unknown-linux-musl" -}}
+{{-   else if eq $arch "arm" -}}
+{{-     $sd_target = "arm-unknown-linux-gnueabihf" -}}
+{{-   end -}}
+{{- else if eq $os "windows" -}}
+{{-   $sd_ext = "zip" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $sd_target = "x86_64-pc-windows-msvc" -}}
+{{-   end -}}
+{{- end -}}
+
+{{/* Skip for Nix, FreeBSD, and Chimera Linux */}}
+{{ if and (ne $sd_target "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
+
+["{{ $binpath }}/sd{{ $binsuffix }}"]
+  type = "archive-file"
+  url = "https://github.com/chmln/sd/releases/download/{{ $sd_version }}/sd-{{ $sd_version }}-{{ $sd_target }}.{{ $sd_ext }}"
+  path = "sd{{ $binsuffix }}"
+  executable = true
+  refreshPeriod = "0"
+  stripComponents = 1
+
+{{ end }}
+
+{{/* Sad - space age sed (batch find & replace) */}}
+{{- $sad_version := (gitHubLatestRelease "ms-jpq/sad").TagName -}}
+{{- $sad_target := "" -}}
+{{- if eq $os "darwin" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $sad_target = "x86_64-apple-darwin" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $sad_target = "aarch64-apple-darwin" -}}
+{{-   end -}}
+{{- else if eq $os "linux" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $sad_target = "x86_64-unknown-linux-musl" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $sad_target = "aarch64-unknown-linux-musl" -}}
+{{-   end -}}
+{{- else if eq $os "windows" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $sad_target = "x86_64-pc-windows-msvc" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $sad_target = "aarch64-pc-windows-msvc" -}}
+{{-   end -}}
+{{- end -}}
+
+{{/* Skip for Nix, FreeBSD, and Chimera Linux - Note: sad uses just target name, all .zip */}}
+{{ if and (ne $sad_target "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
+
+["{{ $binpath }}/sad{{ $binsuffix }}"]
+  type = "archive-file"
+  url = "https://github.com/ms-jpq/sad/releases/download/{{ $sad_version }}/{{ $sad_target }}.zip"
+  path = "sad{{ $binsuffix }}"
+  executable = true
+  refreshPeriod = "0"
+
+{{ end }}

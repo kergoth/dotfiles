@@ -74,44 +74,20 @@ scoop install wget
 scoop install curl
 
 # Install tools
-scoop install bat
 scoop install bat-extras
-scoop install duf
-scoop install eza
-scoop install fd
 scoop install less
-scoop install ripgrep
-scoop install zoxide
-
-scoop install jq
-scoop install sad
-scoop install sd
-scoop install tealdeer
 scoop install unar
 scoop install zstd
 
 # SCM & Related
-scoop install delta
-Install-Scoop-IfNotPresent gh GitHub.cli | Out-Null
-scoop install git-absorb
-scoop install jj
-
 uv tool install git-revise
 uv tool install git-imerge
-
-# Disk tools
-scoop install dua
 
 # AI Tools
 if (-not (Get-Command claude -ErrorAction SilentlyContinue)) {
     Write-Output "Installing Claude Code"
     Invoke-RestMethod https://claude.ai/install.ps1 | Invoke-Expression
 }
-
-{{ if .work -}}
-# Bug tracking and workflow
-scoop install jira-cli
-{{- end }}
 
 # GUI Applications
 {{ if not .headless -}}

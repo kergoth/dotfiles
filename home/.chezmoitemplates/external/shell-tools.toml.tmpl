@@ -25,7 +25,7 @@
   type = "file"
   url = "https://github.com/direnv/direnv/releases/download/{{ $direnv_version }}/direnv.{{ $os }}-{{ $arch }}"
   executable = true
-  refreshPeriod = "{{ $refreshPeriod }}"
+  refreshPeriod = "0"
 
 {{ end }}
 
@@ -45,20 +45,79 @@
   url = "https://github.com/junegunn/fzf/releases/download/{{ $fzf_version }}/fzf-{{ $fzf_version_no_v }}-{{ $os }}_{{ $arch }}.{{ $fzf_ext }}"
   path = "fzf{{ $binsuffix }}"
   executable = true
-  refreshPeriod = "{{ $refreshPeriod }}"
+  refreshPeriod = "0"
 
 {{ end }}
 
-{{/* Shfmt */}}
-{{- $shfmt_version := (gitHubLatestRelease "mvdan/sh").TagName -}}
+{{/* Zoxide - directory jumper */}}
+{{- $zoxide_version := (gitHubLatestRelease "ajeetdsouza/zoxide").TagName -}}
+{{- $zoxide_version_no_v := trimPrefix "v" $zoxide_version -}}
+{{- $zoxide_target := "" -}}
+{{- $zoxide_ext := "tar.gz" -}}
+{{- if eq $os "darwin" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $zoxide_target = "x86_64-apple-darwin" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $zoxide_target = "aarch64-apple-darwin" -}}
+{{-   end -}}
+{{- else if eq $os "linux" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $zoxide_target = "x86_64-unknown-linux-musl" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $zoxide_target = "aarch64-unknown-linux-musl" -}}
+{{-   else if eq $arch "arm" -}}
+{{-     $zoxide_target = "armv7-unknown-linux-musleabihf" -}}
+{{-   else if eq $arch "386" -}}
+{{-     $zoxide_target = "i686-unknown-linux-musl" -}}
+{{-   end -}}
+{{- else if eq $os "windows" -}}
+{{-   $zoxide_ext = "zip" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $zoxide_target = "x86_64-pc-windows-msvc" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $zoxide_target = "aarch64-pc-windows-msvc" -}}
+{{-   end -}}
+{{- end -}}
 
 {{/* Skip for Nix, FreeBSD, and Chimera Linux */}}
-{{ if not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera")) }}
+{{ if and (ne $zoxide_target "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
 
-["{{ $binpath }}/shfmt{{ $binsuffix }}"]
-  type = "file"
-  url = "https://github.com/mvdan/sh/releases/download/{{ $shfmt_version }}/shfmt_{{ $shfmt_version }}_{{ $os }}_{{ $arch }}{{ $binsuffix }}"
+["{{ $binpath }}/zoxide{{ $binsuffix }}"]
+  type = "archive-file"
+  url = "https://github.com/ajeetdsouza/zoxide/releases/download/{{ $zoxide_version }}/zoxide-{{ $zoxide_version_no_v }}-{{ $zoxide_target }}.{{ $zoxide_ext }}"
+  path = "zoxide{{ $binsuffix }}"
   executable = true
-  refreshPeriod = "{{ $refreshPeriod }}"
+  refreshPeriod = "0"
+  stripComponents = 0
+
+{{ end }}
+
+{{/* Atuin - shell history */}}
+{{- $atuin_version := (gitHubLatestRelease "atuinsh/atuin").TagName -}}
+{{- $atuin_target := "" -}}
+{{- if eq $os "darwin" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $atuin_target = "x86_64-apple-darwin" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $atuin_target = "aarch64-apple-darwin" -}}
+{{-   end -}}
+{{- else if eq $os "linux" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $atuin_target = "x86_64-unknown-linux-gnu" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $atuin_target = "aarch64-unknown-linux-gnu" -}}
+{{-   end -}}
+{{- end -}}
+
+{{/* Skip for Nix, FreeBSD, Chimera Linux, and Windows (no binaries - use cargo) */}}
+{{ if and (ne $atuin_target "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera") (eq .chezmoi.os "windows"))) }}
+
+["{{ $binpath }}/atuin{{ $binsuffix }}"]
+  type = "archive-file"
+  url = "https://github.com/atuinsh/atuin/releases/download/{{ $atuin_version }}/atuin-{{ $atuin_target }}.tar.gz"
+  path = "atuin{{ $binsuffix }}"
+  executable = true
+  refreshPeriod = "0"
+  stripComponents = 1
 
 {{ end }}

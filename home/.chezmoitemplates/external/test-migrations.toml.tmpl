@@ -1,0 +1,444 @@
+{{- $os := .chezmoi.os -}}
+{{- $arch := .chezmoi.arch -}}
+{{- $binarch := $arch -}}
+{{- $refreshPeriod := .external.refreshPeriod -}}
+{{- if eq .chezmoi.arch "amd64" -}}
+{{-   $binarch = "x86_64" -}}
+{{- else if eq .chezmoi.arch "arm64" -}}
+{{-   $binarch = "aarch64" -}}
+{{- end -}}
+{{- $binpath := ".local/bin" -}}
+{{- $binsuffix := "" -}}
+{{- if eq $os "windows" -}}
+{{-   $binpath = "AppData/Local/Programs/bin" -}}
+{{-   $binsuffix = ".exe" -}}
+{{- end -}}
+
+{{/* =================================================================
+     TESTING AREA FOR EXTERNAL MIGRATIONS
+
+     This file is for prototyping new external configurations before
+     integration into the main external files.
+
+     To enable testing:
+     1. Uncomment the includeTemplate line in .chezmoiexternal.toml.tmpl
+     2. Add your prototype configuration below
+     3. Run: chezmoi apply --force
+     4. Verify the tool downloads and works
+     5. Test cross-platform by overriding $os/$arch variables
+     6. Once validated, move to appropriate file in .chezmoitemplates/external/
+
+     ================================================================= */}}
+
+
+{{/* ALL PREVIOUS TEST BATCHES HAVE BEEN MIGRATED:
+
+     Batch 1 - Migrated to shell-tools.toml.tmpl and dev-tools.toml.tmpl:
+       ✅ direnv → shell-tools.toml.tmpl
+       ✅ fzf → shell-tools.toml.tmpl
+       ✅ shfmt → dev-tools.toml.tmpl
+
+     Batch 2 - Migrated to core-tools.toml.tmpl:
+       ✅ jq → core-tools.toml.tmpl
+       ✅ bat → core-tools.toml.tmpl
+       ✅ ripgrep → core-tools.toml.tmpl
+       ✅ fd → core-tools.toml.tmpl
+
+     Batch 3 - Migrated to shell-tools.toml.tmpl:
+       ✅ zoxide → shell-tools.toml.tmpl
+       ✅ atuin → shell-tools.toml.tmpl
+
+     Batch 4 - Migrated to scm-tools.toml.tmpl:
+       ✅ delta → scm-tools.toml.tmpl
+       ✅ gh → scm-tools.toml.tmpl
+
+     Batch 5 - Migrated to utilities.toml.tmpl:
+       ✅ duf → utilities.toml.tmpl
+       ✅ dua → utilities.toml.tmpl
+
+     Batch 6 - Migrated to core-tools.toml.tmpl and utilities.toml.tmpl:
+       ✅ sd → core-tools.toml.tmpl
+       ✅ sad → core-tools.toml.tmpl
+       ✅ tealdeer → utilities.toml.tmpl
+
+     Batch 7 - Migrated to scm-tools.toml.tmpl:
+       ✅ jj → scm-tools.toml.tmpl
+       ✅ difftastic → scm-tools.toml.tmpl
+       ✅ git-absorb → scm-tools.toml.tmpl
+       ✅ jira-cli → scm-tools.toml.tmpl
+
+     Total: 21 tools successfully migrated and tested
+*/}}
+
+
+{{/* ===== BATCH 5: Disk Usage Tools (duf, dua) ===== */}}
+
+{{/* ACTIVE TEST: duf */}}
+
+{{- $duf_version := (gitHubLatestRelease "muesli/duf").TagName | trimPrefix "v" -}}
+{{- $duf_ext := "tar.gz" -}}
+{{- $duf_arch := $arch -}}
+{{- if eq $arch "amd64" -}}
+{{-   $duf_arch = "x86_64" -}}
+{{- end -}}
+{{- if eq $os "windows" -}}
+{{-   $duf_ext = "zip" -}}
+{{- end -}}
+
+{{/* Pattern 1: HAS FreeBSD binaries - skip only Nix and Chimera */}}
+{{ if not (or .use_nix (eq .osid "linux-chimera")) }}
+
+["{{ $binpath }}/duf{{ $binsuffix }}"]
+  type = "archive-file"
+  url = "https://github.com/muesli/duf/releases/download/v{{ $duf_version }}/duf_{{ $duf_version }}_{{ $os }}_{{ $duf_arch }}.{{ $duf_ext }}"
+  path = "duf{{ $binsuffix }}"
+  executable = true
+  refreshPeriod = "0"
+
+{{ end }}
+
+
+{{/* ACTIVE TEST: dua */}}
+
+{{- $dua_version := (gitHubLatestRelease "Byron/dua-cli").TagName -}}
+{{- $dua_target := "" -}}
+{{- $dua_ext := "tar.gz" -}}
+{{- if eq $os "darwin" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $dua_target = "x86_64-apple-darwin" -}}
+{{-   end -}}
+{{/* macOS arm64 has no binaries - skip */}}
+{{- else if eq $os "linux" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $dua_target = "x86_64-unknown-linux-musl" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $dua_target = "aarch64-unknown-linux-musl" -}}
+{{-   else if eq $arch "arm" -}}
+{{-     $dua_target = "arm-unknown-linux-gnueabihf" -}}
+{{-   end -}}
+{{- else if eq $os "windows" -}}
+{{-   $dua_ext = "zip" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $dua_target = "x86_64-pc-windows-msvc" -}}
+{{-   else if eq $arch "386" -}}
+{{-     $dua_target = "i686-pc-windows-msvc" -}}
+{{-   end -}}
+{{- end -}}
+
+{{/* Pattern 2: NO FreeBSD binaries, NO macOS arm64 */}}
+{{ if and (ne $dua_target "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
+
+["{{ $binpath }}/dua{{ $binsuffix }}"]
+  type = "archive-file"
+  url = "https://github.com/Byron/dua-cli/releases/download/{{ $dua_version }}/dua-{{ $dua_version }}-{{ $dua_target }}.{{ $dua_ext }}"
+  path = "dua{{ $binsuffix }}"
+  executable = true
+  refreshPeriod = "0"
+  stripComponents = 1
+
+{{ end }}
+
+
+{{/* ===== BATCH 6: Text Processing Tools (sd, sad, tealdeer) ===== */}}
+
+{{/* ACTIVE TEST: sd */}}
+
+{{- $sd_version := (gitHubLatestRelease "chmln/sd").TagName -}}
+{{- $sd_target := "" -}}
+{{- $sd_ext := "tar.gz" -}}
+{{- if eq $os "darwin" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $sd_target = "x86_64-apple-darwin" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $sd_target = "aarch64-apple-darwin" -}}
+{{-   end -}}
+{{- else if eq $os "linux" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $sd_target = "x86_64-unknown-linux-musl" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $sd_target = "aarch64-unknown-linux-musl" -}}
+{{-   else if eq $arch "arm" -}}
+{{-     $sd_target = "arm-unknown-linux-gnueabihf" -}}
+{{-   end -}}
+{{- else if eq $os "windows" -}}
+{{-   $sd_ext = "zip" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $sd_target = "x86_64-pc-windows-msvc" -}}
+{{-   end -}}
+{{- end -}}
+
+{{/* Pattern 2: NO FreeBSD binaries */}}
+{{ if and (ne $sd_target "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
+
+["{{ $binpath }}/sd{{ $binsuffix }}"]
+  type = "archive-file"
+  url = "https://github.com/chmln/sd/releases/download/{{ $sd_version }}/sd-{{ $sd_version }}-{{ $sd_target }}.{{ $sd_ext }}"
+  path = "sd{{ $binsuffix }}"
+  executable = true
+  refreshPeriod = "0"
+  stripComponents = 1
+
+{{ end }}
+
+
+{{/* ACTIVE TEST: sad */}}
+
+{{- $sad_version := (gitHubLatestRelease "ms-jpq/sad").TagName -}}
+{{- $sad_target := "" -}}
+{{- if eq $os "darwin" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $sad_target = "x86_64-apple-darwin" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $sad_target = "aarch64-apple-darwin" -}}
+{{-   end -}}
+{{- else if eq $os "linux" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $sad_target = "x86_64-unknown-linux-musl" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $sad_target = "aarch64-unknown-linux-musl" -}}
+{{-   end -}}
+{{- else if eq $os "windows" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $sad_target = "x86_64-pc-windows-msvc" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $sad_target = "aarch64-pc-windows-msvc" -}}
+{{-   end -}}
+{{- end -}}
+
+{{/* Pattern 2: NO FreeBSD binaries - Note: sad uses just target name, all .zip */}}
+{{ if and (ne $sad_target "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
+
+["{{ $binpath }}/sad{{ $binsuffix }}"]
+  type = "archive-file"
+  url = "https://github.com/ms-jpq/sad/releases/download/{{ $sad_version }}/{{ $sad_target }}.zip"
+  path = "sad{{ $binsuffix }}"
+  executable = true
+  refreshPeriod = "0"
+
+{{ end }}
+
+
+{{/* ACTIVE TEST: tealdeer */}}
+
+{{- $tealdeer_version := (gitHubLatestRelease "tealdeer-rs/tealdeer").TagName -}}
+{{- $tealdeer_file := "" -}}
+{{- if eq $os "darwin" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $tealdeer_file = "tealdeer-macos-x86_64" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $tealdeer_file = "tealdeer-macos-aarch64" -}}
+{{-   end -}}
+{{- else if eq $os "linux" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $tealdeer_file = "tealdeer-linux-x86_64-musl" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $tealdeer_file = "tealdeer-linux-aarch64-musl" -}}
+{{-   else if eq $arch "arm" -}}
+{{-     $tealdeer_file = "tealdeer-linux-armv7-musleabihf" -}}
+{{-   else if eq $arch "386" -}}
+{{-     $tealdeer_file = "tealdeer-linux-i686-musl" -}}
+{{-   end -}}
+{{- else if eq $os "windows" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $tealdeer_file = "tealdeer-windows-x86_64-msvc.exe" -}}
+{{-   end -}}
+{{- end -}}
+
+{{/* Pattern 2: NO FreeBSD binaries - Plain binary files */}}
+{{ if and (ne $tealdeer_file "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
+
+["{{ $binpath }}/tealdeer{{ $binsuffix }}"]
+  type = "file"
+  url = "https://github.com/tealdeer-rs/tealdeer/releases/download/{{ $tealdeer_version }}/{{ $tealdeer_file }}"
+  executable = true
+  refreshPeriod = "0"
+
+{{ end }}
+
+
+{{/* ===== BATCH 7: SCM Tools (jj, difftastic, git-absorb, jira-cli) ===== */}}
+
+{{/* ACTIVE TEST: jj (jujutsu) */}}
+
+{{- $jj_version := (gitHubLatestRelease "jj-vcs/jj").TagName -}}
+{{- $jj_target := "" -}}
+{{- $jj_ext := "tar.gz" -}}
+{{- if eq $os "darwin" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $jj_target = "x86_64-apple-darwin" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $jj_target = "aarch64-apple-darwin" -}}
+{{-   end -}}
+{{- else if eq $os "linux" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $jj_target = "x86_64-unknown-linux-musl" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $jj_target = "aarch64-unknown-linux-musl" -}}
+{{-   end -}}
+{{- else if eq $os "windows" -}}
+{{-   $jj_ext = "zip" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $jj_target = "x86_64-pc-windows-msvc" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $jj_target = "aarch64-pc-windows-msvc" -}}
+{{-   end -}}
+{{- end -}}
+
+{{/* Pattern 2: NO FreeBSD binaries */}}
+{{ if and (ne $jj_target "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
+
+["{{ $binpath }}/jj{{ $binsuffix }}"]
+  type = "archive-file"
+  url = "https://github.com/jj-vcs/jj/releases/download/{{ $jj_version }}/jj-{{ $jj_version }}-{{ $jj_target }}.{{ $jj_ext }}"
+  path = "jj{{ $binsuffix }}"
+  executable = true
+  refreshPeriod = "0"
+  stripComponents = 1
+
+{{ end }}
+
+
+{{/* ACTIVE TEST: difftastic */}}
+
+{{- $difft_version := (gitHubLatestRelease "Wilfred/difftastic").TagName -}}
+{{- $difft_target := "" -}}
+{{- $difft_ext := "tar.gz" -}}
+{{- if eq $os "darwin" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $difft_target = "x86_64-apple-darwin" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $difft_target = "aarch64-apple-darwin" -}}
+{{-   end -}}
+{{- else if eq $os "linux" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $difft_target = "x86_64-unknown-linux-musl" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $difft_target = "aarch64-unknown-linux-gnu" -}}
+{{-   end -}}
+{{- else if eq $os "windows" -}}
+{{-   $difft_ext = "zip" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $difft_target = "x86_64-pc-windows-msvc" -}}
+{{-   else if eq $arch "arm64" -}}
+{{-     $difft_target = "aarch64-pc-windows-msvc" -}}
+{{-   end -}}
+{{- end -}}
+
+{{/* Pattern 2: NO FreeBSD binaries - Note: NO version in filename! */}}
+{{ if and (ne $difft_target "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
+
+["{{ $binpath }}/difft{{ $binsuffix }}"]
+  type = "archive-file"
+  url = "https://github.com/Wilfred/difftastic/releases/download/{{ $difft_version }}/difft-{{ $difft_target }}.{{ $difft_ext }}"
+  path = "difft{{ $binsuffix }}"
+  executable = true
+  refreshPeriod = "0"
+  stripComponents = 0
+
+{{ end }}
+
+
+{{/* ACTIVE TEST: git-absorb */}}
+
+{{- $absorb_version := (gitHubLatestRelease "tummychow/git-absorb").TagName -}}
+{{- $absorb_target := "" -}}
+{{- $absorb_ext := "tar.gz" -}}
+{{- if eq $os "darwin" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $absorb_target = "x86_64-apple-darwin" -}}
+{{-   end -}}
+{{/* macOS arm64 has no binaries - use Nix/Homebrew/cargo fallback */}}
+{{- else if eq $os "linux" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $absorb_target = "x86_64-unknown-linux-musl" -}}
+{{-   else if eq $arch "arm" -}}
+{{-     $absorb_target = "arm-unknown-linux-gnueabihf" -}}
+{{-   end -}}
+{{/* Linux arm64 has no binaries - use Nix/cargo fallback */}}
+{{- else if eq $os "windows" -}}
+{{-   $absorb_ext = "zip" -}}
+{{-   if eq $arch "amd64" -}}
+{{-     $absorb_target = "x86_64-pc-windows-msvc" -}}
+{{-   end -}}
+{{- end -}}
+
+{{/* Pattern 2: NO FreeBSD, NO macOS arm64, NO Linux arm64 */}}
+{{ if and (ne $absorb_target "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
+
+["{{ $binpath }}/git-absorb{{ $binsuffix }}"]
+  type = "archive-file"
+  url = "https://github.com/tummychow/git-absorb/releases/download/{{ $absorb_version }}/git-absorb-{{ $absorb_version }}-{{ $absorb_target }}.{{ $absorb_ext }}"
+  path = "git-absorb{{ $binsuffix }}"
+  executable = true
+  refreshPeriod = "0"
+  stripComponents = 1
+
+{{ end }}
+
+
+{{/* ACTIVE TEST: jira-cli (ankitpokhrel/jira-cli - verified correct repo!) */}}
+
+{{- $jira_version := (gitHubLatestRelease "ankitpokhrel/jira-cli").TagName -}}
+{{- $jira_os := $os -}}
+{{- $jira_arch := $arch -}}
+{{- $jira_ext := "tar.gz" -}}
+{{- if eq $os "darwin" -}}
+{{-   $jira_os = "macOS" -}}
+{{- end -}}
+{{- if eq $arch "amd64" -}}
+{{-   $jira_arch = "x86_64" -}}
+{{- end -}}
+{{- if eq $os "windows" -}}
+{{-   $jira_ext = "zip" -}}
+{{- end -}}
+
+{{/* Pattern 2: NO FreeBSD binaries - Uses macOS/linux/windows naming */}}
+{{ if not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera")) }}
+
+["{{ $binpath }}/jira{{ $binsuffix }}"]
+  type = "archive-file"
+  url = "https://github.com/ankitpokhrel/jira-cli/releases/download/{{ $jira_version }}/jira_{{ $jira_version | trimPrefix "v" }}_{{ $jira_os }}_{{ $jira_arch }}.{{ $jira_ext }}"
+  path = "bin/jira{{ $binsuffix }}"
+  executable = true
+  refreshPeriod = "0"
+  stripComponents = 1
+
+{{ end }}
+
+
+{{/* TESTING: Template for next tool
+
+     IMPORTANT: Choose the correct conditional pattern based on FreeBSD binary availability!
+
+     Pattern 1 - WITH FreeBSD binaries (direnv, fzf):
+     {{ if not (or .use_nix (eq .chezmoi.osRelease.id "chimera")) }}
+
+     Pattern 2 - WITHOUT FreeBSD binaries (most tools - jq, bat, ripgrep, fd, delta, gh, etc):
+     {{ if not (or .use_nix (eq .chezmoi.os "freebsd") (eq .chezmoi.osRelease.id "chimera")) }}
+
+     Pattern 3 - No macOS binaries (eza):
+     {{ if not (or .use_nix (eq .chezmoi.os "freebsd") (eq .chezmoi.osRelease.id "chimera") (eq .chezmoi.os "darwin")) }}
+
+     Pattern 4 - No Windows binaries (atuin):
+     {{ if not (or .use_nix (eq .chezmoi.os "freebsd") (eq .chezmoi.osRelease.id "chimera") (eq .chezmoi.os "windows")) }}
+
+     Pattern 5 - Partial macOS support (choose - arm64 only, no x86_64):
+     {{ if and (ne $suffix "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
+     Note: Set $suffix to empty string for unsupported arch (e.g., macOS x86_64)
+
+{{- $TOOL_version := (gitHubLatestRelease "OWNER/REPO").TagName -}}
+
+{{ if not (or .use_nix (eq .chezmoi.os "freebsd") (eq .chezmoi.osRelease.id "chimera")) }}
+
+["{{ $binpath }}/TOOL{{ $binsuffix }}"]
+  type = "file"  # or "archive-file"
+  url = "https://github.com/OWNER/REPO/releases/download/{{ $TOOL_version }}/ASSET-NAME-PATTERN"
+  executable = true
+  refreshPeriod = "0"  # Use "0" for release tags (immutable), use "{{ $refreshPeriod }}" for branch HEAD
+  # Add these for archives:
+  # path = "TOOL{{ $binsuffix }}"
+  # stripComponents = 1
+
+{{ end }}
+
+*/}}

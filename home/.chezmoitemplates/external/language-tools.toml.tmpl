@@ -1,0 +1,46 @@
+{{/* Language tools and package managers - Category 6 from Issue #8 Migration Plan */}}
+{{- $os := .chezmoi.os -}}
+{{- $arch := .chezmoi.arch -}}
+{{- $binarch := $arch -}}
+{{- $refreshPeriod := .external.refreshPeriod -}}
+{{- if eq .chezmoi.arch "amd64" -}}
+{{-   $binarch = "x86_64" -}}
+{{- else if eq .chezmoi.arch "arm64" -}}
+{{-   $binarch = "aarch64" -}}
+{{- end -}}
+{{- $binpath := ".local/bin" -}}
+{{- $binsuffix := "" -}}
+{{- if eq $os "windows" -}}
+{{-   $binpath = "AppData/Local/Programs/bin" -}}
+{{-   $binsuffix = ".exe" -}}
+{{- end -}}
+
+{{/* uv - Python package and tool manager */}}
+{{- $uv_suffix := "" -}}
+{{- $uv_version := (gitHubLatestRelease "astral-sh/uv").TagName | trimPrefix "v" -}}
+{{- $uv_cmds := (list "uv" "uvx") -}}
+{{- if eq $os "linux" -}}
+{{-   $uv_suffix = "unknown-linux-musl.tar.gz" -}}
+{{- else if eq $os "darwin" -}}
+{{-   $uv_suffix = "apple-darwin.tar.gz" -}}
+{{- else if eq $os "windows" -}}
+{{-   $uv_suffix = "pc-windows-msvc.zip" -}}
+{{-   $uv_cmds = mustAppend $uv_cmds "uvw" -}}
+{{- end -}}
+
+{{/* Skip for Nix, FreeBSD, and Chimera Linux */}}
+{{ if and (ne $uv_suffix "") (not (or .use_nix (eq $os "freebsd") (eq .osid "linux-chimera"))) }}
+{{   range $index, $cmd := $uv_cmds -}}
+
+["{{ $binpath }}/{{ $cmd }}{{ $binsuffix }}"]
+  type = "archive-file"
+  url = "https://github.com/astral-sh/uv/releases/download/{{ $uv_version }}/uv-{{ $binarch }}-{{ $uv_suffix }}"
+  path = "{{ $cmd }}{{ $binsuffix }}"
+{{ if ne $os "windows" -}}
+  stripComponents = 1
+{{- end }}
+  executable = true
+  refreshPeriod = "0"
+
+{{   end -}}
+{{ end }}

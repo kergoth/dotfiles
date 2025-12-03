@@ -28,52 +28,6 @@
 {{   end -}}
 {{ end }}
 
-{{- if not (eq .chezmoi.os "freebsd") }}
-
-{{/* Install uv/uvx */}}
-{{- $uv_suffix := "" }}
-{{- $uv_version := (gitHubLatestRelease "astral-sh/uv").TagName | trimPrefix "v" }}
-{{- $uv_cmds := (list "uv" "uvx") }}
-{{ if eq $os "linux" }}
-{{   $uv_suffix = "unknown-linux-musl.tar.gz" }}
-{{ else if eq $os "darwin" }}
-{{   $uv_suffix = "apple-darwin.tar.gz" }}
-{{ else if eq $os "windows" }}
-{{   $uv_suffix = "pc-windows-msvc.zip" }}
-{{   $uv_cmds = mustAppend $uv_cmds "uvw" }}
-{{ end }}
-{{ if ne $uv_suffix "" }}
-{{   range $index, $cmd := $uv_cmds -}}
-["{{ $binpath }}/{{ $cmd }}{{ $binsuffix }}"]
-  type = "archive-file"
-  url = "https://github.com/astral-sh/uv/releases/download/{{- $uv_version -}}/uv-{{- $binarch -}}-{{- $uv_suffix -}}"
-  path = "{{ $cmd }}{{ $binsuffix }}"
-{{ if ne $os "windows" -}}
-  stripComponents = 1
-{{- end }}
-  executable = true
-  refreshPeriod = "0"
-{{   end -}}
-{{ end }}
-
-{{ end }}
-
-{{/* Install choose */}}
-{{ $choose_version := (gitHubLatestRelease "theryangeary/choose").TagName | trimPrefix "v" }}
-{{ $choose_suffix := "" }}
-{{ if eq $os "windows" }}
-{{   $choose_suffix = "pc-windows-gnu" }}
-{{ else if eq $os "linux" }}
-{{   $choose_suffix = "unknown-linux-gnu" }}
-{{ end }}
-{{ if ne $choose_suffix "" }}
-["{{ $binpath }}/choose{{ $binsuffix }}"]
-type = "file"
-url = "https://github.com/theryangeary/choose/releases/download/v{{ $choose_version }}/choose-{{ $binarch }}-{{ $choose_suffix }}"
-executable = true
-refreshPeriod = "0"
-{{ end }}
-
 {{/* Install rusage */}}
 {{ $rusage_suffix := "" }}
 {{ if eq $os "windows" }}
@@ -84,46 +38,6 @@ type = "file"
 url = "https://justine.lol/rusage/rusage.com"
 executable = true
 refreshPeriod = "{{ $refreshPeriod }}"
-
-{{/* Install ghq */}}
-{{ $ghq_version := (gitHubLatestRelease "x-motemen/ghq").TagName | trimPrefix "v" }}
-{{ $ghq_suffix := "" }}
-{{ if eq $os "windows" }}
-{{   $ghq_suffix = printf "windows_%s.zip" $arch }}
-{{ else if eq $os "linux" }}
-{{   $ghq_suffix = printf "linux_%s.zip" $arch }}
-{{ else if eq $os "darwin" }}
-{{   $ghq_suffix = printf "darwin_%s.zip" $arch }}
-{{ end }}
-{{ if ne $ghq_suffix "" }}
-["{{ $binpath }}/ghq{{ $binsuffix }}"]
-type = "archive-file"
-url = "https://github.com/x-motemen/ghq/releases/download/v{{ $ghq_version }}/ghq_{{ $ghq_suffix }}"
-path = "ghq{{ $binsuffix }}"
-stripComponents = 1
-executable = true
-refreshPeriod = "0"
-{{ end }}
-
-{{/* Install shellcheck */}}
-{{ $shellcheck_version := (gitHubLatestRelease "koalaman/shellcheck").TagName | trimPrefix "v" }}
-{{ $shellcheck_suffix := "" }}
-{{ if eq $os "windows" }}
-{{   $shellcheck_suffix = "" }}
-{{ else if eq $os "linux" }}
-{{   $shellcheck_suffix = printf ".linux.%s.tar.xz" $binarch }}
-{{ else if eq $os "darwin" }}
-{{   $shellcheck_suffix = printf ".darwin.%s.tar.xz" $binarch }}
-{{ end }}
-{{ if ne $shellcheck_suffix "" }}
-["{{ $binpath }}/shellcheck{{ $binsuffix }}"]
-type = "archive-file"
-url = "https://github.com/koalaman/shellcheck/releases/download/v{{ $shellcheck_version }}/shellcheck-v{{ $shellcheck_version }}{{ $shellcheck_suffix }}"
-path = "shellcheck{{ $binsuffix }}"
-stripComponents = 1
-executable = true
-refreshPeriod = "0"
-{{ end }}
 
 {{ if .steamdeck }}
 
