@@ -1,6 +1,3 @@
 experimental-features = nix-command flakes
 max-jobs = auto
 extra-nix-path = nixpkgs=flake:nixpkgs
-{{- if ne .chezmoi.os "darwin" }}
-auto-optimise-store = true
-{{- end }}

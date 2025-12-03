@@ -41,10 +41,14 @@
 {{- end -}}
 
 {{/* detect GitHub codespaces, VSCode remote containers, Docker containers, Multipass VMs, and Vagrant boxes */}}
-{{- if or (env "CODESPACES") (env "CONTAINER_ID") (env "REMOTE_CONTAINERS_IPC") (eq .chezmoi.username "root" "ubuntu" "vagrant" "vscode") -}}
+{{- if or (env "CODESPACES") (env "CONTAINER_ID") (env "REMOTE_CONTAINERS_IPC") (env "DEVPOD") (eq .chezmoi.username "root" "ubuntu" "vagrant" "vscode") -}}
 {{-   $ephemeral = true -}}
 {{-   $headless = true -}}
 {{- end -}}
+
+{{- $devpod := env "DEVPOD" | not | not -}}
+{{- $has_devpod_gpg := stat (joinPath .chezmoi.homeDir ".gnupg/S.gpg-agent") -}}
+{{- $skip_gpg := and $devpod $has_devpod_gpg | not | not -}}
 
 {{/* work around unreliable hostname on darwin */}}
 {{- $hostname := .chezmoi.hostname -}}
@@ -214,6 +218,9 @@ encryption = "age"
     osid = {{ $osid | quote }}
     wsl2 = {{ $wsl2 }}
     steamdeck = {{ $steamdeck }}
+
+    devpod = {{ $devpod }}
+    skip_gpg = {{ $skip_gpg }}
 
 {{- if eq .chezmoi.os "darwin" }}
     macos_version = {{ $macos_version }}

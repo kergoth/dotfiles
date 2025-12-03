@@ -1,3 +1,4 @@
+{{- if not .skip_gpg }}
 {{- $key_name := "" -}}
 {{- if .personal -}}
 {{-   $key_name = "personal" -}}
@@ -61,4 +62,5 @@ import_ownertrust "{{ .chezmoi.workingTree }}/settings/gnupg/{{ $key_name }}/own
 {{- end }}
 
 echo >&2 "GnuPG setup complete."
+{{- end }}
 {{- end }}

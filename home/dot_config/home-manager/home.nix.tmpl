@@ -114,6 +114,7 @@ in {
     gpg.enable = true;
   };
 
+{{- if not .devpod }}
   # Enable gpg-agent with pinentry
   services.gpg-agent = {
     enable = true;
@@ -121,6 +122,7 @@ in {
     defaultCacheTtl = 3600;
     maxCacheTtl = 72000;
   };
+{{- end }}
 
   nix.nixPath = ["nixpkgs=flake:nixpkgs"];
 
