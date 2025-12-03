@@ -33,6 +33,9 @@
 {{-     $use_nix = false }}
 {{-   end }}
 {{- end }}
+{{- if or (not user_setup) (not (lookPath "nix")) }}
+{{-   $use_nix = false }}
+{{- end }}
 
 {{/* detect macOS version */}}
 {{- $macos_version := "" -}}
