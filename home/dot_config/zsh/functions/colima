@@ -1,0 +1,1 @@
+LIMA_SHELL= command colima "$@"
