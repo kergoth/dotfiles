@@ -14,40 +14,6 @@ trap 'rm -rf "$tmpdir"' EXIT INT TERM
 
 ret=0
 
-{{- if and .user_setup (not .use_nix) -}}
-# Install tools
-(
-    cd "$tmpdir"
-
-    set +e
-
-    if ! [ -e ~/.local/bin/eget ]; then
-        # Install eget
-        curl -o "$tmpdir/eget.sh" https://zyedidia.github.io/eget.sh &&
-            shasum -a 256 "$tmpdir/eget.sh" &&
-            bash "$tmpdir/eget.sh" &&
-            mkdir -p ~/.local/bin/ &&
-            mv eget ~/.local/bin/
-    fi
-
-    # Can't install via release binary: unar, zstd, patchutils
-)
-
-{{ if and (not .headless) (not .steamdeck) (not (env "CONTAINER_ID")) -}}
-# Install any non-Nix GUI Applications
-if ! has zed; then
-    msg "Installing Zed"
-    curl -f https://zed.dev/install.sh | sh
-fi
-{{- end }}
-
-# Install Claude Code
-if ! has claude; then
-    msg "Installing Claude Code"
-    curl -fsSL https://claude.ai/install.sh | bash
-fi
-{{- end }}
-
 # Dotfiles
 if [ -z "${CHEZMOI:-}" ]; then
     "$repodir/script/setup" || ret=$?
@@ -59,6 +25,18 @@ if [ -z "${CHEZMOI:-}" ]; then
 fi
 
 {{- if and .user_setup (not .use_nix) -}}
+{{ if and (not .headless) (not .steamdeck) (not (env "CONTAINER_ID")) -}}
+if ! has zed; then
+    msg "Installing Zed"
+    curl -f https://zed.dev/install.sh | sh
+fi
+{{- end }}
+
+if ! has claude; then
+    msg "Installing Claude Code"
+    curl -fsSL https://claude.ai/install.sh | bash
+fi
+
 # The 'uv' installed tools must be done after dotfiles setup to ensure 'uv' is
 # available. As a result, dtrx, imerge, and revise will be unavailable during
 # the 'chezmoi apply'.
