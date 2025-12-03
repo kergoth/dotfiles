@@ -33,5 +33,5 @@ for file in nix/nix.conf.tmpl home-manager/home.nix.tmpl \
 done
 
 echo >&2 "Applying home manager configuration"
-HOME="$CHEZMOI_HOME_DIR" nix run 'home-manager/master' -- switch
+HOME="$CHEZMOI_HOME_DIR" USER="${USER:-${LOGNAME:-}}" nix run 'home-manager/master' -- switch
 {{- end -}}
