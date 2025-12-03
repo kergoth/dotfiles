@@ -83,6 +83,11 @@ in {
 
     # Nix tools
     nvd
+
+    # Security
+{{- if .devpod }}
+    gnupg
+{{- end }}
   ] ++ lib.optionals stdenv.isDarwin [
     darwin.trash
 {{- if .containers }}
@@ -110,8 +115,10 @@ in {
     jq.enable = true;
     bat.enable = true;
 
+{{- if not .devpod }}
     # gnupg
     gpg.enable = true;
+{{- end }}
   };
 
 {{- if not .devpod }}
