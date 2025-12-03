@@ -93,7 +93,6 @@
   url = "https://github.com/muesli/duf/releases/download/v{{ $duf_version }}/duf_{{ $duf_version }}_{{ $os }}_{{ $duf_arch }}.{{ $duf_ext }}"
   path = "duf{{ $binsuffix }}"
   executable = true
-  refreshPeriod = "0"
 
 {{ end }}
 
@@ -133,7 +132,6 @@
   url = "https://github.com/Byron/dua-cli/releases/download/{{ $dua_version }}/dua-{{ $dua_version }}-{{ $dua_target }}.{{ $dua_ext }}"
   path = "dua{{ $binsuffix }}"
   executable = true
-  refreshPeriod = "0"
   stripComponents = 1
 
 {{ end }}
@@ -175,7 +173,6 @@
   url = "https://github.com/chmln/sd/releases/download/{{ $sd_version }}/sd-{{ $sd_version }}-{{ $sd_target }}.{{ $sd_ext }}"
   path = "sd{{ $binsuffix }}"
   executable = true
-  refreshPeriod = "0"
   stripComponents = 1
 
 {{ end }}
@@ -213,7 +210,6 @@
   url = "https://github.com/ms-jpq/sad/releases/download/{{ $sad_version }}/{{ $sad_target }}.zip"
   path = "sad{{ $binsuffix }}"
   executable = true
-  refreshPeriod = "0"
 
 {{ end }}
 
@@ -251,7 +247,6 @@
   type = "file"
   url = "https://github.com/tealdeer-rs/tealdeer/releases/download/{{ $tealdeer_version }}/{{ $tealdeer_file }}"
   executable = true
-  refreshPeriod = "0"
 
 {{ end }}
 
@@ -292,7 +287,6 @@
   url = "https://github.com/jj-vcs/jj/releases/download/{{ $jj_version }}/jj-{{ $jj_version }}-{{ $jj_target }}.{{ $jj_ext }}"
   path = "jj{{ $binsuffix }}"
   executable = true
-  refreshPeriod = "0"
   stripComponents = 1
 
 {{ end }}
@@ -332,7 +326,6 @@
   url = "https://github.com/Wilfred/difftastic/releases/download/{{ $difft_version }}/difft-{{ $difft_target }}.{{ $difft_ext }}"
   path = "difft{{ $binsuffix }}"
   executable = true
-  refreshPeriod = "0"
   stripComponents = 0
 
 {{ end }}
@@ -370,7 +363,6 @@
   url = "https://github.com/tummychow/git-absorb/releases/download/{{ $absorb_version }}/git-absorb-{{ $absorb_version }}-{{ $absorb_target }}.{{ $absorb_ext }}"
   path = "git-absorb{{ $binsuffix }}"
   executable = true
-  refreshPeriod = "0"
   stripComponents = 1
 
 {{ end }}
@@ -400,7 +392,6 @@
   url = "https://github.com/ankitpokhrel/jira-cli/releases/download/{{ $jira_version }}/jira_{{ $jira_version | trimPrefix "v" }}_{{ $jira_os }}_{{ $jira_arch }}.{{ $jira_ext }}"
   path = "bin/jira{{ $binsuffix }}"
   executable = true
-  refreshPeriod = "0"
   stripComponents = 1
 
 {{ end }}
@@ -434,7 +425,6 @@
   type = "file"  # or "archive-file"
   url = "https://github.com/OWNER/REPO/releases/download/{{ $TOOL_version }}/ASSET-NAME-PATTERN"
   executable = true
-  refreshPeriod = "0"  # Use "0" for release tags (immutable), use "{{ $refreshPeriod }}" for branch HEAD
   # Add these for archives:
   # path = "TOOL{{ $binsuffix }}"
   # stripComponents = 1

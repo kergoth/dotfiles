@@ -18,7 +18,6 @@
 type = "archive-file"
 url = "https://github.com/eth-p/bat-extras/releases/download/v{{- $bat_extras_version -}}/bat-extras-{{- index $splitver 0 -}}.{{- index $splitver 1 -}}.{{- index $splitver 2 -}}.zip"
 path = "{{ . }}"
-refreshPeriod = "0"
 stripComponents = 1
 executable = true
 {{ end }}
@@ -52,7 +51,6 @@ url = "https://github.com/tj/git-extras/archive/refs/tags/{{ $gitextras_version 
 path = "bin/git-alias"
 exact = true
 stripComponents = 1
-refreshPeriod = "0"
 
 [".local/bin/linux-bundle-clone"]
 type = "file"

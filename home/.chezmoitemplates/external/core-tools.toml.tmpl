@@ -29,7 +29,6 @@
   type = "file"
   url = "https://github.com/jqlang/jq/releases/download/{{ $jq_version }}/jq-{{ $jq_os }}-{{ $arch }}{{ $binsuffix }}"
   executable = true
-  refreshPeriod = "0"
 
 {{ end }}
 
@@ -70,7 +69,6 @@
   url = "https://github.com/sharkdp/bat/releases/download/{{ $bat_version }}/bat-{{ $bat_version }}-{{ $bat_target }}.{{ $bat_ext }}"
   path = "bat{{ $binsuffix }}"
   executable = true
-  refreshPeriod = "0"
   stripComponents = 1
 
 {{ end }}
@@ -110,7 +108,6 @@
   url = "https://github.com/BurntSushi/ripgrep/releases/download/{{ $rg_version }}/ripgrep-{{ $rg_version }}-{{ $rg_target }}.{{ $rg_ext }}"
   path = "rg{{ $binsuffix }}"
   executable = true
-  refreshPeriod = "0"
   stripComponents = 1
 
 {{ end }}
@@ -152,7 +149,6 @@
   url = "https://github.com/sharkdp/fd/releases/download/{{ $fd_version }}/fd-{{ $fd_version }}-{{ $fd_target }}.{{ $fd_ext }}"
   path = "fd{{ $binsuffix }}"
   executable = true
-  refreshPeriod = "0"
   stripComponents = 1
 
 {{ end }}
@@ -178,7 +174,6 @@
   type = "file"
   url = "https://github.com/theryangeary/choose/releases/download/v{{ $choose_version }}/choose-{{ $binarch }}-{{ $choose_suffix }}"
   executable = true
-  refreshPeriod = "0"
 
 {{ end }}
 
@@ -215,7 +210,6 @@
   url = "https://github.com/chmln/sd/releases/download/{{ $sd_version }}/sd-{{ $sd_version }}-{{ $sd_target }}.{{ $sd_ext }}"
   path = "sd{{ $binsuffix }}"
   executable = true
-  refreshPeriod = "0"
   stripComponents = 1
 
 {{ end }}
@@ -251,6 +245,5 @@
   url = "https://github.com/ms-jpq/sad/releases/download/{{ $sad_version }}/{{ $sad_target }}.zip"
   path = "sad{{ $binsuffix }}"
   executable = true
-  refreshPeriod = "0"
 
 {{ end }}

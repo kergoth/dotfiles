@@ -25,7 +25,6 @@
   type = "file"
   url = "https://github.com/mvdan/sh/releases/download/{{ $shfmt_version }}/shfmt_{{ $shfmt_version }}_{{ $os }}_{{ $arch }}{{ $binsuffix }}"
   executable = true
-  refreshPeriod = "0"
 
 {{ end }}
 
@@ -46,7 +45,6 @@
   url = "https://github.com/koalaman/shellcheck/releases/download/v{{ $shellcheck_version }}/shellcheck-v{{ $shellcheck_version }}{{ $shellcheck_suffix }}"
   path = "shellcheck{{ $binsuffix }}"
   executable = true
-  refreshPeriod = "0"
   stripComponents = 1
 
 {{ end }}

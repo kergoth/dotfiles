@@ -24,7 +24,6 @@
   stripComponents = 1
   path = "{{ . }}"
   executable = true
-  refreshPeriod = "0"
 {{   end -}}
 {{ end }}
 
@@ -48,7 +47,6 @@ type = "file"
 url = "https://github.com/restic/restic/releases/download/v{{ $restic_version }}/restic_{{ $restic_version }}_{{ $os }}_{{ $arch }}.bz2"
 filter.command = "bzcat"
 executable = true
-refreshPeriod = "0"
 
 {{/* Install rclone on the Steam Deck */}}
 ["{{ $binpath }}/rclone{{ $binsuffix }}"]

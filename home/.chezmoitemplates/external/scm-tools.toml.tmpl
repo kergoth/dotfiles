@@ -34,7 +34,6 @@
   url = "https://github.com/x-motemen/ghq/releases/download/v{{ $ghq_version }}/ghq_{{ $ghq_suffix }}"
   path = "ghq{{ $binsuffix }}"
   executable = true
-  refreshPeriod = "0"
   stripComponents = 1
 
 {{ end }}
@@ -74,7 +73,6 @@
   url = "https://github.com/dandavison/delta/releases/download/{{ $delta_version }}/delta-{{ $delta_version }}-{{ $delta_target }}.{{ $delta_ext }}"
   path = "delta{{ $binsuffix }}"
   executable = true
-  refreshPeriod = "0"
   stripComponents = 1
 
 {{ end }}
@@ -121,7 +119,6 @@
   url = "https://github.com/cli/cli/releases/download/{{ $gh_version }}/gh_{{ trimPrefix "v" $gh_version }}_{{ $gh_os }}_{{ $gh_arch }}.{{ $gh_ext }}"
   path = "gh{{ $binsuffix }}"
   executable = true
-  refreshPeriod = "0"
   stripComponents = 2
 
 {{ end }}
@@ -159,7 +156,6 @@
   url = "https://github.com/jj-vcs/jj/releases/download/{{ $jj_version }}/jj-{{ $jj_version }}-{{ $jj_target }}.{{ $jj_ext }}"
   path = "jj{{ $binsuffix }}"
   executable = true
-  refreshPeriod = "0"
   stripComponents = 1
 
 {{ end }}
@@ -197,7 +193,6 @@
   url = "https://github.com/Wilfred/difftastic/releases/download/{{ $difft_version }}/difft-{{ $difft_target }}.{{ $difft_ext }}"
   path = "difft{{ $binsuffix }}"
   executable = true
-  refreshPeriod = "0"
   stripComponents = 0
 
 {{ end }}
@@ -233,7 +228,6 @@
   url = "https://github.com/tummychow/git-absorb/releases/download/{{ $absorb_version }}/git-absorb-{{ $absorb_version }}-{{ $absorb_target }}.{{ $absorb_ext }}"
   path = "git-absorb{{ $binsuffix }}"
   executable = true
-  refreshPeriod = "0"
   stripComponents = 1
 
 {{ end }}
@@ -261,7 +255,6 @@
   url = "https://github.com/ankitpokhrel/jira-cli/releases/download/{{ $jira_version }}/jira_{{ $jira_version | trimPrefix "v" }}_{{ $jira_os }}_{{ $jira_arch }}.{{ $jira_ext }}"
   path = "bin/jira{{ $binsuffix }}"
   executable = true
-  refreshPeriod = "0"
   stripComponents = 1
 
 {{ end }}

@@ -25,7 +25,6 @@
   type = "file"
   url = "https://github.com/direnv/direnv/releases/download/{{ $direnv_version }}/direnv.{{ $os }}-{{ $arch }}"
   executable = true
-  refreshPeriod = "0"
 
 {{ end }}
 
@@ -45,7 +44,6 @@
   url = "https://github.com/junegunn/fzf/releases/download/{{ $fzf_version }}/fzf-{{ $fzf_version_no_v }}-{{ $os }}_{{ $arch }}.{{ $fzf_ext }}"
   path = "fzf{{ $binsuffix }}"
   executable = true
-  refreshPeriod = "0"
 
 {{ end }}
 
@@ -87,7 +85,6 @@
   url = "https://github.com/ajeetdsouza/zoxide/releases/download/{{ $zoxide_version }}/zoxide-{{ $zoxide_version_no_v }}-{{ $zoxide_target }}.{{ $zoxide_ext }}"
   path = "zoxide{{ $binsuffix }}"
   executable = true
-  refreshPeriod = "0"
   stripComponents = 0
 
 {{ end }}
@@ -117,7 +114,6 @@
   url = "https://github.com/atuinsh/atuin/releases/download/{{ $atuin_version }}/atuin-{{ $atuin_target }}.tar.gz"
   path = "atuin{{ $binsuffix }}"
   executable = true
-  refreshPeriod = "0"
   stripComponents = 1
 
 {{ end }}

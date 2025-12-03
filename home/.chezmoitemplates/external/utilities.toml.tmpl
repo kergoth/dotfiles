@@ -34,7 +34,6 @@
   url = "https://github.com/muesli/duf/releases/download/v{{ $duf_version }}/duf_{{ $duf_version }}_{{ $os }}_{{ $duf_arch }}.{{ $duf_ext }}"
   path = "duf{{ $binsuffix }}"
   executable = true
-  refreshPeriod = "0"
 
 {{ end }}
 
@@ -72,7 +71,6 @@
   url = "https://github.com/Byron/dua-cli/releases/download/{{ $dua_version }}/dua-{{ $dua_version }}-{{ $dua_target }}.{{ $dua_ext }}"
   path = "dua{{ $binsuffix }}"
   executable = true
-  refreshPeriod = "0"
   stripComponents = 1
 
 {{ end }}
@@ -109,6 +107,5 @@
   type = "file"
   url = "https://github.com/tealdeer-rs/tealdeer/releases/download/{{ $tealdeer_version }}/tealdeer-{{ $tealdeer_file }}"
   executable = true
-  refreshPeriod = "0"
 
 {{ end }}
