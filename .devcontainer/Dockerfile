@@ -56,3 +56,18 @@ RUN echo 'PATH="${HOME}/bin:${HOME}/.local/bin:${PATH}"' >>~/.bashrc
 RUN mkdir -p ~/.vscode-server
 
 ENV SHELL /bin/bash
+
+# Make sure we’re root for UID/GID adjusting
+USER root
+
+# Install gosu for privilege dropping
+RUN apt-get update && \
+    apt-get install -y gosu && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy the PUID/PGID entrypoint script from the repo
+COPY .devcontainer/entrypoint.sh /usr/local/bin/entrypoint
+RUN chmod +x /usr/local/bin/entrypoint
+
+ENTRYPOINT ["/usr/local/bin/entrypoint"]
+CMD ["bash"]
