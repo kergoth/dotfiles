@@ -32,10 +32,12 @@ if ! has zed; then
 fi
 {{- end }}
 
+{{ if not .work -}}
 if ! has claude; then
     msg "Installing Claude Code"
     curl -fsSL https://claude.ai/install.sh | bash
 fi
+{{- end }}
 
 # The 'uv' installed tools must be done after dotfiles setup to ensure 'uv' is
 # available. As a result, dtrx, imerge, and revise will be unavailable during
