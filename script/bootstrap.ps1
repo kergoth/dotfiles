@@ -57,15 +57,8 @@ chezmoi init --source $env:DOTFILES_DIR
 Set-UserOnlyFileAccess $env:USERPROFILE\.config\chezmoi\chezmoi.toml
 
 # Run any chezmoi scripts which install tooling, for use by the setup scripts
-#   Note that 'chezmoi apply' expects paths relative to the source, ignoring any
-#   .chezmoiroot, so we apply that directly here.
-$scripts = chezmoi managed --include=scripts --path-style=source-relative ~/.chezmoiscripts | 
+$scripts = chezmoi managed --include=scripts --path-style=source-absolute ~/.chezmoiscripts |
            Where-Object { $_ -match 'install-' }
-
-if (Test-Path "$env:DOTFILES_DIR\.chezmoiroot") {
-    $prefix = Get-Content "$env:DOTFILES_DIR\.chezmoiroot"
-    $scripts = $scripts | ForEach-Object { Join-Path $prefix $_ }
-}
 
 $scripts | ForEach-Object {
     chezmoi apply --include=scripts --source-path $_
