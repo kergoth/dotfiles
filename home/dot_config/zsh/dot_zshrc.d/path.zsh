@@ -30,10 +30,11 @@ if [[ -n $CARGO_HOME ]]; then
     path=($CARGO_HOME/bin $path)
 fi
 
-# Home Manager
+# Nix / Home Manager
 if [ -e "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]; then
     source "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
 fi
+path=($HOME/.nix-profile/bin $path)
 
 # Add a 'pythonpath' paired array like path/fpath
 typeset -gxT PYTHONPATH pythonpath
