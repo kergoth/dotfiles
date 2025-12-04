@@ -73,6 +73,11 @@ mas "Vinegar", id: 1591303229
 cask "dteoh-devdocs"
 {{- end }}
 
+# work
+{{ if and .work (not .use_nix) -}}
+brew "git-crypt"
+{{- end }}
+
 # containers
 {{ if .containers -}}
 cask "swiftbar"
