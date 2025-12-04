@@ -66,7 +66,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy the PUID/PGID entrypoint script from the repo
-COPY .devcontainer/entrypoint.sh /usr/local/bin/entrypoint
+COPY entrypoint.sh /usr/local/bin/entrypoint
 RUN chmod +x /usr/local/bin/entrypoint
 
 ENTRYPOINT ["/usr/local/bin/entrypoint"]
