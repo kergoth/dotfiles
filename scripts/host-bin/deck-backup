@@ -2,15 +2,33 @@
 
 set -euo pipefail
 
-LOCKFILE="/tmp/deck-backup.lock"
+XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-~/.config}
+XDG_STATE_HOME=${XDG_STATE_HOME:-~/.local/state}
+SCRIPT_NAME="${0##*/}"
+BACKUP_DIR="$XDG_CONFIG_HOME/$SCRIPT_NAME/backup.d"
 
 usage() {
-    echo "Usage: deck-backup [-h] [-c] [-f] [-s backup1,backup2,...]"
+    echo "Usage: $SCRIPT_NAME [-h] [-c] [-f] [-s backup1,backup2,...]"
     echo "Options:"
     echo "  -h    Display this help message."
     echo "  -c    Check the last backup times."
     echo "  -f    Force an immediate backup."
     echo "  -s    Specify individual backup scripts to run (comma-separated list)."
+}
+
+ensure_locked() {
+    local pidfile="$XDG_STATE_HOME/${1:-"$SCRIPT_NAME"}.pid"
+
+    if [ -s "$pidfile" ] && ps -p "$(cat "$pidfile")" >/dev/null 2>&1; then
+        echo >&2 "Process already running"
+        return 1
+    fi
+
+    mkdir -p "$XDG_STATE_HOME"
+    if ! echo $$ >"$pidfile"; then
+        echo >&2 "Could not create PID file"
+        return 2
+    fi
 }
 
 gather_backups() {
@@ -128,11 +146,6 @@ if [[ -n "${DISABLED_BACKUPS:-}" ]]; then
     exit 0
 fi
 
-STATE_DIR=~/.local/state/deck-backup
-mkdir -p "$STATE_DIR"
-
-BACKUP_DIR=~/.config/deck-backup/backup.d
-
 check_times=0
 force_backup=false
 specified_backups=
@@ -158,17 +171,7 @@ while getopts "cfs:h" opt; do
 done
 shift $((OPTIND - 1))
 
-exec 200>"$LOCKFILE"
-if ! flock -n 200; then
-    echo "Another instance of the script is running. Exiting." >&2
-    exit 1
-fi
-
-cleanup() {
-    flock -u 200
-    rm -f "$LOCKFILE"
-}
-trap cleanup EXIT INT TERM
+ensure_locked
 
 declare -A backups
 gather_backups
