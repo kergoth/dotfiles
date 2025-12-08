@@ -1,4 +1,23 @@
-{{- $signingKey := .git.signing_key }}
+{{- $signingKey := .git.signing_key -}}
+
+{{/* Set merge.conflictStyle to zdiff3 for git version 2.51 or newer */}}
+{{- $git := includeTemplate "find-tool" (dict "root" . "tool" "git") -}}
+{{- $useZ := false -}}
+{{- if and $git (ne $git "") -}}
+    {{- $verOut := (output $git "--version") | trim -}}
+    {{- $fields := splitList " " $verOut -}}
+    {{- if and (ge (len $fields) 3) (eq (index $fields 0) "git") (eq (index $fields 1) "version") -}}
+        {{- $ver := index $fields 2 -}}
+        {{- $parts := splitList "." $ver -}}
+        {{- if ge (len $parts) 2 -}}
+            {{- $major := int (index $parts 0) -}}
+            {{- $minor := int (index $parts 1) -}}
+            {{- if or (gt $major 2) (and (eq $major 2) (ge $minor 35)) -}}
+                {{- $useZ = true -}}
+            {{- end -}}
+        {{- end -}}
+    {{- end -}}
+{{- end -}}
 # vim: set noet sts=0 ft=gitconfig:
 [core]
 	excludesfile = ~/.config/git/ignore
@@ -121,6 +140,7 @@
 	xfuncname = ^[ \t]*((class|func)[ \t].*)$
 
 [merge]
+	conflictStyle = {{ if $useZ }}zdiff3{{ else }}diff3{{ end }}
 	tool = wrapper
 	summary = true
 
