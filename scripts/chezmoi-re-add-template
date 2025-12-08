@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+scriptdir=$(cd "$(dirname "$0")" && pwd -P)
+
+nlxargs () {
+    tr '\n' '\0' |
+        xargs -0 "$@"
+}
+
+if [[ "${1:-}" = "-n" ]]; then
+    dry_run=1
+    shift
+else
+    dry_run=0
+fi
+
+data=$(chezmoi data 2>/dev/null | jq -r '[.chezmoi.sourceDir, .chezmoi.destDir] | join("\t")' 2>/dev/null) || :
+if [ -n "$data" ]; then
+    source=$(echo "$data" | cut -d$'\t' -f1)
+    target=$(echo "$data" | cut -d$'\t' -f2)
+else
+    source="$scriptdir/.."
+    if [ -e "$source/.chezmoiroot" ]; then
+        source=$source/$(cat "$source/.chezmoiroot")
+    fi
+    target="$HOME"
+fi
+
+if [ $# -eq 0 ]; then
+    chezmoi managed |
+        sed -e "s#^#$target/#" |
+        nlxargs chezmoi status |
+        grep '^M' |
+        cut -d" " -f2-
+else
+    for arg; do
+        echo "$arg"
+    done
+fi | while read -r target_path; do
+        case "$target_path" in
+            "$target/"*)
+                ;;
+            *)
+                target_path="$target/$target_path"
+                ;;
+        esac
+        source_path=$(chezmoi source-path "$target_path")
+        echo >&2 "Applying differences in $target_path to $source_path"
+        chezmoi diff --include=files --reverse "$target_path"
+        if [ "$dry_run" -eq 0 ]; then
+            if chezmoi diff --include=files --reverse "$target_path" | patch "$source_path"; then
+                echo >&2 "Changes applied to $source_path"
+            else
+                echo >&2 "Error applying changes to $source_path"
+            fi
+        fi
+    done
