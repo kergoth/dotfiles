@@ -38,15 +38,34 @@ url = "https://justine.lol/rusage/rusage.com"
 executable = true
 refreshPeriod = "{{ $refreshPeriod }}"
 
-{{ if .steamdeck }}
+{{/* Restic - Fast, secure, efficient backup program */}}
+{{- $restic_version := (gitHubLatestRelease "restic/restic").TagName | trimPrefix "v" -}}
+{{- $restic_type := "file" -}}
+{{- $restic_ext := "bz2" -}}
+{{- if eq $os "windows" -}}
+{{-   $restic_type = "archive-file" -}}
+{{-   $restic_ext = "zip" -}}
+{{- end -}}
 
-{{/* Install restic on the Steam Deck */}}
-{{- $restic_version := (gitHubLatestRelease "restic/restic").TagName | trimPrefix "v" }}
+{{/* Skip for Nix and Chimera Linux - use package managers instead */}}
+{{ if not (or .use_nix (eq .osid "linux-chimera")) }}
+
 ["{{ $binpath }}/restic{{ $binsuffix }}"]
-type = "file"
-url = "https://github.com/restic/restic/releases/download/v{{ $restic_version }}/restic_{{ $restic_version }}_{{ $os }}_{{ $arch }}.bz2"
-filter.command = "bzcat"
-executable = true
+{{ if eq $restic_type "archive-file" }}
+  type = "archive-file"
+  url = "https://github.com/restic/restic/releases/download/v{{ $restic_version }}/restic_{{ $restic_version }}_{{ $os }}_{{ $arch }}.{{ $restic_ext }}"
+  path = "restic{{ $binsuffix }}"
+  executable = true
+{{ else }}
+  type = "file"
+  url = "https://github.com/restic/restic/releases/download/v{{ $restic_version }}/restic_{{ $restic_version }}_{{ $os }}_{{ $arch }}.{{ $restic_ext }}"
+  filter.command = "bzcat"
+  executable = true
+{{ end }}
+
+{{ end }}
+
+{{ if .steamdeck }}
 
 {{/* Install rclone on the Steam Deck */}}
 ["{{ $binpath }}/rclone{{ $binsuffix }}"]

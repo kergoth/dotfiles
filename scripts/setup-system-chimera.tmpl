@@ -94,9 +94,12 @@ apk add --no-interactive cargo go
 # Other tools
 apk add --no-interactive wget tmux uv zstd patchutils jq fzf unzip ripgrep
 
+# Backup tools (rsync is in main repo)
+apk add --no-interactive rsync
+
 # Enable the user repository
 apk add --no-interactive chimera-repo-user
 apk update
 
 # Available in the user repository
-apk add --no-interactive fd eza bat ripgrep sad zoxide tealdeer delta git-absorb shfmt direnv git-lfs github-cli jj
+apk add --no-interactive fd eza bat ripgrep sad zoxide tealdeer delta git-absorb shfmt direnv git-lfs github-cli jj restic
