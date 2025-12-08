@@ -378,3 +378,119 @@ switch (Get-PSPlatform) {
     New-Variable -Option Constant -Name IsMacOs -Value $false -ErrorAction SilentlyContinue
   }
 }
+
+<#
+.SYNOPSIS
+Configures DevPod completely via CLI, including provider, context options, and default provider.
+
+.DESCRIPTION
+This function sets up DevPod with a provider, all context options (dotfiles URL, script, GPG forwarding, SSH config),
+and sets the default provider. It will not override existing settings that differ from the requested ones.
+
+.PARAMETER DotfilesUrl
+The URL of the dotfiles repository (e.g., "https://github.com/user/dotfiles").
+
+.PARAMETER DotfilesScript
+The path to the setup script within the dotfiles repository (e.g., "script/setup").
+
+.PARAMETER SshConfigPath
+The absolute path to the SSH config file (e.g., "$HOME/.ssh/config.d/devpod").
+
+.PARAMETER ProviderName
+Optional. The name of the DevPod provider to use (default: "docker").
+
+.EXAMPLE
+Set-DevPodConfiguration -DotfilesUrl "https://github.com/user/dotfiles" -DotfilesScript "script/setup" -SshConfigPath "$HOME/.ssh/config.d/devpod"
+#>
+function Set-DevPodConfiguration {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$DotfilesUrl,
+        
+        [Parameter(Mandatory = $true)]
+        [string]$DotfilesScript,
+        
+        [Parameter(Mandatory = $true)]
+        [string]$SshConfigPath,
+        
+        [Parameter(Mandatory = $false)]
+        [string]$ProviderName = "docker"
+    )
+    
+    if (-not (Get-Command devpod -ErrorAction SilentlyContinue)) {
+        Write-Verbose "devpod not found, skipping DevPod configuration"
+        return
+    }
+    
+    Write-Host "Configuring DevPod"
+    
+    $providerJson = $null
+    $providerList = $null
+    $providers = $null
+    try {
+        $providerJson = devpod provider list --output json 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            $providers = $providerJson | ConvertFrom-Json
+        }
+    } catch {
+        # Fallback to table format if JSON parsing fails
+        $providerList = devpod provider list 2>$null
+    }
+    
+    $providerExists = $false
+    if ($providers) {
+        if ($providers.PSObject.Properties.Name -contains $ProviderName) {
+            $providerExists = $true
+        }
+    } elseif ($providerList) {
+        # Fallback to table parsing if JSON parsing failed
+        if ($providerList -match "^\s+${ProviderName}\s+\|") {
+            $providerExists = $true
+        }
+    }
+    
+    if (-not $providerExists) {
+        Write-Host "Adding DevPod provider '$ProviderName'"
+        $result = devpod provider add $ProviderName 2>&1
+        if ($LASTEXITCODE -ne 0) {
+            Write-Warning "Failed to add DevPod provider '$ProviderName' (may not be available or already added): $result"
+            return
+        }
+    } else {
+        Write-Verbose "DevPod provider '$ProviderName' already exists"
+    }
+    
+    Write-Host "Setting DevPod context options"
+    $options = @(
+        "-o", "DOTFILES_URL=$DotfilesUrl",
+        "-o", "DOTFILES_SCRIPT=$DotfilesScript",
+        "-o", "GPG_AGENT_FORWARDING=true",
+        "-o", "SSH_CONFIG_PATH=$SshConfigPath",
+        "-o", "SSH_INJECT_GIT_CREDENTIALS=true"
+    )
+    
+    $result = devpod context set-options $options 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        Write-Warning "Failed to set some DevPod context options (may already be set): $result"
+    }
+    
+    $isDefault = $false
+    if ($providers) {
+        if ($providers.$ProviderName -and $providers.$ProviderName.default -eq $true) {
+            $isDefault = $true
+        }
+    } elseif ($providerList) {
+        # Fallback: check table output for default indicator
+        if ($providerList -match "^\s+${ProviderName}\s+\|\s+[^\|]+\s+\|\s+true\s+\|") {
+            $isDefault = $true
+        }
+    }
+    
+    if (-not $isDefault) {
+        Write-Host "Setting DevPod default provider to '$ProviderName'"
+        devpod provider use $ProviderName 2>&1 | Out-Null
+    } else {
+        Write-Verbose "DevPod default provider is already set to '$ProviderName'"
+    }
+}

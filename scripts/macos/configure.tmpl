@@ -263,6 +263,15 @@ if echo "$HOST" | grep -Fx "vaelin.local"; then
     )
 fi
 
+# Configure DevPod
+if has devpod; then
+    devpod_configure \
+        "https://github.com/kergoth/dotfiles" \
+        "script/setup" \
+        "$HOME/.ssh/config.d/devpod" \
+        "docker" || :
+fi
+
 killall Dock
 killall SystemUIServer
 killall Finder

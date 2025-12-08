@@ -66,6 +66,15 @@ if has pwsh; then
     pwsh -NoProfile "$scriptdir/install-pwsh-modules.ps1" || :
 fi || ret=$?
 
+# Configure DevPod
+if has devpod; then
+    devpod_configure \
+        "https://github.com/kergoth/dotfiles" \
+        "script/setup" \
+        "$HOME/.ssh/config.d/devpod" \
+        "docker" || ret=$?
+fi
+
 {{ if and (not .ephemeral) (not .steamdeck) (not (env "CONTAINER_ID")) -}}
 # User shell should be zsh
 zsh_binary=$(command -v zsh 2>/dev/null) || :

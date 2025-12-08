@@ -197,5 +197,14 @@ if (-not $env:CHEZMOI) {
   & "$env:DOTFILES_DIR\script\setup.ps1"
 }
 
+# Configure DevPod
+if (Get-Command devpod -ErrorAction SilentlyContinue) {
+  Set-DevPodConfiguration `
+    -DotfilesUrl "https://github.com/kergoth/dotfiles" `
+    -DotfilesScript "script/setup" `
+    -SshConfigPath "$env:USERPROFILE\.ssh\config.d\devpod" `
+    -ProviderName "docker"
+}
+
 # Register fonts
 & "$env:DOTFILES_DIR\scripts\windows\register-fonts.ps1"
