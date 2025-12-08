@@ -6,6 +6,19 @@ XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-~/.config}
 XDG_STATE_HOME=${XDG_STATE_HOME:-~/.local/state}
 SCRIPT_NAME="${0##*/}"
 BACKUP_DIR="$XDG_CONFIG_HOME/$SCRIPT_NAME/backup.d"
+CONFIG_DIR="$XDG_CONFIG_HOME/$SCRIPT_NAME"
+CONFIG_D_DIR="$CONFIG_DIR/config.d"
+GLOBAL_CONFIG_FILE="$CONFIG_DIR/config"
+
+if [[ "${OSTYPE:-}" == darwin* ]] && command -v scutil >/dev/null 2>&1; then
+    # Use the macOS ComputerName, normalize spaces to dashes
+    HOSTNAME_SHORT="$(scutil --get ComputerName 2>/dev/null || echo unknown)"
+    HOSTNAME_SHORT="${HOSTNAME_SHORT// /-}"
+else
+    HOSTNAME_SHORT="$(hostname -s 2>/dev/null || hostname 2>/dev/null || echo unknown)"
+fi
+HOST_CONFIG_FILE="$CONFIG_DIR/$HOSTNAME_SHORT"
+HOST_CONFIG_D_DIR="$CONFIG_DIR/config-host.d/$HOSTNAME_SHORT"
 
 usage() {
     echo "Usage: $SCRIPT_NAME [-h] [-c] [-f] [-s backup1,backup2,...]"
@@ -130,16 +143,25 @@ process_backup_scripts() {
     done
 }
 
-CONFIG_DIR=~/.config/deck-backup
-CONFIG_FILE="$CONFIG_DIR/config"
-if [ -f "$CONFIG_FILE" ]; then
-    source "$CONFIG_FILE"
-fi
-if [[ -d "$CONFIG_DIR/config.d" ]]; then
-    for file in "$CONFIG_DIR/config.d"/*; do
-        source "$file" 2>/dev/null || :
-    done
-fi
+# shellcheck disable=SC1090
+load_configs() {
+    if [[ -f "$GLOBAL_CONFIG_FILE" ]]; then
+        source "$GLOBAL_CONFIG_FILE"
+    fi
+    if [[ -d "$CONFIG_D_DIR" ]]; then
+        for file in "$CONFIG_D_DIR"/*; do
+            source "$file" 2>/dev/null || :
+        done
+    fi
+    if [[ -f "$HOST_CONFIG_FILE" ]]; then
+        source "$HOST_CONFIG_FILE"
+    fi
+    if [[ -d "$HOST_CONFIG_D_DIR" ]]; then
+        for file in "$HOST_CONFIG_D_DIR"/*; do
+            source "$file" 2>/dev/null || :
+        done
+    fi
+}
 
 if [[ -n "${DISABLED_BACKUPS:-}" ]]; then
     echo "Warning: DISABLED_BACKUPS is set, no backups will run" >&2
