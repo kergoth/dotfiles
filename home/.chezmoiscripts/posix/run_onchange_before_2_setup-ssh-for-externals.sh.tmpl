@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+{{- if and .secrets .personal (not .ephemeral) }}
+# Ensure SSH is configured and keys are available before externals try to
+# clone private repos
+#
+# Re-run when key existence changes:
+#   Does key exist?: {{ ne (stat (joinPath .chezmoi.homeDir ".ssh/keys/frey")) nil }}
+
+SSH_KEY="{{ .chezmoi.homeDir }}/.ssh/keys/frey"
+
+apply_file() {
+    local src="$1"
+    local dest="$2"
+
+    if [ -s "$dest" ]; then
+        return 0
+    fi
+
+    mkdir -p "$(dirname "$dest")"
+
+    echo >&2 "Populating $dest"
+    case "$src" in
+    *.tmpl)
+        chezmoi execute-template <"$src" >"$dest" || {
+            rm -f "$dest"
+            echo >&2 "Error processing template $src"
+            return 1
+        }
+        ;;
+    *.age)
+        chezmoi decrypt "$src" >"$dest" || {
+            rm -f "$dest"
+            echo >&2 "Error decrypting $src"
+            return 1
+        }
+        ;;
+    *)
+        cp -af "$src" "$dest"
+        ;;
+    esac
+    chmod 0600 "$dest"
+}
+
+if ! [ -s "$SSH_KEY" ]; then
+    echo >&2 "Bootstrapping SSH keys for chezmoi private repository access"
+
+    SSH_DIR="$CHEZMOI_DEST_DIR/.ssh"
+
+    mkdir -p "$SSH_DIR/keys" "$SSH_DIR/config.d"
+    chmod 0700 "$SSH_DIR" "$SSH_DIR/keys" "$SSH_DIR/config.d"
+
+    apply_file "$CHEZMOI_SOURCE_DIR/private_dot_ssh/private_keys/encrypted_private_frey.age" "$SSH_DIR/keys/frey" || exit 1
+    apply_file "$CHEZMOI_SOURCE_DIR/private_dot_ssh/private_config.tmpl" "$SSH_DIR/config" || exit 1
+    apply_file "$CHEZMOI_SOURCE_DIR/private_dot_ssh/config.d/encrypted_personal.age" "$SSH_DIR/config.d/personal" || exit 1
+
+    echo >&2 "SSH keys bootstrap complete"
+fi
+{{- end }}
