@@ -12,7 +12,7 @@
 
 set -euo pipefail
 
-export GNUPGHOME="{{ .gnupg.home }}"
+export GNUPGHOME="$HOME/.gnupg"
 
 mkdir -p "$GNUPGHOME"
 chmod 700 "$GNUPGHOME"

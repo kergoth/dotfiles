@@ -172,13 +172,6 @@
 {{-   end }}
 {{- end }}
 
-{{- $gnupg_home := "" }}
-{{- if eq .chezmoi.os "windows" }}
-{{-   $gnupg_home = joinPath .chezmoi.homeDir ".gnupg" }}
-{{- else }}
-{{-   $gnupg_home = joinPath .chezmoi.homeDir ".local" "share" "gnupg" }}
-{{- end }}
-
 sourceDir = {{ .chezmoi.sourceDir | quote }}
 {{/* unknown distro */}}
 {{- if eq $osid "linux" }}
@@ -259,7 +252,6 @@ encryption = "age"
     key_op_uuid = {{ $age_key_op_uuid | quote }}
 
 [data.gnupg]
-    home = {{ $gnupg_home | quote }}
     personal_key = {{ $personal_key | quote }}
     work_key = {{ $work_key | quote }}
 

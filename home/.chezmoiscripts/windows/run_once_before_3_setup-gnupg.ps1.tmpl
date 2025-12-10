@@ -12,7 +12,7 @@
 $ErrorActionPreference = "Stop"
 
 # Set GNUPGHOME
-$env:GNUPGHOME = "{{ .gnupg.home }}"
+$env:GNUPGHOME = "$HOME/.gnupg"
 
 if (-not (Test-Path $env:GNUPGHOME)) {
     New-Item -ItemType Directory -Path $env:GNUPGHOME | Out-Null

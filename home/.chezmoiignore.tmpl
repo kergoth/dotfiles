@@ -44,9 +44,9 @@ _lesshst
 {{- if ne .chezmoi.os "windows" }}
 AppData
 .config/scoop
-.local/share/gnupg/gpg-agent.conf
+.gnupg/gpg-agent.conf
 {{- else }}
-.local/share/gnupg/*
+.gnupg/*
 AppData/Roaming/gnupg/*~
 AppData/Roaming/gnupg/S.*
 AppData/Roaming/gnupg/openpgp-revocs.d
@@ -120,8 +120,10 @@ Library/Caches/zsh/functions/*
 .local/share/*
 !.local/share/user-places.xbel
 !.local/share/kxmlgui5
-!.local/share/gnupg
-.local/share/gnupg/openpgp-revocs.d
+!.gnupg
+.gnupg/openpgp-revocs.d
+.gnupg/*~
+.gnupg/S.*
 !.local/share/zsh
 .local/share/zsh/*
 !.local/share/zsh/completions
@@ -157,12 +159,8 @@ Library/Caches/zsh/functions/*
 .config/.jira/.config.yml
 
 {{/* common secrets */}}
-.local/share/gnupg
+.gnupg
 AppData/Roaming/gnupg
-{{- end }}
-
-{{- if not .wsl2 }}
-.local/share/gnupg
 {{- end }}
 
 {{ if not .steamdeck }}
