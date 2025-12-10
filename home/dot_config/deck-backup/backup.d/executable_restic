@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-PATH="$HOME/.local/bin:$HOME/bin:$PATH"
-
-# Remote backup focused on connfiguration files, settings, and data, with multiple historical copies
-echo >&2 "Backing up to the NAS with restic"
-restic backup --one-file-system --exclude-file="$HOME/.config/restic/exclude.txt" "$HOME"/ &&
-    restic forget --keep-daily=7 --keep-weekly=4 --keep-monthly=12 --prune

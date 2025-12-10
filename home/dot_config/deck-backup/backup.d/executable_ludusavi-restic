@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-PATH="$HOME/.local/bin:$HOME/bin:$PATH"
-
-echo >&2 "Backing up ludusavi saves to the NAS with restic"
-ludusavi-restic-backup

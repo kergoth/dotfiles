@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+{{- if and .secrets .personal (not .ephemeral) (ne .chezmoi.os "windows") }}
+# Auto-install backup-conductor scheduler when external is cloned/updated
+
+set -euo pipefail
+
+BACKUP_DIR="{{ .chezmoi.homeDir }}/.config/backup"
+INSTALL_SCRIPT="${BACKUP_DIR}/install-scheduler"
+
+# Check if backup-conductor is present
+if [ ! -f "$INSTALL_SCRIPT" ]; then
+    echo "Backup-conductor not found, skipping scheduler installation" >&2
+    exit 0
+fi
+
+# Check if backups are enabled on this machine
+LOCAL_CONF="${BACKUP_DIR}/local.conf"
+if [ -f "$LOCAL_CONF" ] && grep -q "^BACKUPS_ENABLED=true" "$LOCAL_CONF" 2>/dev/null; then
+    echo "Installing backup-conductor scheduler..." >&2
+    if "$INSTALL_SCRIPT" install; then
+        echo "✓ Backup scheduler installed successfully" >&2
+    else
+        echo "Warning: Failed to install backup scheduler" >&2
+        exit 0  # Don't fail chezmoi apply
+    fi
+else
+    echo "Backups not enabled on this machine, skipping scheduler installation" >&2
+    echo "Run 'backup-enable' first, then re-run this script or 'chezmoi apply'" >&2
+fi
+
+# Onchange trigger: Re-run if any scheduler files change
+# systemd service: {{ include (joinPath .chezmoi.homeDir ".config/backup/systemd/backup-conductor.service") | sha256sum }}
+# systemd timer: {{ include (joinPath .chezmoi.homeDir ".config/backup/systemd/backup-conductor.timer") | sha256sum }}
+# systemd resume: {{ include (joinPath .chezmoi.homeDir ".config/backup/systemd/backup-conductor-resume.service") | sha256sum }}
+# launchd timer: {{ include (joinPath .chezmoi.homeDir ".config/backup/launchd/com.kergoth.backup-conductor.plist") | sha256sum }}
+# launchd resume: {{ include (joinPath .chezmoi.homeDir ".config/backup/launchd/com.kergoth.backup-conductor-resume.plist") | sha256sum }}
+# install script: {{ include (joinPath .chezmoi.homeDir ".config/backup/install-scheduler") | sha256sum }}
+{{- end }}

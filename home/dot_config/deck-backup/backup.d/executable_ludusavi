@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-PATH="$HOME/.local/bin:$HOME/bin:$PATH"
-
-echo >&2 "Backing up saved games to the SD card and NAS"
-"$HOME"/.local/bin/ludusavi backup --force

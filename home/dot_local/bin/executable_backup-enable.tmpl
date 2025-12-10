@@ -1,0 +1,5 @@
+{{- $backup_enable_script := (joinPath (printf "%s" .chezmoi.destDir) ".config/backup/backup-enable") }}
+{{- if stat $backup_enable_script }}
+#!/bin/sh
+exec {{ $backup_enable_script }} "$@"
+{{- end }}

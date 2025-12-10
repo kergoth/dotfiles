@@ -220,13 +220,6 @@ fi
 if ! grep -xqF 'export PATH="$HOME/.local/bin:$HOME/bin:$PATH"' ~/.bashrc; then
     echo 'export PATH="$HOME/.local/bin:$HOME/bin:$PATH"' >>~/.bashrc
 fi
-# shellcheck disable=SC2016
-if ! grep -xqF 'export RESTIC_PASSWORD_FILE=$HOME/.config/restic/password.txt' ~/.bashrc; then
-    echo 'export RESTIC_PASSWORD_FILE=$HOME/.config/restic/password.txt' >>~/.bashrc
-fi
-if ! grep -xqF 'export RESTIC_REPOSITORY=rclone:ludusavi-1728618970:Archives/Backups/System/Deck\ Restic' ~/.bashrc; then
-    echo 'export RESTIC_REPOSITORY=rclone:ludusavi-1728618970:Archives/Backups/System/Deck\ Restic' >>~/.bashrc
-fi
 
 {{- range $desktop_downloads }}
 if ! [ -e ~/Desktop/$(basename "{{ . }}") ]; then

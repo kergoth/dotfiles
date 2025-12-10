@@ -11,6 +11,17 @@
     [bin.pull]
     args = {{ $pull_args | toToml }}
 
+{{- if and .secrets .personal (not .ephemeral) (ne .chezmoi.os "windows") }}
+[".config/backup"]
+    type = "git-repo"
+    url = "git@github.com:kergoth/backup-conductor.git"
+    refreshPeriod = "24h"
+    [".config/backup".clone]
+    args = {{ $clone_args | toToml }}
+    [".config/backup".pull]
+    args = {{ $pull_args | toToml }}
+{{- end }}
+
 {{ $bat_extras_version := (gitHubLatestRelease "eth-p/bat-extras").TagName | trimPrefix "v" }}
 {{ $splitver := $bat_extras_version | splitList "." }}
 {{ range list "batdiff" "batgrep" "batman" "bat-modules" "batpipe" "batwatch" -}}

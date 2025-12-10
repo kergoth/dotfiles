@@ -166,14 +166,10 @@ AppData/Roaming/gnupg
 {{ if not .steamdeck }}
 # Steamdeck-only
 .local/bin/deck*
-.local/bin/ludusavi
+.local/bin/ludusavi*
 .config/systemd/user/deck-backup.service
 .config/systemd/user/deck-backup.timer
 .config/systemd/user/check-backup.service
-.config/restic/exclude.txt
-.config/restic/password.txt
-.config/rsync/exclude.txt
-.config/deck-backup
 .var/app
 .config/Cemu
 .config/PCSX2
