@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-if ! [[ -f ~/.config/deck-backup/config.d/enable ]]; then
-    mkdir -p ~/.config/deck-backup/config.d
-    echo 'export DISABLED_BACKUPS=' >~/.config/deck-backup/config.d/enable
-fi
