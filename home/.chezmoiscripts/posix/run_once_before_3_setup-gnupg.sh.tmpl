@@ -51,8 +51,20 @@ import_ownertrust() {
 
 # Import both public keys for signature verification
 echo >&2 "Importing public keys for signature verification..."
-import_pub "{{ .gnupg.personal_key }}" "{{ .chezmoi.workingTree }}/settings/gnupg/personal/public.asc"
-import_pub "{{ .gnupg.work_key }}" "{{ .chezmoi.workingTree }}/settings/gnupg/work/public.asc"
+personal_pubkey="{{ .chezmoi.workingTree }}/settings/gnupg/personal/public.asc"
+work_pubkey="{{ .chezmoi.workingTree }}/settings/gnupg/work/public.asc"
+
+if [ -f "$personal_pubkey" ]; then
+    import_pub "{{ .gnupg.personal_key }}" "$personal_pubkey"
+else
+    echo >&2 "Warning: Personal public key file not found: $personal_pubkey"
+fi
+
+if [ -f "$work_pubkey" ]; then
+    import_pub "{{ .gnupg.work_key }}" "$work_pubkey"
+else
+    echo >&2 "Warning: Work public key file not found: $work_pubkey"
+fi
 
 {{- if .secrets -}}
 # Import the secret key only for the active context

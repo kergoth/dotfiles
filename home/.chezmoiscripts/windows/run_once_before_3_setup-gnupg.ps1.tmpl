@@ -68,8 +68,20 @@ function Import-Ownertrust {
 
 # Import both public keys for signature verification
 Write-Error "Importing public keys for signature verification..."
-Import-Pub "{{ .gnupg.personal_key }}" "{{ .chezmoi.workingTree }}/settings/gnupg/personal/public.asc"
-Import-Pub "{{ .gnupg.work_key }}" "{{ .chezmoi.workingTree }}/settings/gnupg/work/public.asc"
+$personalPubkey = "{{ .chezmoi.workingTree }}/settings/gnupg/personal/public.asc"
+$workPubkey = "{{ .chezmoi.workingTree }}/settings/gnupg/work/public.asc"
+
+if (Test-Path $personalPubkey) {
+    Import-Pub "{{ .gnupg.personal_key }}" $personalPubkey
+} else {
+    Write-Error "Warning: Personal public key file not found: $personalPubkey"
+}
+
+if (Test-Path $workPubkey) {
+    Import-Pub "{{ .gnupg.work_key }}" $workPubkey
+} else {
+    Write-Error "Warning: Work public key file not found: $workPubkey"
+}
 
 {{- if .secrets -}}
 # Import the secret key only for the active context
