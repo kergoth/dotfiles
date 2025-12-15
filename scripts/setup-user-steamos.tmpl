@@ -190,6 +190,33 @@ launch_dirs() {
     done
 }
 
+disable_and_mask() {
+    local unit="$1"
+    local changed=0
+    local mask="$HOME/.config/systemd/user/$unit"
+    local ret=0
+
+    if systemctl --user is-active --quiet "$unit" 2>/dev/null; then
+        systemctl --user stop "$unit" || ret=$?
+        changed=1
+    fi
+
+    if systemctl --user is-enabled --quiet "$unit" 2>/dev/null; then
+        systemctl --user disable "$unit" || ret=$?
+        changed=1
+    fi
+
+    if ! [ -L "$mask" ] || [ "$(readlink "$mask")" != "/dev/null" ]; then
+        systemctl --user mask "$unit" || ret=$?
+        changed=1
+    fi
+
+    if [ $changed -eq 1 ]; then
+        systemctl --user daemon-reload || ret=$?
+    fi
+    return $ret
+}
+
 tmpdir=$(mktemp -d -t "${0##*/}.XXXXXX")
 trap 'rm -rf "$tmpdir"' EXIT INT TERM
 
@@ -332,6 +359,7 @@ if [ -d ~/homebrew/plugins ] && [ -e ~/homebrew/services/PluginLoader ]; then
             install-decky-plugin -d NonSteamLaunchers "$tmpdir/main.zip"
         fi
     fi
+    disable_and_mask nslgamescanner.service
 fi
 
 if [ -d "$sdmount/retrodeck" ]; then
