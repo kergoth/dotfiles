@@ -1,5 +1,0 @@
-[Unit]
-Description="Deck backup"
-
-[Service]
-ExecStart=%h/.local/bin/deck-backup -f
