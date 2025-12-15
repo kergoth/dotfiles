@@ -29,10 +29,15 @@ else
 fi
 
 # Onchange trigger: Re-run if any scheduler files change
-# systemd service: {{ include (joinPath .chezmoi.homeDir ".config/backup/systemd/backup-conductor.service") | sha256sum }}
-# systemd timer: {{ include (joinPath .chezmoi.homeDir ".config/backup/systemd/backup-conductor.timer") | sha256sum }}
-# systemd resume: {{ include (joinPath .chezmoi.homeDir ".config/backup/systemd/backup-conductor-resume.service") | sha256sum }}
-# launchd timer: {{ include (joinPath .chezmoi.homeDir ".config/backup/launchd/com.kergoth.backup-conductor.plist") | sha256sum }}
-# launchd resume: {{ include (joinPath .chezmoi.homeDir ".config/backup/launchd/com.kergoth.backup-conductor-resume.plist") | sha256sum }}
-# install script: {{ include (joinPath .chezmoi.homeDir ".config/backup/install-scheduler") | sha256sum }}
+{{- $backupDir := joinPath .chezmoi.homeDir ".config/backup" }}
+{{- if stat $backupDir }}
+# systemd service: {{ include (joinPath $backupDir "systemd/backup-conductor.service") | sha256sum }}
+# systemd timer: {{ include (joinPath $backupDir "systemd/backup-conductor.timer") | sha256sum }}
+# systemd resume: {{ include (joinPath $backupDir "systemd/backup-conductor-resume.service") | sha256sum }}
+# launchd timer: {{ include (joinPath $backupDir "launchd/com.kergoth.backup-conductor.plist") | sha256sum }}
+# launchd resume: {{ include (joinPath $backupDir "launchd/com.kergoth.backup-conductor-resume.plist") | sha256sum }}
+# install script: {{ include (joinPath $backupDir "install-scheduler") | sha256sum }}
+{{- else }}
+# Backup-conductor repo not yet cloned - onchange triggers will be added once cloned
+{{- end }}
 {{- end }}
