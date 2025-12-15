@@ -28,7 +28,7 @@ tmpdir=$(mktemp -d -t "${script##*/}.XXXXXX")
 trap 'rm -rf "$tmpdir"' EXIT INT TERM
 
 tail -n +2 "$script" >"$tmpdir/script.pre"
-cat "$tmpdir/script.pre | chezmoi execute-template --output "$tmpdir/script"
+cat "$tmpdir/script.pre" | chezmoi execute-template --output "$tmpdir/script"
 chmod +x "$tmpdir/script"
 
 interpreter=$(sed -n -e '1s/^#!//p' "$tmpdir/script")
