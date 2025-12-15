@@ -66,7 +66,7 @@ else
     echo >&2 "Warning: Work public key file not found: $work_pubkey"
 fi
 
-{{- if .secrets -}}
+{{- if .secrets }}
 # Import the secret key only for the active context
 echo >&2 "Handling GnuPG secret key '{{ $key_name }}' ({{ $signing_key }})"
 import_key "{{ $signing_key }}" "{{ .chezmoi.workingTree }}/settings/gnupg/{{ $key_name }}/secret.asc.age"
