@@ -30,13 +30,13 @@ if ! has zed; then
     msg "Installing Zed"
     curl -f https://zed.dev/install.sh | sh
 fi
-{{- end }}
 
 {{ if not .work -}}
 if ! has claude; then
     msg "Installing Claude Code"
     curl -fsSL https://claude.ai/install.sh | bash
 fi
+{{- end }}
 {{- end }}
 
 # The 'uv' installed tools must be done after dotfiles setup to ensure 'uv' is
