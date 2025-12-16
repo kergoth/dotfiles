@@ -311,13 +311,6 @@ if [ -e ~/.config/systemd/user/retrodeck-upgrade.service ]; then
 fi
 {{- end }}
 
-if [ -e ~/.config/systemd/user/deck-backup.service ]; then
-    systemctl --user enable --now ~/.config/systemd/user/deck-backup.timer
-fi
-if [ -e ~/.config/systemd/user/check-backup.service ]; then
-    systemctl --user enable --now ~/.config/systemd/user/check-backup.service
-fi
-
 if ! [ -e ~/Shortix/shortix.sh ]; then
     echo >&2 "Installing Shortix"
     mkdir -p ~/Shortix
