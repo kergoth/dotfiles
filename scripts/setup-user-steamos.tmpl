@@ -418,30 +418,31 @@ else
                 | while read -r fn; do
                     game=$(game_name "${fn%.*}")
                     set --
+                    echo >&2 "Processing $game ($(basename "$fn"))"
                     case "$game" in
                         "CoinOPS Legends 4")
                             tags="${tags:+$tags,}Emulated Games"
                             set -- "$@" \
-                                --iconpath="$sdmount/Game Art/CoinOPS Legends 4/icon.png" \
-                                --hero="$sdmount/Game Art/CoinOPS Legends 4/hero.png" \
-                                --logo="$sdmount/Game Art/CoinOPS Legends 4/logo.png" \
-                                --boxart="$sdmount/Game Art/CoinOPS Legends 4/portrait.png" \
-                                --tenfoot="$sdmount/Game Art/CoinOPS Legends 4/lastplayed.png"
+                                --iconpath="$HOME/Game Art/CoinOPS Legends 4/icon.png" \
+                                --hero="$HOME/Game Art/CoinOPS Legends 4/hero.png" \
+                                --logo="$HOME/Game Art/CoinOPS Legends 4/logo.png" \
+                                --boxart="$HOME/Game Art/CoinOPS Legends 4/portrait.png" \
+                                --tenfoot="$HOME/Game Art/CoinOPS Legends 4/lastplayed.png"
                             ;;
                         "NeoLemmix")
                             set -- "$@" \
-                                --hero="$sdmount/Game Art/NeoLemmix/neolemmix-background.gif" \
-                                --logo="$sdmount/Game Art/NeoLemmix/neolemmix-logo.png" \
-                                --boxart="$sdmount/Game Art/NeoLemmix/neolemmix-boxart.jpg" \
-                                --tenfoot="$sdmount/Game Art/NeoLemmix/neolemmix-menu.jpg"
+                                --hero="$HOME/Game Art/NeoLemmix/neolemmix-background.gif" \
+                                --logo="$HOME/Game Art/NeoLemmix/neolemmix-logo.png" \
+                                --boxart="$HOME/Game Art/NeoLemmix/neolemmix-boxart.jpg" \
+                                --tenfoot="$HOME/Game Art/NeoLemmix/neolemmix-menu.jpg"
                             ;;
                         "OpenGOAL")
                             set -- "$@" \
-                                --iconpath="$sdmount/Game Art/OpenGOAL/opengoal_icon.png" \
-                                --hero="$sdmount/Game Art/OpenGOAL/opengoal_hero.png" \
-                                --logo="$sdmount/Game Art/OpenGOAL/opengoal_logo.png" \
-                                --boxart="$sdmount/Game Art/OpenGOAL/opengoal_boxart.png" \
-                                --tenfoot="$sdmount/Game Art/OpenGOAL/opengoal_lastplayed.png"
+                                --iconpath="$HOME/Game Art/OpenGOAL/opengoal_icon.png" \
+                                --hero="$HOME/Game Art/OpenGOAL/opengoal_hero.png" \
+                                --logo="$HOME/Game Art/OpenGOAL/opengoal_logo.png" \
+                                --boxart="$HOME/Game Art/OpenGOAL/opengoal_boxart.png" \
+                                --tenfoot="$HOME/Game Art/OpenGOAL/opengoal_lastplayed.png"
                             ;;
                         "Steam Metadata Editor" | "Steam Store" | "AI Before I Play" | "Before I Play")
                             set -- "$@" --steamgriddb-game-name="##--Invalid--##"
