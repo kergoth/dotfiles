@@ -182,11 +182,17 @@ launch_dirs() {
         done
     fi
 
-    for basedir in "$sdmount/Apps" "$HOME/Apps" "$sdmount/Games" "$sdmount/Games/Linux" "$sdmount/Games/Windows" "$HOME/Games" "$HOME/Games/Linux" "$HOME/Games/Windows"; do
-        if ! [ -d "$basedir" ]; then
-            continue
-        fi
-        find "$basedir" -mindepth 1 -maxdepth 1 -type d
+    for mount in "$HOME" "$sdmount"; do
+        for basedir in "$mount/Apps" "$mount/Games"; do
+            if [ -d "$basedir" ]; then
+                echo "$basedir"
+            fi
+            for subdir in Windows Linux Cloud Generic Launchers; do
+                if [ -d "$basedir/$subdir" ]; then
+                    echo "$basedir/$subdir"
+                fi
+            done
+        done
     done
 }
 
