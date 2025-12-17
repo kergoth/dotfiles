@@ -1,9 +1,0 @@
-{{ if and .steamdeck .retrodeck }}
-[Unit]
-Description=Upgrade RetroDECK if not running
-
-[Service]
-Type=oneshot
-ExecStartPre=/bin/bash -c '! flatpak ps | grep -q net.retrodeck.retrodeck'
-ExecStart=%h/.local/bin/install-retrodeck-cooker
-{{ end }}
