@@ -3,7 +3,7 @@
 {{/* Set merge.conflictStyle to zdiff3 for git version 2.51 or newer */}}
 {{- $git := includeTemplate "find-tool" (dict "root" . "tool" "git") -}}
 {{- $useZ := false -}}
-{{- if and $git (ne $git "") -}}
+{{- if and $git (not .steamdeck) -}}
     {{- $verOut := (output $git "--version") | trim -}}
     {{- $fields := splitList " " $verOut -}}
     {{- if and (ge (len $fields) 3) (eq (index $fields 0) "git") (eq (index $fields 1) "version") -}}
