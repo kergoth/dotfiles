@@ -173,6 +173,7 @@
 
 	# Diffstat of uncached changes, ignoring whitespace
 	ds = !git --no-pager diff --stat -M -w
+	diffstat = !git --no-pager diff --stat -M -w
 
 	# Edit the unmerged files
 	edit-unmerged = jump merge
