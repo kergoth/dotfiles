@@ -70,6 +70,12 @@ freebsd_check lang/python3 python3
 freebsd_check devel/uv uv
 
 freebsd_check sysutils/chezmoi chezmoi
+
+{{ if and (not .work) (not .ephemeral) -}}
+# VPN
+freebsd_check security/tailscale tailscale
+{{- end }}
+
 freebsd_check sysutils/duf duf
 freebsd_check sysutils/fd fd
 freebsd_check textproc/ripgrep rg

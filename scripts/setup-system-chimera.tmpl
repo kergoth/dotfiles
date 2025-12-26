@@ -97,6 +97,11 @@ apk add --no-interactive wget tmux uv zstd patchutils jq fzf unzip ripgrep
 # Backup tools (rsync is in main repo)
 apk add --no-interactive rsync
 
+{{ if and (not .work) (not .ephemeral) -}}
+# VPN
+apk add --no-interactive tailscale
+{{- end }}
+
 # Enable the user repository
 apk add --no-interactive chimera-repo-user
 apk update

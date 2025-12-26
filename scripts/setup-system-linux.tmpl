@@ -21,3 +21,11 @@ if ! has nix; then
 {{   end -}}
 fi
 {{- end }}
+
+{{ if and (not .work) (not .ephemeral) -}}
+# Install Tailscale VPN on personal systems
+if ! has tailscale; then
+    msg "Installing Tailscale"
+    curl -fsSL https://tailscale.com/install.sh | sh
+fi
+{{- end }}

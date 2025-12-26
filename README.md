@@ -250,6 +250,7 @@ chezmoi update -R
 - [dua](https://github.com/Byron/dua-cli): View disk space usage and delete unwanted data, fast. This is a faster version of ncdu.
 - [restic](https://restic.net) ([Open-Source](https://github.com/restic/restic)): Fast, secure, efficient backup program.
 - [rsync](https://rsync.samba.org/): Fast, versatile file copying tool for remote and local files.
+- [Tailscale](https://tailscale.com) ([Open-Source](https://github.com/tailscale/tailscale)): WireGuard-based mesh VPN that makes it easy to connect your devices securely.
 - [eza](https://github.com/eza-community/eza) or [exa](https://github.com/ogham/exa): A modern replacement for ls.
 - [fd](https://github.com/sharkdp/fd): A simple, fast and user-friendly alternative to 'find'.
 - [fzf](https://github.com/junegunn/fzf): A command-line fuzzy finder.
@@ -400,6 +401,7 @@ chezmoi update -R
   - [Steam Link](https://store.steampowered.com/steamlink/about): Stream your Steam games.
 - [SwiftBar](https://swiftbar.app/)]: Powerful macOS menu bar customization tool. _Conditional: This is installed when a container runtime is enabled, as I use this to start/stop colima._
 - [SyncThing](https://syncthing.net/) ([Open-Source](https://github.com/syncthing/)): A continuous file synchronization program.
+- [Tailscale](https://apps.apple.com/us/app/tailscale/id1475387142): WireGuard-based mesh VPN for secure device connectivity.
 - [Transmission Remote GUI](https://github.com/transmission-remote-gui/transgui) (Open-Source): A feature rich cross platform Transmission BitTorrent client. Faster and has more functionality than the built-in web GUI.
 - [Under My Roof](https://apps.apple.com/us/app/under-my-roof-home-inventory/id1524335878): Home inventory app for organizing and tracking your home and belongings.
 - [UnPlugged](https://apps.apple.com/us/app/unplugged/id423123087?mt=12&uo=4&at=10l4tL)
