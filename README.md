@@ -380,6 +380,7 @@ chezmoi update -R
 - [ForkLift](https://binarynights.com): Advanced dual pane file manager and file transfer client for macOS. Available via brew as `forklift`.
 - [Ice](https://icemenubar.app) ([Open-Source](https://github.com/jordanbaird/Ice)): Powerful menu bar manager for macOS.
 - [Karabiner-Elements](https://karabiner-elements.pqrs.org) ([Open-Source](https://github.com/pqrs-org/Karabiner-Elements)): A powerful and stable keyboard customizer for macOS.
+- [Kagi News](https://apps.apple.com/us/app/kagi-news/id6748314243): Daily AI-distilled press review with global news from community-curated sources.
 - [Keka](https://www.keka.io/en/) ([Open-Source](https://github.com/aonez/Keka)): The macOS file archiver.
 - [kitty](https://sw.kovidgoyal.net/kitty/) ([Open-Source](https://github.com/kovidgoyal/kitty)): The fast, feature-rich, GPU based terminal emulator.
 - [LilyView](https://apps.apple.com/us/app/lilyview/id529490330?mt=12&uo=4&at=10l4tL)
@@ -400,6 +401,7 @@ chezmoi update -R
 - [SwiftBar](https://swiftbar.app/)]: Powerful macOS menu bar customization tool. _Conditional: This is installed when a container runtime is enabled, as I use this to start/stop colima._
 - [SyncThing](https://syncthing.net/) ([Open-Source](https://github.com/syncthing/)): A continuous file synchronization program.
 - [Transmission Remote GUI](https://github.com/transmission-remote-gui/transgui) (Open-Source): A feature rich cross platform Transmission BitTorrent client. Faster and has more functionality than the built-in web GUI.
+- [Under My Roof](https://apps.apple.com/us/app/under-my-roof-home-inventory/id1524335878): Home inventory app for organizing and tracking your home and belongings.
 - [UnPlugged](https://apps.apple.com/us/app/unplugged/id423123087?mt=12&uo=4&at=10l4tL)
 - [WhatsYourSign](https://objective-see.org/products/whatsyoursign.html): Add a menu item to Finder to display a file's cryptographic information.
 - [WiFi Explorer](https://apps.apple.com/us/app/wifi-explorer/id494803304?mt=12&uo=4&at=10l4tL): Best Wi-Fi Analyzer & Monitor.
@@ -778,6 +780,7 @@ chezmoi update -R
 - [PiPer](https://apps.apple.com/us/app/piper/id1421915518?mt=12&uo=4&at=10l4tL) ([Open-Source](https://github.com/amarcu5/PiPer)): Picture-in-Picture for Safari. No longer needed.
 - [Privacy Redirect](https://apps.apple.com/us/app/privacy-redirect/id1578144015?uo=4&at=10l4tL) ([Open-Source](https://github.com/smmr-software/privacy-redirect-safari)): No longer needed.
 - [Refined GitHub](https://apps.apple.com/us/app/refined-github/id1519867270?mt=12&uo=4&at=10l4tL): GitHub interface improvements. Removed in favor of userscript.
+- [SingleFile](https://apps.apple.com/us/app/singlefile/id1609752330?uo=4&at=10l4tL) ([Open-Source](https://github.com/gildas-lormeau/SingleFile)): Save a complete web page into a single HTML file. No longer needed.
 - [Shut Up](https://apps.apple.com/us/app/shut-up-comment-blocker/id1015043880?uo=4&at=10l4tL): Comment blocker. No longer needed.
 - [Social Fixer for Facebook](https://apps.apple.com/app/social-fixer-for-facebook/id1562017526): Replaced with userscript version.
 - [Toolkit for YNAB](https://apps.apple.com/us/app/toolkit-for-ynab/id1592912837?mt=12&uo=4&at=10l4tL) ([Open-Source](https://github.com/toolkit-for-ynab/toolkit-for-ynab)): YNAB enhancements. No longer needed.
