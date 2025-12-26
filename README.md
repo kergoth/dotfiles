@@ -408,12 +408,16 @@ chezmoi update -R
 ##### Safari Extensions
 
 - [1Password for Safari](https://apps.apple.com/us/app/1password-for-safari/id1569813296?mt=12&uo=4&at=10l4tL)
+- [DeArrow](https://apps.apple.com/us/app/dearrow/id6451469297): Crowdsourced replacement of clickbait YouTube titles and thumbnails.
 - [Hush](https://apps.apple.com/us/app/hush-nag-blocker/id1544743900?uo=4&at=10l4tL) ([Open-Source](https://github.com/oblador/hush))
 - [Kagi for Safari](https://apps.apple.com/us/app/kagi-for-safari/id1622835804): Kagi search for Safari.
-- [Privacy Redirect](https://apps.apple.com/us/app/privacy-redirect/id1578144015?uo=4&at=10l4tL) ([Open-Source](https://github.com/smmr-software/privacy-redirect-safari))
+- [Noir](https://apps.apple.com/us/app/noir/id1592917505): Dark mode for every website.
+- [Obsidian Web Clipper](https://apps.apple.com/us/app/obsidian-web-clipper/id6720708363): Clip web pages to Obsidian.
 - [SessionRestore](https://apps.apple.com/us/app/sessionrestore-for-safari/id1463334954?mt=12&uo=4&at=10l4tL)
+- [SponsorBlock](https://apps.apple.com/us/app/sponsorblock/id1573461917): Skip sponsorships in YouTube videos.
 - [StopTheMadness Pro](https://apps.apple.com/us/app/stopthemadness-pro/id6471380298): A Safari extension that stops web site annoyances and privacy violations.
 - [Tampermonkey Classic](https://apps.apple.com/us/app/tampermonkey-classic/id1482490089?mt=12&uo=4&at=10l4tL): Temporary replacement for Userscripts while it's being updated.
+- [Things To Get Me](https://apps.apple.com/us/app/things-to-get-me/id6447106500): Add products to your wish-list from anywhere while browsing in Safari.
 - [uBlock Origin Lite](https://apps.apple.com/us/app/ublock-origin-lite/id6745342698): An efficient content blocker for Safari.
 - [Vinegar](https://apps.apple.com/us/app/vinegar-tube-cleaner/id1591303229?uo=4&at=10l4tL)
 
@@ -772,6 +776,7 @@ chezmoi update -R
 
 - [AdGuard for Safari](https://apps.apple.com/us/app/adguard-for-safari/id1440147259?mt=12&uo=4&at=10l4tL) ([Open-Source](https://github.com/AdguardTeam/AdguardForSafari)): Replaced with uBlock Origin Lite for more efficient ad blocking.
 - [PiPer](https://apps.apple.com/us/app/piper/id1421915518?mt=12&uo=4&at=10l4tL) ([Open-Source](https://github.com/amarcu5/PiPer)): Picture-in-Picture for Safari. No longer needed.
+- [Privacy Redirect](https://apps.apple.com/us/app/privacy-redirect/id1578144015?uo=4&at=10l4tL) ([Open-Source](https://github.com/smmr-software/privacy-redirect-safari)): No longer needed.
 - [Refined GitHub](https://apps.apple.com/us/app/refined-github/id1519867270?mt=12&uo=4&at=10l4tL): GitHub interface improvements. Removed in favor of userscript.
 - [Shut Up](https://apps.apple.com/us/app/shut-up-comment-blocker/id1015043880?uo=4&at=10l4tL): Comment blocker. No longer needed.
 - [Social Fixer for Facebook](https://apps.apple.com/app/social-fixer-for-facebook/id1562017526): Replaced with userscript version.
