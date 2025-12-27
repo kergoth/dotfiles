@@ -1,0 +1,28 @@
+{{- if and (not .ephemeral) .use_nix (lookPath "nix") -}}
+#!/usr/bin/env bash
+# Auto-install nix-clean systemd service and timer
+#
+# Onchange triggers: Re-run if service files change
+# nix-clean service: {{ include (joinPath .chezmoi.sourceDir "dot_config/systemd/user/nix-clean.service.tmpl") | sha256sum }}
+# nix-clean timer: {{ include (joinPath .chezmoi.sourceDir "dot_config/systemd/user/nix-clean.timer.tmpl") | sha256sum }}
+
+set -euo pipefail
+
+USER_UNIT_DIR="{{ .chezmoi.homeDir }}/.config/systemd/user"
+
+# Ensure user unit directory exists
+mkdir -p "$USER_UNIT_DIR"
+
+echo "Installing nix-clean systemd service and timer..." >&2
+
+# Reload systemd user daemon to pick up any changes
+systemctl --user daemon-reload
+
+# Enable the timer
+systemctl --user enable nix-clean.timer
+
+# Restart the timer (starts if not running, restarts if already running to pick up changes)
+systemctl --user restart nix-clean.timer
+
+echo "✓ nix-clean timer enabled and activated" >&2
+{{- end -}}

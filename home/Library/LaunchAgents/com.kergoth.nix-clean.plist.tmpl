@@ -1,0 +1,54 @@
+{{- if and (eq .chezmoi.os "darwin") (not .ephemeral) .use_nix (lookPath "nix") -}}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.kergoth.nix-clean</string>
+
+	<key>ProgramArguments</key>
+	<array>
+		<string>{{ .chezmoi.homeDir }}/bin/nix-clean</string>
+	</array>
+
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>PATH</key>
+		<string>{{ .chezmoi.homeDir }}/bin:{{ .chezmoi.homeDir }}/.nix-profile/bin:{{ .chezmoi.homeDir }}/.local/state/nix/profiles/profile/bin:/nix/var/nix/profiles/default/bin:{{ .chezmoi.homeDir }}/.brew/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+	</dict>
+
+	<!-- Run Sunday at 3 AM (Weekday: 0=Sunday, 1=Monday, ..., 6=Saturday) -->
+	<key>StartCalendarInterval</key>
+	<dict>
+		<key>Weekday</key>
+		<integer>0</integer>
+		<key>Hour</key>
+		<integer>3</integer>
+		<key>Minute</key>
+		<integer>0</integer>
+	</dict>
+
+	<!-- Don't run at load, only on schedule -->
+	<key>RunAtLoad</key>
+	<false/>
+
+	<!-- Standard output/error logging -->
+	<key>StandardOutPath</key>
+	<string>{{ .chezmoi.homeDir }}/Library/Logs/nix-clean.log</string>
+	<key>StandardErrorPath</key>
+	<string>{{ .chezmoi.homeDir }}/Library/Logs/nix-clean.log</string>
+
+	<!-- Resource limits (low priority) -->
+	<key>Nice</key>
+	<integer>15</integer>
+
+	<!-- Process type (Background for non-interactive) -->
+	<key>ProcessType</key>
+	<string>Background</string>
+
+	<!-- Low priority I/O -->
+	<key>LowPriorityIO</key>
+	<true/>
+</dict>
+</plist>
+{{- end -}}

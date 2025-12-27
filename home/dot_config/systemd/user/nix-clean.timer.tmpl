@@ -1,0 +1,19 @@
+{{- if and (eq .chezmoi.os "linux") (not .ephemeral) .use_nix (lookPath "nix") -}}
+[Unit]
+Description=Nix Cleanup Timer - Run cleanup on Sunday at 3 AM
+Documentation=man:nix-collect-garbage(1)
+Requires=nix-clean.service
+
+[Timer]
+# Run Sunday at 3 AM
+OnCalendar=Sun *-*-* 03:00:00
+
+# If system was off during scheduled run, run when it comes back
+Persistent=true
+
+# Randomize start time by up to 10 minutes to avoid resource spikes
+RandomizedDelaySec=10min
+
+[Install]
+WantedBy=timers.target
+{{- end -}}

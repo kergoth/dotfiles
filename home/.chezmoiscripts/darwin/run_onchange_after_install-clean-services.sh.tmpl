@@ -1,0 +1,49 @@
+{{- if not .ephemeral -}}
+#!/usr/bin/env bash
+# Auto-install brew-clean and nix-clean launchd agents
+#
+# Onchange triggers: Re-run if service files change
+# brew-clean: {{ include (joinPath .chezmoi.sourceDir "Library/LaunchAgents/com.kergoth.brew-clean.plist.tmpl") | sha256sum }}
+{{- if and .use_nix (lookPath "nix") }}
+# nix-clean: {{ include (joinPath .chezmoi.sourceDir "Library/LaunchAgents/com.kergoth.nix-clean.plist.tmpl") | sha256sum }}
+{{- end }}
+
+set -euo pipefail
+
+LAUNCH_AGENTS_DIR="{{ .chezmoi.homeDir }}/Library/LaunchAgents"
+
+# Ensure LaunchAgents directory exists
+mkdir -p "$LAUNCH_AGENTS_DIR"
+
+# Function to install a launchd agent
+install_agent() {
+    local plist_name="$1"
+    local service_name="$2"
+    local plist_path="${LAUNCH_AGENTS_DIR}/${plist_name}"
+
+    if [ ! -f "$plist_path" ]; then
+        return 0
+    fi
+
+    echo "Installing ${service_name} launchd agent..." >&2
+
+    # Unload if already loaded
+    launchctl unload "$plist_path" 2>/dev/null || true
+
+    # Load the agent
+    if launchctl load "$plist_path"; then
+        echo "✓ ${service_name} agent installed successfully" >&2
+    else
+        echo "Warning: Failed to load ${service_name} agent" >&2
+    fi
+}
+
+# Install brew-clean agent (always on non-ephemeral macOS)
+install_agent "com.kergoth.brew-clean.plist" "brew-clean"
+
+{{- if and .use_nix (lookPath "nix") }}
+# Install nix-clean agent (when Nix is available)
+install_agent "com.kergoth.nix-clean.plist" "nix-clean"
+{{- end }}
+
+{{- end -}}
