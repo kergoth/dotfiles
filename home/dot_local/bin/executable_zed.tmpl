@@ -3,7 +3,14 @@
 
 set -euo pipefail
 
-identifier=dev.zed.Zed-Preview
+if [ -n "${ZED_PREFER_PREVIEW:-}" ]; then
+    identifier=dev.zed.Zed-Preview
+    fallback=dev.zed.Zed
+else
+    identifier=dev.zed.Zed
+    fallback=dev.zed.Zed-Preview
+fi
+
 if [ -n "${__CFBundleIdentifier}" ]; then
     case "${__CFBundleIdentifier}" in
         dev.zed*)
@@ -14,7 +21,7 @@ fi
 
 app=$(mdfind "kMDItemCFBundleIdentifier == '$identifier'" | head -n 1)
 if [ -z "$app" ]; then
-    app=$(mdfind "kMDItemCFBundleIdentifier == 'dev.zed.Zed'" | head -n 1)
+    app=$(mdfind "kMDItemCFBundleIdentifier == '$fallback'" | head -n 1)
 fi
 
 if [ -n "$app" ]; then
