@@ -320,6 +320,7 @@ chezmoi update -R
 
 ##### CLI Software on WSL2
 
+- [npiperelay](https://github.com/jstarks/npiperelay): Access Windows named pipes from WSL.
 - [socat](http://www.dest-unreach.org/socat/): Multipurpose relay for bidirectional data transfer. This is required for [npiperelay](https://github.com/jstarks/npiperelay).
 
 ##### CLI Software on Chimera Linux
@@ -332,7 +333,6 @@ chezmoi update -R
 
 - [gow](https://github.com/bmatzelle/gow): Unix command line utilities installer for Windows.
 - [gsudo](https://github.com/gerardog/gsudo): Sudo for Windows.
-- [npiperelay](https://github.com/jstarks/npiperelay): Access Windows named pipes from WSL.
 - [recycle-bin](https://github.com/sindresorhus/recycle-bin): Move files and folders to the Windows recycle bin within command line.
 - [scoop](https://scoop.sh): A command-line installer for Windows.
 - [starship](https://starship.rs): A cross-shell prompt.
