@@ -30,7 +30,7 @@ fi
 if [ -d "$scriptdir/macos/Brewfile.d" ]; then
     find "$scriptdir/macos/Brewfile.d" -type f -not -name .keep -not -name .DS_Store |
         while read -r brewfile; do
-            brewfile_install "$brewfile"
+            brewfile_install "$brewfile" || :
         done
 fi
 

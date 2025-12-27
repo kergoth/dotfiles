@@ -62,7 +62,7 @@ brewfile_install "$scriptdir/macos/Brewfile-admin"
 if [ -d "$scriptdir/macos/Brewfile-admin.d" ]; then
     find "$scriptdir/macos/Brewfile-admin.d" -type f -not -name .keep -not -name .DS_Store |
         while read -r brewfile; do
-            brewfile_install "$brewfile"
+            brewfile_install "$brewfile" || :
         done
 fi
 
