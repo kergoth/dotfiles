@@ -3,19 +3,43 @@
 
 # Usage: ./brewfile-diff-installed Brewfile
 
+scriptdir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+
+# shellcheck source=../common.sh
+. "$scriptdir/../common.sH"
+
 set -e
 
 usage() {
-    echo >&2 "${0##*/} [options] Brewfile"
+    echo >&2 "${0##*/} [options] Brewfile [Brewfile..]"
     exit 2
 }
 
-brewfile_dump() {
-    if echo "$brewfile" | grep -q '\.tmpl$' && command -v chezmoi &>/dev/null; then
-        chezmoi execute-template <"$brewfile"
+diff_highlight() {
+    if [ -t 1 ]; then
+        if command -v delta &>/dev/null; then
+            delta --file-style=omit --hunk-header-style=omit
+        elif command -v diff-highlight >/dev/null 2>&1 && command -v perl >/dev/null 2>&1; then
+            diff-highlight
+        else
+            tail -n +3
+        fi
     else
-        cat "$brewfile"
+        tail -n +3
     fi
+}
+
+brewfiles_dump() {
+    for brewfile; do
+        if [ -d "$brewfile" ]; then
+            find "$brewfile" -type f -not -name .DS_Store -print0 |
+                while read -r brewfile; do
+                    brewfile_cat "$brewfile"
+                done
+        else
+            brewfile_cat "$brewfile"
+        fi
+    done
 }
 
 formula=
@@ -44,12 +68,6 @@ if [ $# -eq 0 ]; then
     usage
 fi
 
-brewfile="$1"
-if [ ! -f "$brewfile" ]; then
-    echo "Brewfile not found."
-    exit 1
-fi
-
 if ! command -v brew &>/dev/null; then
     echo "Homebrew is not installed."
     exit 1
@@ -63,21 +81,7 @@ else
 fi
 
 # Get listed packages
-listed=$(brewfile_dump | brew bundle list ${formula:+--formula} ${cask:+--cask} --file=-)
-
-diff_highlight() {
-    if [ -t 1 ]; then
-        if command -v delta &>/dev/null; then
-            delta --file-style=omit --hunk-header-style=omit
-        elif command -v diff-highlight >/dev/null 2>&1 && command -v perl >/dev/null 2>&1; then
-            diff-highlight
-        else
-            tail -n +3
-        fi
-    else
-        tail -n +3
-    fi
-}
+listed=$(brewfiles_dump "$@" | brew bundle list ${formula:+--formula} ${cask:+--cask} --file=-)
 
 # Compare listed and installed packages
 diff -ud <(echo "$listed" | sort) <(echo "$installed" | sort) | diff_highlight

@@ -27,20 +27,26 @@ run() {
     "$@"
 }
 
-brewfile_install() {
+brewfile_cat() {
     local brewfile="$1"
     if [ -f "$brewfile.tmpl.age" ] || echo "$brewfile" | grep -q "\.tmpl.age$"; then
-        cat "${brewfile%.tmpl.age}.tmpl.age" | chezmoi decrypt | chezmoi execute-template | run "$HOMEBREW_PREFIX/bin/brew" bundle --no-upgrade install --file=-
+        cat "${brewfile%.tmpl.age}.tmpl.age" | chezmoi decrypt | chezmoi execute-template
     elif [ -f "$brewfile.tmpl" ] || echo "$brewfile" | grep -q "\.tmpl$"; then
-        cat "${brewfile%.tmpl}.tmpl" | chezmoi execute-template | run "$HOMEBREW_PREFIX/bin/brew" bundle --no-upgrade install --file=-
+        cat "${brewfile%.tmpl}.tmpl" | chezmoi execute-template
     elif [ -f "$brewfile.age" ] || echo "$brewfile" | grep -q "\.age$"; then
-        cat "${brewfile%.age}.age" | chezmoi decrypt | run "$HOMEBREW_PREFIX/bin/brew" bundle --no-upgrade install --file=-
+        cat "${brewfile%.age}.age" | chezmoi decrypt
     elif [ -f "$brewfile" ]; then
-        run "$HOMEBREW_PREFIX/bin/brew" bundle --no-upgrade install --file="$brewfile"
+        cat "$brewfile"
     else
-        msg "No $brewfile found"
+        msg_red "Brewfile $brewfile not found"
         return 1
     fi
+}
+
+brewfile_install() {
+    local brewfile="$1"
+    brewfile_cat "$brewfile" |
+        run "$HOMEBREW_PREFIX/bin/brew" bundle --no-upgrade install --file=-
 }
 
 check_child_script() {
@@ -296,21 +302,21 @@ devpod_configure() {
     local dotfiles_script="$2"
     local ssh_config_path="$3"
     local provider_name="${4:-docker}"
-    
+
     if ! has devpod; then
         msg "devpod not found, skipping DevPod configuration"
         return 0
     fi
-    
+
     msg "Configuring DevPod"
-    
+
     local provider_json=
     local provider_list=
     if has jq; then
         provider_json=$(devpod provider list --output json 2>/dev/null)
     fi
     provider_list=$(devpod provider list 2>/dev/null)
-    
+
     local provider_exists=0
     if [ -n "$provider_json" ] && has jq; then
         if echo "$provider_json" | jq -e --arg name "$provider_name" 'has($name)' >/dev/null 2>&1; then
@@ -323,7 +329,7 @@ devpod_configure() {
             provider_exists=1
         fi
     fi
-    
+
     if [ "$provider_exists" -eq 0 ]; then
         msg "Adding DevPod provider '$provider_name'"
         if ! devpod provider add "$provider_name" 2>/dev/null; then
@@ -333,7 +339,7 @@ devpod_configure() {
     else
         msg "DevPod provider '$provider_name' already exists"
     fi
-    
+
     local is_default=0
     if [ -n "$provider_json" ] && has jq; then
         if echo "$provider_json" | jq -e --arg name "$provider_name" '.[$name].default == true' >/dev/null 2>&1; then
@@ -346,14 +352,14 @@ devpod_configure() {
             is_default=1
         fi
     fi
-    
+
     if [ "$is_default" -eq 0 ]; then
         msg "Setting DevPod default provider to '$provider_name'"
         devpod provider use "$provider_name" 2>/dev/null || :
     else
         msg "DevPod default provider is already set to '$provider_name'"
     fi
-    
+
     msg "Setting DevPod context options"
     local options=(
         "-o" "DOTFILES_URL=$dotfiles_url"
@@ -362,7 +368,7 @@ devpod_configure() {
         "-o" "SSH_CONFIG_PATH=$ssh_config_path"
         "-o" "SSH_INJECT_GIT_CREDENTIALS=true"
     )
-    
+
     if ! devpod context set-options "${options[@]}" 2>/dev/null; then
         msg "Warning: Failed to set some DevPod context options (may already be set)"
     fi
