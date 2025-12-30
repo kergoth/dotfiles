@@ -248,6 +248,7 @@ chezmoi update -R
 - [direnv](https://direnv.net): An extension for your shell which can load and unload environment variables depending on the current directory.
 - [duf](https://github.com/muesli/duf): Disk Usage/Free Utility - a better 'df' alternative.
 - [dua](https://github.com/Byron/dua-cli): View disk space usage and delete unwanted data, fast. This is a faster version of ncdu.
+- [fclones](https://github.com/pkolaczk/fclones): Finds and removes duplicate files.
 - [restic](https://restic.net) ([Open-Source](https://github.com/restic/restic)): Fast, secure, efficient backup program.
 - [rsync](https://rsync.samba.org/): Fast, versatile file copying tool for remote and local files.
 - [Tailscale](https://tailscale.com) ([Open-Source](https://github.com/tailscale/tailscale)): WireGuard-based mesh VPN that makes it easy to connect your devices securely.
@@ -497,7 +498,6 @@ chezmoi update -R
 - [entr](https://github.com/eradman/entr): Run arbitrary commands when files change. Available via brew and nix.
 - [eva](https://github.com/nerdypepper/eva): A simple calculator REPL, similar to bc. Available via brew, nix, and cargo.
 - [fast](https://github.com/ddo/fast): Minimal zero-dependency utility for testing your internet download speed from terminal. Available via nix as `fast-cli` and go.
-- [fclones](https://github.com/pkolaczk/fclones): Finds and removes duplicate files. Available via brew, nix, and cargo.
 - [ffmpeg](https://ffmpeg.org): A complete, cross-platform solution to record, convert and stream audio and video. Available via brew, nix, and scoop.
 - [flint](https://github.com/pengwynn/flint): Check your project for common sources of contributor friction. Available via brew as `flint-checker` and go.
 - [git-filter-repo](https://github.com/newren/git-filter-repo): Quickly rewrite git repository history (filter-branch replacement).

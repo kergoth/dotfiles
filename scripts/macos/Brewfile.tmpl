@@ -80,6 +80,11 @@ mas "Vinegar", id: 1591303229
 cask "dteoh-devdocs"
 {{- end }}
 
+# fclones - efficient duplicate file finder
+{{ if or (not .use_nix) (eq (includeTemplate "find-tool" (dict "root" . "tool" "fclones")) "") -}}
+brew "fclones"
+{{- end }}
+
 # work
 {{ if and .work (not .use_nix) -}}
 brew "git-crypt"

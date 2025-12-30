@@ -65,6 +65,30 @@ refreshPeriod = "{{ $refreshPeriod }}"
 
 {{ end }}
 
+{{/* Fclones - Efficient duplicate file finder */}}
+{{- $fclones_version := (gitHubLatestRelease "pkolaczk/fclones").TagName | trimPrefix "v" -}}
+
+{{/* Only install on x86_64 architectures - fclones doesn't have arm64 musl builds */}}
+{{ if eq $binarch "x86_64" }}
+{{ if eq $os "linux" }}
+
+["{{ $binpath }}/fclones"]
+  type = "archive-file"
+  url = "https://github.com/pkolaczk/fclones/releases/download/v{{ $fclones_version }}/fclones-{{ $fclones_version }}-linux-musl-x86_64.tar.gz"
+  path = "target/x86_64-unknown-linux-musl/release/fclones"
+  executable = true
+
+{{ else if eq $os "windows" }}
+
+["{{ $binpath }}/fclones{{ $binsuffix }}"]
+  type = "archive-file"
+  url = "https://github.com/pkolaczk/fclones/releases/download/v{{ $fclones_version }}/fclones-{{ $fclones_version }}-windows-x86_64.zip"
+  path = "fclones{{ $binsuffix }}"
+  executable = true
+
+{{ end }}
+{{ end }}
+
 {{ if .steamdeck }}
 
 {{/* Install rclone on the Steam Deck */}}
