@@ -599,7 +599,7 @@ chezmoi update -R
 - [UTM](https://mac.getutm.app/) ([Open-Source](https://github.com/utmapp/UTM)): Virtual machine manager for macOS. Available via brew as `utm` and Mac App Store.
 - [XLD](https://tmkk.undo.jp/xld/index_e.html): Lossless audio decoder.
 
-#### As Needed GUI Software for Windows (All are available via winget)
+#### As Needed GUI Software for Windows
 
 - [Autoruns](https://learn.microsoft.com/en-us/sysinternals/downloads/autoruns) (from [Sysinternals](https://learn.microsoft.com/en-us/sysinternals/)): See what programs are configured to startup automatically when your system boots and you login.
 - [BleachBit](https://www.bleachbit.org): Clean Your System and Free Disk Space. Available via winget as `BleachBit.BleachBit`.
@@ -607,8 +607,10 @@ chezmoi update -R
 - [foobar2000](https://www.foobar2000.org): Advanced freeware audio player. Available via winget as `PeterPawlowski.foobar2000` and scoop as `foobar2000`.
 - [ImDisk](https://sourceforge.net/projects/imdisk-toolkit/): Mount image files of hard drive, cd-rom or floppy.
 - [ImgBurn](https://www.imgburn.com): A lightweight CD / DVD / HD DVD / Blu-ray burning application. Available via winget as `LIGHTNINGUK.ImgBurn`.
+- [OSFMount](https://www.osforensics.com/tools/mount-disk-images.html): Mount raw and other disk image files as virtual drives (forensic-style, typically read-only). Available via winget as `PassmarkSoftware.OSFMount`.
 - [Paint.NET](https://getpaint.net): Free image and photo editing software for Windows. Available via scoop as `paint.net` and winget as `dotPDNLLC.paintdotnet`.
 - [Process Explorer](https://learn.microsoft.com/en-us/sysinternals/downloads/process-explorer) (from [Sysinternals](https://learn.microsoft.com/en-us/sysinternals/)): Find out what files, registry keys and other objects processes have open, which DLLs they have loaded, and more.
+- [WinCDEmu](https://wincdemu.sysprogs.org/): Open-source CD/DVD/BD emulator for mounting optical disc images (ISO, CUE/BIN, MDF/MDS, NRG, CCD/IMG). Available via scoop as `extras/wincdemu`.
 - [WinImage](https://www.winimage.com/winimage.htm): A fully-fledged disk-imaging suite for easy creation, reading and editing of many image formats and fileystems.
 - [WinSCP](https://winscp.net/): A popular SFTP client and FTP client for Microsoft Windows. Available via scoop, and winget as `WinSCP.WinSCP`.
 
