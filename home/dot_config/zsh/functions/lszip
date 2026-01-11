@@ -1,0 +1,10 @@
+if (( $+commands[unzip] )); then
+    unzip -Z -1 "$@"
+elif (( $+commands[bsdtar] )); then
+    bsdtar -tf "$@"
+elif (( $+commands[lsar] )); then
+    lsar "$@"
+else
+    echo >&2 "Error: no command found to list zip contents"
+    return 1
+fi
