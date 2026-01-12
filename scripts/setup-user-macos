@@ -67,7 +67,7 @@ if [ -d ~/.ssh/keys ] && [ $(find ~/.ssh/keys -maxdepth 1 -type f -not -name '*.
 fi
 
 #msg "Configuring"
-#"$scriptdir/macos/configure.tmpl"
+"$scriptdir/macos/configure.tmpl"
 "$scriptdir/macos/setup-apps"
 
 msg "Configuring complete"
