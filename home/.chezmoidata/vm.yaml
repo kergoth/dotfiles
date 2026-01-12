@@ -11,7 +11,7 @@ vmProfiles:
     lima_cpus: 4
     lima_mem_gib: 8
     colima_cpus: 8
-    colima_mem_gib: 12
+    colima_mem_gib: 16
     vm_disk_gib: 384
 
 vmDefaultProfile:
