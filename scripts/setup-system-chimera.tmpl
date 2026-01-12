@@ -40,7 +40,7 @@ apk add --no-interactive gnupg
 
 {{ if and (not .ephemeral) (not .wsl2) (not (env "CONTAINER_ID")) -}}
 # Enable System logging
-if ! dinitctl status syslog-ng | grep -q STARTED; then
+if ! dinitctl status syslog-ng | grep STARTED >/dev/null; then
     dinitctl enable syslog-ng
 fi
 
@@ -48,13 +48,13 @@ fi
 apk add pipewire
 
 # Enable DHCP Client
-if ! dinitctl status dhcpcd | grep -q STARTED; then
+if ! dinitctl status dhcpcd | grep STARTED >/dev/null; then
     dinitctl enable dhcpcd
 fi
 
 # Enable bluetooth
 apk add bluez
-if ! dinitctl status bluetoothd | grep -q STARTED; then
+if ! dinitctl status bluetoothd | grep STARTED >/dev/null; then
     dinitctl enable bluetoothd
 fi
 {{- end }}
@@ -68,7 +68,7 @@ apk add --no-interactive gnome
 
 {{ if and (not .ephemeral) (not .wsl2) (not (env "CONTAINER_ID")) -}}
 # Enable gdm
-if ! dinitctl status gdm | grep -q STARTED; then
+if ! dinitctl status gdm | grep STARTED >/dev/null; then
     dinitctl enable gdm
 fi
 {{- end }}

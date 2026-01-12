@@ -46,7 +46,7 @@ if has pwsh; then
     # to transient network issues.
     run pwsh -NoProfile "$scriptdir/install-pwsh-modules.ps1" || :
 
-    if ! brew list --formula | grep -qFx starship; then
+    if ! brew list --formula | grep -Fx starship >/dev/null; then
         msg "Installing PowerShell prompt"
         run "$HOMEBREW_PREFIX/bin/brew" install starship
     fi

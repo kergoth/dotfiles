@@ -37,7 +37,7 @@ sudorun dscl . create "/Users/$USER" IsHidden 1
 sudorun chflags hidden "/Users/$USER"
 
 # Remove admin user from FileVault
-if sudorun fdesetup list | grep -q "^$USER,"; then
+if sudorun fdesetup list | grep "^$USER," >/dev/null; then
     sudorun fdesetup remove -user "$USER"
 fi
 {{ else }}

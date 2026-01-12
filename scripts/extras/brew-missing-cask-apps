@@ -73,8 +73,8 @@ check_missing_casks() {
 
         if [ "$found" -eq 0 ]; then
             # Not in expected locations, search subfolders with mdfind
-            if mdfind -onlyin /Applications -name "$app" 2>/dev/null | grep -q . || \
-               mdfind -onlyin "$HOME/Applications" -name "$app" 2>/dev/null | grep -q .; then
+            if mdfind -onlyin /Applications -name "$app" 2>/dev/null | grep . >/dev/null || \
+               mdfind -onlyin "$HOME/Applications" -name "$app" 2>/dev/null | grep . >/dev/null; then
                 found=1
             fi
         fi
