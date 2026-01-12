@@ -7,6 +7,8 @@
 	cm = commit -m
 	cma = commit -am
 	empty = commit --allow-empty-message -m ''
+	# Create a root commit (commit with no parent)
+	root-commit = "!f(){ msg=\"${1:-Initial root commit}\"; tree=$(git write-tree); commit=$(git commit-tree -m \"$msg\" ${tree:-$(git hash-object -t tree /dev/null)}); git reset --hard $commit; }; f"
 	co = switch
 	back = switch -
 	cp = cherry-pick -x
