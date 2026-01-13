@@ -22,10 +22,6 @@ cask "claude-code"
 
 # Not at all related to work
 cask "discord"
-cask "vivaldi"
-
-# VPN for personal network
-mas "Tailscale", id: 1475387142
 
 # I don't use work machines at night, so don't use Night Shift
 cask "shifty"
@@ -37,17 +33,6 @@ cask "reader"
 # Not necessary enough to install on work machines
 cask "jordanbaird-ice"
 
-# No iCloud at work
-brew "mas"
-
-mas "Deliveries", id: 290986013
-mas "Kagi News", id: 6748314243
-mas "LilyView", id: 529490330
-mas "Under My Roof", id: 1524335878
-mas "UnPlugged", id: 423123087
-mas "WiFi Explorer", id: 494803304
-mas "WiFi Signal", id: 525912054
-
 # quicklook extensions (the ql extension is the only part I care about)
 # there are largely for security reasons, so are excluded from work machines
 cask "apparency"
@@ -56,23 +41,6 @@ cask "suspicious-package"
 # potential license concerns for commercial use
 # note: betterzip's extension requires macOS 10.9 or later
 cask "betterzip"
-
-# Safari Extensions
-mas "1Password for Safari", id: 1569813296
-mas "DeArrow", id: 6451469297
-mas "Declutter", id: 1574021257
-mas "Hush", id: 1544743900
-mas "Kagi for Safari", id: 1622835804
-mas "Noir", id: 1592917505
-mas "Obsidian Web Clipper", id: 6720708363
-mas "Save to Reader", id: 1640236961
-mas "SessionRestore", id: 1463334954
-mas "SponsorBlock", id: 1573461917
-mas "StopTheMadness Pro", id: 6471380298
-mas "Tampermonkey Classic", id: 1482490089
-mas "Things To Get Me", id: 6447106500
-mas "uBlock Origin Lite", id: 6745342698
-mas "Vinegar", id: 1591303229
 {{- end }}
 
 # coding
@@ -103,12 +71,11 @@ cask "calibre"
 # gaming
 {{ if and .gaming (not .work) -}}
 cask "steam"
-mas "Steam Link", id: 1246969117
 {{- end }}
 
 # music
 {{ if and .music (not .work) -}}
-mas "MusicHarbor", id: 1440405750
+# add music apps here
 {{- end }}
 {{ if and .work (not .music) -}}
 cask "notunes"
@@ -131,5 +98,4 @@ cask "transmission-remote-gui"
 # video
 {{ if and .video (not .work) -}}
 cask "vlc"
-mas "Play", id: 1596506190
 {{- end }}

@@ -1,0 +1,66 @@
+cask "karabiner-elements"
+
+{{ if not .work -}}
+tap "kergoth/misc"
+
+# Commercial Apps I own personally
+cask "carbon-copy-cloner@6"
+
+# The IT department has their own security tools, so skip the ones I use
+cask "karabiner-elements"
+cask "lulu"
+cask "reikey"
+cask "whatsyoursign"
+
+# I don't use this at work
+cask "parallels"
+
+# Requires /Library/ paths for zap, needs admin access
+cask "vivaldi"
+
+# Mac App Store CLI - requires admin for /Applications/ installs
+brew "mas"
+
+# VPN for personal network
+mas "Tailscale", id: 1475387142
+
+mas "Deliveries", id: 290986013
+mas "Kagi News", id: 6748314243
+mas "LilyView", id: 529490330
+mas "Under My Roof", id: 1524335878
+mas "UnPlugged", id: 423123087
+mas "WiFi Explorer", id: 494803304
+mas "WiFi Signal", id: 525912054
+
+# Safari Extensions
+mas "1Password for Safari", id: 1569813296
+mas "DeArrow", id: 6451469297
+mas "Declutter", id: 1574021257
+mas "Hush", id: 1544743900
+mas "Kagi for Safari", id: 1622835804
+mas "Noir", id: 1592917505
+mas "Obsidian Web Clipper", id: 6720708363
+mas "Save to Reader", id: 1640236961
+mas "SessionRestore", id: 1463334954
+mas "SponsorBlock", id: 1573461917
+mas "StopTheMadness Pro", id: 6471380298
+mas "Tampermonkey Classic", id: 1482490089
+mas "Things To Get Me", id: 6447106500
+mas "uBlock Origin Lite", id: 6745342698
+mas "Vinegar", id: 1591303229
+
+# gaming
+{{   if .gaming -}}
+mas "Steam Link", id: 1246969117
+{{-   end }}
+
+# music
+{{   if .music -}}
+mas "MusicHarbor", id: 1440405750
+{{-   end }}
+
+# video
+{{   if .video -}}
+mas "Play", id: 1596506190
+{{-   end }}
+{{- end }}
