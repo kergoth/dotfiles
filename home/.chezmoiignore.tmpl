@@ -1,10 +1,16 @@
-# General ignores
+# Global junk
 **/*~
 **/.tmp*
 **/.DS_Store
 **/._*
 
-# Common home directory data and documents
+# Explicitly not maintained via chezmoi
+.profile
+.bashrc
+.bash_profile
+.bash_logout
+
+# Common home directory data and documents (not managed by chezmoi)
 Applications/*
 !Applications/CoreServices
 Applications (Parallels)
@@ -24,27 +30,90 @@ Sync
 Templates
 Virtual Machines
 Workspace
+!Obsidian Vault
+!My Kindle Content
 
-# Specific ignores
-{{- $vimPath := joinPath .chezmoi.homeDir ".config/vim" -}}
-{{ if or (not (glob $vimPath)) (ne ($vimPath | lstat).type "symlink") }}
-.chezmoiscripts/posix/prepare_vim
-{{ end }}
-
+# ChezMoi internals / repo-local state
+.chezmoihooks
+.chezmoihooks/**
+.config/chezmoi
 .chezmoiscripts/**
+
+# Track only OS / variant subsets of scripts
 !.chezmoiscripts/{{.chezmoi.os}}/**
 !.chezmoiscripts/{{.osid}}/**
+
 {{- if ne .chezmoi.os "windows" }}
 !.chezmoiscripts/posix/**
 {{- end }}
 
+# Vim data files migration after path changes
+{{- $vimPath := joinPath .chezmoi.homeDir ".config/vim" -}}
+{{- if or (not (glob $vimPath)) (ne ($vimPath | lstat).type "symlink") }}
+.chezmoiscripts/posix/prepare_vim
+{{- end }}
+
+# Shell / tool history and dev tool state
+.bash_history
 .lesshst
 _lesshst
+.code-terminal
+.vscode
+.vscode-server
+.devpod
+.devcontainer
+.config/vscode-dev-containers
+.envrc
 
+# Cache handling (single source of truth)
+{{- if eq .chezmoi.os "darwin" }}
+Library/Caches/*
+!Library/Caches/zsh
+Library/Caches/zsh/*
+!Library/Caches/zsh/functions
+Library/Caches/zsh/functions/*
+{{- else }}
+.cache/*
+!.cache/zsh
+.cache/zsh/*
+!.cache/zsh/functions
+.cache/zsh/functions/*
+{{- end }}
+
+# Local-only state / package managers / misc
+.brew
+.config/gh/hosts.yml
+.config/environment.d/10-home-manager.conf
+.local/lib
+.local/pipx
+.local/share/*
+!.local/share/user-places.xbel
+!.local/share/kxmlgui5
+!.local/share/zsh
+.local/share/zsh/*
+!.local/share/zsh/completions
+.local/state/*
+!.local/state/zsh
+.local/state/zsh/*
+.nix-channels
+.nix-defexpr
+.nix-profile
+.oh-my-zsh
+.Trash
+.config/nix/registry.json
+.terminfo
+**/.zcompdump
+**/*.iln*
+**/*.zwc
+
+# OS-specific ignores
 {{- if ne .chezmoi.os "windows" }}
 AppData
 .config/scoop
 .gnupg/gpg-agent.conf
+.gnupg/*~
+.gnupg/S.*
+.gnupg/openpgp-revocs.d
 {{- else }}
 .gnupg/*
 AppData/Roaming/gnupg/*~
@@ -56,129 +125,29 @@ Documents/*
 {{- end }}
 
 {{- if ne .chezmoi.os "linux" }}
-{{/* Truly Linux-only files */}}
 {{/* flatpak files */}}
 .var
 {{- end }}
 
 {{- if ne .chezmoi.os "darwin" }}
-.cache/*
-!.cache/zsh
-.cache/zsh/*
-!.cache/zsh/functions
-.cache/zsh/functions/*
 .config/zsh/.zshrc.d/lima.zsh
 .config/zsh/functions/lima
 .lima
 Library/
-Obsidian Vault
-My Kindle Content
 # This wrapper is for macOS to use the zed-preview binary
 .local/bin/zed
-{{- else }}
-.cache
-Library/Caches/*
-!Library/Caches/zsh
-Library/Caches/zsh/*
-!Library/Caches/zsh/functions
-Library/Caches/zsh/functions/*
 {{- end }}
 
-.ssh/keys/*
-.config/chezmoi/age.key
-{{- if not .ephemeral }}
-{{-   if .personal }}
-.ssh/config.d/work
-{{-     if not .steamdeck }}
-!.ssh/keys/frey*
-{{-     else }}
-!.ssh/keys/frey.pub
-{{-     end }}
-{{-   end }}
-{{-   if .work }}
-.ssh/config.d/personal
-!.ssh/keys/work*
-{{-   end }}
-{{- end }}
+# Host or Distro Specific ignores
 
-{{- if not .work }}
-.s3cfg
-.config/bat/syntaxes/BitBake.sublime-syntax
-.config/.jira/.config.yml
-{{- end }}
-
+# WSL-specific exclusions
 {{- if not .wsl2 }}
 .local/bin/wsl-open
 .config/zsh/.zshrc.d/wsl.zsh
 {{- end }}
 
-**/.DS_Store
-.chezmoihooks
-.chezmoihooks/**
-.bash_history
-.brew
-.cache/*
-!.cache/zsh
-.cache/zsh/*
-!.cache/zsh/functions
-.cache/zsh/functions/*
-.config/chezmoi
-.config/environment.d/10-home-manager.conf
-.config/gh/hosts.yml
-.config/vscode-dev-containers
-.devcontainer
-.devpod
-.envrc
-.local/lib
-.local/pipx
-.local/share/*
-!.local/share/user-places.xbel
-!.local/share/kxmlgui5
-!.gnupg
-.gnupg/openpgp-revocs.d
-.gnupg/*~
-.gnupg/S.*
-!.local/share/zsh
-.local/share/zsh/*
-!.local/share/zsh/completions
-.local/state/*
-!.local/state/zsh
-.local/state/zsh/*
-.nix-channels
-.nix-defexpr
-.nix-profile
-.oh-my-zsh
-.ssh/known_hosts
-.Trash
-.vscode-server
-**/.zcompdump
-**/*.iln*
-**/*.zwc
-.ssh/agent.sock
-.ssh/socket.*
-.ssh/known_hosts.old
-.config/nix/registry.json
-.terminfo
-
-{{- if not .secrets }}
-{{/* secrets encrypted with age */}}
-.config/rclone/rclone.conf
-.ssh/config.d/personal
-.ssh/keys/frey
-.ssh/keys/frey.pub
-.ssh/keys/work
-.ssh/keys/work.pub
-.ssh/config.d/personal
-.ssh/config.d/work
-.config/.jira/.config.yml
-
-{{/* common secrets */}}
-.gnupg
-AppData/Roaming/gnupg
-{{- end }}
-
-{{ if not .steamdeck }}
-# Steamdeck-only
+{{- if not .steamdeck }}
+# Files excluded on non-Steam-Deck Devices (Deck-only files)
 .local/bin/deck*
 .local/bin/ludusavi*
 .config/systemd/user/deck-backup.service
@@ -190,8 +159,10 @@ AppData/Roaming/gnupg
 .config/steam-rom-manager
 ES-DE
 SD
-{{ else }}
-{{   if not .emudeck }}
+{{- else }}
+# Files excluded on a Steam Deck
+!.var/app
+{{-   if not .emudeck }}
 .config/Cemu
 .config/PCSX2
 .config/steam-rom-manager
@@ -201,11 +172,12 @@ SD
 .var/app/org.libretro.RetroArch
 .var/app/org.ppsspp.PPSSPP
 ES-DE
-{{   end }}
-{{   if not .retrodeck }}
+{{-   end }}
+{{-   if not .retrodeck }}
 .var/app/net.retrodeck.retrodeck
 .local/bin/retrodeck
-{{   end }}
+{{-   end }}
+
 .librewolf
 .local/share/fonts/*
 .config/powershell
@@ -234,22 +206,51 @@ ES-DE
 
 # Enabling backups is a manual step
 .config/deck-backup/config.d/enable
-{{ end }}
+{{- end }}
 
-# Personal-only files
-{{ if .work }}
+# Credentials / secrets (materialized plaintext outputs and machine-local sensitive state)
+.ssh/agent.sock
+.ssh/socket.*
+.ssh/known_hosts
+.ssh/known_hosts.old
+.ssh/keys/*
+.config/chezmoi/age.key
+
+{{- if not .ephemeral }}
+{{-   if .personal }}
+.ssh/config.d/work
+{{-     if not .steamdeck }}
+!.ssh/keys/frey*
+{{-     else }}
+!.ssh/keys/frey.pub
+{{-     end }}
+{{-   end }}
+{{-   if .work }}
+.ssh/config.d/personal
+!.ssh/keys/work*
+{{-   end }}
+{{- end }}
+
+{{- if not .secrets }}
+{{/* secrets encrypted with age */}}
+{{-   if .work }}
+# Personal secrets
 .config/rclone/rclone.conf
-{{ end }}
+{{-   else }}
+# Work secrets
+.config/.jira/.config.yml
+{{-   end }}
+.ssh/config.d/personal
+.ssh/config.d/work
+.ssh/keys/frey
+.ssh/keys/frey.pub
+.ssh/keys/work
+.ssh/keys/work.pub
 
-# I don't track files for this with chezmoi
-.code-terminal
-.vscode
-
-# I don't maintain a bash configuration
-.profile
-.bashrc
-.bash_profile
-.bash_logout
+{{/* common secrets */}}
+.gnupg
+AppData/Roaming/gnupg
+{{- end }}
 
 # Dotfiles/setup repository clones
 .dotfiles
