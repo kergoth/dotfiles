@@ -683,6 +683,7 @@ chezmoi update -R
 - [Simplenote](https://simplenote.com): An easy way to keep notes, lists, ideas, and more.
 - [Workflowy](https://workflowy.com): Organize your brain.
 - [EverNote](https://evernote.com): A note-taking app.
+- LibreWolf
 
 ### Formerly-Used macOS Software
 
