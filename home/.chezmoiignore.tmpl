@@ -231,8 +231,6 @@ ES-DE
 {{-   end }}
 {{- end }}
 
-{{- if not .secrets }}
-{{/* secrets encrypted with age */}}
 {{-   if .work }}
 # Personal secrets
 .config/rclone/rclone.conf
@@ -240,6 +238,11 @@ ES-DE
 # Work secrets
 .config/.jira/.config.yml
 {{-   end }}
+
+{{- if not .secrets }}
+{{/* secrets encrypted with age */}}
+.config/rclone/rclone.conf
+.config/.jira/.config.yml
 .ssh/config.d/personal
 .ssh/config.d/work
 .ssh/keys/frey
