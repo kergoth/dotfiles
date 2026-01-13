@@ -55,7 +55,18 @@ Documents/*
 !Documents/PowerShell
 {{- end }}
 
+{{- if ne .chezmoi.os "linux" }}
+{{/* Truly Linux-only files */}}
+{{/* flatpak files */}}
+.var
+{{- end }}
+
 {{- if ne .chezmoi.os "darwin" }}
+.cache/*
+!.cache/zsh
+.cache/zsh/*
+!.cache/zsh/functions
+.cache/zsh/functions/*
 .config/zsh/.zshrc.d/lima.zsh
 .config/zsh/functions/lima
 .lima
@@ -63,6 +74,7 @@ Library/
 # This wrapper is for macOS to use the zed-preview binary
 .local/bin/zed
 {{- else }}
+.cache
 Library/Caches/*
 !Library/Caches/zsh
 Library/Caches/zsh/*
