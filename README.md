@@ -406,7 +406,6 @@ chezmoi update -R
 - [Transmission Remote GUI](https://github.com/transmission-remote-gui/transgui) (Open-Source): A feature rich cross platform Transmission BitTorrent client. Faster and has more functionality than the built-in web GUI.
 - [Under My Roof](https://apps.apple.com/us/app/under-my-roof-home-inventory/id1524335878): Home inventory app for organizing and tracking your home and belongings.
 - [UnPlugged](https://apps.apple.com/us/app/unplugged/id423123087?mt=12&uo=4&at=10l4tL)
-- [WhatsYourSign](https://objective-see.org/products/whatsyoursign.html): Add a menu item to Finder to display a file's cryptographic information.
 - [WiFi Explorer](https://apps.apple.com/us/app/wifi-explorer/id494803304?mt=12&uo=4&at=10l4tL): Best Wi-Fi Analyzer & Monitor.
 - [WiFi Signal](https://apps.apple.com/us/app/wifi-signal-status-monitor/id525912054?mt=12&uo=4&at=10l4tL): WiFi Connection Status Monitor.
 
@@ -714,6 +713,7 @@ chezmoi update -R
 - [TotalFinder](https://totalfinder.binaryage.com): Finder enhancement.
 - [WebPQuickLook](https://github.com/emin/WebPQuickLook) (Open-Source): QuickLook plugin for WebP image files. No longer needed.
 - [Wineskin Winery](https://github.com/Gcenx/WineskinServer): A user-friendly tool used to make ports of Microsoft Windows software to macOS. Replaced by **Kegworks**.
+- [WhatsYourSign](https://objective-see.org/products/whatsyoursign.html): Add a menu item to Finder to display a file's cryptographic information.
 
 ### Formerly-Used Linux Software
 
