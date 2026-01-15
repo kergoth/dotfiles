@@ -91,6 +91,10 @@ cask "notunes"
 {{   if and (not .ephemeral) (not (env "CONTAINER_ID")) -}}
 # No need for a screen saver in a VM or container
 cask "brooklyn"
+{{-     if lt .macos_major_version 14 }}
+# Install on pre-Sonoma macOS
+cask "aerial"
+{{-     end }}
 {{-   end }}
 cask "transmission-remote-gui"
 {{- end }}
