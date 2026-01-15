@@ -73,6 +73,8 @@ run_child_script() {
 # shellcheck disable=SC3028,SC2034
 case "${OSTYPE:-}" in
 darwin*)
+    DISTRO=
+    DISTRO_LIKE=
     OS=macos
     ;;
 *)
