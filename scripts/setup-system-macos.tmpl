@@ -45,7 +45,7 @@ fi
 need_sudo
 {{- end }}
 
-if ! [ -e /nix ]; then
+if ! [ -e /nix ] || [ -z "$(find /nix -mindepth 1 -maxdepth 1 -type d | head -n 1)" ]; then
     install_nix
 fi
 
