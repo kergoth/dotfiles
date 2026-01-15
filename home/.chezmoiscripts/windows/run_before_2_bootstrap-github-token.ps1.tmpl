@@ -1,0 +1,25 @@
+{{- if .secrets -}}
+{{-   $ageKeyPath := .chezmoi.config.age.identity -}}
+{{-   $chezmoiGithubTokenPath := joinPath .chezmoi.homeDir ".config" "chezmoi_github_token" -}}
+{{-   $st := stat $ageKeyPath -}}
+{{-   $github_st := stat $chezmoiGithubTokenPath -}}
+{{-   if and $st (ne $st.size 0) (or (not $github_st) (eq $github_st.size 0)) -}}
+# Bootstrap access to the GitHub token used for Chezmoi externals with age
+
+. "$env:CHEZMOI_SOURCE_DIR\..\scripts\common.ps1"
+
+$src = "$env:CHEZMOI_SOURCE_DIR\dot_config\encrypted_private_chezmoi_github_token.age"
+$dest = "$env:CHEZMOI_HOME_DIR\.config\chezmoi_github_token"
+$destDir = Split-Path $dest
+
+if (!(Test-Path $destDir)) {
+    New-Item -ItemType Directory -Path $destDir | Out-Null
+}
+
+chezmoi decrypt $src | Set-Content -Path $dest -Encoding ascii -NoNewline
+
+Set-UserOnlyFileAccess -Pathname $dest
+
+Write-Host "Bootstrapped chezmoi github token at $dest"
+{{-   end -}}
+{{- end -}}

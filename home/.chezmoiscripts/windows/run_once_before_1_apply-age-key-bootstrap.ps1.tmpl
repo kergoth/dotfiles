@@ -4,18 +4,7 @@
 {{-   if or (not $st) (eq $st.size 0) -}}
 # Age key: {{ $st }}
 
-function Set-UserOnlyFileAccess {
-  param(
-    [Parameter(Mandatory)] [string]$Pathname
-  )
-  # This does not use Get-Acl/Set-Acl, as Set-Acl requires the user to have
-  # SeSecurityPrivilege, which should not be necessary for this operation.
-  icacls $Pathname /grant ${env:USERNAME}:rw | Out-Null
-  # Disable inheritance from folders
-  icacls $Pathname /inheritance:d | Out-Null
-  # Remove default groups (Authenticated Users, System, Administrators, Users)
-  icacls $Pathname /remove *S-1-5-11 *S-1-5-18 *S-1-5-32-544 *S-1-5-32-545 | Out-Null
-}
+. "$env:CHEZMOI_SOURCE_DIR\..\scripts\common.ps1"
 
 $AgeKeyPath = "{{ $ageKeyPath }}"
 $Dir = Split-Path $AgeKeyPath

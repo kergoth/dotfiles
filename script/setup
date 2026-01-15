@@ -16,5 +16,13 @@ if ! [ -t 1 ]; then
     set -- --no-tty --no-pager "$@"
 fi
 
+# First, run just the scripts to bootstrap secrets (age key, github token)
+chezmoi apply --include=scripts "$@"
+
+# Export the github token for externals if available
+if [ -s ~/.config/chezmoi_github_token ]; then
+    export CHEZMOI_GITHUB_ACCESS_TOKEN=$(cat ~/.config/chezmoi_github_token)
+fi
+
 echo >&2 "Applying dotfiles"
 chezmoi apply --keep-going "$@"
