@@ -81,7 +81,7 @@
 {{-     end -}}
 {{-     $work = true -}}
 {{-     $coding = true -}}
-{{-   else if eq $hostname "vaelin" -}}
+{{-   else if or (eq $hostname "vaelin") (eq $hostname "zorian") -}}
 {{-     $personal = true -}}
 {{-     $coding = true -}}
 {{-     $containers = true -}}
