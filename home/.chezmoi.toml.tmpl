@@ -38,9 +38,12 @@
 {{- end }}
 
 {{/* detect macOS version */}}
+{{- $macos_major_version := "" -}}
 {{- $macos_version := "" -}}
 {{- if eq .chezmoi.os "darwin" -}}
-    {{- $macos_version = slice (output "sw_vers" "-productVersion" | trim | splitList "." ) 0 2 | join "." -}}
+    {{- $macos_vers := slice (output "sw_vers" "-productVersion" | trim | splitList "." ) 0 2 }}
+    {{- $macos_major_version = index $macos_vers 0 }}
+    {{- $macos_version = $macos_vers | join "." -}}
 {{- end -}}
 
 {{/* detect GitHub codespaces, VSCode remote containers, Docker containers, Multipass VMs, and Vagrant boxes */}}
@@ -219,6 +222,7 @@ encryption = "age"
     skip_gpg = {{ $skip_gpg }}
 
 {{- if eq .chezmoi.os "darwin" }}
+    macos_major_version = {{ $macos_major_version }}
     macos_version = {{ $macos_version }}
     macos_split_user = {{ $macos_split_user }}
     macos_admin_user = {{ $macos_admin_user | quote }}
