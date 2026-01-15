@@ -374,7 +374,6 @@ chezmoi update -R
 
 #### GUI Software on macOS
 
-- [AppCleaner](https://freemacsoft.net/appcleaner/): A small application which allows you to thoroughly uninstall unwanted apps.
 - [BlockBlock](https://objective-see.org/products/blockblock.html): Monitors common persistence locations and alerts whenever a persistent component is added.
 - [Brooklyn](https://github.com/pedrommcarrasco/Brooklyn) (Open-Source): Screen saver based on animations presented during Apple Special Event Brooklyn.
 - [Calibre](https://calibre-ebook.com) ([Open-Source](https://github.com/kovidgoyal/calibre)): E-books management software.
@@ -687,6 +686,8 @@ chezmoi update -R
 
 ### Formerly-Used macOS Software
 
+- [AppCleaner](https://freemacsoft.net/appcleaner/): A small application which allows you to thoroughly uninstall unwanted apps.
+  Now that I primarily use ForkLift, which has its own version of this, I no longer need the standalone version.
 - [Bartender](https://www.macbartender.com): Organize your menu bar icons. Replaced by Hidden bar, then Ice.
 - [CleanMyDrive 2](https://apps.apple.com/us/app/cleanmydrive-2/id523620159?mt=12&uo=4&at=10l4tL)
 - [Colloquy](https://colloquy.app) ([Source](https://github.com/colloquy/colloquy)): An advanced IRC, SILC & ICB client.
