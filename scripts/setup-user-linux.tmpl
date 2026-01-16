@@ -66,7 +66,7 @@ if has pwsh; then
     pwsh -NoProfile "$scriptdir/install-pwsh-modules.ps1" || :
 fi || ret=$?
 
-{{ if and (not .ephemeral) (not (env "CONTAINER_ID")) -}}
+{{ if and (not .ephemeral) (not .steamdeck) (not (env "CONTAINER_ID")) -}}
 {{   $devpod := includeTemplate "find-tool" (dict "root" . "tool" "devpod") -}}
 {{   if $devpod -}}
 # Configure DevPod
@@ -76,9 +76,7 @@ devpod_configure \
     "$HOME/.ssh/config.d/devpod" \
     "docker" || ret=$?
 {{-   end }}
-{{- end }}
 
-{{ if and (not .ephemeral) (not .steamdeck) (not (env "CONTAINER_ID")) -}}
 # User shell should be zsh
 zsh_binary=$(command -v zsh 2>/dev/null) || :
 if [ -n "$zsh_binary" ] && grep -qFx "$zsh_binary" /etc/shells; then
