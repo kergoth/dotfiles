@@ -390,7 +390,6 @@ chezmoi update -R
 - [Kagi News](https://apps.apple.com/us/app/kagi-news/id6748314243): Daily AI-distilled press review with global news from community-curated sources.
 - [Keka](https://www.keka.io/en/) ([Open-Source](https://github.com/aonez/Keka)): The macOS file archiver.
 - [kitty](https://sw.kovidgoyal.net/kitty/) ([Open-Source](https://github.com/kovidgoyal/kitty)): The fast, feature-rich, GPU based terminal emulator.
-- [LilyView](https://apps.apple.com/us/app/lilyview/id529490330?mt=12&uo=4&at=10l4tL)
 - [LuLu](https://objective-see.org/products/lulu.html): The free, open-source firewall that aims to block unknown outgoing connections.
 - [Maccy](https://maccy.app) ([Open-Source](https://github.com/p0deje/Maccy)): Lightweight clipboard manager for macOS.
 - [MusicHarbor](https://apps.apple.com/us/app/musicharbor-track-new-music/id1440405750?uo=4&at=10l4tL)
@@ -702,6 +701,7 @@ chezmoi update -R
 - [Hidden Bar](https://apps.apple.com/us/app/hidden-bar/id1452453066?mt=12&uo=4&at=10l4tL) ([Open-Source](https://github.com/dwarvesf/hidden)): Hide menubar items. Replaced by **Ice**.
 - [Itsycal for Mac](https://www.mowglii.com/itsycal/): A tiny menu bar calendar. I mostly just click on the date/time and see the calendar widget in the notification panel now.
 - [Jumpcut](https://jumpcut.sourceforge.io): Clipboard manager.
+- [LilyView](https://apps.apple.com/us/app/lilyview/id529490330?mt=12&uo=4&at=10l4tL)
 - [LimeChat](http://limechat.net/mac/) ([Open-Source](http://github.com/psychs/limechat)): An IRC client for Mac OS X.
 - [MacDown](https://macdown.uranusjr.com): Markdown editor.
 - [MacVim](https://macvim-dev.github.io/macvim): Vim - the text editor - for macOS
