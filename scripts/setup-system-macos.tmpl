@@ -67,16 +67,5 @@ if [ -d "$scriptdir/macos/Brewfile-admin.d" ]; then
         done
 fi
 
-{{ if not .work -}}
-# The IT department has their own security tools, so skip the ones I use
-CASKROOM="$("$HOMEBREW_PREFIX/bin/brew" --caskroom)"
-if [ -d "$CASKROOM"/whatsyoursign ]; then
-    find "$CASKROOM"/whatsyoursign -name WhatsYourSign\ Installer.app -print0 |
-        xargs -0 open || :
-fi
-
-install-oversight
-{{- end }}
-
 # Configuration
 #"$scriptdir/macos/configure-admin.tmpl"

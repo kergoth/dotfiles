@@ -30,6 +30,19 @@ if [ -d "$scriptdir/macos/Brewfile.d" ]; then
         done
 fi
 
+# Run installers with graphical interfaces, which we can't run as the admin
+if [ -x "$HOMEBREW_ADMIN_PREFIX/bin/brew" ]; then
+    CASKROOM="$("$HOMEBREW_ADMIN_PREFIX/bin/brew" --caskroom)"
+    if [ -d "$CASKROOM"/blockblock ]; then
+        find "$CASKROOM"/blockblock -name WhatsYourSign\ Installer.app -print0 |
+            xargs -0 open || :
+    fi
+    if [ -d "$CASKROOM"/whatsyoursign ]; then
+        find "$CASKROOM"/whatsyoursign -name WhatsYourSign\ Installer.app -print0 |
+            xargs -0 open || :
+    fi
+fi
+
 # Dotfiles
 if [ -z "${CHEZMOI:-}" ]; then
     "$repodir/script/setup"
