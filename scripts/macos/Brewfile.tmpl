@@ -6,8 +6,11 @@ cask "keka"
 cask "kitty"
 cask "maccy"
 cask "obsidian"
+{{- if lt .macos_major_version 26 }}
+{{/* Skip on Tahoe */}}
 cask "raycast"
 cask "rectangle"
+{{- end }}
 cask "syncthing-app"
 cask "zed"
 
@@ -29,8 +32,10 @@ cask "shifty"
 cask "1password"
 cask "reader"
 
-# Not necessary enough to install on work machines
+{{- if lt .macos_major_version 26 }}
+{{/* Skip on Tahoe */}}
 cask "jordanbaird-ice"
+{{- end }}
 
 # quicklook extensions (the ql extension is the only part I care about)
 # there are largely for security reasons, so are excluded from work machines

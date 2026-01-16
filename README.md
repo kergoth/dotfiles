@@ -368,6 +368,12 @@ chezmoi update -R
 - [SquirrelDisk](https://www.squirreldisk.com/) ([Open-Source](https://github.com/adileo/squirreldisk)): Beautiful, Cross-Platform and Super Fast Disk Usage Analysis Tool. Available via scoop, winget.
 - [SumatraPDF](https://www.sumatrapdfreader.org): A free PDF, eBook, XPS, DjVu, CHM, Comic Book reader for Windows.
 
+#### GUI Software on macOS (Pre-Tahoe Only)
+
+- [Ice](https://icemenubar.app) ([Open-Source](https://github.com/jordanbaird/Ice)): Powerful menu bar manager for macOS.
+- [Raycast](https://www.raycast.com): Productivity tool, application launcher, snippets, clipboard history, and automation.
+- [Rectangle](https://rectangleapp.com) ([Open-Source](https://github.com/rxhanson/Rectangle)): Move and resize windows in macOS using keyboard shortcuts or snap areas.
+
 #### GUI Software on macOS (Pre-Sonoma Only)
 
 - [Aerial](https://aerialscreensaver.github.io) ([Open-Source](https://github.com/JohnCoates/Aerial)): A macOS screensaver that lets you play videos from Apple's tvOS screensaver.
@@ -380,7 +386,6 @@ chezmoi update -R
 - [DaisyDisk](https://daisydiskapp.com): Disk space visualizer. Get a visual breakdown of your disk space in form of an interactive map, reveal the biggest space wasters, and remove them with a simple drag and drop.
 - [DevDocs for macOS](https://github.com/dteoh/devdocs-macos) (Open-Source): An unofficial [DevDocs API Documentation](https://devdocs.io/) viewer for macOS.
 - [ForkLift](https://binarynights.com): Advanced dual pane file manager and file transfer client for macOS. Available via brew as `forklift`.
-- [Ice](https://icemenubar.app) ([Open-Source](https://github.com/jordanbaird/Ice)): Powerful menu bar manager for macOS.
 - [Karabiner-Elements](https://karabiner-elements.pqrs.org) ([Open-Source](https://github.com/pqrs-org/Karabiner-Elements)): A powerful and stable keyboard customizer for macOS.
 - [Kagi News](https://apps.apple.com/us/app/kagi-news/id6748314243): Daily AI-distilled press review with global news from community-curated sources.
 - [Keka](https://www.keka.io/en/) ([Open-Source](https://github.com/aonez/Keka)): The macOS file archiver.
@@ -391,9 +396,7 @@ chezmoi update -R
 - [MusicHarbor](https://apps.apple.com/us/app/musicharbor-track-new-music/id1440405750?uo=4&at=10l4tL)
 - [Play](https://apps.apple.com/us/app/play-save-videos-watch-later/id1596506190): Bookmark and organize videos to watch later.
 - [PopClip](https://apps.apple.com/us/app/popclip/id445189367?mt=12&uo=4&at=10l4tL): Instant text actions.
-- [Raycast](https://www.raycast.com): Productivity tool, application launcher, snippets, clipboard history, and automation.
 - [Readwise Reader](https://readwise.io/read): Save everything to one place, highlight like a pro, and replace several apps with Reader.
-- [Rectangle](https://rectangleapp.com) ([Open-Source](https://github.com/rxhanson/Rectangle)): Move and resize windows in macOS using keyboard shortcuts or snap areas.
 - [Shifty](https://shifty.natethompson.io/): Menu bar app that provides more control over Night Shift.
 - If the work flag is enabled:
   - [Slack](https://slack.com/): Team communication and collaboration platform.
