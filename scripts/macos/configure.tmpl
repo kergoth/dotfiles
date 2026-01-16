@@ -12,10 +12,6 @@ trap 'rm -rf "$tmpdir"' EXIT INT TERM
 # shellcheck source=./../common.sh
 . "$scriptdir/../common.sh" || exit 1
 
-# Disable all web/suggestion-like Spotlight categories for this user
-spotlight-disable-items \
-    'MENU_WEBSEARCH|MENU_SPOTLIGHT_SUGGESTIONS|WEBSEARCH|WEB_SEARCH|SUGGEST|NEWS|APP_STORE'
-
 # Expose hidden files and Library folder in Finder:
 defaults write com.apple.finder AppleShowAllFiles -bool true
 chflags nohidden ~/Library
@@ -24,23 +20,16 @@ xattr -d com.apple.FinderInfo ~/Library 2>/dev/null || :
 # Show all filename extensions (so that "Evil.jpg.app" cannot masquerade easily).
 defaults write -g AppleShowAllExtensions -bool true
 
-# Disable crash reporter (the dialog which appears after an application crashes and prompts to report the problem to Apple):
-defaults write com.apple.CrashReporter DialogType none
-
 # Expand the save dialog by default in all applications
 defaults write -g NSNavPanelExpandedStateForSaveMode -bool true
+defaults write -g NSNavPanelExpandedStateForSaveMode2 -bool true
 
 # Expand the print dialog by default in all applications
 defaults write -g PMPrintingExpandedStateForPrint -bool true
+defaults write -g PMPrintingExpandedStateForPrint2 -bool true
 
 # Disable press-and-hold for keys in favor of key repeat
 defaults write -g ApplePressAndHoldEnabled -bool false
-
-# Use AirDrop over every interface
-defaults write com.apple.NetworkBrowser BrowseAllInterfaces 1
-
-# Stop full names from copying with email addresses in Mail.app
-defaults write com.apple.mail AddressesIncludeNameOnPasteboard -bool false
 
 # Always open everything in Finder's list view
 defaults write com.apple.finder FXPreferredViewStyle Nlsv
@@ -50,9 +39,6 @@ defaults write com.apple.finder QuitMenuItem -bool true
 
 # Do not display a warning when changing a file extension in the Finder
 defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
-
-# Enable text selection in quick look windows
-defaults write com.apple.finder QLEnableTextSelection -bool true
 
 # Finder: show path bar
 defaults write com.apple.finder ShowPathbar -bool true
@@ -72,9 +58,6 @@ defaults write com.apple.dock autohide-delay -float 0
 # Speed up autohide animation
 defaults write com.apple.dock autohide-time-modifier -float 0.25
 
-# Speed up mission control animations
-defaults write com.apple.dock expose-animation-duration -float 0.12
-
 # Make hidden dock icons translucent
 defaults write com.apple.dock showhidden -bool true
 
@@ -87,80 +70,6 @@ defaults write com.apple.appleseed.FeedbackAssistant Autogather -bool false
 
 # Do not prompt to use new external disks for Time Machine
 defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
-
-## Safari & Webkit
-# Privacy: don’t send search queries to Apple
-defaults write com.apple.Safari UniversalSearchEnabled -bool false
-defaults write com.apple.Safari SuppressSearchSuggestions -bool true
-defaults write com.apple.SafariTechnologyPreview UniversalSearchEnabled -bool false
-defaults write com.apple.SafariTechnologyPreview SuppressSearchSuggestions -bool true
-
-# Enable Safari’s debug menu
-defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
-defaults write com.apple.SafariTechnologyPreview IncludeInternalDebugMenu -bool true
-
-# Make Safari’s search banners default to Contains instead of Starts With
-defaults write com.apple.Safari FindOnPageMatchesWordStartsOnly -bool false
-defaults write com.apple.SafariTechnologyPreview FindOnPageMatchesWordStartsOnly -bool false
-
-# Enable the Develop menu and the Web Inspector in Safari
-defaults write com.apple.Safari IncludeDevelopMenu -bool true
-defaults write com.apple.SafariTechnologyPreview IncludeDevelopMenu -bool true
-defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
-defaults write com.apple.SafariTechnologyPreview WebKitDeveloperExtrasEnabledPreferenceKey -bool true
-defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled -bool true
-defaults write com.apple.SafariTechnologyPreview com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled -bool true
-
-# Add a context menu item for showing the Web Inspector in web views
-defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
-
-# Disable hyperlink auditing beacon
-defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2HyperlinkAuditingEnabled -bool false
-defaults write com.apple.SafariTechnologyPreview com.apple.Safari.ContentPageGroupIdentifier.WebKit2HyperlinkAuditingEnabled -bool false
-
-# Show full website URL
-defaults write com.apple.Safari ShowFullURLInSmartSearchField -bool true
-defaults write com.apple.SafariTechnologyPreview ShowFullURLInSmartSearchField -bool true
-
-# Show status bar
-defaults write com.apple.Safari ShowOverlayStatusBar -bool TRUE
-defaults write com.apple.SafariTechnologyPreview ShowOverlayStatusBar -bool TRUE
-
-# Restore session at launch by default
-defaults write com.apple.Safari AlwaysRestoreSessionAtLaunch -bool true
-defaults write com.apple.SafariTechnologyPreview AlwaysRestoreSessionAtLaunch -bool true
-
-# Disable password and credit card autofill
-defaults write com.apple.Safari AutoFillCreditCardData -bool false
-defaults write com.apple.SafariTechnologyPreview AutoFillCreditCardData -bool false
-defaults write com.apple.Safari AutoFillPasswords -bool false
-defaults write com.apple.SafariTechnologyPreview AutoFillPasswords -bool false
-
-# Don't open downloads automatically
-defaults write com.apple.Safari AutoOpenSafeDownloads -bool false
-defaults write com.apple.SafariTechnologyPreview AutoOpenSafeDownloads -bool false
-
-# Compact tabs
-defaults write com.apple.Safari EnableNarrowTabs -bool true
-defaults write com.apple.SafariTechnologyPreview EnableNarrowTabs -bool true
-
-# Adjustments to start page
-defaults write com.apple.Safari HideStartPageRecentlyClosedTabsEmptyItemView -bool true
-defaults write com.apple.SafariTechnologyPreview HideStartPageRecentlyClosedTabsEmptyItemView -bool true
-defaults write com.apple.Safari HideStartPageSiriSuggestionsEmptyItemView -bool true
-defaults write com.apple.SafariTechnologyPreview HideStartPageSiriSuggestionsEmptyItemView -bool true
-
-# Hide footer and header in printouts
-defaults write com.apple.Safari PrintHeadersAndFooters -bool false
-defaults write com.apple.SafariTechnologyPreview PrintHeadersAndFooters -bool false
-
-# Only show unread in reading list
-defaults write com.apple.Safari ShowAllItemsInReadingList -bool false
-defaults write com.apple.SafariTechnologyPreview ShowAllItemsInReadingList -bool false
-
-# Hide Favorites bar by default
-defaults write com.apple.Safari ShowFavoritesBar-v2 -bool false
-defaults write com.apple.SafariTechnologyPreview ShowFavoritesBar-v2 -bool false
 
 ## Activity Monitor
 
@@ -185,9 +94,6 @@ defaults write com.apple.dock tilesize -int {{ $dock_tilesize }}
 # Hide desktop icons completely
 defaults write com.apple.finder CreateDesktop -bool false
 
-# Disable Dashboard
-defaults write com.apple.dashboard mcx-disabled -bool true
-
 # Move the Dock to the left
 defaults write com.apple.dock orientation -string left
 
@@ -204,15 +110,6 @@ defaults write com.apple.screencapture location -string "$HOME/Pictures/Screensh
 # Default to plain text in TextEdit
 defaults write com.apple.TextEdit RichText -bool false
 
-# Trackpad: disable tap to click for this user and for the login screen
-defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool false
-defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 0
-defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 0
-
-# Set a blazingly fast keyboard repeat rate
-defaults write NSGlobalDomain KeyRepeat -int 4
-defaults write NSGlobalDomain InitialKeyRepeat -int 12
-
 # Top left screen corner → Sleep display
 defaults write com.apple.dock wvous-tl-corner -int 10
 defaults write com.apple.dock wvous-tl-modifier -int 0
@@ -224,7 +121,7 @@ defaults write com.apple.dock wvous-tr-modifier -int 0
 # Disable font smoothing
 defaults -currentHost write -g AppleFontSmoothing -int 0
 
-if echo "$HOST" | grep -Fx "vaelin.local"; then
+{{ if eq .chezmoi.hostname "vaelin" -}}
     # Select 2x display scaling for better font rendering
     /usr/bin/python3 -m venv "$tmpdir/venv"
     (
@@ -242,7 +139,7 @@ if echo "$HOST" | grep -Fx "vaelin.local"; then
 
     	python3 "$scriptdir"/set-resolution-scale-2.py
     )
-fi
+{{- end }}
 
 # Configure DevPod
 if has devpod; then
