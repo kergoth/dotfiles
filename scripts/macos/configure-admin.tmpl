@@ -30,9 +30,3 @@ sudorun defaults write /Library/Preferences/com.apple.SoftwareUpdate Automatical
 
 # Silence Boot chime
 sudorun nvram SystemAudioVolume=" "
-
-# Turn display off on battery when inactive for 2 minutes
-sudorun pmset -b displaysleep 2
-
-# Turn display off on power adapter when inactive for 10 minutes
-sudorun pmset -c displaysleep 10
