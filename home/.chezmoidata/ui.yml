@@ -5,3 +5,6 @@ ui:
   vaelin:
     macos:
       dock_tilesize: 36
+  zorian:
+    macos:
+      dock_tilesize: 42

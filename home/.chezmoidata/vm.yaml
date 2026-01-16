@@ -1,4 +1,11 @@
 vmProfiles:
+  zorian:
+    # 2025 M5 MacBook Pro, 32GB RAM, 10 (4 performance and 6 efficiency), 1TB disk
+    lima_cpus: 4
+    lima_mem_gib: 4
+    colima_cpus: 6
+    colima_mem_gib: 8
+    vm_disk_gib: 128
   vaelin:
     # 2018 MacBook Pro, 16GB RAM, 12 cores, 1TB disk
     lima_cpus: 4
