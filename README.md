@@ -536,6 +536,7 @@ chezmoi update -R
 #### As Needed CLI Software for macOS
 
 - [makeicns](http://www.amnoid.de/icns/makeicns.html): Create icns files from the command line. Available via brew.
+- [mist-cli](https://github.com/ninxsoft/mist-cli): Mac command-line tool that automatically downloads macOS Firmwares / Installers. Available via brew.
 - [terminal-notifier](https://github.com/julienXX/terminal-notifier): A command-line tool to send macOS User Notifications. Available via brew and nix.
 
 #### As Needed CLI Software for Windows
@@ -570,6 +571,7 @@ chezmoi update -R
 #### As Needed GUI Software for macOS
 
 - [Adapter](https://macroplant.com/adapter): Convert Video, Audio and Images. Available via brew as `adapter`.
+- [Mist](https://github.com/ninxsoft/Mist): Utility that automatically downloads macOS firmwares and installers. Available via brew as `mist` (cask).
 - [AmorphousDiskMark](https://katsurashareware.com/amorphousdiskmark/): Disk benchmark utility. Available via brew as `amorphousdiskmark`.
 - [AnyToISO](https://www.crystalidea.com/anytoiso): Convert CD/DVD images to ISO format or extract files from them. Available via brew as `anytoiso`.
 - [Apple Configurator](https://support.apple.com/apple-configurator): Configure and deploy iPhone, iPad, and Apple TV. Available via Mac App Store.
