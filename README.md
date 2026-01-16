@@ -384,7 +384,6 @@ chezmoi update -R
 - [Brooklyn](https://github.com/pedrommcarrasco/Brooklyn) (Open-Source): Screen saver based on animations presented during Apple Special Event Brooklyn.
 - [Calibre](https://calibre-ebook.com) ([Open-Source](https://github.com/kovidgoyal/calibre)): E-books management software.
 - [DaisyDisk](https://daisydiskapp.com): Disk space visualizer. Get a visual breakdown of your disk space in form of an interactive map, reveal the biggest space wasters, and remove them with a simple drag and drop.
-- [DevDocs for macOS](https://github.com/dteoh/devdocs-macos) (Open-Source): An unofficial [DevDocs API Documentation](https://devdocs.io/) viewer for macOS.
 - [ForkLift](https://binarynights.com): Advanced dual pane file manager and file transfer client for macOS. Available via brew as `forklift`.
 - [Juicy](https://getjuicy.app): Battery Alerts & Health. Available via [Mac App Store](https://apps.apple.com/us/app/juicy-battery-alerts-health/id6752221257?mt=12
 Juicy: Battery Alerts & Health).
@@ -696,6 +695,8 @@ Juicy: Battery Alerts & Health).
 - [Bartender](https://www.macbartender.com): Organize your menu bar icons. Replaced by Hidden bar, then Ice.
 - [CleanMyDrive 2](https://apps.apple.com/us/app/cleanmydrive-2/id523620159?mt=12&uo=4&at=10l4tL)
 - [Colloquy](https://colloquy.app) ([Source](https://github.com/colloquy/colloquy)): An advanced IRC, SILC & ICB client.
+- [DevDocs for macOS](https://github.com/dteoh/devdocs-macos) (Open-Source): An unofficial [DevDocs API Documentation](https://devdocs.io/) viewer for macOS.
+  Deprecated in homebrew due to gatekeeper.
 - [f.lux](https://justgetflux.com): Software to make your life better. Replaced by macOS Night Shift.
 - [FlyCut](https://apps.apple.com/us/app/flycut-clipboard-manager/id442160987?mt=12&uo=4&at=10l4tL): Clipboard manager.
 - [GoodLinks](https://apps.apple.com/us/app/goodlinks/id1474335294?uo=4&at=10l4tL): Save links, read later. Replaced by **Readwise Reader**.

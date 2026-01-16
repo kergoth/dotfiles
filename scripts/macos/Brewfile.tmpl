@@ -47,11 +47,6 @@ cask "suspicious-package"
 cask "betterzip"
 {{- end }}
 
-# coding
-{{ if .coding -}}
-cask "dteoh-devdocs"
-{{- end }}
-
 # fclones - efficient duplicate file finder
 {{ if or (not .use_nix) (eq (includeTemplate "find-tool" (dict "root" . "tool" "fclones")) "") -}}
 brew "fclones"
