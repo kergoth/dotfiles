@@ -143,6 +143,7 @@ defaults -currentHost write -g AppleFontSmoothing -int 0
 
 {{ if and (not .ephemeral) (not (env "CONTAINER_ID")) -}}
 {{   $devpod := includeTemplate "find-tool" (dict "root" . "tool" "devpod") -}}
+{{   if $devpod -}}
 # Configure DevPod
 devpod_configure \
     "https://github.com/kergoth/dotfiles" \
