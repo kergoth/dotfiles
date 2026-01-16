@@ -1,3 +1,4 @@
+{{- if and .macos_split_user (ne .chezmoi.username .macos_admin_user) -}}
 {{- includeTemplate "external/cli-apps.toml.tmpl" . -}}
 {{- includeTemplate "external/language-tools.toml.tmpl" . -}}
 {{- includeTemplate "external/core-tools.toml.tmpl" . -}}
@@ -15,3 +16,4 @@
 {{ end }}
 {{/* Uncomment to test new external migrations: */}}
 {{/*- includeTemplate "external/test-migrations.toml.tmpl" . -*/}}
+{{- end -}}
