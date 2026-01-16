@@ -12,15 +12,6 @@ trap 'rm -rf "$tmpdir"' EXIT INT TERM
 # shellcheck source=./../common.sh
 . "$scriptdir/../common.sh" || exit 1
 
-# Prevent auto-mounting of remote-filesystems by Finder
-duti -vs com.apple.Safari afp
-duti -vs com.apple.Safari ftp
-duti -vs com.apple.Safari nfs
-duti -vs com.apple.Safari smb
-
-# Avoid executing scripts by default
-duti -vs com.apple.TextEdit public.unix-executable
-
 # Disable all web/suggestion-like Spotlight categories for this user
 spotlight-disable-items \
     'MENU_WEBSEARCH|MENU_SPOTLIGHT_SUGGESTIONS|WEBSEARCH|WEB_SEARCH|SUGGEST|NEWS|APP_STORE'
@@ -87,15 +78,9 @@ defaults write com.apple.dock expose-animation-duration -float 0.12
 # Make hidden dock icons translucent
 defaults write com.apple.dock showhidden -bool true
 
-# Half-stars are great
-defaults write com.apple.iTunes allow-half-stars -bool true
-
 # Disable scroll gesture with modifier keys to zoom
 defaults write com.apple.AppleMultitouchTrackpad HIDScrollZoomModifierMask -int 0
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad HIDScrollZoomModifierMask -int 0
-
-# Improve bluetooth audio quality over a2dp
-defaults write com.apple.BluetoothAudioAgent "Apple Bitpool Min (editable)" 40
 
 # Do not autogather large files when submitting a report
 defaults write com.apple.appleseed.FeedbackAssistant Autogather -bool false
@@ -117,10 +102,6 @@ defaults write com.apple.SafariTechnologyPreview IncludeInternalDebugMenu -bool 
 # Make Safari’s search banners default to Contains instead of Starts With
 defaults write com.apple.Safari FindOnPageMatchesWordStartsOnly -bool false
 defaults write com.apple.SafariTechnologyPreview FindOnPageMatchesWordStartsOnly -bool false
-
-# Remove useless icons from Safari’s bookmarks bar
-defaults write com.apple.Safari ProxiesInBookmarksBar "()"
-defaults write com.apple.SafariTechnologyPreview ProxiesInBookmarksBar "()"
 
 # Enable the Develop menu and the Web Inspector in Safari
 defaults write com.apple.Safari IncludeDevelopMenu -bool true
