@@ -118,6 +118,10 @@ defaults write com.apple.dock wvous-tl-modifier -int 0
 defaults write com.apple.dock wvous-tr-corner -int 5
 defaults write com.apple.dock wvous-tr-modifier -int 0
 
+# Bottom right screen corner → Disable (no action, disables Quick Note)
+defaults write com.apple.dock wvous-br-corner -int 1
+defaults write com.apple.dock wvous-br-modifier -int 0
+
 # Disable font smoothing
 defaults -currentHost write -g AppleFontSmoothing -int 0
 
