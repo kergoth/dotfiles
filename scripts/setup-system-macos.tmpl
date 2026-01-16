@@ -22,6 +22,7 @@ if [ "$USER" != "$OSX_ADMIN_LOGNAME" ]; then
         DOTFILES_DIR="$DOTFILES_DIR" \
         HOMEBREW_PREFIX="$HOMEBREW_ADMIN_PREFIX" \
         ${GITHUB_TOKEN:+GITHUB_TOKEN="$GITHUB_TOKEN"} \
+        ${CHEZMOI_GITHUB_ACCESS_TOKEN:+CHEZMOI_GITHUB_ACCESS_TOKEN="$CHEZMOI_GITHUB_ACCESS_TOKEN"} \
         bash -c ". \"$scriptdir/common.sh\"; need_sudo; sudorun cat \"$CHEZMOI_EXEC_SCRIPT\" | exec -a \"$0\" bash -s -- \"$USER\""
     exit $?
 fi
