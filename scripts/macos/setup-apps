@@ -110,7 +110,6 @@ done <<END
 Raycast
 Ice
 Karabiner-Elements
-OverSight
 ReiKey
 END
 
@@ -122,12 +121,6 @@ if ccc="$(app_path "Carbon Copy Cloner")"; then
     open_app_if_not_running "$ccc/Contents/Library/LoginItems/CCC Dashboard.app"
 fi
 
-if oversight="$(app_path "OverSight")"; then
-    add_login "$oversight/Contents/Library/LoginItems/OverSight Helper.app"
-    mkdir -p ~/Library/Application\ Support/Objective-See/OverSight
-    touch ~/Library/Application\ Support/Objective-See/OverSight/OverSight.log
-fi
-
 # Add these apps to the login items and start them immediately
 while read -r app; do
     if app_file_path="$(app_path "$app")"; then
@@ -136,13 +129,13 @@ while read -r app; do
     fi
 done <<END
 BlockBlock Helper
+Juicy
+OverSight
 PopClip
 Shifty
 Syncthing
-UnPlugged
 WiFi Signal
 noTunes
-Rectangle
 END
 
 # Open QuickLook extension apps to register their extensions
