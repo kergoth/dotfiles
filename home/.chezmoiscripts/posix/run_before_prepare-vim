@@ -1,5 +1,0 @@
-#!/bin/sh
-
-if [ -h ~/.config/vim ]; then
-    rm -f ~/.config/vim
-fi
