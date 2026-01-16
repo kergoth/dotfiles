@@ -23,10 +23,6 @@ export HOMEBREW_NO_AUTO_UPDATE=1
 
 brewfile_install "$scriptdir/macos/Brewfile"
 
-if [ "$(sw_vers -productVersion | cut -d. -f1)" -lt 14 ]; then
-    brewfile_install "$scriptdir/macos/Brewfile-pre-Sonoma"
-fi
-
 if [ -d "$scriptdir/macos/Brewfile.d" ]; then
     find "$scriptdir/macos/Brewfile.d" -type f -not -name .keep -not -name .DS_Store |
         while read -r brewfile; do
