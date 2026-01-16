@@ -67,13 +67,15 @@ if has pwsh; then
 fi || ret=$?
 
 # Configure DevPod
-if has devpod; then
-    devpod_configure \
-        "https://github.com/kergoth/dotfiles" \
-        "script/setup" \
-        "$HOME/.ssh/config.d/devpod" \
-        "docker" || ret=$?
-fi
+{{ if and (not .ephemeral) (not (env "CONTAINER_ID")) -}}
+{{   $devpod := includeTemplate "find-tool" (dict "root" . "tool" "devpod") -}}
+devpod_configure \
+    "https://github.com/kergoth/dotfiles" \
+    "script/setup" \
+    "$HOME/.ssh/config.d/devpod" \
+    "docker" || ret=$?
+{{-   end }}
+{{- end }}
 
 {{ if and (not .ephemeral) (not .steamdeck) (not (env "CONTAINER_ID")) -}}
 # User shell should be zsh

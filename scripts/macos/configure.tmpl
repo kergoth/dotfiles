@@ -141,14 +141,16 @@ defaults -currentHost write -g AppleFontSmoothing -int 0
     )
 {{- end }}
 
+{{ if and (not .ephemeral) (not (env "CONTAINER_ID")) -}}
+{{   $devpod := includeTemplate "find-tool" (dict "root" . "tool" "devpod") -}}
 # Configure DevPod
-if has devpod; then
-    devpod_configure \
-        "https://github.com/kergoth/dotfiles" \
-        "script/setup" \
-        "$HOME/.ssh/config.d/devpod" \
-        "docker" || :
-fi
+devpod_configure \
+    "https://github.com/kergoth/dotfiles" \
+    "script/setup" \
+    "$HOME/.ssh/config.d/devpod" \
+    "docker" || :
+{{-   end }}
+{{- end }}
 
 killall Dock
 killall SystemUIServer
