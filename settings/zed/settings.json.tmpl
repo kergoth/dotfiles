@@ -78,12 +78,14 @@
   },
 {{- if eq .chezmoi.os "linux" }}
   "ui_font_size": 18,
+  "agent_ui_font_size": 18,
   "buffer_font_size": 14.0,
 {{- else }}
   // Use a slightly smaller UI font size.
   "ui_font_size": 15,
+  "agent_ui_font_size": 15,
   // Use a substantially smaller buffer/terminal font size.
-  "buffer_font_size": 14.0,
+  "buffer_font_size": 13.0,
 {{- end }}
   // Auto save after a 1 second delay.
   "autosave": {
