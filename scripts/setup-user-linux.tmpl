@@ -40,14 +40,6 @@ fi
 {{- end }}
 {{- end }}
 
-# Install PowerShell modules, if needed
-if has pwsh; then
-    msg "Installing PowerShell modules"
-    # Ignore failure, as these are not critical to my workflow, and can fail due
-    # to transient network issues.
-    pwsh -NoProfile "$scriptdir/install-pwsh-modules.ps1" || :
-fi || ret=$?
-
 {{ if and (not .ephemeral) (not .steamdeck) (not (env "CONTAINER_ID")) -}}
 {{   $devpod := includeTemplate "find-tool" (dict "root" . "tool" "devpod") -}}
 {{   if $devpod -}}

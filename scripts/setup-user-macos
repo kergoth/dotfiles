@@ -14,19 +14,6 @@ if [ -z "${CHEZMOI:-}" ]; then
     "$repodir/script/setup"
 fi
 
-# Install PowerShell modules and prompt, if needed
-if has pwsh; then
-    msg "Installing PowerShell modules"
-    # Ignore failure, as these are not critical to my workflow, and can fail due
-    # to transient network issues.
-    run pwsh -NoProfile "$scriptdir/install-pwsh-modules.ps1" || :
-
-    if ! brew list --formula | grep -Fx starship >/dev/null; then
-        msg "Installing PowerShell prompt"
-        run "$HOMEBREW_PREFIX/bin/brew" install starship
-    fi
-fi
-
 # shellcheck disable=SC2046
 if [ -d ~/.ssh/keys ] && [ $(find ~/.ssh/keys -maxdepth 1 -type f -not -name '*.pub' | wc -l) -gt 0 ]; then
     msg "Adding SSH keys to keychain"
