@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -eu
+
+echo >&2 "Clearing the state of chezmoi run_onchange_ scripts.."
+chezmoi state delete-bucket --bucket=entryState
+echo >&2 "Clearing the state of chezmoi run_once_ scripts.."
+chezmoi state delete-bucket --bucket=scriptState
+echo >&2 "Running chezmoi scripts"
+chezmoi apply --include=scripts
