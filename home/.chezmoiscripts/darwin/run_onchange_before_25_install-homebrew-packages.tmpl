@@ -1,0 +1,53 @@
+{{ $brew_bin := joinPath .chezmoi.homeDir "bin" "brew" -}}
+{{ if $brew_bin -}}
+#!/bin/sh
+# Re-run when Brewfiles change:
+{{ $brewfile := "../scripts/macos/Brewfile.tmpl" -}}
+#   Brewfile sha256: {{ includeTemplate $brewfile . | sha256sum -}}
+{{ $abs_glob := joinPath .chezmoi.sourceDir ".." "scripts/macos/Brewfile.d/*" -}}
+{{ $root := . -}}
+{{ range $abs := (glob $abs_glob | sortAlpha) -}}
+{{   $rel := trimPrefix (printf "%s/" $root.chezmoi.sourceDir) $abs -}}
+{{/* Convert absolute back to a repo-relative path for include */}}
+{{   $repoRel := trimPrefix (printf "%s/" (clean (joinPath $root.chezmoi.sourceDir ".."))) $abs -}}
+{{   $includeRel := printf "../%s" $repoRel -}}
+{{   $name := base $abs -}}
+{{   if and (ne $name ".keep") (ne $name ".DS_Store") -}}
+#   {{ $name }} sha256: {{ include $includeRel | sha256sum -}}
+{{   end -}}
+{{- end }}
+
+HOMEBREW_PREFIX="${HOMEBREW_PREFIX:-${CHEZMOI_HOME_DIR:-$HOME}/.brew}"
+scriptsdir="$CHEZMOI_COMMAND_DIR/scripts"
+PATH="$scriptsdir/macos:$scriptsdir:$HOMEBREW_PREFIX/bin:$HOME/.local/bin:$PATH"
+
+# shellcheck source=./common.sh
+. "$scriptsdir/common.sh" || exit 1
+
+msg "Installing applications with homebrew"
+unset HOMEBREW_AUTO_UPDATE
+export HOMEBREW_NO_AUTO_UPDATE=1
+
+brewfile_install "{{ joinPath .chezmoi.sourceDir $brewfile }}"
+
+if [ -d "$scriptsdir/macos/Brewfile.d" ]; then
+    find "$scriptsdir/macos/Brewfile.d" -type f -not -name .keep -not -name .DS_Store |
+        while read -r brewfile; do
+            echo >&2 "Installing from $(basename "$brewfile").."
+            brewfile_install "$brewfile" || :
+        done
+fi
+
+# Run installers with graphical interfaces, which we can't run as the admin
+if [ -x "$HOMEBREW_ADMIN_PREFIX/bin/brew" ]; then
+    CASKROOM="$("$HOMEBREW_ADMIN_PREFIX/bin/brew" --caskroom)"
+    if [ -d "$CASKROOM"/blockblock ]; then
+        find "$CASKROOM"/blockblock -name WhatsYourSign\ Installer.app -print0 |
+            xargs -0 open || :
+    fi
+    if [ -d "$CASKROOM"/whatsyoursign ]; then
+        find "$CASKROOM"/whatsyoursign -name WhatsYourSign\ Installer.app -print0 |
+            xargs -0 open || :
+    fi
+fi
+{{- end }}

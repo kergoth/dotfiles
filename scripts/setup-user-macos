@@ -9,40 +9,6 @@ PATH="$scriptdir/macos:$scriptdir:$PATH"
 # shellcheck source=./common.sh
 . "$scriptdir/common.sh" || exit 1
 
-if ! [ -x "$HOMEBREW_PREFIX/bin/brew" ]; then
-    msg "Installing homebrew"
-    run install-brew -s "$HOMEBREW_PREFIX" || {
-        rm -rf "$HOMEBREW_PREFIX"
-        die "Failed to install homebrew"
-    }
-fi
-
-msg "Installing applications with homebrew"
-unset HOMEBREW_AUTO_UPDATE
-export HOMEBREW_NO_AUTO_UPDATE=1
-
-brewfile_install "$scriptdir/macos/Brewfile"
-
-if [ -d "$scriptdir/macos/Brewfile.d" ]; then
-    find "$scriptdir/macos/Brewfile.d" -type f -not -name .keep -not -name .DS_Store |
-        while read -r brewfile; do
-            brewfile_install "$brewfile" || :
-        done
-fi
-
-# Run installers with graphical interfaces, which we can't run as the admin
-if [ -x "$HOMEBREW_ADMIN_PREFIX/bin/brew" ]; then
-    CASKROOM="$("$HOMEBREW_ADMIN_PREFIX/bin/brew" --caskroom)"
-    if [ -d "$CASKROOM"/blockblock ]; then
-        find "$CASKROOM"/blockblock -name WhatsYourSign\ Installer.app -print0 |
-            xargs -0 open || :
-    fi
-    if [ -d "$CASKROOM"/whatsyoursign ]; then
-        find "$CASKROOM"/whatsyoursign -name WhatsYourSign\ Installer.app -print0 |
-            xargs -0 open || :
-    fi
-fi
-
 # Dotfiles
 if [ -z "${CHEZMOI:-}" ]; then
     "$repodir/script/setup"

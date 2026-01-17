@@ -1,0 +1,14 @@
+{{- $brew_bin := joinPath .chezmoi.homeDir "bin" "brew" -}}
+{{- if not $brew_bin -}}
+#!/bin/sh
+
+HOMEBREW_PREFIX="${HOMEBREW_PREFIX:-$HOME/.brew}"
+PATH="$HOMEBREW_PREFIX/bin:$HOME/.local/bin:$PATH"
+
+echo >&2 "Installing homebrew"
+"$CHEZMOI_COMMAND_DIR/scripts/macos/install-brew" -s "$HOMEBREW_PREFIX" || {
+    rm -rf "$HOMEBREW_PREFIX"
+    echo >&2 "Failed to install homebrew"
+    exit 1
+}
+{{- end }}
