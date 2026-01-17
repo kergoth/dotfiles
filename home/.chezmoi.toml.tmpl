@@ -187,6 +187,9 @@ encryption = "age"
     identity = {{ joinPath .chezmoi.homeDir ".config" "chezmoi" "age.key" | quote }}
     recipient = {{ $age_recipient | quote }}
 
+[diff]
+    exclude = ["scripts"]
+
 [data]
     name = "Christopher Larson"
     email = {{ $email | quote }}
