@@ -1,0 +1,23 @@
+{{- $bin_path := joinPath .chezmoi.homeDir "bin" -}}
+{{- $bin_git_path := joinPath $bin_path ".git" -}}
+{{- if and (stat $bin_path) (not (stat $bin_git_path)) -}}
+#!/bin/sh
+# Check if the directory exists and is not a git repository
+
+set -eu
+
+(
+    cd ~/bin || exit 1
+    if ! command -v git &>/dev/null; then
+        echo >&2 "Error: git not found, exiting"
+        exit 1
+    fi
+    git init
+    git remote add origin https://github.com/kergoth/scripts
+    git fetch --depth=1 origin main
+    git checkout --force -b main origin/main
+) || {
+    rm -rf ~/bin/.git
+    exit 1
+}
+{{- end -}}

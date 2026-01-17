@@ -1,0 +1,26 @@
+{{- $bin_path := joinPath .chezmoi.homeDir "bin" -}}
+{{- $bin_git_path := joinPath $bin_path ".git" -}}
+{{- if and (stat $bin_path) (not (stat $bin_git_path)) -}}
+# Check if the directory exists and is not a git repository
+try {
+    # Change to the directory
+    Set-Location -Path "$HOME\bin"
+
+    # Check if git is available
+    if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
+        Write-Error "Error: git not found, exiting"
+        exit 1
+    }
+
+    # Initialize git repository and set remote
+    git init
+    git remote add origin https://github.com/kergoth/scripts
+    git fetch --depth=1 origin main
+    git checkout --force -b main origin/main
+}
+catch {
+    # Remove the .git directory if an error occurs
+    Remove-Item -Recurse -Force "$HOME\bin\.git"
+    exit 1
+}
+{{- end -}}
