@@ -11,9 +11,6 @@ PATH="$scriptdir/linux:$scriptdir:$PATH"
 
 cargo_check sd sd
 cargo_check dua dua
-
-uv_check git-revise git-revise
-uv_check git-imerge git-imerge
 cargo_check choose choose
 cargo_check atuin atuin
 
@@ -29,6 +26,5 @@ if ! has claude; then
     curl -fsSL https://claude.ai/install.sh | bash
 fi
 
-uvs_install
 cargos_install
 gos_install

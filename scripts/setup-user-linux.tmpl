@@ -38,24 +38,6 @@ if ! has claude; then
 fi
 {{- end }}
 {{- end }}
-
-# The 'uv' installed tools must be done after dotfiles setup to ensure 'uv' is
-# available. As a result, dtrx, imerge, and revise will be unavailable during
-# the 'chezmoi apply'.
-
-# Install dtrx, if unar is missing
-if ! has unar && ! has dtrx; then
-    msg "Installing dtrx"
-    uv tool install dtrx
-fi || ret=$?
-
-if ! [ -e ~/.local/bin/git-imerge ]; then
-    uv tool install git-imerge
-fi || ret=$?
-
-if ! [ -e ~/.local/bin/git-revise ]; then
-    uv tool install git-revise
-fi  || ret=$?
 {{- end }}
 
 # Install PowerShell modules, if needed

@@ -1,0 +1,23 @@
+{{- $uv := includeTemplate "find-tool" (dict "root" . "tool" "uv") -}}
+{{- if $uv -}}
+{{- $git_imerge := includeTemplate "find-tool" (dict "root" . "tool" "git-imerge") -}}
+{{- $git_revise := includeTemplate "find-tool" (dict "root" . "tool" "git-revise") -}}
+{{- $unar := includeTemplate "find-tool" (dict "root" . "tool" "unar") -}}
+{{- $dtrx := includeTemplate "find-tool" (dict "root" . "tool" "dtrx") -}}
+{{- if or (not $git_imerge) (not $git_revise) (and (not $unar) (not $dtrx)) }}
+#!/usr/bin/env powershell
+$ErrorActionPreference = "Stop"
+
+{{- if not $git_imerge }}
+& "{{ $uv }}" tool install git-imerge
+{{- end }}
+
+{{- if not $git_revise }}
+& "{{ $uv }}" tool install git-revise
+{{- end }}
+
+{{- if and (not $unar) (not $dtrx) }}
+& "{{ $uv }}" tool install dtrx
+{{- end }}
+{{- end }}
+{{- end }}
