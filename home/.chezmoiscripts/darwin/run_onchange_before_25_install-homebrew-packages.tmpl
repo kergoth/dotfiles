@@ -42,7 +42,7 @@ fi
 if [ -x "$HOMEBREW_ADMIN_PREFIX/bin/brew" ]; then
     CASKROOM="$("$HOMEBREW_ADMIN_PREFIX/bin/brew" --caskroom)"
     if [ -d "$CASKROOM"/blockblock ]; then
-        find "$CASKROOM"/blockblock -name WhatsYourSign\ Installer.app -print0 |
+        find "$CASKROOM"/blockblock -name BlockBlock\ Installer.app -print0 |
             xargs -0 open || :
     fi
     if [ -d "$CASKROOM"/whatsyoursign ]; then
