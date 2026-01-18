@@ -11,8 +11,6 @@
 .bash_logout
 
 # Common home directory data and documents (not managed by chezmoi)
-Applications/*
-Applications (Parallels)
 Desktop
 Documents
 Downloads
@@ -131,12 +129,12 @@ Documents/*
 .config/zsh/functions/lima
 .lima
 Library/
+Applications/
+Applications (Parallels)/
 Obsidian Vault
 My Kindle Content
 # This wrapper is for macOS to use the zed-preview binary
 .local/bin/zed
-{{- else }}
-!Applications/CoreServices
 {{- end }}
 
 # Host or Distro Specific ignores
