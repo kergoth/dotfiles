@@ -7,7 +7,7 @@ Wants=network-online.target
 
 [Service]
 Type=oneshot
-ExecStart={{ .chezmoi.homeDir }}/bin/nix-clean
+ExecStart={{ .chezmoi.destDir }}/bin/nix-clean
 StandardOutput=journal
 StandardError=journal
 
@@ -26,7 +26,7 @@ PrivateTmp=true
 NoNewPrivileges=true
 
 # Environment
-Environment=PATH={{ .chezmoi.homeDir }}/bin:{{ .chezmoi.homeDir }}/.nix-profile/bin:{{ .chezmoi.homeDir }}/.local/state/nix/profiles/profile/bin:/nix/var/nix/profiles/default/bin:{{ .chezmoi.homeDir }}/.brew/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+Environment=PATH={{ .chezmoi.destDir }}/bin:{{ .chezmoi.destDir }}/.nix-profile/bin:{{ .chezmoi.destDir }}/.local/state/nix/profiles/profile/bin:/nix/var/nix/profiles/default/bin:{{ .chezmoi.destDir }}/.brew/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 
 [Install]
 WantedBy=default.target

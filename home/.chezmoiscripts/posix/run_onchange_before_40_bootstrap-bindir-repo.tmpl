@@ -1,4 +1,4 @@
-{{- $bin_path := joinPath .chezmoi.homeDir "bin" -}}
+{{- $bin_path := joinPath .chezmoi.destDir "bin" -}}
 {{- $bin_git_path := joinPath $bin_path ".git" -}}
 {{- if and (stat $bin_path) (not (stat $bin_git_path)) -}}
 #!/bin/sh

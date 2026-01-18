@@ -10,7 +10,7 @@
 
 set -euo pipefail
 
-LAUNCH_AGENTS_DIR="{{ .chezmoi.homeDir }}/Library/LaunchAgents"
+LAUNCH_AGENTS_DIR="{{ .chezmoi.destDir }}/Library/LaunchAgents"
 
 # Ensure LaunchAgents directory exists
 mkdir -p "$LAUNCH_AGENTS_DIR"

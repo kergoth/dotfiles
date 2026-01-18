@@ -4,9 +4,9 @@
 # clone private repos
 #
 # Re-run when key existence changes:
-#   Does key exist?: {{ ne (stat (joinPath .chezmoi.homeDir ".ssh/keys/frey")) nil }}
+#   Does key exist?: {{ ne (stat (joinPath .chezmoi.destDir ".ssh/keys/frey")) nil }}
 
-SSH_KEY="{{ .chezmoi.homeDir }}/.ssh/keys/frey"
+SSH_KEY="{{ .chezmoi.destDir }}/.ssh/keys/frey"
 
 apply_file() {
     local src="$1"

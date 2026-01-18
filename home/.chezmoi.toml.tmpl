@@ -53,7 +53,7 @@
 {{- end -}}
 
 {{- $devpod := env "DEVPOD" | not | not -}}
-{{- $has_devpod_gpg := stat (joinPath .chezmoi.homeDir ".gnupg/S.gpg-agent") -}}
+{{- $has_devpod_gpg := stat (joinPath .chezmoi.destDir ".gnupg/S.gpg-agent") -}}
 {{- $skip_gpg := and $devpod $has_devpod_gpg | not | not -}}
 
 {{/* work around unreliable hostname on darwin */}}
@@ -184,7 +184,7 @@ scriptTempDir = "~/tmp"
 encryption = "age"
 
 [age]
-    identity = {{ joinPath .chezmoi.homeDir ".config" "chezmoi" "age.key" | quote }}
+    identity = {{ joinPath .chezmoi.destDir ".config" "chezmoi" "age.key" | quote }}
     recipient = {{ $age_recipient | quote }}
 
 [diff]

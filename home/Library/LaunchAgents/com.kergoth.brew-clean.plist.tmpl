@@ -8,13 +8,13 @@
 
 	<key>ProgramArguments</key>
 	<array>
-		<string>{{ .chezmoi.homeDir }}/bin/brew-clean</string>
+		<string>{{ .chezmoi.destDir }}/bin/brew-clean</string>
 	</array>
 
 	<key>EnvironmentVariables</key>
 	<dict>
 		<key>PATH</key>
-		<string>{{ .chezmoi.homeDir }}/bin:{{ .chezmoi.homeDir }}/.nix-profile/bin:{{ .chezmoi.homeDir }}/.local/state/nix/profiles/profile/bin:/nix/var/nix/profiles/default/bin:{{ .chezmoi.homeDir }}/.brew/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+		<string>{{ .chezmoi.destDir }}/bin:{{ .chezmoi.destDir }}/.nix-profile/bin:{{ .chezmoi.destDir }}/.local/state/nix/profiles/profile/bin:/nix/var/nix/profiles/default/bin:{{ .chezmoi.destDir }}/.brew/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
 	</dict>
 
 	<!-- Run Sunday at 3 AM (Weekday: 0=Sunday, 1=Monday, ..., 6=Saturday) -->
@@ -34,9 +34,9 @@
 
 	<!-- Standard output/error logging -->
 	<key>StandardOutPath</key>
-	<string>{{ .chezmoi.homeDir }}/Library/Logs/brew-clean.log</string>
+	<string>{{ .chezmoi.destDir }}/Library/Logs/brew-clean.log</string>
 	<key>StandardErrorPath</key>
-	<string>{{ .chezmoi.homeDir }}/Library/Logs/brew-clean.log</string>
+	<string>{{ .chezmoi.destDir }}/Library/Logs/brew-clean.log</string>
 
 	<!-- Resource limits (low priority) -->
 	<key>Nice</key>

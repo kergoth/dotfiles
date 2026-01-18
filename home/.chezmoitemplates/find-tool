@@ -20,7 +20,7 @@
 {{- if not $result -}}
 {{-   $search_paths := list -}}
 {{-   range $root.paths.home_bins -}}
-{{-     $search_paths = append $search_paths (joinPath $root.chezmoi.homeDir .) -}}
+{{-     $search_paths = append $search_paths (joinPath $root.chezmoi.destDir .) -}}
 {{-   end -}}
 
 {{-   if hasKey . "platform_paths" -}}

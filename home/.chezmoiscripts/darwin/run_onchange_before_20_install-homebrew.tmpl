@@ -1,4 +1,4 @@
-{{- $brew_bin := joinPath .chezmoi.homeDir "bin" "brew" -}}
+{{- $brew_bin := joinPath .chezmoi.destDir "bin" "brew" -}}
 {{- if not $brew_bin -}}
 #!/bin/sh
 

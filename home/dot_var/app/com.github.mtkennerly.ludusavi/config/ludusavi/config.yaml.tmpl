@@ -16,33 +16,33 @@ language: en-US
 theme: dark
 roots:
   - store: steam
-    path: {{ .chezmoi.homeDir }}/.local/share/Steam
+    path: {{ .chezmoi.destDir }}/.local/share/Steam
   - store: heroic
-    path: {{ .chezmoi.homeDir }}/.var/app/com.heroicgameslauncher.hgl/config/heroic
+    path: {{ .chezmoi.destDir }}/.var/app/com.heroicgameslauncher.hgl/config/heroic
   - store: steam
     path: {{ .sdcard_mount }}
   - store: heroic
-    path: {{ .chezmoi.homeDir }}/Games/Heroic
+    path: {{ .chezmoi.destDir }}/Games/Heroic
   - store: other
-    path: {{ .chezmoi.homeDir }}/Games
+    path: {{ .chezmoi.destDir }}/Games
   - store: other
     path: {{ .sdcard_mount }}/Games
   - store: otherHome
     path: {{ .sdcard_mount }}
   - store: other
-    path: {{ .chezmoi.homeDir }}/Games/sdos
+    path: {{ .chezmoi.destDir }}/Games/sdos
   - store: other
-    path: {{ .chezmoi.homeDir }}/Games/swin
+    path: {{ .chezmoi.destDir }}/Games/swin
   - store: other
-    path: {{ .chezmoi.homeDir }}/Games/Linux
+    path: {{ .chezmoi.destDir }}/Games/Linux
   - store: other
-    path: {{ .chezmoi.homeDir }}/Games/Windows
+    path: {{ .chezmoi.destDir }}/Games/Windows
   - store: other
-    path: {{ .chezmoi.homeDir }}/Games/gog
+    path: {{ .chezmoi.destDir }}/Games/gog
   - store: other
-    path: {{ .chezmoi.homeDir }}/Games/amazon
+    path: {{ .chezmoi.destDir }}/Games/amazon
   - store: other
-    path: {{ .chezmoi.homeDir }}/Games/epic
+    path: {{ .chezmoi.destDir }}/Games/epic
   - store: other
     path: {{ .sdcard_mount }}/Games/Linux
   - store: other
@@ -61,18 +61,18 @@ backup:
       steam: true
       uplay: false
     ignoredPaths:
-      - {{ .chezmoi.homeDir }}/Applications/ShipofHarkinian/logs
-      - {{ .chezmoi.homeDir }}/Applications/2Ship2Harkinian/logs
-      - {{ .chezmoi.homeDir }}/.var/app/io.github.shiiion.primehack/data/dolphin-emu/Load
-      - {{ .chezmoi.homeDir }}/.var/app/org.DolphinEmu.dolphin-emu/data/dolphin-emu/Load
+      - {{ .chezmoi.destDir }}/Applications/ShipofHarkinian/logs
+      - {{ .chezmoi.destDir }}/Applications/2Ship2Harkinian/logs
+      - {{ .chezmoi.destDir }}/.var/app/io.github.shiiion.primehack/data/dolphin-emu/Load
+      - {{ .chezmoi.destDir }}/.var/app/org.DolphinEmu.dolphin-emu/data/dolphin-emu/Load
     ignoredRegistry: []
   toggledPaths:
     2 Ship 2 Harkinian:
-      {{ .chezmoi.homeDir }}/Applications/2Ship2Harkinian: false
+      {{ .chezmoi.destDir }}/Applications/2Ship2Harkinian: false
     Dolphin:
-      {{ .chezmoi.homeDir }}/.var/app/org.DolphinEmu.dolphin-emu/data/dolphin-emu/Load: false
+      {{ .chezmoi.destDir }}/.var/app/org.DolphinEmu.dolphin-emu/data/dolphin-emu/Load: false
     Ship of Harkinian:
-      {{ .chezmoi.homeDir }}/Applications/ShipofHarkinian: false
+      {{ .chezmoi.destDir }}/Applications/ShipofHarkinian: false
   toggledRegistry: {}
   sort:
     key: name
@@ -115,7 +115,7 @@ cloud:
   synchronize: true
 apps:
   rclone:
-    path: {{ .chezmoi.homeDir }}/.local/bin/rclone
+    path: {{ .chezmoi.destDir }}/.local/bin/rclone
     arguments: "--fast-list --ignore-checksum"
 customGames:
   - name: Portal 2

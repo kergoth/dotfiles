@@ -8,7 +8,7 @@
 
 set -euo pipefail
 
-USER_UNIT_DIR="{{ .chezmoi.homeDir }}/.config/systemd/user"
+USER_UNIT_DIR="{{ .chezmoi.destDir }}/.config/systemd/user"
 
 # Ensure user unit directory exists
 mkdir -p "$USER_UNIT_DIR"
