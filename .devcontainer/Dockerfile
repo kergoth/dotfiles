@@ -2,7 +2,7 @@ FROM mcr.microsoft.com/devcontainers/base:jammy
 
 USER root
 
-ENV USERNAME vscode
+ARG USERNAME="vscode"
 
 # Used to persist bash history as per https://code.visualstudio.com/remote/advancedcontainers/persist-bash-history
 RUN SNIPPET="export PROMPT_COMMAND='history -a' && export HISTFILE=/commandhistory/.bash_history" \
@@ -26,14 +26,6 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME \
     && ln -s /usr/bin/python3 /usr/local/bin/python
-
-RUN pip install kas
-
-RUN mkdir -p /etc/apt/keyrings \
-    && curl -fsSL https://repo.charm.sh/apt/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg \
-    && echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | sudo tee /etc/apt/sources.list.d/charm.list \
-    && apt-get update && apt-get install -y gum \
-    && rm -rf /var/lib/apt/lists/*
 
 USER vscode
 
