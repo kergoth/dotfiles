@@ -4,7 +4,7 @@
 {{- $git_revise := includeTemplate "find-tool" (dict "root" . "tool" "git-revise") -}}
 {{- $unar := includeTemplate "find-tool" (dict "root" . "tool" "unar") -}}
 {{- $dtrx := includeTemplate "find-tool" (dict "root" . "tool" "dtrx") -}}
-{{- if or (not $git_imerge) (not $git_revise) (and (not $unar) (not $dtrx)) }}
+{{- if or (not $git_imerge) (not $git_revise) (and (not $unar) (not $dtrx)) -}}
 #!/usr/bin/env bash
 set -euo pipefail
 
