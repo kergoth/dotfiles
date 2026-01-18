@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     git-lfs \
     repo \
     sudo \
+    vim \
     zsh \
     \
     python3-pip python3-setuptools python3-wheel python3-yaml python3-distro python3-jsonschema \
