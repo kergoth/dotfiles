@@ -43,7 +43,7 @@ Workspace
 {{- end }}
 
 # Vim data files migration after path changes
-{{- $vimPath := joinPath .chezmoi.destDir ".config/vim" -}}
+{{- $vimPath := joinPath (printf "%s" .chezmoi.destDir) ".config/vim" -}}
 {{- if or (not (glob $vimPath)) (ne ($vimPath | lstat).type "symlink") }}
 .chezmoiscripts/posix/prepare_vim
 {{- end }}

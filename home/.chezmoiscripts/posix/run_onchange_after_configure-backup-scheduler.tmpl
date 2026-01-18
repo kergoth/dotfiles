@@ -29,7 +29,7 @@ else
 fi
 
 # Onchange trigger: Re-run if any scheduler files change
-{{- $backupDir := joinPath .chezmoi.destDir ".config/backup" }}
+{{- $backupDir := joinPath (printf "%s" .chezmoi.destDir) ".config/backup" }}
 {{- if stat $backupDir }}
 # systemd service: {{ include (joinPath $backupDir "systemd/backup-conductor.service") | sha256sum }}
 # systemd timer: {{ include (joinPath $backupDir "systemd/backup-conductor.timer") | sha256sum }}
