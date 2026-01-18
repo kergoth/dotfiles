@@ -471,7 +471,6 @@ Juicy: Battery Alerts & Health).
 
 - [pkgx](https://pkgx.sh): A blazingly fast, standalone, cross‐platform binary that runs anything.
 - [rclone](https://github.com/rclone/rclone): Rsync for cloud storage.
-- [restic](https://restic.net): Fast, secure, efficient backup program.
 
 #### Installed Decky Plugins on the Steam Deck
 
