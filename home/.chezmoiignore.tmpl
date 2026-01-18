@@ -12,7 +12,6 @@
 
 # Common home directory data and documents (not managed by chezmoi)
 Applications/*
-!Applications/CoreServices
 Applications (Parallels)
 Desktop
 Documents
@@ -136,6 +135,8 @@ Obsidian Vault
 My Kindle Content
 # This wrapper is for macOS to use the zed-preview binary
 .local/bin/zed
+{{- else }}
+!Applications/CoreServices
 {{- end }}
 
 # Host or Distro Specific ignores
