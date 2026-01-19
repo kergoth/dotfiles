@@ -3,12 +3,29 @@ if [[ -z $DOTFILES_NO_UPDATE ]]; then
     old_stamps=( $DOTFILES_STAMP(N.mh+14) )
     if [[ -e ~/.local/share/chezmoi/.git ]] && { (( ${#old_stamps} )) || [[ ! -f $DOTFILES_STAMP ]]; }; then
         echo >&2 "Checking for dotfiles updates (once daily)"
-        chezmoi update && touch "$DOTFILES_STAMP" && echo >&2 "Restarting zsh for dotfiles updates" && \
+        _dotfiles_updated=0
+        pushd -q ~/.local/share/chezmoi
+        # Fetch quietly, skip if offline (fetch failure)
+        if git fetch --quiet 2>/dev/null; then
+            _local_head=$(git rev-parse HEAD)
+            _remote_head=$(git rev-parse @{u} 2>/dev/null)
+            if [[ -n "$_remote_head" && "$_local_head" != "$_remote_head" ]]; then
+                echo >&2 "Dotfiles have updates, pulling..."
+                if git pull --quiet && chezmoi apply; then
+                    _dotfiles_updated=1
+                fi
+            fi
+        fi
+        popd -q
+        touch "$DOTFILES_STAMP"
+        if (( _dotfiles_updated )); then
+            echo >&2 "Restarting zsh for dotfiles updates"
             if (( $+commands[direnv] )); then
                 exec direnv exec / zsh --login
             else
                 exec zsh --login
             fi
+        fi
     fi
 fi
 
