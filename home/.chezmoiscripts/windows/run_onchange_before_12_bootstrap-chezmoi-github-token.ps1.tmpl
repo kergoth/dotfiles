@@ -1,4 +1,4 @@
-{{- if .secrets -}}
+{{- if and .secrets (not .work) -}}
 {{-   $ageKeyPath := .chezmoi.config.age.identity -}}
 {{-   $chezmoiGithubTokenPath := joinPath (printf "%s" .chezmoi.destDir) ".config" "chezmoi_github_token" -}}
 {{-   $st := stat $ageKeyPath -}}
