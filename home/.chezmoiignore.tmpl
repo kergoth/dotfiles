@@ -207,6 +207,11 @@ ES-DE
 .config/deck-backup/config.d/enable
 {{- end }}
 
+# Work / Personal Non-secret ignores
+{{ if .work -}}
+My Kindle Content
+{{- end }}
+
 # Credentials / secrets (materialized plaintext outputs and machine-local sensitive state)
 .ssh/agent.sock
 .ssh/socket.*
