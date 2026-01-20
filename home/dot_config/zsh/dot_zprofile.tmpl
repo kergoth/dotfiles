@@ -43,6 +43,11 @@ export XZ_DEFAULTS=--threads=0
 export PAGER=more
 export YSU_IGNORED_ALIASES=("vi")
 
+# Colima is explicitly set outside of XDG_CONFIG_HOME, as it changes behavior
+# based on the presence or absence of this variable, which means the home
+# directory changes between manual execution and homebrew services execution.
+export COLIMA_HOME="$HOME/.colima"
+
 # Rust
 export CARGO_HOME="$XDG_DATA_HOME/cargo"
 export CARGO_INSTALL_ROOT="${XDG_DATA_HOME%/*}"

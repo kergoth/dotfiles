@@ -21,6 +21,9 @@ IdentityFile ~/.ssh/keys/work
 {{-   if glob ".config/colima/ssh_config" }}
 Include ~/.config/colima/ssh_config
 {{-   end }}
+{{-   if glob ".colima/ssh_config" }}
+Include ~/.colima/ssh_config
+{{-   end }}
 {{-   $lima_configs := glob ".lima/*/ssh.config" }}
 {{-   range $lima_config := $lima_configs }}
 Include ~/{{ $lima_config }}
