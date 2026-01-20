@@ -225,7 +225,6 @@ ES-DE
 {{-     end }}
 {{-   end }}
 {{-   if .work }}
-.config/chezmoi_github_token
 .ssh/config.d/personal
 !.ssh/keys/work*
 {{-   end }}
@@ -234,6 +233,7 @@ ES-DE
 {{-   if .work }}
 # Personal secrets
 .config/rclone/rclone.conf
+.config/chezmoi_github_token
 {{-   else }}
 # Work secrets
 .config/.jira/.config.yml
