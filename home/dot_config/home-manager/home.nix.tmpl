@@ -119,12 +119,17 @@ in {
     fzf.enable = true;
     jq.enable = true;
     bat.enable = true;
-
 {{- if not .devpod }}
     # gnupg
     gpg.enable = true;
 {{- end }}
   };
+
+{{- if and .work .containers (not .ephemeral) (eq .chezmoi.os "darwin") }}
+  services.colima = {
+    enable = true;
+  };
+{{- end }}
 
 {{- if not .devpod }}
   # Enable gpg-agent with pinentry
