@@ -2,6 +2,8 @@
 {{- if not $vim -}}
 {{-   $vim := includeTemplate "find-tool" (dict "root" . "tool" "nvim.exe") }}
 {{- end }}
+{{- $update := joinPath (printf "%s" .chezmoi.destDir) ".config" "vim" "script" "update.ps1" -}}
+{{- if and $vim $update -}}
 {{- if $vim -}}
-Join-Path $env:USERPROFILE .config\vim\script\update.ps1 | Invoke-Expression
+{{ $update }} | Invoke-Expression
 {{- end }}

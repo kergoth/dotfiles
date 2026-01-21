@@ -2,10 +2,9 @@
 {{- if not $vim -}}
 {{-   $vim := includeTemplate "find-tool" (dict "root" . "tool" "nvim") }}
 {{- end }}
-{{- if $vim -}}
-#!/usr/bin/env bash
+{{- $update := joinPath (printf "%s" .chezmoi.destDir) ".config" "vim" "script" "update" -}}
+{{- if and $vim $update -}}
+#!/bin/sh
 
-set -euo pipefail
-
-"${CHEZMOI_HOME_DIR:-$HOME}"/.config/vim/script/update -b
+{{ $update }} -b
 {{- end }}
