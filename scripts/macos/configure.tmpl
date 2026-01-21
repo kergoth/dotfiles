@@ -146,6 +146,18 @@ defaults -currentHost write -g AppleFontSmoothing -int 0
 {{- end }}
 
 {{ if and (not .ephemeral) (not (env "CONTAINER_ID")) -}}
+{{   $docker := includeTemplate "find-tool" (dict "root" . "tool" "docker") -}}
+{{   $colima := includeTemplate "find-tool" (dict "root" . "tool" "colima") -}}
+{{   if and $docker $colima -}}
+echo >&2 "Configuring Docker context for Colima"
+if ! DOCKER_HOST= docker context inspect colima &>/dev/null; then
+    DOCKER_HOST= docker context create colima --docker "host=unix://$HOME/.colima/default/docker.sock"
+fi
+if ! DOCKER_HOST= docker context ls --format json | grep colima | grep -F '"Current":true' >/dev/null; then
+    DOCKER_HOST= docker context use colima
+fi
+{{-   end }}
+
 {{   $devpod := includeTemplate "find-tool" (dict "root" . "tool" "devpod") -}}
 {{   if $devpod -}}
 # Configure DevPod
