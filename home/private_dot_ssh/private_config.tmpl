@@ -11,10 +11,12 @@ ControlMaster auto
 ControlPersist yes
 ControlPath ~/.ssh/socket.%r@%h:%p
 {{- end }}
-{{- if .personal }}
+{{- if .secrets }}
+{{-   if .personal }}
 IdentityFile ~/.ssh/keys/frey
-{{- else if .work }}
+{{-   else if .work }}
 IdentityFile ~/.ssh/keys/work
+{{-   end }}
 {{- end }}
 
 {{ if eq .chezmoi.os "darwin" }}
