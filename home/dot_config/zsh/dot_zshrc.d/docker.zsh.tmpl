@@ -1,0 +1,4 @@
+{{ if and (eq .chezmoi.os "darwin") (not .ephemeral) (not (env "CONTAINER_ID")) -}}
+{{   $colima := includeTemplate "find-tool" (dict "root" . "tool" "colima") -}}
+export DOCKER_HOST=unix://$HOME/.colima/default/docker.sock
+{{- end }}
