@@ -1,0 +1,20 @@
+{{- if and .user_setup (not .use_nix) -}}
+{{-   $cargo := includeTemplate "find-tool" (dict "root" . "tool" "cargo") -}}
+{{-   if $cargo -}}
+{{-     $choose := includeTemplate "find-tool" (dict "root" . "tool" "choose") -}}
+{{-     $atuin := includeTemplate "find-tool" (dict "root" . "tool" "atuin") -}}
+{{-     if or (not $choose) (not $atuin) -}}
+#!/bin/sh
+set -eu
+
+{{-       if not $choose }}
+echo >&2 "Installing choose"
+"{{ $cargo }}" install --locked choose
+{{-       end }}
+{{-       if not $atuin }}
+echo >&2 "Installing atuin"
+"{{ $cargo }}" install --locked atuin
+{{-       end }}
+{{-     end }}
+{{-   end }}
+{{- end }}

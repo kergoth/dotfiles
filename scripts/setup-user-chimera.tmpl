@@ -9,11 +9,6 @@ PATH="$scriptdir/linux:$scriptdir:$PATH"
 # shellcheck source=./common.sh
 . "$scriptdir/common.sh" || exit 1
 
-cargo_check sd sd
-cargo_check dua dua
-cargo_check choose choose
-cargo_check atuin atuin
-
 {{ if .work -}}
 # Bug tracking and workflow
 go_check github.com/ankitpokhrel/jira-cli/...@latest jira
@@ -26,5 +21,4 @@ if ! has claude; then
     curl -fsSL https://claude.ai/install.sh | bash
 fi
 
-cargos_install
 gos_install
