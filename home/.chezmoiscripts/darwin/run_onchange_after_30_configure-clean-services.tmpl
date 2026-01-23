@@ -4,7 +4,7 @@
 #
 # Onchange triggers: Re-run if service files change
 # brew-clean: {{ include (joinPath .chezmoi.sourceDir "Library/LaunchAgents/com.kergoth.brew-clean.plist.tmpl") | sha256sum }}
-{{- if and .use_nix (lookPath "nix") }}
+{{- if .use_nix }}
 # nix-clean: {{ include (joinPath .chezmoi.sourceDir "Library/LaunchAgents/com.kergoth.nix-clean.plist.tmpl") | sha256sum }}
 {{- end }}
 
@@ -41,7 +41,7 @@ install_agent() {
 # Install brew-clean agent (always on non-ephemeral macOS)
 install_agent "com.kergoth.brew-clean.plist" "brew-clean"
 
-{{- if and .use_nix (lookPath "nix") }}
+{{- if .use_nix }}
 # Install nix-clean agent (when Nix is available)
 install_agent "com.kergoth.nix-clean.plist" "nix-clean"
 {{- end }}

@@ -1,4 +1,4 @@
-{{- if and (eq .chezmoi.os "linux") (not .ephemeral) .use_nix (lookPath "nix") -}}
+{{- if and (eq .chezmoi.os "linux") (not .ephemeral) .use_nix -}}
 [Unit]
 Description=Nix Cleanup - Garbage collection and store optimization
 Documentation=man:nix-collect-garbage(1)

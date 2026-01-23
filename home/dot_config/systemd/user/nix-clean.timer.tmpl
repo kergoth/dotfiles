@@ -1,4 +1,4 @@
-{{- if and (eq .chezmoi.os "linux") (not .ephemeral) .use_nix (lookPath "nix") -}}
+{{- if and (eq .chezmoi.os "linux") (not .ephemeral) .use_nix -}}
 [Unit]
 Description=Nix Cleanup Timer - Run cleanup on Sunday at 3 AM
 Documentation=man:nix-collect-garbage(1)

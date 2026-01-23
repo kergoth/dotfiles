@@ -33,7 +33,8 @@
 {{-     $use_nix = false }}
 {{-   end }}
 {{- end }}
-{{- if or (not $user_setup) (not (lookPath "nix")) }}
+{{- $nix_paths := list "/nix/var/nix/profiles/default/bin" (joinPath .chezmoi.homeDir ".nix-profile/bin") "/run/current-system/sw/bin" -}}
+{{- if or (not $user_setup) (not (or (lookPath "nix") (findExecutable "nix" $nix_paths))) }}
 {{-   $use_nix = false }}
 {{- end }}
 

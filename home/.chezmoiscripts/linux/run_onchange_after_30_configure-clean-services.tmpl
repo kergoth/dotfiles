@@ -1,4 +1,4 @@
-{{- if and (not .ephemeral) .use_nix (lookPath "nix") -}}
+{{- if and (not .ephemeral) .use_nix -}}
 #!/usr/bin/env bash
 # Auto-install nix-clean systemd service and timer
 #
