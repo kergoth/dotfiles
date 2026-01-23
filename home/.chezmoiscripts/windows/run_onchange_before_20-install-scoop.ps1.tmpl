@@ -1,0 +1,33 @@
+{{- if .user_setup -}}
+# Install Scoop and Language Package Managers
+
+. $env:DOTFILES_DIR\scripts\common.ps1
+
+{{   $scoop := includeTemplate "find-tool" (dict "root" . "tool" "scoop") -}}
+{{   if not $scoop -}}
+Write-Host "Installing Scoop..."
+$env:SCOOP = "{{ joinPath (printf "%s" .chezmoi.destDir) "scoop" }}"
+Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+RefreshEnvPath
+{{-   end }}
+
+{{   $python := includeTemplate "find-tool" (dict "root" . "tool" "python") -}}
+{{   if not $python -}}
+Write-Host "Installing Python..."
+scoop install python
+{{-     $scoop_python := joinPath (printf "%s" .chezmoi.destDir) "scoop" "apps" "python" "current" -}}
+reg import "{{ $scoop_python }}\install-pep-514.reg"
+{{-   end }}
+
+{{   $cargo := includeTemplate "find-tool" (dict "root" . "tool" "cargo") -}}
+{{   if not $cargo -}}
+Write-Host "Installing Rust..."
+scoop install rust
+{{-   end }}
+
+{{   $uv := includeTemplate "find-tool" (dict "root" . "tool" "uv") -}}
+{{   if not $uv -}}
+Write-Host "Installing uv..."
+Invoke-RestMethod -Uri https://astral.sh/uv/install.ps1 | Invoke-Expression
+{{-   end }}
+{{- end }}

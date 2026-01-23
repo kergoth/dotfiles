@@ -1,0 +1,13 @@
+{{- if and .user_setup (not .use_nix) -}}
+{{-   $cargo := includeTemplate "find-tool" (dict "root" . "tool" "cargo") -}}
+{{-   if $cargo -}}
+{{-     $atuin := includeTemplate "find-tool" (dict "root" . "tool" "atuin") -}}
+{{-     if not $atuin -}}
+#!/bin/sh
+set -eu
+
+echo >&2 "Installing atuin"
+"{{ $cargo }}" install --git https://github.com/atuinsh/atuin.git --branch main
+{{-     end }}
+{{-   end }}
+{{- end }}

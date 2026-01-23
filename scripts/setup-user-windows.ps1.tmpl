@@ -14,13 +14,6 @@ Add-EnvironmentVariableItem "PATH" "$env:XDG_BIN_HOME" -User
 # Add ~/.local/bin to the PATH
 Add-EnvironmentVariableItem "PATH" "$env:USERPROFILE\.local\bin" -User
 
-# Install scoop
-if (-not $env:SCOOP) {
-  $env:SCOOP = "$env:USERPROFILE/scoop"
-}
-if (-not (Test-Path "$env:SCOOP")) {
-  Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
-}
 RefreshEnvPath
 
 # Install git
@@ -40,23 +33,6 @@ if (-not (Test-Path "$env:SCOOP/buckets/kergoth")) {
 
 # Install git-lfs
 scoop install git-lfs
-
-# Install python
-scoop install python
-reg import $env:SCOOP\apps\python\current\install-pep-514.reg
-
-# Install UV for python tooling
-if (-not (Test-Path "$env:XDG_BIN_HOME/uv")) {
-    Invoke-RestMethod -Uri https://astral.sh/uv/install.ps1 | Invoke-Expression
-}
-
-# Install rust
-scoop install rust
-
-# Install atuin
-if (-not (Get-Command atuin -ErrorAction SilentlyContinue)) {
-    cargo install --git https://github.com/atuinsh/atuin.git --branch main
-}
 
 # Windows-specific
 scoop install gow
