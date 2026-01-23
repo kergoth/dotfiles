@@ -1,0 +1,49 @@
+{{- if .user_setup -}}
+# GUI Applications
+{{ if not .headless -}}
+. $env:CHEZMOI_COMMAND_DIR\scripts\common.ps1
+
+if (Install-Scoop-IfNotPresent 7zip 7zip.7zip) {
+    reg import "$env:SCOOP\apps\7zip\current\install-context.reg" | Out-Null
+}
+Install-Scoop-IfNotPresent autohotkey AutoHotkey.AutoHotkey | Out-Null
+Install-Scoop-IfNotPresent discord Discord.Discord | Out-Null
+Install-Scoop-IfNotPresent ditto Ditto.Ditto | Out-Null
+Install-Scoop-IfNotPresent devdocs egoist.devdocs-desktop | Out-Null
+Install-Scoop-IfNotPresent gsudo gerardog.gsudo | Out-Null
+Install-Scoop-IfNotPresent gpg4win GnuPG.Gpg4win | Out-Null
+Install-Scoop-IfNotPresent bulk-crap-uninstaller Klocman.BulkCrapUninstaller | Out-Null
+Install-Scoop-IfNotPresent pwsh Microsoft.PowerShell | Out-Null
+if (Install-Scoop-IfNotPresent powertoys Microsoft.PowerToys) {
+    Invoke-Expression -Command "C:\Users\WDAGUtilityAccount\scoop\apps\powertoys\current\install-context.ps1"
+}
+if (Install-Scoop-IfNotPresent windows-terminal Microsoft.WindowsTerminal) {
+    reg import "$env:SCOOP\apps\windows-terminal\current\install-context.reg" | Out-Null
+}
+if (Install-Scoop-IfNotPresent notepadplusplus Notepad++.Notepad++) {
+    reg import "$env:SCOOP\apps\notepadplusplus\current\install-context.reg" | Out-Null
+}
+Install-Scoop-IfNotPresent obsidian Obsidian.Obsidian | Out-Null
+Install-Scoop-IfNotPresent squirreldisk squirreldisk.SquirrelDisk | Out-Null
+Install-Scoop-IfNotPresent synctrayzor SyncTrayzor.SyncTrayzor | Out-Null
+Install-Scoop-IfNotPresent vivaldi Vivaldi.Vivaldi | Out-Null
+scoop install zed
+
+{{    if .work -}}
+Install-Scoop-IfNotPresent putty PuTTY.PuTTY | Out-Null
+{{      if not .ephemeral -}}
+Install-Scoop-IfNotPresent rufus Rufus.Rufus | Out-Null
+{{      end -}}
+{{    else }}
+Install-Scoop-IfNotPresent sumatrapdf SumatraPDF.SumatraPDF | Out-Null
+{{      if .gaming -}}
+Install-Scoop-IfNotPresent steam Valve.Steam | Out-Null
+{{-     end }}
+{{      if .video -}}
+Install-Scoop-IfNotPresent vlc VideoLAN.VLC | Out-Null
+{{-     end }}
+{{-   end }}
+{{- end }}
+
+RefreshEnvPath
+{{- end }}
