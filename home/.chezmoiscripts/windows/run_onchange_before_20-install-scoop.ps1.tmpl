@@ -1,7 +1,7 @@
 {{- if .user_setup -}}
 # Install Scoop and Language Package Managers
 
-. $env:DOTFILES_DIR\scripts\common.ps1
+. $env:CHEZMOI_COMMAND_DIR\scripts\common.ps1
 
 {{   $scoop := includeTemplate "find-tool" (dict "root" . "tool" "scoop") -}}
 {{   if not $scoop -}}
