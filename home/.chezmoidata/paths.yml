@@ -7,6 +7,9 @@ paths:
     - .cargo/bin
     - .local/share/cargo/bin
     - .nix-profile/bin
+  home_bins_windows:
+    - AppData/Local/Microsoft/WindowsApps
+    - AppData/Local/Programs/bin
 
   system_bins_darwin:
     - /opt/homebrew/bin

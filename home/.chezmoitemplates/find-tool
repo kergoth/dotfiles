@@ -22,6 +22,11 @@
 {{-   range $root.paths.home_bins -}}
 {{-     $search_paths = append $search_paths (joinPath $root.chezmoi.destDir .) -}}
 {{-   end -}}
+{{-    if eq $root.chezmoi.os "windows" -}}
+{{-      range ($root.paths.home_bins_windows | default list) -}}
+{{-        $search_paths = append $search_paths (joinPath $root.chezmoi.destDir .) -}}
+{{-      end -}}
+{{-    end -}}
 
 {{-   if hasKey . "platform_paths" -}}
 {{-     $platform_key := printf "%s_%s" .platform_paths $root.chezmoi.os -}}
