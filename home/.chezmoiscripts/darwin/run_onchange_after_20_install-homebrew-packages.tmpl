@@ -1,3 +1,4 @@
+{{ if .user_setup -}}
 {{ $brew_bin := joinPath (printf "%s" .chezmoi.destDir) "bin" "brew" -}}
 {{ if $brew_bin -}}
 #!/bin/sh
@@ -50,4 +51,5 @@ if [ -x "$HOMEBREW_ADMIN_PREFIX/bin/brew" ]; then
             xargs -0 open || :
     fi
 fi
+{{- end }}
 {{- end }}

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-{{- if and .secrets .personal (not .ephemeral) (ne .chezmoi.os "windows") }}
+{{- if and .secrets .user_setup .personal (not .ephemeral) (ne .chezmoi.os "windows") }}
 # Auto-install backup-conductor scheduler when external is cloned/updated
 
 set -euo pipefail

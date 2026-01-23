@@ -1,4 +1,4 @@
-{{- if not .ephemeral -}}
+{{- if and .user_setup (not .ephemeral) -}}
 #!/usr/bin/env bash
 # Auto-install brew-clean and nix-clean launchd agents
 #

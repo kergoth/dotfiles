@@ -1,6 +1,8 @@
-{{- $claude := includeTemplate "find-tool" (dict "root" . "tool" "claude") -}}
-{{- if not $claude -}}
+{{- if .user_setup -}}
+{{-   $claude := includeTemplate "find-tool" (dict "root" . "tool" "claude") -}}
+{{-   if not $claude -}}
 # Install Claude Code
 Write-Output "Installing Claude Code"
 Invoke-RestMethod https://claude.ai/install.ps1 | Invoke-Expression
+{{-   end }}
 {{- end }}

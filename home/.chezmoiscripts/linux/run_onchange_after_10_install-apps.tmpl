@@ -1,4 +1,4 @@
-{{- if and .user_setup (not .use_nix) (not .headless) (not .work) (not .steamdeck) (not (env "CONTAINER_ID")) -}}
+{{- if and .user_setup (not .headless) (not .steamdeck) (not (env "CONTAINER_ID")) -}}
 {{-   $zed := includeTemplate "find-tool" (dict "root" . "tool" "zed") -}}
 {{-   $claude := includeTemplate "find-tool" (dict "root" . "tool" "claude") -}}
 {{-   if or (not $zed) (and (not .work) (not $claude)) -}}
@@ -16,7 +16,7 @@ msg "Installing Zed"
 curl -f https://zed.dev/install.sh | sh
 {{-     end }}
 
-{{-     if not $claude }}
+{{-     if and (not .work) (not $claude) }}
 msg "Installing Claude Code"
 curl -fsSL https://claude.ai/install.sh | bash
 {{-     end }}

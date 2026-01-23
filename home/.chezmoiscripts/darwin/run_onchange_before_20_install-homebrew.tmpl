@@ -1,3 +1,4 @@
+{{- if .user_setup -}}
 {{- $brew_bin := joinPath (printf "%s" .chezmoi.destDir) "bin" "brew" -}}
 {{- if not $brew_bin -}}
 #!/bin/sh
@@ -11,4 +12,5 @@ echo >&2 "Installing homebrew"
     echo >&2 "Failed to install homebrew"
     exit 1
 }
+{{- end }}
 {{- end }}
