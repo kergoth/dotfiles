@@ -79,12 +79,6 @@ scoop install less
 scoop install unar
 scoop install zstd
 
-# AI Tools
-if (-not (Get-Command claude -ErrorAction SilentlyContinue)) {
-    Write-Output "Installing Claude Code"
-    Invoke-RestMethod https://claude.ai/install.ps1 | Invoke-Expression
-}
-
 # GUI Applications
 {{ if not .headless -}}
 if (Install-Scoop-IfNotPresent 7zip 7zip.7zip) {
