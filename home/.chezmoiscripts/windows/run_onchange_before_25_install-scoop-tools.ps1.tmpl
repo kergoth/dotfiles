@@ -1,0 +1,42 @@
+{{- if .user_setup -}}
+. $env:CHEZMOI_COMMAND_DIR\scripts\common.ps1
+
+# Install git
+scoop install git
+
+# Add scoop's Git for Windows bin directory to the PATH for its bash
+$gitdir = scoop prefix git
+Add-EnvironmentVariableItem "PATH" "$gitdir\bin" -User
+
+# Enable buckets
+if (-not (Test-Path "$env:SCOOP/buckets/extras")) {
+  scoop bucket add extras
+}
+if (-not (Test-Path "$env:SCOOP/buckets/kergoth")) {
+  scoop bucket add kergoth https://github.com/kergoth/scoop-bucket
+}
+
+# Install git-lfs
+scoop install git-lfs
+
+# Windows-specific
+scoop install gow
+scoop install npiperelay
+scoop install recycle-bin
+
+# Starship is used for the PowerShell prompt. While this isn't truly Windows-specific,
+# I only install and use PowerShell by default on Windows.
+scoop install starship
+
+# Install core
+# Unavailable on Windows: tmux, zsh
+scoop install neovim
+scoop install wget
+scoop install curl
+
+# Install tools
+scoop install bat-extras
+scoop install less
+scoop install unar
+scoop install zstd
+{{- end }}
