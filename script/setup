@@ -17,12 +17,24 @@ if ! [ -t 1 ]; then
 fi
 
 # First, run just the scripts to bootstrap secrets (age key, github token)
-chezmoi apply --include=scripts "$@"
+if chezmoi apply --include=scripts "$@"; then
+    # Export the github token for externals if available
+    if [ -s ~/.config/chezmoi_github_token ]; then
+        export CHEZMOI_GITHUB_ACCESS_TOKEN=$(cat ~/.config/chezmoi_github_token)
+    fi
 
-# Export the github token for externals if available
-if [ -s ~/.config/chezmoi_github_token ]; then
-    export CHEZMOI_GITHUB_ACCESS_TOKEN=$(cat ~/.config/chezmoi_github_token)
+    echo >&2 "Applying dotfiles"
+    if chezmoi apply --keep-going "$@"; then
+        echo >&2 "Dotfiles applied successfully"
+    else
+        msg "Failed to apply dotfiles"
+        if ! [ -e ~/.local/bin/uv ]; then
+            # If the chezmoi apply failed due to a script or the like, we could end
+            # up without our externals. Explicitly attempt to apply those.
+            chezmoi apply ~/.local/bin
+        fi
+        exit 1
+    fi
+else
+    die "Failed to run bootstrap scripts"
 fi
-
-echo >&2 "Applying dotfiles"
-chezmoi apply --keep-going "$@"

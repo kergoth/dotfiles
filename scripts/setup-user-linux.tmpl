@@ -17,11 +17,6 @@ ret=0
 # Dotfiles
 if [ -z "${CHEZMOI:-}" ]; then
     "$repodir/script/setup" || ret=$?
-    if ! [ -e ~/.local/bin/uv ]; then
-        # If the chezmoi apply failed due to a script or the like, we could end
-        # up without our externals. Explicitly attempt to apply those.
-        chezmoi apply ~/.local/bin ||language ret=$?
-    fi
 fi
 
 {{ if and (not .ephemeral) (not .steamdeck) (not (env "CONTAINER_ID")) -}}
