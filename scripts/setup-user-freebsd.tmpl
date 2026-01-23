@@ -10,18 +10,10 @@ PATH="$scriptdir/freebsd:$scriptdir:$PATH"
 # shellcheck source=./common.sh
 . "$scriptdir/common.sh" || exit 1
 
-{{ if .work -}}
-# Bug tracking and workflow
-go_check github.com/ankitpokhrel/jira-cli/...@latest jira
-{{- end }}
-
 # As we don't support nix, install asdf for local environments
 if ! command -v asdf >/dev/null 2>&1; then
     install-asdf
 fi
-
-# Installation
-gos_install
 
 # Dotfiles
 if [ -z "${CHEZMOI:-}" ]; then

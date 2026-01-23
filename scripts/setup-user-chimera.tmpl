@@ -9,16 +9,9 @@ PATH="$scriptdir/linux:$scriptdir:$PATH"
 # shellcheck source=./common.sh
 . "$scriptdir/common.sh" || exit 1
 
-{{ if .work -}}
-# Bug tracking and workflow
-go_check github.com/ankitpokhrel/jira-cli/...@latest jira
-{{- end }}
-
 # Install Claude Code with musl-specific settings
 if ! has claude; then
     msg "Installing Claude Code"
     export USE_BUILTIN_RIPGREP=0
     curl -fsSL https://claude.ai/install.sh | bash
 fi
-
-gos_install

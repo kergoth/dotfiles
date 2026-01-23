@@ -1,0 +1,13 @@
+{{- if and .user_setup (not .use_nix) (eq .osid "linux-chimera") -}}
+{{-   $go := includeTemplate "find-tool" (dict "root" . "tool" "go") -}}
+{{-   if $go -}}
+{{-     $jira := includeTemplate "find-tool" (dict "root" . "tool" "jira") -}}
+{{-     if and .work (not $jira) -}}
+#!/bin/sh
+set -eu
+
+echo >&2 "Installing jira-cli"
+"{{ $go }}" install github.com/ankitpokhrel/jira-cli/...@latest
+{{-     end }}
+{{-   end }}
+{{- end }}
