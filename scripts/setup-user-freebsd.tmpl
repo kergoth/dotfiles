@@ -10,11 +10,6 @@ PATH="$scriptdir/freebsd:$scriptdir:$PATH"
 # shellcheck source=./common.sh
 . "$scriptdir/common.sh" || exit 1
 
-# As we don't support nix, install asdf for local environments
-if ! command -v asdf >/dev/null 2>&1; then
-    install-asdf
-fi
-
 # Dotfiles
 if [ -z "${CHEZMOI:-}" ]; then
     "$repodir/script/setup"

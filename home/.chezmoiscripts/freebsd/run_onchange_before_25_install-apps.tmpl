@@ -1,0 +1,19 @@
+{{- if and .user_setup -}}
+{{-   $asdf := includeTemplate "find-tool" (dict "root" . "tool" "asdf") -}}
+{{-   if or (not $asdf) -}}
+#!/bin/sh
+set -eu
+
+scriptsdir="$CHEZMOI_COMMAND_DIR/scripts"
+PATH="$scriptsdir:$HOME/.local/bin:$PATH"
+
+# shellcheck source=./common.sh
+. "$scriptsdir/common.sh" || exit 1
+
+{{-     if not $asdf }}
+# As we don't support nix, install asdf for local environments
+msg "Installing asdf"
+install-asdf
+{{-     end }}
+
+{{- end }}
