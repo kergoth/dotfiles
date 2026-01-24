@@ -21,7 +21,7 @@ app_installed_directly() {
 
 app_is_running() {
     local app_name="$1"
-    local count
+    local count=0
 
     count=$(osascript <<EOF
 tell application "System Events"
@@ -34,18 +34,25 @@ EOF
 
 open_app_if_not_running() {
     local target="$1"
+    local check_app="${2:-}"
     local app_name
 
     # If we were given a .app path, derive the process name from it
     if [[ "$target" == *.app || "$target" == */*.app ]]; then
         app_name=$(basename "$target" .app)
-        if ! app_is_running "$app_name"; then
+        if [ -z "$check_app" ]; then
+            check_app="$app_name"
+        fi
+        if ! app_is_running "$check_app"; then
             open -g -a "$target"
         fi
     else
         # Treat as an application name resolvable by Launch Services
         app_name="$target"
-        if ! app_is_running "$app_name"; then
+        if [ -z "$check_app" ]; then
+            check_app="$app_name"
+        fi
+        if ! app_is_running "$check_app"; then
             open -g -a "$app_name"
         fi
     fi
@@ -53,6 +60,30 @@ open_app_if_not_running() {
 
 add_login() {
     osascript -e "tell application \"System Events\" to make login item at end with properties {path:\"$1\", hidden:false}"
+}
+
+register_quicklook_extension_app() {
+    local app="$1"
+    local app_path appex bundle_id
+
+    if ! app_path="$(app_path "$app")"; then
+        return 0
+    fi
+
+    appex=$(find "$app_path/Contents/PlugIns" -name "*.appex" -maxdepth 1 2>/dev/null | head -1)
+    if [[ -z "$appex" ]]; then
+        return 0
+    fi
+
+    if ! bundle_id=$(/usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" "$appex/Contents/Info.plist" 2>/dev/null); then
+        return 0
+    fi
+
+    if pluginkit -m -i "$bundle_id" >/dev/null 2>&1; then
+        return 0
+    fi
+
+    open_app_if_not_running "$app"
 }
 
 if app_installed_directly "Transmission Remote GUI"; then
@@ -109,9 +140,14 @@ done <<END
 1Password
 Raycast
 Ice
-Karabiner-Elements
-ReiKey
 END
+
+if app_installed_directly ReiKey; then
+    open_app_if_not_running ReiKey "ReiKey Helper"
+fi
+if app_installed_directly Karabiner-Elements; then
+    open_app_if_not_running Karabiner-Elements Karabiner-Menu
+fi
 
 if appcleaner="$(app_path "AppCleaner")"; then
     open_app_if_not_running "$appcleaner/Contents/Library/LoginItems/AppCleaner SmartDelete.app"
@@ -138,10 +174,9 @@ WiFi Signal
 noTunes
 END
 
-# Open QuickLook extension apps to register their extensions
 while read -r app; do
     if app_installed_directly "$app"; then
-        open_app_if_not_running "$app"
+        register_quicklook_extension_app "$app"
     fi
 done <<END
 Apparency
