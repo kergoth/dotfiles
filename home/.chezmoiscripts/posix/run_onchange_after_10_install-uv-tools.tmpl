@@ -1,3 +1,4 @@
+{{/* uv tools are installed after, as uv is installed via externals on some platforms */}}
 {{- if .user_setup -}}
 {{- $uv := includeTemplate "find-tool" (dict "root" . "tool" "uv") -}}
 {{- if and (not .use_nix) $uv -}}
