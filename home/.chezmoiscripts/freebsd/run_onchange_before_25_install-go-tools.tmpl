@@ -1,13 +1,16 @@
-{{- if and .user_setup (not .use_nix) -}}
-{{-   $go := includeTemplate "find-tool" (dict "root" . "tool" "go") -}}
-{{-   if $go -}}
-{{-     $jira := includeTemplate "find-tool" (dict "root" . "tool" "jira") -}}
-{{-     if and .work (not $jira) -}}
+{{- if and .user_setup (not .use_nix) .work -}}
+{{-   $go_tools := dict "jira" "github.com/ankitpokhrel/jira-cli/...@latest" -}}
+{{-   $to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $go_tools) | fromJson -}}
+{{-   if $to_install -}}
+{{-     $go := includeTemplate "find-tool" (dict "root" . "tool" "go") -}}
+{{-     if $go -}}
 #!/bin/sh
 set -eu
 
-echo >&2 "Installing jira-cli"
-"{{ $go }}" install github.com/ankitpokhrel/jira-cli/...@latest
+{{-       range $to_install }}
+echo >&2 "Installing go tool: {{ . }}"
+"{{ $go }}" install {{ . }}
+{{-       end }}
 {{-     end }}
 {{-   end }}
 {{- end }}

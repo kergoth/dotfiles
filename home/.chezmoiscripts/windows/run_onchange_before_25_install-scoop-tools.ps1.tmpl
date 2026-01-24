@@ -1,14 +1,37 @@
 {{- if .user_setup -}}
+{{/* Note: tmux and zsh are unavailable on Windows */}
+{{/* Starship is used for the PS prompt. While it isn't Windows specific, I only use it there */}}
+{{-   $scoop_tools := dict
+        "git" "git"
+        "git-lfs" "git-lfs"
+        "tail" "gow"
+        "npiperelay" "npiperelay"
+        "recycle" "recycle-bin"
+        "starship" "starship"
+        "nvim" "neovim"
+        "wget" "wget"
+        "curl" "curl"
+        "batman" "bat-extras"
+        "less" "less"
+        "unar" "unar"
+        "zstd" "zstd"
+-}}
+{{-   $to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $scoop_tools) | fromJson -}}
+{{-   if $to_install -}}
 . $env:CHEZMOI_COMMAND_DIR\scripts\common.ps1
 
-# Install git
+{{-     $installed_git := false -}}
+{{-     range $to_install -}}
+{{-       if eq . "git" -}}
+{{-         $installed_git = true -}}
 scoop install git
 
-# Add scoop's Git for Windows bin directory to the PATH for its bash
 $gitdir = scoop prefix git
 Add-EnvironmentVariableItem "PATH" "$gitdir\bin" -User
 
-# Enable buckets
+{{-       end -}}
+{{-     end -}}
+{{-     if $installed_git }}
 if (-not (Test-Path "$env:SCOOP/buckets/extras")) {
   scoop bucket add extras
 }
@@ -16,27 +39,11 @@ if (-not (Test-Path "$env:SCOOP/buckets/kergoth")) {
   scoop bucket add kergoth https://github.com/kergoth/scoop-bucket
 }
 
-# Install git-lfs
-scoop install git-lfs
-
-# Windows-specific
-scoop install gow
-scoop install npiperelay
-scoop install recycle-bin
-
-# Starship is used for the PowerShell prompt. While this isn't truly Windows-specific,
-# I only install and use PowerShell by default on Windows.
-scoop install starship
-
-# Install core
-# Unavailable on Windows: tmux, zsh
-scoop install neovim
-scoop install wget
-scoop install curl
-
-# Install tools
-scoop install bat-extras
-scoop install less
-scoop install unar
-scoop install zstd
+{{-     end -}}
+{{-     range $to_install -}}
+{{-       if ne . "git" }}
+scoop install {{ . }}
+{{-       end -}}
+{{-     end -}}
+{{-   end -}}
 {{- end }}
