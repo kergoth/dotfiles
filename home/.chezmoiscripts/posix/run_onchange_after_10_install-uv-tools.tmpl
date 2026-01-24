@@ -1,26 +1,23 @@
 {{/* uv tools are installed after, as uv is installed via externals on some platforms */}}
 {{- if .user_setup -}}
-{{- $uv := includeTemplate "find-tool" (dict "root" . "tool" "uv") -}}
-{{- if and (not .use_nix) $uv -}}
-{{- $git_imerge := includeTemplate "find-tool" (dict "root" . "tool" "git-imerge") -}}
-{{- $git_revise := includeTemplate "find-tool" (dict "root" . "tool" "git-revise") -}}
-{{- $unar := includeTemplate "find-tool" (dict "root" . "tool" "unar") -}}
-{{- $dtrx := includeTemplate "find-tool" (dict "root" . "tool" "dtrx") -}}
-{{- if or (not $git_imerge) (not $git_revise) (and (not $unar) (not $dtrx)) -}}
+{{- if not .use_nix -}}
+{{-   $uv_tools := dict "git-imerge" "git-imerge" "git-revise" "git-revise" -}}
+{{-   $to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $uv_tools) | fromJson -}}
+{{-   $unar := includeTemplate "find-tool" (dict "root" . "tool" "unar") -}}
+{{-   $dtrx := includeTemplate "find-tool" (dict "root" . "tool" "dtrx") -}}
+{{-   if and (not $unar) (not $dtrx) -}}
+{{-     $to_install = append $to_install "dtrx" -}}
+{{-   end -}}
+{{-   if $to_install -}}
+{{-     $uv := includeTemplate "find-tool" (dict "root" . "tool" "uv") -}}
+{{-     if $uv -}}
 #!/usr/bin/env bash
 set -euo pipefail
 
-{{- if not $git_imerge }}
-"{{ $uv }}" tool install git-imerge
-{{- end }}
-
-{{- if not $git_revise }}
-"{{ $uv }}" tool install git-revise
-{{- end }}
-
-{{- if and (not $unar) (not $dtrx) }}
-"{{ $uv }}" tool install dtrx
-{{- end }}
-{{- end }}
+{{-       range $to_install }}
+"{{ $uv }}" tool install {{ . }}
+{{-       end }}
+{{-     end }}
+{{-   end }}
 {{- end }}
 {{- end }}
