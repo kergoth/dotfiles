@@ -5,6 +5,9 @@ set -euo pipefail
 scriptdir="$(cd "$(dirname "$0")" && pwd -P)"
 PATH="$scriptdir:$scriptdir/../scripts:$PATH"
 
+tmpdir=$(mktemp -d)
+trap 'rm -rf "$tmpdir"' EXIT
+
 app_path() {
     for dir in /Applications ~/Applications /Applications/Utility ~/Applications/Utility; do
         if [ -d "$dir/$1.app" ]; then
@@ -59,7 +62,11 @@ open_app_if_not_running() {
 }
 
 add_login() {
-    osascript -e "tell application \"System Events\" to make login item at end with properties {path:\"$1\", hidden:false}"
+    local app_name login_items_file="$2"
+    app_name=$(basename "$1" .app)
+    if ! grep -q "$app_name" "$login_items_file" 2>/dev/null; then
+        osascript -e "tell application \"System Events\" to make login item at end with properties {path:\"$1\", hidden:false, name:\"$app_name\"}" >/dev/null
+    fi
 }
 
 register_quicklook_extension_app() {
@@ -158,9 +165,10 @@ if ccc="$(app_path "Carbon Copy Cloner")"; then
 fi
 
 # Add these apps to the login items and start them immediately
+osascript -e 'tell application "System Events" to get the name of every login item' >"$tmpdir/login_items" 2>/dev/null || true
 while read -r app; do
     if app_file_path="$(app_path "$app")"; then
-        add_login "$app_file_path"
+        add_login "$app_file_path" "$tmpdir/login_items"
         open_app_if_not_running "$app"
     fi
 done <<END
