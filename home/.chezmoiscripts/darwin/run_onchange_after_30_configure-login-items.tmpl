@@ -1,0 +1,45 @@
+{{-
+    $login_apps := list
+        "BlockBlock Helper"
+        "Juicy"
+        "OverSight"
+        "PopClip"
+        "Shifty"
+        "Syncthing"
+        "WiFi Signal"
+        "noTunes"
+-}}
+{{- $self_register_apps := list
+        "1Password"
+        "Raycast"
+        "Ice"
+        "ReiKey"
+        "Karabiner-Elements"
+-}}
+{{- $special_cases := dict
+        "ReiKey" "ReiKey Helper"
+        "Karabiner-Elements" "Karabiner-Menu"
+-}}
+{{- $login_items := dict
+        "AppCleaner" "Contents/Library/LoginItems/AppCleaner SmartDelete.app"
+        "Carbon Copy Cloner" "Contents/Library/LoginItems/CCC Dashboard.app"
+-}}
+{{- $cmds := includeTemplate "addOpenLoginItems" (dict "root" . "apps" $login_apps) | trim -}}
+{{- $self_register_cmds := includeTemplate "openAppsToSelfRegister" (dict "root" . "apps" $self_register_apps "special_cases" $special_cases) | trim -}}
+{{- $login_item_apps := includeTemplate "openAppsToSelfRegister" (dict "root" . "apps" (keys $login_items) "login_items" $login_items) | trim -}}
+{{- if or $cmds $self_register_cmds $login_item_apps -}}
+#!/bin/sh
+
+. "$CHEZMOI_COMMAND_DIR/scripts/common.sh"
+
+echo >&2 "Adding login items..."
+{{-   if $cmds }}
+{{     $cmds }}
+{{-   end }}
+{{-   if $self_register_cmds }}
+{{     $self_register_cmds }}
+{{-   end }}
+{{-   if $login_item_apps }}
+{{     $login_item_apps }}
+{{-   end }}
+{{- end }}

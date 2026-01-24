@@ -1,0 +1,28 @@
+{{- /* Template: addOpenLoginItems
+     Description: Return commands to add login items and open apps if installed and not already added
+     Arguments (dict):
+       - root: context (required) - Root context (pass as "root" .)
+       - apps: list (required) - List of apps to add as login items, without .app extension
+     Returns: string - Shell commands to add login items and open the apps
+
+     Example usage:
+       {{ includeTemplate "addOpenLoginItems" (dict "root" . "apps" (list "Syncthing")) }}
+*/ -}}
+{{- $root := .root -}}
+{{- $login_apps := .apps -}}
+{{- $login_items := output "osascript" "-e" "tell application \"System Events\" to get the name of every login item" | trim -}}
+{{- $login_item_list := $login_items | splitList ", " -}}
+{{- $suffixed := list }}
+{{- range $_, $app := $login_apps }}
+{{-   $suffixed = append $suffixed (printf "%s.app" $app) }}
+{{- end }}
+{{- $login_apps_installed := includeTemplate "installedMacApps" (dict "root" $root "apps" $suffixed) | fromJson }}
+{{- range $index, $app := $login_apps }}
+{{-   $installed := index $login_apps_installed (printf "%s.app" $app)}}
+{{-   if and $installed (not (has $app $login_item_list)) -}}
+# Add {{ $app }} as login item
+osascript -e "tell application \"System Events\" to make login item at end with properties {path:\"{{ $installed }}\", hidden:false, name:\"{{ $app }}\"}" >/dev/null
+# Open {{ $app }} immediately if not already running
+open_if_not_running "{{ $app }}"
+{{   end -}}
+{{- end -}}

@@ -103,6 +103,36 @@ is_freebsd() {
     [ "$OS" = freebsd ]
 }
 
+# Check if a macOS app is running by process name
+app_is_running() {
+    local app_name="$1"
+    local count
+    count=$(osascript -e "tell application \"System Events\" to count (every process whose name is \"$app_name\")") 2>/dev/null || return 1
+    [ "$count" -gt 0 ]
+}
+
+# Open an app only if not already running
+# Usage: open_if_not_running "AppName" [process_name_to_check]
+open_if_not_running() {
+    local target="$1"
+    local check_app="${2:-}"
+    local app_name
+
+    if [[ "$target" == *.app || "$target" == */*.app ]]; then
+        app_name=$(basename "$target" .app)
+    else
+        app_name="$target"
+    fi
+
+    if [ -z "$check_app" ]; then
+        check_app="$app_name"
+    fi
+
+    if ! app_is_running "$check_app"; then
+        open -g -j -a "$target"
+    fi
+}
+
 if [ "$(id -u)" != "0" ]; then
     if has doas; then
         SUDO="doas "

@@ -1,0 +1,43 @@
+{{- /* Template: openAppsToSelfRegister
+     Description: Return commands to open apps that register themselves as login items
+     Arguments (dict):
+       - root: context (required) - Root context (pass as "root" .)
+       - apps: list (required) - List of app names (without .app) to open
+       - special_cases: dict (optional) - Map of app name to process name for apps where they differ
+       - login_items: dict (optional) - Map of app name to nested LoginItems app path (relative to .app)
+     Returns: string - Shell commands to open the apps
+
+     Example usage:
+       {{ includeTemplate "openAppsToSelfRegister" (dict "root" . "apps" (list "1Password" "Raycast")) }}
+*/ -}}
+{{- $root := .root -}}
+{{- $apps := .apps -}}
+{{- $special_cases := dict -}}
+{{- if hasKey . "special_cases" -}}
+{{-   $special_cases = .special_cases -}}
+{{- end -}}
+{{- $login_items := dict -}}
+{{- if hasKey . "login_items" -}}
+{{-   $login_items = .login_items -}}
+{{- end -}}
+{{- $suffixed := list -}}
+{{- range $_, $app := $apps -}}
+{{-   $suffixed = append $suffixed (printf "%s.app" $app) -}}
+{{- end -}}
+{{- $installed := includeTemplate "installedMacApps" (dict "root" $root "apps" $suffixed) | fromJson -}}
+{{- range $_, $app := $apps -}}
+{{-   $app_with_suffix := printf "%s.app" $app -}}
+{{-   $app_path := index $installed $app_with_suffix -}}
+{{-   if $app_path -}}
+{{-     if $nested_path := index $login_items $app -}}
+# Open {{ $app }} nested login item to register
+open_if_not_running "{{ $app_path }}/{{ $nested_path }}"
+{{-     else if $process_name := index $special_cases $app }}
+# Open {{ $app }} to let it self-register
+open_if_not_running "{{ $app }}" "{{ $process_name }}"
+{{-     else }}
+# Open {{ $app }} to let it self-register
+open_if_not_running "{{ $app }}"
+{{-     end -}}
+{{-   end -}}
+{{- end -}}

@@ -30,6 +30,5 @@ fi
 
 #msg "Configuring"
 "$scriptdir/macos/configure.tmpl"
-"$scriptdir/macos/setup-apps"
 
 msg "Configuring complete"
