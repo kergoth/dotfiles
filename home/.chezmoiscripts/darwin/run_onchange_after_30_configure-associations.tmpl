@@ -1,0 +1,4 @@
+#!/bin/sh
+# hash: {{ includeTemplate "dot_config/duti/associations.duti.tmpl" . | sha256sum }}
+echo >&2 "Configuring file associations.."
+duti ~/.config/duti/associations.duti 2>/dev/null || true

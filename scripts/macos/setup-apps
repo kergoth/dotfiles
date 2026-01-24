@@ -93,51 +93,6 @@ register_quicklook_extension_app() {
     open_app_if_not_running "$app"
 }
 
-if app_installed_directly "Transmission Remote GUI"; then
-    duti -vs com.transgui .torrent viewer
-fi
-
-if app_installed_directly "BetterZip"; then
-    # Don't let BetterZip take over epub from Apple Books
-    duti-all -n com.apple.iBooksX |
-        grep epub |
-        tr '\n' '\0' |
-        xargs -0 -I"{}" sh -c "{}"
-fi
-
-# Prefer Keka as the default archive extractor
-if app_installed_directly "Keka"; then
-    bundle_id=com.aone.keka
-
-    # Clone Archive Utility's associations to Keka
-    archive_app=
-    if [ -d "/System/Library/CoreServices/Applications/Archive Utility.app" ]; then
-        archive_app="/System/Library/CoreServices/Applications/Archive Utility.app"
-    elif [ -d "/System/Library/CoreServices/Archive Utility.app" ]; then
-        archive_app="/System/Library/CoreServices/Archive Utility.app"
-    fi
-
-    if [ -n "$archive_app" ] && command -v duti-switch >/dev/null 2>&1; then
-        duti-switch "$archive_app" "$bundle_id"
-    fi
-
-    # Explicitly map common archive extensions so we also cover formats Archive
-    # Utility doesn't own.
-    for ext in \
-        zip \
-        7z \
-        rar \
-        tar \
-        gz \
-        bz2 \
-        xz \
-        zst \
-        zstd
-    do
-        duti -vs "$bundle_id" "$ext" viewer
-    done
-fi
-
 # Open these apps so they set up auto-start for themselves
 while read -r app; do
     if app_installed_directly "$app"; then
