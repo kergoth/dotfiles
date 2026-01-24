@@ -1,0 +1,26 @@
+{{- /* Template: installedMacApps
+     Description: Given a list of app names (with ".app"), find their installed paths.
+     Arguments (dict):
+       - root: context (required) - Root context (pass as "root" .)
+       - apps: list (required) - List of apps to check
+     Returns: dict - Mapping from app name to installed path (or the empty string if not installed)
+
+     Example usage:
+       {{ includeTemplate "installedMacApps" (dict "root" . "apps" (list "ReiKey.app")) }}
+*/ -}}
+{{- $root := .root -}}
+{{- $candidates := .apps -}}
+{{- $apps := dict -}}
+{{-
+    $paths := list
+        (joinPath $root.chezmoi.destDir "Applications")
+        "/Applications"
+        "/Applications/Utilities"
+        "/System/Applications"
+        "/System/Applications/Utilities"
+-}}
+{{- range $_, $candidate := $candidates -}}
+{{-   $app_path := includeTemplate "findPath" (dict "name" $candidate "paths" $paths) -}}
+{{-   $_ := set $apps $candidate $app_path -}}
+{{- end -}}
+{{- $apps | toJson -}}

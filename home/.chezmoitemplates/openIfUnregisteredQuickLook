@@ -1,0 +1,24 @@
+{{- /* Template: openIfUnregisteredQuickLook
+     Description: Return `open -a` commands for the apps with unregistered QuickLook extensions
+     Arguments (dict):
+       - root: context (required) - Root context (pass as "root" .)
+       - extensions: dict (required) - Mapping of extension bundle id to app basename.
+     Returns: string - Shell commands to open the apps
+
+     Example usage:
+       {{ includeTemplate "openIfUnregisteredQuickLook" (dict "root" . "extensions" (dict "com.mothersruin.Apparency.QLPreviewExtension" "Apparency.app")) }}
+*/ -}}
+{{- $extensions := .extensions -}}
+{{- $installed := includeTemplate "installedMacApps" (dict "root" .root "apps" (values .extensions)) | fromJson -}}
+{{- $ext_list := list -}}
+{{- range $ext, $app := .extensions }}
+{{   if index $installed $app -}}
+{{-     $ext_list = append $ext_list $ext -}}
+{{-   end -}}
+{{- end -}}
+{{- $registered := includeTemplate "registeredQuickLook" $ext_list | fromJson -}}
+{{- range $ext, $is_registered := $registered -}}
+{{-   if not $is_registered -}}
+open -a "{{- index $extensions $ext -}}"
+{{   end -}}
+{{- end -}}

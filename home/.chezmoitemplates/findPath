@@ -1,0 +1,19 @@
+{{- /* Template: findPath
+     Description: Find an existing file/directory name in a list of search paths.
+     Arguments (dict):
+       - name: string (required) - Name of file/directory to find
+       - paths: list (required) - List of paths to search
+     Returns: string - Path to file/directory or empty string
+
+     Example usage:
+       {{ includeTemplate "findPath" (dict "name" "ReiKey.app" "paths" (list "/Applications")) }}
+*/ -}}
+{{- $name := .name -}}
+{{- $paths := .paths -}}
+{{- range $path := $paths -}}
+  {{- $path := joinPath $path $name -}}
+  {{- if glob $path -}}
+    {{- $path -}}
+    {{- break -}}
+  {{- end -}}
+{{- end -}}

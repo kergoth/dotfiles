@@ -1,0 +1,14 @@
+{{- /* Template: registeredQuickLook
+     Description: Given a list of quicklook extension bundle ids, return match results against registered quicklook extensions.
+     Argument (list) (required) - List of quicklook extension bundle ids to search for
+     Returns: dict - Mapping of quicklook extension bundle ids to their registered status
+
+     Example usage:
+       {{ includeTemplate "registeredQuickLook" (list "com.apple.PDFKit.PDFExtensionView") }}
+*/ -}}
+{{- $registered := dict -}}
+{{- range $_, $candidate := . -}}
+{{-   $output := output "pluginkit" "-m" "-i" $candidate | trim -}}
+{{-   $_ := set $registered $candidate $output -}}
+{{- end -}}
+{{- $registered | toJson -}}

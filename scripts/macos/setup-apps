@@ -69,30 +69,6 @@ add_login() {
     fi
 }
 
-register_quicklook_extension_app() {
-    local app="$1"
-    local app_path appex bundle_id
-
-    if ! app_path="$(app_path "$app")"; then
-        return 0
-    fi
-
-    appex=$(find "$app_path/Contents/PlugIns" -name "*.appex" -maxdepth 1 2>/dev/null | head -1)
-    if [[ -z "$appex" ]]; then
-        return 0
-    fi
-
-    if ! bundle_id=$(/usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" "$appex/Contents/Info.plist" 2>/dev/null); then
-        return 0
-    fi
-
-    if pluginkit -m -i "$bundle_id" >/dev/null 2>&1; then
-        return 0
-    fi
-
-    open_app_if_not_running "$app"
-}
-
 # Open these apps so they set up auto-start for themselves
 while read -r app; do
     if app_installed_directly "$app"; then
@@ -135,14 +111,4 @@ Shifty
 Syncthing
 WiFi Signal
 noTunes
-END
-
-while read -r app; do
-    if app_installed_directly "$app"; then
-        register_quicklook_extension_app "$app"
-    fi
-done <<END
-Apparency
-BetterZip
-Suspicious Package
 END

@@ -1,0 +1,12 @@
+{{-
+    $extensions := dict
+        "com.mothersruin.Apparency.QLPreviewExtension" "Apparency.app"
+        "com.macitbetter.betterzip.Quick-Look-Extension" "BetterZip.app"
+        "com.mothersruin.SuspiciousPackageApp.QLPreview" "Suspicious Package.app"
+-}}
+{{- $cmds := includeTemplate "openIfUnregisteredQuickLook" (dict "root" . "extensions" $extensions) | trim -}}
+{{- if $cmds -}}
+#!/bin/sh
+echo >&2 "Registering QuickLook extensions.."
+{{ $cmds }}
+{{- end -}}
