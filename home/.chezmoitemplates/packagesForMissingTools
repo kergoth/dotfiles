@@ -1,0 +1,21 @@
+{{- /* Template: packagesForMissingTools
+     Description: Given a mapping of tool binary names to package names, returns list of packages to install for missing tools.
+     Arguments (dict):
+       - root: context (required) - Root context (pass as "root" .)
+       - packages: dict (required) - Mapping of binary name to package name
+     Returns: list (as JSON) - Package names that need to be installed for missing binaries
+
+     Example usage:
+       {{ $cargo_tools := dict "sd" "sd" "dua" "dua-cli" "choose" "choose" }}
+       {{ $to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $cargo_tools) | fromJson }}
+*/ -}}
+{{- $root := .root -}}
+{{- $packages := .packages -}}
+{{- $tools := includeTemplate "availableTools" (dict "root" $root "tools" (keys $packages)) | fromJson -}}
+{{- $to_install := list -}}
+{{- range $binary, $path := $tools -}}
+{{-   if not $path -}}
+{{-     $to_install = append $to_install (index $packages $binary) -}}
+{{-   end -}}
+{{- end -}}
+{{- $to_install | toJson -}}

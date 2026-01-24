@@ -1,13 +1,16 @@
 {{- if and .user_setup (not .use_nix) -}}
-{{-   $cargo := includeTemplate "find-tool" (dict "root" . "tool" "cargo") -}}
-{{-   if $cargo -}}
-{{-     $atuin := includeTemplate "find-tool" (dict "root" . "tool" "atuin") -}}
-{{-     if not $atuin -}}
+{{-   $cargo_git_tools := dict "atuin" "--git https://github.com/atuinsh/atuin.git --branch main" -}}
+{{-   $to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $cargo_git_tools) | fromJson -}}
+{{-   if $to_install -}}
+{{-     $cargo := includeTemplate "find-tool" (dict "root" . "tool" "cargo") -}}
+{{-     if $cargo -}}
 #!/bin/sh
 set -eu
 
-echo >&2 "Installing atuin"
-"{{ $cargo }}" install --git https://github.com/atuinsh/atuin.git --branch main
+{{-       range $to_install }}
+echo >&2 "Installing cargo tool: {{ . }}"
+"{{ $cargo }}" install {{ . }}
+{{-       end }}
 {{-     end }}
 {{-   end }}
 {{- end }}

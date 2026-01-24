@@ -1,0 +1,56 @@
+{{- /* Template: availableTools
+     Description: Given a list of tool names, find their installed paths.
+     Arguments (dict):
+       - root: context (required) - Root context (pass as "root" .)
+       - tools: list (required) - List of tool names to check
+       - platform_paths: string (optional) - Key for platform-specific paths in paths.yml
+       - system_paths: bool (optional, default: true) - Include system paths
+     Returns: dict - Mapping from tool name to path (or empty string if not found)
+
+     Example usage:
+       {{ includeTemplate "availableTools" (dict "root" . "tools" (list "zoxide" "atuin" "fzf")) }}
+*/ -}}
+{{- $root := .root -}}
+{{- $candidates := .tools -}}
+{{- $results := dict -}}
+
+{{- /* Build search paths once (same logic as find-tool) */ -}}
+{{- $search_paths := list -}}
+{{- range $root.paths.home_bins -}}
+{{-   $search_paths = append $search_paths (joinPath $root.chezmoi.destDir .) -}}
+{{- end -}}
+{{- if eq $root.chezmoi.os "windows" -}}
+{{-   range ($root.paths.home_bins_windows | default list) -}}
+{{-     $search_paths = append $search_paths (joinPath $root.chezmoi.destDir .) -}}
+{{-   end -}}
+{{- end -}}
+
+{{- if hasKey . "platform_paths" -}}
+{{-   $platform_key := printf "%s_%s" .platform_paths $root.chezmoi.os -}}
+{{-   $platform_paths := index $root.paths $platform_key | default list -}}
+{{-   range $platform_paths -}}
+{{-     $search_paths = append $search_paths . -}}
+{{-   end -}}
+{{- end -}}
+
+{{- if not (and (hasKey . "system_paths") (not .system_paths)) -}}
+{{-   if eq $root.chezmoi.os "darwin" -}}
+{{-     $search_paths = concat $search_paths ($root.paths.system_bins_darwin | default list) -}}
+{{-   else if eq $root.chezmoi.os "linux" -}}
+{{-     $search_paths = concat $search_paths ($root.paths.system_bins_linux | default list) -}}
+{{-   else if eq $root.chezmoi.os "freebsd" -}}
+{{-     $search_paths = concat $search_paths ($root.paths.system_bins_freebsd | default list) -}}
+{{-   else if eq $root.chezmoi.os "windows" -}}
+{{-     $search_paths = concat $search_paths ($root.paths.system_bins_windows | default list) -}}
+{{-   end -}}
+{{- end -}}
+
+{{- /* Check each tool */ -}}
+{{- range $_, $tool := $candidates -}}
+{{-   $result := lookPath $tool -}}
+{{-   if not $result -}}
+{{-     $result = findExecutable $tool $search_paths -}}
+{{-   end -}}
+{{-   $_ := set $results $tool $result -}}
+{{- end -}}
+{{- $results | toJson -}}

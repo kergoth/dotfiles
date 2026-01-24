@@ -1,19 +1,15 @@
 {{- if and .user_setup (not .use_nix) -}}
-{{-   $cargo := includeTemplate "find-tool" (dict "root" . "tool" "cargo") -}}
-{{-   if $cargo -}}
-{{-     $choose := includeTemplate "find-tool" (dict "root" . "tool" "choose") -}}
-{{-     $atuin := includeTemplate "find-tool" (dict "root" . "tool" "atuin") -}}
-{{-     if or (not $choose) (not $atuin) -}}
+{{-   $cargo_tools := dict "choose" "choose" "atuin" "atuin" -}}
+{{-   $to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $cargo_tools) | fromJson -}}
+{{-   if $to_install -}}
+{{-     $cargo := includeTemplate "find-tool" (dict "root" . "tool" "cargo") -}}
+{{-     if $cargo -}}
 #!/bin/sh
 set -eu
 
-{{-       if not $choose }}
-echo >&2 "Installing choose"
-"{{ $cargo }}" install --locked choose
-{{-       end }}
-{{-       if not $atuin }}
-echo >&2 "Installing atuin"
-"{{ $cargo }}" install --locked atuin
+{{-       range $to_install }}
+echo >&2 "Installing {{ . }}"
+"{{ $cargo }}" install --locked {{ . }}
 {{-       end }}
 {{-     end }}
 {{-   end }}

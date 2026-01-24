@@ -1,29 +1,15 @@
 {{- if and .user_setup (not .use_nix) (eq .osid "linux-chimera") -}}
-{{-   $cargo := includeTemplate "find-tool" (dict "root" . "tool" "cargo") -}}
-{{-   if $cargo -}}
-{{-     $sd := includeTemplate "find-tool" (dict "root" . "tool" "sd") -}}
-{{-     $dua := includeTemplate "find-tool" (dict "root" . "tool" "dua") -}}
-{{-     $choose := includeTemplate "find-tool" (dict "root" . "tool" "choose") -}}
-{{-     $atuin := includeTemplate "find-tool" (dict "root" . "tool" "atuin") -}}
-{{-     if or (not $sd) (not $dua) (not $choose) (not $atuin) -}}
+{{-   $cargo_tools := dict "sd" "sd" "dua" "dua-cli" "choose" "choose" "atuin" "atuin" -}}
+{{-   $to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $cargo_tools) | fromJson -}}
+{{-   if $to_install -}}
+{{-     $cargo := includeTemplate "find-tool" (dict "root" . "tool" "cargo") -}}
+{{-     if $cargo -}}
 #!/bin/sh
 set -eu
 
-{{-       if not $sd }}
-echo >&2 "Installing sd"
-"{{ $cargo }}" install --locked sd
-{{-       end }}
-{{-       if not $dua }}
-echo >&2 "Installing dua"
-"{{ $cargo }}" install --locked dua-cli
-{{-       end }}
-{{-       if not $choose }}
-echo >&2 "Installing choose"
-"{{ $cargo }}" install --locked choose
-{{-       end }}
-{{-       if not $atuin }}
-echo >&2 "Installing atuin"
-"{{ $cargo }}" install --locked atuin
+{{-       range $to_install }}
+echo >&2 "Installing {{ . }}"
+"{{ $cargo }}" install --locked {{ . }}
 {{-       end }}
 {{-     end }}
 {{-   end }}
