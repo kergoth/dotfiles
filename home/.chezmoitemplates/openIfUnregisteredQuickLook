@@ -19,6 +19,6 @@
 {{- $registered := includeTemplate "registeredQuickLook" $ext_list | fromJson -}}
 {{- range $ext, $is_registered := $registered -}}
 {{-   if not $is_registered -}}
-open -a "{{- index $extensions $ext -}}"
+open -g -j -a "{{- index $extensions $ext -}}"
 {{   end -}}
 {{- end -}}
