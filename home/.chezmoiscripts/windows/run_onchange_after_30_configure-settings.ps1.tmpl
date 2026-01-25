@@ -1,0 +1,16 @@
+{{- if and .user_setup (not .ephemeral) (not (env "CONTAINER_ID")) -}}
+{{-   $devpod := includeTemplate "find-tool" (dict "root" . "tool" "devpod") -}}
+{{-   if $devpod -}}
+#!/usr/bin/env powershell
+$ErrorActionPreference = "Stop"
+
+. "$env:CHEZMOI_COMMAND_DIR\scripts\common.ps1"
+
+# Configure DevPod
+Set-DevPodConfiguration `
+    -DotfilesUrl "https://github.com/kergoth/dotfiles" `
+    -DotfilesScript "script/setup" `
+    -SshConfigPath "$env:USERPROFILE\.ssh\config.d\devpod" `
+    -ProviderName "docker"
+{{-   end }}
+{{- end }}

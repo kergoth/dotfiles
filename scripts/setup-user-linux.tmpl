@@ -20,16 +20,6 @@ if [ -z "${CHEZMOI:-}" ]; then
 fi
 
 {{ if and (not .ephemeral) (not .steamdeck) (not (env "CONTAINER_ID")) -}}
-{{   $devpod := includeTemplate "find-tool" (dict "root" . "tool" "devpod") -}}
-{{   if $devpod -}}
-# Configure DevPod
-devpod_configure \
-    "https://github.com/kergoth/dotfiles" \
-    "script/setup" \
-    "$HOME/.ssh/config.d/devpod" \
-    "docker" || ret=$?
-{{-   end }}
-
 # User shell should be zsh
 zsh_binary=$(command -v zsh 2>/dev/null) || :
 if [ -n "$zsh_binary" ] && grep -qFx "$zsh_binary" /etc/shells; then

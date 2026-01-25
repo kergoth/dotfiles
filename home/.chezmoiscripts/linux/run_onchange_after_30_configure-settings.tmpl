@@ -1,0 +1,17 @@
+{{- if and .user_setup (not .ephemeral) (not .steamdeck) (not (env "CONTAINER_ID")) -}}
+{{-   $devpod := includeTemplate "find-tool" (dict "root" . "tool" "devpod") -}}
+{{-   if $devpod -}}
+#!/usr/bin/env bash
+set -euo pipefail
+
+# shellcheck source=../../../scripts/common.sh
+. "$CHEZMOI_COMMAND_DIR/scripts/common.sh" || exit 1
+
+# Configure DevPod
+devpod_configure \
+    "https://github.com/kergoth/dotfiles" \
+    "script/setup" \
+    "$HOME/.ssh/config.d/devpod" \
+    "docker" || :
+{{-   end }}
+{{- end }}
