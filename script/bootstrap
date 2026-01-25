@@ -205,8 +205,8 @@ else
     noninteractive="--no-tty --no-pager"
 fi
 
-# Run any chezmoi scripts which install tooling, for use by the setup scripts
+# Run any chezmoi scripts which bootstrap, for use by the setup scripts
 chezmoi managed --include=scripts --path-style=source-absolute ~/.chezmoiscripts |
-    grep 'install-' |
+    grep -E 'before_.*(install|bootstrap)-' |
     tr '\n' '\0' |
     xargs -0 chezmoi apply --include=scripts --source-path $noninteractive
