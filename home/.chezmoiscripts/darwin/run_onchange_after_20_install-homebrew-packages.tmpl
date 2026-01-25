@@ -22,7 +22,7 @@ HOMEBREW_PREFIX="${HOMEBREW_PREFIX:-${CHEZMOI_HOME_DIR:-$HOME}/.brew}"
 scriptsdir="$CHEZMOI_COMMAND_DIR/scripts"
 PATH="$scriptsdir/macos:$scriptsdir:$HOMEBREW_PREFIX/bin:$HOME/.local/bin:$PATH"
 
-# shellcheck source=./common.sh
+# shellcheck source=../../../scripts/common.sh
 . "$scriptsdir/common.sh" || exit 1
 
 msg "Installing applications with homebrew"
@@ -40,16 +40,18 @@ if [ -d "$scriptsdir/macos/Brewfile.d" ]; then
 fi
 
 # Run installers with graphical interfaces, which we can't run as the admin
-if [ -x "$HOMEBREW_ADMIN_PREFIX/bin/brew" ]; then
-    CASKROOM="$("$HOMEBREW_ADMIN_PREFIX/bin/brew" --caskroom)"
-    if [ -d "$CASKROOM"/blockblock ]; then
+CASKROOM="$("$HOMEBREW_ADMIN_PREFIX/bin/brew" --caskroom)"
+if [ -d "$CASKROOM"/blockblock ]; then
+    # Run installer only for fresh installs (root daemon not running)
+    # For new users on existing installs, login items script handles helper setup
+    if ! app_is_running "BlockBlock"; then
         find "$CASKROOM"/blockblock -name BlockBlock\ Installer.app -print0 |
             xargs -0 open || :
     fi
-    if [ -d "$CASKROOM"/whatsyoursign ]; then
-        find "$CASKROOM"/whatsyoursign -name WhatsYourSign\ Installer.app -print0 |
-            xargs -0 open || :
-    fi
+fi
+if [ -d "$CASKROOM"/whatsyoursign ]; then
+    find "$CASKROOM"/whatsyoursign -name WhatsYourSign\ Installer.app -print0 |
+        xargs -0 open || :
 fi
 {{- end }}
 {{- end }}
