@@ -5,7 +5,6 @@ set -euo pipefail
 scriptdir=$(cd "$(dirname "$0")" && pwd -P)
 
 HOMEBREW_PREFIX="${HOMEBREW_PREFIX:-$HOME/.brew}"
-PATH="$HOMEBREW_PREFIX/bin:$HOME/.local/bin:$PATH"
 
 # shellcheck source=../scripts/common.sh
 . "$scriptdir/../scripts/common.sh" || exit 1
@@ -20,7 +19,8 @@ fi
 if chezmoi apply --include=scripts "$@"; then
     # Export the github token for externals if available
     if [ -s ~/.config/chezmoi_github_token ]; then
-        export CHEZMOI_GITHUB_ACCESS_TOKEN=$(cat ~/.config/chezmoi_github_token)
+        export CHEZMOI_GITHUB_ACCESS_TOKEN
+        CHEZMOI_GITHUB_ACCESS_TOKEN=$(cat ~/.config/chezmoi_github_token)
     fi
 
     echo >&2 "Applying dotfiles"

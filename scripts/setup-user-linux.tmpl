@@ -5,7 +5,7 @@ set -euo pipefail
 
 scriptdir=$(cd "$(dirname "$0")" && pwd -P)
 repodir=$(dirname "$scriptdir")
-PATH="$scriptdir/linux:$scriptdir:$HOME/.local/bin:$PATH"
+PATH="$scriptdir/linux:$scriptdir:$PATH"
 
 # shellcheck source=./common.sh
 . "$scriptdir/common.sh" || exit 1

@@ -20,7 +20,7 @@
 
 HOMEBREW_PREFIX="${HOMEBREW_PREFIX:-${CHEZMOI_HOME_DIR:-$HOME}/.brew}"
 scriptsdir="$CHEZMOI_COMMAND_DIR/scripts"
-PATH="$scriptsdir/macos:$scriptsdir:$HOMEBREW_PREFIX/bin:$HOME/.local/bin:$PATH"
+PATH="$scriptsdir/macos:$scriptsdir:$PATH"
 
 # shellcheck source=../../../scripts/common.sh
 . "$scriptsdir/common.sh" || exit 1

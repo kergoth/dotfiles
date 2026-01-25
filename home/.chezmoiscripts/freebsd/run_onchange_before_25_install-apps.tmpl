@@ -5,7 +5,7 @@
 set -eu
 
 scriptsdir="$CHEZMOI_COMMAND_DIR/scripts"
-PATH="$scriptsdir:$HOME/.local/bin:$PATH"
+PATH="$scriptsdir:$PATH"
 
 # shellcheck source=./common.sh
 . "$scriptsdir/common.sh" || exit 1

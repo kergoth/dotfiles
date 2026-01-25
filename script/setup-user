@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 repodir="$(dirname "$(cd "$(dirname "$0")" && pwd -P)")"
-PATH="$repodir/scripts:$repodir/script:$HOME/.local/bin:$PATH"
+PATH="$repodir/scripts:$repodir/script:$PATH"
 
 # shellcheck source=../scripts/common.sh
 . "$repodir/scripts/common.sh" || exit 1

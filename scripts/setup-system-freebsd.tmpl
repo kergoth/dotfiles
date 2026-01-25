@@ -3,7 +3,7 @@
 set -eu
 
 scriptdir=$(cd "$(dirname "$0")" && pwd -P)
-PATH="$scriptdir/freebsd:$HOME/.local/bin:$scriptdir:$PATH"
+PATH="$scriptdir/freebsd:$scriptdir:$PATH"
 tmpdir=$(mktemp -d -t "${0##*/}.XXXXXXX")
 trap 'rm -rf "$tmpdir"' EXIT INT TERM
 
