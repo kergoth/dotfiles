@@ -327,78 +327,57 @@ install_nix() {
 }
 
 devpod_configure() {
-    local dotfiles_url="$1"
-    local dotfiles_script="$2"
-    local ssh_config_path="$3"
+    local dotfiles_url="${1:?dotfiles_url required}"
+    local dotfiles_script="${2:?dotfiles_script required}"
+    local ssh_config_path="${3:?ssh_config_path required}"
     local provider_name="${4:-docker}"
+    local default_ide="${5:-}"
 
     if ! has devpod; then
         msg "devpod not found, skipping DevPod configuration"
         return 0
     fi
 
+    if ! has jq; then
+        msg "jq not found, skipping DevPod configuration"
+        return 0
+    fi
+
     msg "Configuring DevPod"
 
-    local provider_json=
-    local provider_list=
-    if has jq; then
-        provider_json=$(devpod provider list --output json 2>/dev/null)
-    fi
-    provider_list=$(devpod provider list 2>/dev/null)
+    local providers_json
+    providers_json="$(devpod provider list --output json 2>/dev/null || true)"
 
-    local provider_exists=0
-    if [ -n "$provider_json" ] && has jq; then
-        if echo "$provider_json" | jq -e --arg name "$provider_name" 'has($name)' >/dev/null 2>&1; then
-            provider_exists=1
-        fi
-    fi
-    if [ "$provider_exists" -eq 0 ] && [ -n "$provider_list" ]; then
-        # Fallback to table parsing if jq is not available or JSON parsing failed
-        if echo "$provider_list" | awk '/^[[:space:]]+'"$provider_name"'[[:space:]]+\|/ {found=1; exit} END {exit !found}'; then
-            provider_exists=1
-        fi
+    if [ -z "$providers_json" ]; then
+        msg "Warning: Unable to read DevPod provider list, skipping provider configuration"
+        return 0
     fi
 
-    if [ "$provider_exists" -eq 0 ]; then
+    if ! jq -e --arg name "$provider_name" 'has($name)' >/dev/null <<<"$providers_json"; then
         msg "Adding DevPod provider '$provider_name'"
-        if ! devpod provider add "$provider_name" 2>/dev/null; then
-            msg "Warning: Failed to add DevPod provider '$provider_name' (may not be available or already added)"
+        devpod provider add "$provider_name" >/dev/null 2>&1 || {
+            msg "Warning: Failed to add DevPod provider '$provider_name'"
             return 0
-        fi
-    else
-        msg "DevPod provider '$provider_name' already exists"
+        }
+        providers_json="$(devpod provider list --output json 2>/dev/null || true)"
     fi
 
-    local is_default=0
-    if [ -n "$provider_json" ] && has jq; then
-        if echo "$provider_json" | jq -e --arg name "$provider_name" '.[$name].default == true' >/dev/null 2>&1; then
-            is_default=1
-        fi
-    fi
-    if [ "$is_default" -eq 0 ] && [ -n "$provider_list" ]; then
-        # Fallback: check table output for default indicator
-        if echo "$provider_list" | awk '/^[[:space:]]+'"$provider_name"'[[:space:]]+\|/ {if ($3 == "true") found=1; exit} END {exit !found}'; then
-            is_default=1
-        fi
-    fi
-
-    if [ "$is_default" -eq 0 ]; then
+    if ! jq -e --arg name "$provider_name" '.[$name].default == true' >/dev/null <<<"$providers_json"; then
         msg "Setting DevPod default provider to '$provider_name'"
-        devpod provider use "$provider_name" 2>/dev/null || :
-    else
-        msg "DevPod default provider is already set to '$provider_name'"
+        devpod provider use "$provider_name" >/dev/null 2>&1 || true
     fi
 
-    msg "Setting DevPod context options"
-    local options=(
-        "-o" "DOTFILES_URL=$dotfiles_url"
-        "-o" "DOTFILES_SCRIPT=$dotfiles_script"
-        "-o" "GPG_AGENT_FORWARDING=false"
-        "-o" "SSH_CONFIG_PATH=$ssh_config_path"
-        "-o" "SSH_INJECT_GIT_CREDENTIALS=true"
-    )
+    devpod context set-options \
+        -o "DOTFILES_URL=$dotfiles_url" \
+        -o "DOTFILES_SCRIPT=$dotfiles_script" \
+        -o "GPG_AGENT_FORWARDING=false" \
+        -o "SSH_CONFIG_PATH=$ssh_config_path" \
+        -o "SSH_INJECT_GIT_CREDENTIALS=true" \
+        >/dev/null 2>&1 || msg "Warning: Failed to set some DevPod context options"
 
-    if ! devpod context set-options "${options[@]}" 2>/dev/null; then
-        msg "Warning: Failed to set some DevPod context options (may already be set)"
+    if [ -n "$default_ide" ]; then
+        msg "Setting DevPod default IDE to '$default_ide'"
+        devpod ide use "$default_ide" >/dev/null 2>&1 || \
+            msg "Warning: Failed to set DevPod default IDE to '$default_ide'"
     fi
 }

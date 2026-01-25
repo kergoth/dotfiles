@@ -39,6 +39,7 @@ Set-DevPodConfiguration `
     -DotfilesUrl "https://github.com/kergoth/dotfiles" `
     -DotfilesScript "script/setup" `
     -SshConfigPath "$env:USERPROFILE\.ssh\config.d\devpod" `
-    -ProviderName "docker"
+    -ProviderName "docker" `
+    -DefaultIde "zed"
 {{-   end }}
 {{- end }}
