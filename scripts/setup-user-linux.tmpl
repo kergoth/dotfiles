@@ -6,17 +6,11 @@ set -euo pipefail
 scriptdir=$(cd "$(dirname "$0")" && pwd -P)
 repodir=$(dirname "$scriptdir")
 PATH="$scriptdir/linux:$scriptdir:$HOME/.local/bin:$PATH"
-tmpdir=$(mktemp -d -t "${0##*/}.XXXXXXX")
-trap 'rm -rf "$tmpdir"' EXIT INT TERM
 
 # shellcheck source=./common.sh
 . "$scriptdir/common.sh" || exit 1
 
-ret=0
-
 # Dotfiles
 if [ -z "${CHEZMOI:-}" ]; then
-    "$repodir/script/setup" || ret=$?
+    "$repodir/script/setup"
 fi
-
-exit $ret
