@@ -4,12 +4,12 @@
 {{-   if $to_install -}}
 {{-     $cargo := includeTemplate "find-tool" (dict "root" . "tool" "cargo") -}}
 {{-     if $cargo -}}
-#!/bin/sh
-set -eu
+#!/usr/bin/env powershell
+$ErrorActionPreference = "Stop"
 
 {{-       range $to_install }}
-echo >&2 "Installing cargo tool: {{ . }}"
-"{{ $cargo }}" install {{ . }}
+Write-Host "Installing cargo tool: {{ . }}"
+& "{{ $cargo }}" install {{ . }}
 {{-       end }}
 {{-     end }}
 {{-   end }}
