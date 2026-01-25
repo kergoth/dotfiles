@@ -1,11 +1,39 @@
 {{- if and .user_setup (not .ephemeral) (not (env "CONTAINER_ID")) -}}
-{{-   $devpod := includeTemplate "find-tool" (dict "root" . "tool" "devpod") -}}
-{{-   if $devpod -}}
 #!/usr/bin/env powershell
 $ErrorActionPreference = "Stop"
 
 . "$env:CHEZMOI_COMMAND_DIR\scripts\common.ps1"
 
+# Add USERPROFILE to the WSL environment
+Add-EnvironmentVariableItem "WSLENV" "USERPROFILE/up" -User
+
+# Add cargo bindir to the PATH
+Add-EnvironmentVariableItem "PATH" "$env:USERPROFILE\.cargo\bin" -User
+
+# Add extra binaries directory to the PATH
+[System.Environment]::SetEnvironmentVariable("XDG_BIN_HOME", "$env:USERPROFILE\AppData\Local\Programs\bin", "User")
+$env:XDG_BIN_HOME = "$env:USERPROFILE\AppData\Local\Programs\bin"
+Add-EnvironmentVariableItem "PATH" "$env:XDG_BIN_HOME" -User
+
+# Add ~/.local/bin to the PATH
+Add-EnvironmentVariableItem "PATH" "$env:USERPROFILE\.local\bin" -User
+
+RefreshEnvPath
+
+# Add installed software to the user's PATH
+if (Test-Path "C:\Program Files\7-Zip") {
+    Add-EnvironmentVariableItem "PATH" "C:\Program Files\7-Zip" -User
+}
+
+# Use the Windows native GnuPG for git if it's installed
+if (Test-Path "C:\Program Files (x86)\GnuPG\bin\gpg.exe") {
+    git config --global gpg.program "C:\Program Files (x86)\GnuPG\bin\gpg.exe"
+} elseif (Test-Path "$env:SCOOP\apps\gpg4win\current\bin\gpg.exe") {
+    git config --global gpg.program "$env:SCOOP\apps\gpg4win\current\bin\gpg.exe"
+}
+
+{{-   $devpod := includeTemplate "find-tool" (dict "root" . "tool" "devpod") }}
+{{-   if $devpod }}
 # Configure DevPod
 Set-DevPodConfiguration `
     -DotfilesUrl "https://github.com/kergoth/dotfiles" `
