@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
 
-NIXPKGS=${NIXPKGS:-https://nixos.org/channels/nixpkgs-unstable}
-XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
-XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
-HOMEBREW_PREFIX=${HOMEBREW_PREFIX:-$HOME/.brew}
-export HOMEBREW_PREFIX
-PATH="$HOMEBREW_PREFIX/bin:$XDG_DATA_HOME/../bin:$HOME/.nix-profile/bin:$PATH"
+export NIXPKGS=${NIXPKGS:-https://nixos.org/channels/nixpkgs-unstable}
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export HOMEBREW_PREFIX=${HOMEBREW_PREFIX:-$HOME/.brew}
+export PATH="$HOMEBREW_PREFIX/bin:$XDG_DATA_HOME/../bin:$HOME/.nix-profile/bin:$PATH"
 OSX_ADMIN_LOGNAME="${OSX_ADMIN_LOGNAME-admin}"
 HOMEBREW_ADMIN_PREFIX="${HOMEBREW_ADMIN_PREFIX:-/Users/Shared/homebrew}"
-export USER="${USER:-${LOGNAME:-$(whoami)}}"
+USER="${USER:-${LOGNAME:-$(whoami)}}"
 
 has() {
     command -v "$@" >/dev/null 2>&1
@@ -294,8 +293,6 @@ eget_install() {
         fi
     fi
 }
-
-NIXPKGS=${NIXPKGS:-https://nixos.org/channels/nixpkgs-unstable}
 
 install_nix() {
     if [ "$OSTYPE" = WSL ]; then
