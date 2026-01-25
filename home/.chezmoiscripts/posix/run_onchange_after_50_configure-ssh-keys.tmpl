@@ -1,0 +1,16 @@
+{{- if .user_setup -}}
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Only run interactively to avoid passphrase prompts
+if [ -t 0 ] && [ -n "${SSH_AGENT_PID:-}" ] && [ -f "$HOME/.ssh/config" ]; then
+    key=$(grep "^IdentityFile " "$HOME/.ssh/config" | head -n 1 | awk '{print $2}')
+    key="${key/#\~/$HOME}"
+    if [ -f "$key" ] && [ -f "$key.pub" ]; then
+        if ! ssh-add -T "$key.pub" 2>/dev/null; then
+            echo >&2 "Adding SSH key to agent"
+            ssh-add "$key" || :
+        fi
+    fi
+fi
+{{- end }}

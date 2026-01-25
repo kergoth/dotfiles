@@ -1,24 +1,5 @@
 . $env:DOTFILES_DIR\scripts\common.ps1
 
-if (Get-Process ssh-agent -ErrorAction SilentlyContinue) {
-  if ((Test-Path "$env:USERPROFILE\.ssh\keys") -and (Get-Command ssh-add -ErrorAction SilentlyContinue)) {
-    Write-Output "Adding SSH keys to SSH agent"
-    Get-ChildItem -Depth 0 -Path "$env:USERPROFILE\.ssh\keys" -File |
-    Where-Object { ($_.Name -notlike "*.pub") -and ($_.Name -notlike "*.ppk") } |
-    ForEach-Object {
-      $pub = $_.FullName + ".pub"
-      if (-not (Test-Path ($pub))) {
-        ssh-keygen -y -f $_.FullName | Out-File ($pub)
-      }
-      if (-not (ssh-add -l | Select-String -SimpleMatch -Pattern (ssh-keygen -lf $pub))) {
-        ssh-add $_.FullName
-      }
-    }
-  }
-} else {
-  Write-Warning "SSH agent not running"
-}
-
 # Apply my dotfiles
 if (-not $env:CHEZMOI) {
   & "$env:DOTFILES_DIR\script\setup.ps1"

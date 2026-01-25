@@ -1,0 +1,25 @@
+{{- if .user_setup -}}
+#!/usr/bin/env powershell
+$ErrorActionPreference = "Stop"
+
+# Only run interactively to avoid passphrase prompts
+if (-not [Console]::IsInputRedirected -and (Get-Process ssh-agent -ErrorAction SilentlyContinue)) {
+    $sshConfig = "$env:USERPROFILE\.ssh\config"
+    if (Test-Path $sshConfig) {
+        $keyLine = Get-Content $sshConfig | Where-Object { $_ -match "^IdentityFile\s+" } | Select-Object -First 1
+        if ($keyLine) {
+            $key = ($keyLine -replace "^IdentityFile\s+", "").Trim()
+            $key = $key -replace "^~", $env:USERPROFILE
+            $keyPub = "$key.pub"
+
+            if ((Test-Path $key) -and (Test-Path $keyPub)) {
+                $fingerprint = (ssh-keygen -lf $keyPub 2>$null) -split '\s+' | Select-Object -Index 1
+                if ($fingerprint -and -not (ssh-add -l 2>$null | Select-String -SimpleMatch $fingerprint)) {
+                    Write-Host "Adding SSH key to agent"
+                    ssh-add $key
+                }
+            }
+        }
+    }
+}
+{{- end }}
