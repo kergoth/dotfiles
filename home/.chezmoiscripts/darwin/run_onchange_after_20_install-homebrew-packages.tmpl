@@ -42,9 +42,9 @@ fi
 # Run installers with graphical interfaces, which we can't run as the admin
 CASKROOM="$("$HOMEBREW_ADMIN_PREFIX/bin/brew" --caskroom)"
 if [ -d "$CASKROOM"/blockblock ]; then
-    # Run installer only for fresh installs (root daemon not running)
+    # Run installer only for fresh installs (not yet installed)
     # For new users on existing installs, login items script handles helper setup
-    if ! app_is_running "BlockBlock"; then
+    if [ ! -d "/Library/Objective-See/BlockBlock/BlockBlock.app" ]; then
         find "$CASKROOM"/blockblock -name BlockBlock\ Installer.app -print0 |
             xargs -0 open || :
     fi
