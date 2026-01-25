@@ -1,0 +1,47 @@
+{{- if .user_setup -}}
+#!/usr/bin/env powershell
+$ErrorActionPreference = "Stop"
+
+Add-Type -AssemblyName PresentationCore
+
+# https://www.alkanesolutions.co.uk/2021/12/06/installing-fonts-with-powershell/
+function Register-Font {
+    param([System.IO.FileInfo]$fontFile)
+
+    try {
+        $gt = [Windows.Media.GlyphTypeface]::new($fontFile.FullName)
+        $family = $gt.Win32FamilyNames['en-us']
+        if ($null -eq $family) { $family = $gt.Win32FamilyNames.Values.Item(0) }
+        $face = $gt.Win32FaceNames['en-us']
+        if ($null -eq $face) { $face = $gt.Win32FaceNames.Values.Item(0) }
+        $fontName = ("$family $face").Trim()
+
+        switch ($fontFile.Extension) {
+            ".ttf" { $fontName = "$fontName (TrueType)" }
+            ".otf" { $fontName = "$fontName (OpenType)" }
+        }
+
+        if (!(Get-ItemProperty -Name $fontName -Path "HKCU:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts" -ErrorAction SilentlyContinue)) {
+            Write-Host "Registering font: $fontFile"
+            New-ItemProperty -Name $fontName -Path "HKCU:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts" -PropertyType string -Value $fontFile.Name -Force -ErrorAction SilentlyContinue | Out-Null
+        }
+    }
+    catch {
+        Write-Host "Error registering font: $fontFile. " $_.exception.message
+    }
+}
+
+$FontsPath = Join-Path -Path ([Environment]::GetFolderPath('LocalApplicationData')) -ChildPath 'Microsoft\Windows\Fonts'
+
+$fonts = @(
+{{- range .fonts }}
+    (Join-Path $FontsPath "{{ base . }}")
+{{- end }}
+)
+
+foreach ($font in $fonts) {
+    if (Test-Path $font) {
+        Register-Font -fontFile $font
+    }
+}
+{{- end }}
