@@ -393,7 +393,7 @@ devpod_configure() {
     local options=(
         "-o" "DOTFILES_URL=$dotfiles_url"
         "-o" "DOTFILES_SCRIPT=$dotfiles_script"
-        "-o" "GPG_AGENT_FORWARDING=true"
+        "-o" "GPG_AGENT_FORWARDING=false"
         "-o" "SSH_CONFIG_PATH=$ssh_config_path"
         "-o" "SSH_INJECT_GIT_CREDENTIALS=true"
     )

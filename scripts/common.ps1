@@ -407,24 +407,24 @@ function Set-DevPodConfiguration {
     param(
         [Parameter(Mandatory = $true)]
         [string]$DotfilesUrl,
-        
+
         [Parameter(Mandatory = $true)]
         [string]$DotfilesScript,
-        
+
         [Parameter(Mandatory = $true)]
         [string]$SshConfigPath,
-        
+
         [Parameter(Mandatory = $false)]
         [string]$ProviderName = "docker"
     )
-    
+
     if (-not (Get-Command devpod -ErrorAction SilentlyContinue)) {
         Write-Verbose "devpod not found, skipping DevPod configuration"
         return
     }
-    
+
     Write-Host "Configuring DevPod"
-    
+
     $providerJson = $null
     $providerList = $null
     $providers = $null
@@ -437,7 +437,7 @@ function Set-DevPodConfiguration {
         # Fallback to table format if JSON parsing fails
         $providerList = devpod provider list 2>$null
     }
-    
+
     $providerExists = $false
     if ($providers) {
         if ($providers.PSObject.Properties.Name -contains $ProviderName) {
@@ -449,7 +449,7 @@ function Set-DevPodConfiguration {
             $providerExists = $true
         }
     }
-    
+
     if (-not $providerExists) {
         Write-Host "Adding DevPod provider '$ProviderName'"
         $result = devpod provider add $ProviderName 2>&1
@@ -460,21 +460,21 @@ function Set-DevPodConfiguration {
     } else {
         Write-Verbose "DevPod provider '$ProviderName' already exists"
     }
-    
+
     Write-Host "Setting DevPod context options"
     $options = @(
         "-o", "DOTFILES_URL=$DotfilesUrl",
         "-o", "DOTFILES_SCRIPT=$DotfilesScript",
-        "-o", "GPG_AGENT_FORWARDING=true",
+        "-o", "GPG_AGENT_FORWARDING=false",
         "-o", "SSH_CONFIG_PATH=$SshConfigPath",
         "-o", "SSH_INJECT_GIT_CREDENTIALS=true"
     )
-    
+
     $result = devpod context set-options $options 2>&1
     if ($LASTEXITCODE -ne 0) {
         Write-Warning "Failed to set some DevPod context options (may already be set): $result"
     }
-    
+
     $isDefault = $false
     if ($providers) {
         if ($providers.$ProviderName -and $providers.$ProviderName.default -eq $true) {
@@ -486,7 +486,7 @@ function Set-DevPodConfiguration {
             $isDefault = $true
         }
     }
-    
+
     if (-not $isDefault) {
         Write-Host "Setting DevPod default provider to '$ProviderName'"
         devpod provider use $ProviderName 2>&1 | Out-Null
