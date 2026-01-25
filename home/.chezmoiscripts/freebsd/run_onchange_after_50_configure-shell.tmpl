@@ -1,0 +1,13 @@
+{{- if .user_setup -}}
+#!/bin/sh
+set -e
+
+# Only run interactively since chsh prompts for password
+if [ -t 0 ] && [ -e /usr/local/bin/zsh ]; then
+    current_shell=$(getent passwd "$USER" | sed -e 's#.*:##')
+    if [ "$current_shell" != /usr/local/bin/zsh ]; then
+        echo >&2 "Changing user shell to zsh"
+        chsh -s /usr/local/bin/zsh || :
+    fi
+fi
+{{- end }}

@@ -1,0 +1,16 @@
+{{- if and .user_setup (not .ephemeral) (not .steamdeck) (not (env "CONTAINER_ID")) -}}
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Only run interactively since chsh prompts for password
+if [ -t 0 ]; then
+    zsh_binary=$(command -v zsh 2>/dev/null) || :
+    if [ -n "$zsh_binary" ] && grep -qFx "$zsh_binary" /etc/shells; then
+        current_shell=$(getent passwd "$(id -un)" | awk -F : '{print $NF}')
+        if [ "$current_shell" != "$zsh_binary" ]; then
+            echo >&2 "Changing user shell to zsh"
+            chsh -s "$zsh_binary" || :
+        fi
+    fi
+fi
+{{- end }}
