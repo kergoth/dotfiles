@@ -1,21 +1,5 @@
 . $env:DOTFILES_DIR\scripts\common.ps1
 
-# Add USERPROFILE to the WSL environment
-Add-EnvironmentVariableItem "WSLENV" "USERPROFILE/up" -User
-
-# Add cargo bindir to the PATH
-Add-EnvironmentVariableItem "PATH" "$env:USERPROFILE\.cargo\bin" -User
-
-# Add extra binaries directory to the PATH
-[System.Environment]::SetEnvironmentVariable("XDG_BIN_HOME", "$env:USERPROFILE\AppData\Local\Programs\bin", "User")
-$env:XDG_BIN_HOME = "$env:USERPROFILE\AppData\Local\Programs\bin"
-Add-EnvironmentVariableItem "PATH" "$env:XDG_BIN_HOME" -User
-
-# Add ~/.local/bin to the PATH
-Add-EnvironmentVariableItem "PATH" "$env:USERPROFILE\.local\bin" -User
-
-RefreshEnvPath
-
 if (Get-Process ssh-agent -ErrorAction SilentlyContinue) {
   if ((Test-Path "$env:USERPROFILE\.ssh\keys") -and (Get-Command ssh-add -ErrorAction SilentlyContinue)) {
     Write-Output "Adding SSH keys to SSH agent"
@@ -33,44 +17,6 @@ if (Get-Process ssh-agent -ErrorAction SilentlyContinue) {
   }
 } else {
   Write-Warning "SSH agent not running"
-}
-
-# Use the Windows native GnuPG for git if it's installed
-if (Test-Path "C:\Program Files (x86)\GnuPG\bin\gpg.exe") {
-  git config --global gpg.program "C:\Program Files (x86)\GnuPG\bin\gpg.exe"
-} elseif (Test-Path "$env:SCOOP\apps\gpg4win\current\bin\gpg.exe") {
-  git config --global gpg.program "$env:SCOOP\apps\gpg4win\current\bin\gpg.exe"
-}
-
-# Add installed software to the user's PATH and/or startup
-if (Test-Path "C:\Program Files\7-Zip") {
-  Add-EnvironmentVariableItem "PATH" "C:\Program Files\7-Zip" -User
-}
-
-# Run QuickLook
-if (Test-Path "$env:LOCALAPPDATA\Programs\QuickLook") {
-  Start-Process "$env:LOCALAPPDATA\Programs\QuickLook\QuickLook.exe"
-} elseif (Test-Path "$env:SCOOP\apps\quicklook\current\QuickLook.exe") {
-  Start-Process "$env:SCOOP\apps\quicklook\current\QuickLook.exe"
-} else {
-  Write-Warning "QuickLook not installed"
-}
-
-# Run SyncTrayzor, which will add itself to startup
-if (Test-Path "C:\Program Files\SyncTrayzor") {
-  Start-Process "C:\Program Files\SyncTrayzor\SyncTrayzor.exe" -ArgumentList --minimized
-} elseif (Test-Path "$env:SCOOP\apps\synctrayzor\current\SyncTrayzor.exe") {
-  Start-Process "$env:SCOOP\apps\synctrayzor\current\SyncTrayzor.exe" -ArgumentList --minimized
-} else {
-  Write-Warning "SyncTrayzor not installed"
-}
-
-# Run SnipDo, which will add itself to startup
-$SnipDo = Get-ChildItem "$env:LOCALAPPDATA\Packages" | Where-Object {$_.Name -like "*Pantherbar*"}
-if ($SnipDo) {
-  Start-Process "explorer.exe" -ArgumentList "shell:AppsFolder\$($SnipDo.Name)!App"
-} else {
-  Write-Warning "SnipDo not installed"
 }
 
 # Apply my dotfiles

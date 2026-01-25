@@ -1,0 +1,26 @@
+{{- if and .user_setup (not .ephemeral) (not (env "CONTAINER_ID")) -}}
+#!/usr/bin/env powershell
+$ErrorActionPreference = "Stop"
+
+Write-Host "Configuring login items..."
+
+# Run QuickLook, which will add itself to startup
+if (Test-Path "$env:LOCALAPPDATA\Programs\QuickLook") {
+    Start-Process "$env:LOCALAPPDATA\Programs\QuickLook\QuickLook.exe"
+} elseif (Test-Path "$env:SCOOP\apps\quicklook\current\QuickLook.exe") {
+    Start-Process "$env:SCOOP\apps\quicklook\current\QuickLook.exe"
+}
+
+# Run SyncTrayzor, which will add itself to startup
+if (Test-Path "C:\Program Files\SyncTrayzor") {
+    Start-Process "C:\Program Files\SyncTrayzor\SyncTrayzor.exe" -ArgumentList --minimized
+} elseif (Test-Path "$env:SCOOP\apps\synctrayzor\current\SyncTrayzor.exe") {
+    Start-Process "$env:SCOOP\apps\synctrayzor\current\SyncTrayzor.exe" -ArgumentList --minimized
+}
+
+# Run SnipDo, which will add itself to startup
+$SnipDo = Get-ChildItem "$env:LOCALAPPDATA\Packages" -ErrorAction SilentlyContinue | Where-Object {$_.Name -like "*Pantherbar*"}
+if ($SnipDo) {
+    Start-Process "explorer.exe" -ArgumentList "shell:AppsFolder\$($SnipDo.Name)!App"
+}
+{{- end }}
