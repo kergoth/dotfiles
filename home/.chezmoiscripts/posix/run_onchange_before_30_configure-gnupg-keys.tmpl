@@ -1,4 +1,5 @@
-{{- if not .skip_gpg }}
+{{- $gpg := includeTemplate "find-tool" (dict "root" . "tool" "gpg") -}}
+{{- if and $gpg (not .skip_gpg) }}
 {{- $key_name := "" -}}
 {{- if .personal -}}
 {{-   $key_name = "personal" -}}
