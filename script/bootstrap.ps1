@@ -57,9 +57,12 @@ chezmoi init --source $env:DOTFILES_DIR
 Set-UserOnlyFileAccess $env:USERPROFILE\.config\chezmoi\chezmoi.toml
 
 # Run any chezmoi scripts which install tooling, for use by the setup scripts
+# Skip externals evaluation to avoid GitHub API rate limits during initial bootstrap
+$env:CHEZMOI_SKIP_EXTERNALS = "1"
 $scripts = chezmoi managed --include=scripts --path-style=source-absolute ~/.chezmoiscripts |
            Where-Object { $_ -match 'install-' }
 
 $scripts | ForEach-Object {
     chezmoi apply --include=scripts --source-path $_
 }
+Remove-Item Env:\CHEZMOI_SKIP_EXTERNALS

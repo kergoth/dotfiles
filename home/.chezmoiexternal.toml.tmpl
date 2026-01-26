@@ -1,3 +1,4 @@
+{{- if not (env "CHEZMOI_SKIP_EXTERNALS") -}}
 {{- if or (ne .chezmoi.os "darwin") (ne .chezmoi.username .macos_admin_user) -}}
 {{- includeTemplate "external/cli-apps.toml.tmpl" . -}}
 {{- includeTemplate "external/language-tools.toml.tmpl" . -}}
@@ -16,4 +17,5 @@
 {{ end }}
 {{/* Uncomment to test new external migrations: */}}
 {{/*- includeTemplate "external/test-migrations.toml.tmpl" . -*/}}
+{{- end -}}
 {{- end -}}
