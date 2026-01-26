@@ -1,5 +1,6 @@
 {{- if .user_setup -}}
-{{- $brew_bin := joinPath (printf "%s" .chezmoi.destDir) "bin" "brew" -}}
+{{- $brew_prefix := env "HOMEBREW_PREFSIX" | joinPath (printf "%s" .chezmoi.destDir) ".brew" -}}
+{{- $brew_bin := joinPath $brew_prefix "bin" "brew" -}}
 {{- if not $brew_bin -}}
 #!/bin/sh
 
