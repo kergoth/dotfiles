@@ -119,7 +119,7 @@
 {{-     $ephemeral = promptBoolOnce . "ephemeral" "Is this machine ephemeral (container, cloud, or VM instance)?" $ephemeral -}}
 {{-     $work = promptBoolOnce . "work" "Will this be a work machine (use a work email address)?" $work -}}
 {{-     if and (not $ephemeral) (not $work) (not $personal) -}}
-{{-       $secrets = promptBoolOnce . "secrets" "Enable secrets?" $secrets -}}
+{{-       $personal = promptBoolOnce . "personal" "Is this a personal machine?" $personal -}}
 {{-     end -}}
 {{-     $coding = promptBoolOnce . "coding" "Will this machine be used for coding (beyond just scripting)?" $coding -}}
 {{-     $containers = promptBoolOnce . "containers" "Should a container runtime be installed?" $containers -}}
