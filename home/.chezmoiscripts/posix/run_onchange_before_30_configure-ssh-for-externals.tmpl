@@ -1,17 +1,27 @@
 #!/usr/bin/env bash
-{{- if and .secrets .personal (not .ephemeral) }}
+{{- if and .secrets (not .ephemeral) (or .personal .work) }}
+{{-   $destDir := printf "%s" .chezmoi.destDir }}
+{{-   $key := "" }}
+{{-   $config := "" }}
+{{-   if .work }}
+{{-     $key = joinPath $destDir ".ssh" "keys" "work" }}
+{{-     $config = joinPath $destDir ".ssh" "config.d" "work" }}
+{{-   else if .personal }}
+{{-     $key = joinPath $destDir ".ssh" "keys" "frey" }}
+{{-     $config = joinPath $destDir ".ssh" "config.d" "personal" }}
+{{-   end }}
 # Ensure SSH is configured and keys are available before externals try to
 # clone private repos
 #
 # Re-run when key existence changes:
-#   Does key exist?: {{ ne (stat (joinPath (printf "%s" .chezmoi.destDir) ".ssh/keys/frey")) nil }}
+#   Does key exist?: {{ ne (stat $key) nil }}
 
 SSH_KEY="{{ .chezmoi.destDir }}/.ssh/keys/frey"
 
 apply_file() {
-    local src="$1"
-    local dest="$2"
-
+    local dest="$1"
+    local src
+    src=$(chezmoi source-path "$dest")
     if [ -s "$dest" ]; then
         return 0
     fi
@@ -49,9 +59,10 @@ if ! [ -s "$SSH_KEY" ]; then
     mkdir -p "$SSH_DIR/keys" "$SSH_DIR/config.d"
     chmod 0700 "$SSH_DIR" "$SSH_DIR/keys" "$SSH_DIR/config.d"
 
-    apply_file "$CHEZMOI_SOURCE_DIR/private_dot_ssh/private_keys/encrypted_private_frey.age" "$SSH_DIR/keys/frey" || exit 1
-    apply_file "$CHEZMOI_SOURCE_DIR/private_dot_ssh/private_config.tmpl" "$SSH_DIR/config" || exit 1
-    apply_file "$CHEZMOI_SOURCE_DIR/private_dot_ssh/config.d/encrypted_personal.age" "$SSH_DIR/config.d/personal" || exit 1
+    apply_file "$key" || exit 1
+    apply_file "$config" || exit 1
+    rm -f "$SSH_DIR/config"
+    apply_file "$SSH_DIR/config" || exit 1
 
     echo >&2 "SSH keys bootstrap complete"
 fi
