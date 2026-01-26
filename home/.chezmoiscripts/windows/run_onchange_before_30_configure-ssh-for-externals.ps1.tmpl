@@ -1,0 +1,128 @@
+{{- if and .secrets (not .ephemeral) (or .personal .work) }}
+{{-   $destDir := printf "%s" .chezmoi.destDir }}
+{{-   $key := "" }}
+{{-   $config := "" }}
+{{-   if .work }}
+{{-     $key = joinPath $destDir ".ssh" "keys" "work" }}
+{{-     $config = joinPath $destDir ".ssh" "config.d" "work" }}
+{{-   else if .personal }}
+{{-     $key = joinPath $destDir ".ssh" "keys" "frey" }}
+{{-     $config = joinPath $destDir ".ssh" "config.d" "personal" }}
+{{-   end }}
+#requires -version 5.0
+$ErrorActionPreference = "Stop"
+
+# Ensure SSH is configured and keys are available before externals try to
+# clone private repos
+#
+# Re-run when key existence changes:
+#   Does key exist?: {{ ne (stat $key) nil }}
+
+$SSH_KEY = "{{ .chezmoi.destDir }}/.ssh/keys/frey"
+
+# Source common functions
+. "{{ .chezmoi.workingTree }}/scripts/common.ps1"
+
+function Apply-File {
+    param(
+        [Parameter(Mandatory=$true)][string]$Dest
+    )
+
+    # Get source path via chezmoi
+    $src = (chezmoi source-path $Dest) | Out-String
+    $src = $src.Trim()
+
+    # Skip if destination already has content
+    if ((Test-Path $Dest) -and (Get-Item $Dest).Length -gt 0) {
+        return $true
+    }
+
+    # Create parent directory if needed
+    $parentDir = Split-Path -Parent $Dest
+    if (-not (Test-Path $parentDir)) {
+        New-Item -ItemType Directory -Path $parentDir -Force | Out-Null
+    }
+
+    Write-Host "Populating $Dest"
+
+    try {
+        # Handle different file types
+        if ($src -match '\.tmpl$') {
+            # Template file - execute template
+            Get-Content $src | chezmoi execute-template | Set-Content $Dest -NoNewline
+        }
+        elseif ($src -match '\.age$') {
+            # Encrypted file - decrypt
+            chezmoi decrypt $src | Set-Content $Dest -NoNewline
+        }
+        else {
+            # Plain file - copy
+            Copy-Item -Path $src -Destination $Dest -Force
+        }
+
+        # Set user-only permissions
+        Set-UserOnlyFileAccess -Pathname $Dest
+
+        return $true
+    }
+    catch {
+        # Clean up on error
+        if (Test-Path $Dest) {
+            Remove-Item $Dest -Force
+        }
+        Write-Host "Error processing $src : $_"
+        return $false
+    }
+}
+
+# Check if SSH key exists
+if (-not (Test-Path $SSH_KEY) -or (Get-Item $SSH_KEY).Length -eq 0) {
+    Write-Host "Bootstrapping SSH keys for chezmoi private repository access"
+
+    $SSH_DIR = "$env:CHEZMOI_DEST_DIR/.ssh"
+
+    # Create SSH directories
+    $dirs = @(
+        $SSH_DIR,
+        "$SSH_DIR/keys",
+        "$SSH_DIR/config.d"
+    )
+
+    foreach ($dir in $dirs) {
+        if (-not (Test-Path $dir)) {
+            New-Item -ItemType Directory -Path $dir -Force | Out-Null
+        }
+
+        # Set directory permissions - user-only access
+        try {
+            icacls $dir /inheritance:d | Out-Null
+            icacls $dir /grant "${env:USERNAME}:(OI)(CI)F" | Out-Null
+            icacls $dir /remove *S-1-5-11 *S-1-5-18 *S-1-5-32-544 *S-1-5-32-545 | Out-Null
+        }
+        catch {
+            Write-Warning "Could not fully restrict permissions on ${dir}: $_"
+        }
+    }
+
+    # Apply SSH key
+    if (-not (Apply-File "{{ $key }}")) {
+        exit 1
+    }
+
+    # Apply SSH config
+    if (-not (Apply-File "{{ $config }}")) {
+        exit 1
+    }
+
+    # Remove and re-apply main SSH config
+    $mainConfig = "$SSH_DIR/config"
+    if (Test-Path $mainConfig) {
+        Remove-Item $mainConfig -Force
+    }
+    if (-not (Apply-File $mainConfig)) {
+        exit 1
+    }
+
+    Write-Host "SSH keys bootstrap complete"
+}
+{{- end }}
