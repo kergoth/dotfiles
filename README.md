@@ -537,6 +537,7 @@ chezmoi update -R
 #### As Needed CLI Software for macOS
 
 - [makeicns](http://www.amnoid.de/icns/makeicns.html): Create icns files from the command line. Available via brew.
+- [Mole](https://github.com/tw93/Mole): All-in-one macOS system optimization tool for cleanup, uninstalling apps, disk analysis, and system monitoring. Available via brew as `mole`.
 - [mist-cli](https://github.com/ninxsoft/mist-cli): Mac command-line tool that automatically downloads macOS Firmwares / Installers. Available via brew.
 - [terminal-notifier](https://github.com/julienXX/terminal-notifier): A command-line tool to send macOS User Notifications. Available via brew and nix.
 
