@@ -107,6 +107,8 @@
 {{-   end -}}
 {{- end -}}
 
+{{- $secrets := false -}}
+
 {{/* prompt for overrides */}}
 {{- if and $interactive $prompt -}}
 {{-   if $steamdeck -}}
@@ -116,6 +118,9 @@
 {{-     $headless = promptBoolOnce . "headless" "Is this machine headless (no screen or keyboard)?" $headless -}}
 {{-     $ephemeral = promptBoolOnce . "ephemeral" "Is this machine ephemeral (container, cloud, or VM instance)?" $ephemeral -}}
 {{-     $work = promptBoolOnce . "work" "Will this be a work machine (use a work email address)?" $work -}}
+{{-     if and (not $ephemeral) (not $work) (not $personal) -}}
+{{-       $secrets = promptBoolOnce . "secrets" "Enable secrets?" $secrets -}}
+{{-     end -}}
 {{-     $coding = promptBoolOnce . "coding" "Will this machine be used for coding (beyond just scripting)?" $coding -}}
 {{-     $containers = promptBoolOnce . "containers" "Should a container runtime be installed?" $containers -}}
 {{-     $gaming = promptBoolOnce . "gaming" "Will this machine be used for gaming?" $gaming -}}
@@ -131,7 +136,6 @@
 {{-   $macos_split_user = false -}}
 {{- end -}}
 
-{{- $secrets := false -}}
 {{- if and (or $personal $work) (not $ephemeral) -}}
 {{-   $secrets = true -}}
 {{- end -}}
