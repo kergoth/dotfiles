@@ -66,8 +66,8 @@ if ! [ -s "$SSH_KEY" ]; then
     mkdir -p "$SSH_DIR/keys" "$SSH_DIR/config.d"
     chmod 0700 "$SSH_DIR" "$SSH_DIR/keys" "$SSH_DIR/config.d"
 
-    apply_file "{{ $keySrc }}" "$key" || exit 1
-    apply_file "{{ $configSrc }}" "$config" || exit 1
+    apply_file "{{ $keySrc }}" "{{ $key }}" || exit 1
+    apply_file "{{ $configSrc }}" "{{ $config }}" || exit 1
     rm -f "$SSH_DIR/config"
     apply_file "{{ $mainConfigSrc }}" "$SSH_DIR/config" || exit 1
 
