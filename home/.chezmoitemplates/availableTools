@@ -13,15 +13,16 @@
 {{- $root := .root -}}
 {{- $candidates := .tools -}}
 {{- $results := dict -}}
+{{- $destDir := printf "%s" $root.chezmoi.destDir -}}
 
 {{- /* Build search paths once (same logic as find-tool) */ -}}
 {{- $search_paths := list -}}
 {{- range $root.paths.home_bins -}}
-{{-   $search_paths = append $search_paths (joinPath $root.chezmoi.destDir .) -}}
+{{-   $search_paths = append $search_paths (joinPath $destDir .) -}}
 {{- end -}}
 {{- if eq $root.chezmoi.os "windows" -}}
 {{-   range ($root.paths.home_bins_windows | default list) -}}
-{{-     $search_paths = append $search_paths (joinPath $root.chezmoi.destDir .) -}}
+{{-     $search_paths = append $search_paths (joinPath $destDir .) -}}
 {{-   end -}}
 {{- end -}}
 

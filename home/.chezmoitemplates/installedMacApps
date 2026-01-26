@@ -13,7 +13,7 @@
 {{- $apps := dict -}}
 {{-
     $paths := list
-        (joinPath $root.chezmoi.destDir "Applications")
+        (joinPath (printf "%s" $root.chezmoi.destDir) "Applications")
         "/Applications"
         "/Applications/Utilities"
         "/System/Applications"
