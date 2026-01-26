@@ -5,7 +5,7 @@
 set -euo pipefail
 
 # shellcheck source=../../../scripts/common.sh
-. "$CHEZMOI_COMMAND_DIR/scripts/common.sh" || exit 1
+. "$CHEZMOI_WORKING_TREE/scripts/common.sh" || exit 1
 
 # Configure DevPod
 devpod_configure \

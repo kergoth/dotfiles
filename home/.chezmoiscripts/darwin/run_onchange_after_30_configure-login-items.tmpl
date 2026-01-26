@@ -30,7 +30,7 @@
 {{- if or $cmds $self_register_cmds $login_item_apps -}}
 #!/bin/sh
 
-. "$CHEZMOI_COMMAND_DIR/scripts/common.sh"
+. "$CHEZMOI_WORKING_TREE/scripts/common.sh"
 
 echo >&2 "Adding login items..."
 {{-   if $cmds }}

@@ -9,7 +9,7 @@ tmpdir="$(mktemp -d -t "${0##*/}.XXXXXX")" || exit 1
 trap 'rm -rf "$tmpdir"' EXIT INT TERM
 
 # shellcheck source=../../../scripts/common.sh
-. "$CHEZMOI_COMMAND_DIR/scripts/common.sh" || exit 1
+. "$CHEZMOI_WORKING_TREE/scripts/common.sh" || exit 1
 
 # Expose hidden files and Library folder in Finder:
 defaults write com.apple.finder AppleShowAllFiles -bool true
