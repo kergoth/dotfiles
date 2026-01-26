@@ -2,6 +2,10 @@
 
 set -eu
 
+scriptdir=$(cd "$(dirname "$0")" && pwd)
+# shellcheck source=common.sh
+. "$scriptdir/common.sh"
+
 echo >&2 "Clearing the state of chezmoi run_onchange_ scripts.."
 chezmoi state delete-bucket --bucket=entryState
 echo >&2 "Clearing the state of chezmoi run_once_ scripts.."
