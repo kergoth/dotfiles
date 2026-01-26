@@ -1,13 +1,21 @@
 {{- if and .secrets (not .ephemeral) (or .personal .work) }}
 {{-   $destDir := printf "%s" .chezmoi.destDir }}
+{{-   $sourceDir := .chezmoi.sourceDir }}
 {{-   $key := "" }}
 {{-   $config := "" }}
+{{-   $keySrc := "" }}
+{{-   $configSrc := "" }}
+{{-   $mainConfigSrc := joinPath $sourceDir "private_dot_ssh" "private_config.tmpl" }}
 {{-   if .work }}
 {{-     $key = joinPath $destDir ".ssh" "keys" "work" }}
 {{-     $config = joinPath $destDir ".ssh" "config.d" "work" }}
+{{-     $keySrc = joinPath $sourceDir "private_dot_ssh" "private_keys" "encrypted_private_work.age" }}
+{{-     $configSrc = joinPath $sourceDir "private_dot_ssh" "config.d" "encrypted_work.age" }}
 {{-   else if .personal }}
 {{-     $key = joinPath $destDir ".ssh" "keys" "frey" }}
 {{-     $config = joinPath $destDir ".ssh" "config.d" "personal" }}
+{{-     $keySrc = joinPath $sourceDir "private_dot_ssh" "private_keys" "encrypted_private_frey.age" }}
+{{-     $configSrc = joinPath $sourceDir "private_dot_ssh" "config.d" "encrypted_personal.age" }}
 {{-   end }}
 #requires -version 5.0
 $ErrorActionPreference = "Stop"
@@ -25,12 +33,9 @@ $SSH_KEY = "{{ .chezmoi.destDir }}/.ssh/keys/frey"
 
 function Apply-File {
     param(
+        [Parameter(Mandatory=$true)][string]$Src,
         [Parameter(Mandatory=$true)][string]$Dest
     )
-
-    # Get source path via chezmoi
-    $src = (chezmoi source-path $Dest) | Out-String
-    $src = $src.Trim()
 
     # Skip if destination already has content
     if ((Test-Path $Dest) -and (Get-Item $Dest).Length -gt 0) {
@@ -47,17 +52,17 @@ function Apply-File {
 
     try {
         # Handle different file types
-        if ($src -match '\.tmpl$') {
+        if ($Src -match '\.tmpl$') {
             # Template file - execute template
-            Get-Content $src | chezmoi execute-template | Set-Content $Dest -NoNewline
+            Get-Content $Src | chezmoi execute-template | Set-Content $Dest -NoNewline
         }
-        elseif ($src -match '\.age$') {
+        elseif ($Src -match '\.age$') {
             # Encrypted file - decrypt
-            chezmoi decrypt $src | Set-Content $Dest -NoNewline
+            chezmoi decrypt $Src | Set-Content $Dest -NoNewline
         }
         else {
             # Plain file - copy
-            Copy-Item -Path $src -Destination $Dest -Force
+            Copy-Item -Path $Src -Destination $Dest -Force
         }
 
         # Set user-only permissions
@@ -70,7 +75,7 @@ function Apply-File {
         if (Test-Path $Dest) {
             Remove-Item $Dest -Force
         }
-        Write-Host "Error processing $src : $_"
+        Write-Host "Error processing $Src : $_"
         return $false
     }
 }
@@ -105,12 +110,12 @@ if (-not (Test-Path $SSH_KEY) -or (Get-Item $SSH_KEY).Length -eq 0) {
     }
 
     # Apply SSH key
-    if (-not (Apply-File "{{ $key }}")) {
+    if (-not (Apply-File -Src "{{ $keySrc }}" -Dest "{{ $key }}")) {
         exit 1
     }
 
     # Apply SSH config
-    if (-not (Apply-File "{{ $config }}")) {
+    if (-not (Apply-File -Src "{{ $configSrc }}" -Dest "{{ $config }}")) {
         exit 1
     }
 
@@ -119,7 +124,7 @@ if (-not (Test-Path $SSH_KEY) -or (Get-Item $SSH_KEY).Length -eq 0) {
     if (Test-Path $mainConfig) {
         Remove-Item $mainConfig -Force
     }
-    if (-not (Apply-File $mainConfig)) {
+    if (-not (Apply-File -Src "{{ $mainConfigSrc }}" -Dest $mainConfig)) {
         exit 1
     }
 
