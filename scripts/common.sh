@@ -152,7 +152,13 @@ open_if_not_running() {
     fi
 
     if ! app_is_running "$check_app"; then
-        open -g -j -a "$target"
+        if [[ "$target" == /* ]]; then
+            # Absolute path - open directly
+            open -g -j "$target"
+        else
+            # App name - use -a flag
+            open -g -j -a "$target"
+        fi
     fi
 }
 

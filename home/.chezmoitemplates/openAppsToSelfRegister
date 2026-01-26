@@ -37,7 +37,7 @@ open_if_not_running "{{ $app_path }}/{{ $nested_path }}"
 open_if_not_running "{{ $app }}" "{{ $process_name }}"
 {{-     else }}
 # Open {{ $app }} to let it self-register
-open_if_not_running "{{ $app }}"
+open_if_not_running "{{ $app_path }}"
 {{-     end -}}
 {{-   end -}}
 {{- end -}}

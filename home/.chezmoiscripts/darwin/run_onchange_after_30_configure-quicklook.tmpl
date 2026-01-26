@@ -7,6 +7,9 @@
 {{- $cmds := includeTemplate "openIfUnregisteredQuickLook" (dict "root" . "extensions" $extensions) | trim -}}
 {{- if $cmds -}}
 #!/bin/sh
+
+. "$CHEZMOI_WORKING_TREE/scripts/common.sh"
+
 echo >&2 "Registering QuickLook extensions.."
 {{ $cmds }}
 {{- end -}}
