@@ -19,7 +19,6 @@
 {{- end }}
 
 HOMEBREW_PREFIX="${HOMEBREW_PREFIX:-${CHEZMOI_HOME_DIR:-$HOME}/.brew}"
-env|grep CHEZMOI >&2
 scriptsdir="$CHEZMOI_WORKING_TREE/scripts"
 PATH="$scriptsdir/macos:$scriptsdir:$PATH"
 
