@@ -209,4 +209,4 @@ fi
 chezmoi managed --include=scripts --path-style=source-absolute ~/.chezmoiscripts |
     grep -E 'before_.*(install|bootstrap)-' |
     tr '\n' '\0' |
-    xargs -0 chezmoi apply --include=scripts --source-path $noninteractive
+    xargs -0 -o chezmoi apply --include=scripts --source-path $noninteractive
