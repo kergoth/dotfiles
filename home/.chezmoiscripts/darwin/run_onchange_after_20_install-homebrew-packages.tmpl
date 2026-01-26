@@ -40,18 +40,22 @@ if [ -d "$scriptsdir/macos/Brewfile.d" ]; then
 fi
 
 # Run installers with graphical interfaces, which we can't run as the admin
-CASKROOM="$("$HOMEBREW_ADMIN_PREFIX/bin/brew" --caskroom)"
-if [ -d "$CASKROOM"/blockblock ]; then
-    # Run installer only for fresh installs (not yet installed)
-    # For new users on existing installs, login items script handles helper setup
-    if [ ! -d "/Library/Objective-See/BlockBlock/BlockBlock.app" ]; then
-        find "$CASKROOM"/blockblock -name BlockBlock\ Installer.app -print0 |
+if [ -x "$HOMEBREW_ADMIN_PREFIX/bin/brew" ]; then
+    CASKROOM="$("$HOMEBREW_ADMIN_PREFIX/bin/brew" --caskroom)"
+
+    if [ -d "$CASKROOM"/blockblock ]; then
+        # Run installer only for fresh installs (not yet installed)
+        # For new users on existing installs, login items script handles helper setup
+        if [ ! -d "/Library/Objective-See/BlockBlock/BlockBlock.app" ]; then
+            find "$CASKROOM"/blockblock -name BlockBlock\ Installer.app -print0 |
+                xargs -0 open || :
+        fi
+    fi
+
+    if [ -d "$CASKROOM"/whatsyoursign ]; then
+        find "$CASKROOM"/whatsyoursign -name WhatsYourSign\ Installer.app -print0 |
             xargs -0 open || :
     fi
-fi
-if [ -d "$CASKROOM"/whatsyoursign ]; then
-    find "$CASKROOM"/whatsyoursign -name WhatsYourSign\ Installer.app -print0 |
-        xargs -0 open || :
 fi
 {{- end }}
 {{- end }}
