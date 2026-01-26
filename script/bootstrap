@@ -207,7 +207,9 @@ fi
 
 # Run any chezmoi scripts which bootstrap, for use by the setup scripts
 # Skip externals evaluation to avoid GitHub API rate limits during initial bootstrap
+export CHEZMOI_SKIP_EXTERNALS=1
 chezmoi managed --include=scripts --path-style=source-absolute ~/.chezmoiscripts |
     grep -E 'before_.*(install|bootstrap)-' |
     tr '\n' '\0' |
-    xargs -0 -o env CHEZMOI_SKIP_EXTERNALS=1 chezmoi apply --include=scripts --source-path $noninteractive
+    xargs -0 -o chezmoi apply --include=scripts --source-path $noninteractive
+unset CHEZMOI_SKIP_EXTERNALS
