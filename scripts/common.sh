@@ -42,10 +42,34 @@ brewfile_cat() {
     fi
 }
 
+is_mas_signed_in() {
+    if ! command -v mas >/dev/null 2>&1; then
+        return 1
+    fi
+    mas account >/dev/null 2>&1
+}
+
 brewfile_install() {
     local brewfile="$1"
-    brewfile_cat "$brewfile" |
-        run "$HOMEBREW_PREFIX/bin/brew" bundle --no-upgrade install --file=-
+    local brewfile_content
+    brewfile_content=$(brewfile_cat "$brewfile")
+
+    local mas_count
+    mas_count=$(echo "$brewfile_content" | grep -c '^mas ' || true)
+
+    if [ "$mas_count" -gt 0 ]; then
+        if ! command -v mas >/dev/null 2>&1; then
+            msg "Warning: mas CLI not installed, skipping $mas_count App Store app(s)"
+            msg "Install mas with 'brew install mas' and re-run setup"
+            brewfile_content=$(echo "$brewfile_content" | grep -v '^mas ')
+        elif ! is_mas_signed_in; then
+            msg "Warning: Not signed into App Store, skipping $mas_count App Store app(s)"
+            msg "Sign in via the App Store app and re-run setup"
+            brewfile_content=$(echo "$brewfile_content" | grep -v '^mas ')
+        fi
+    fi
+
+    echo "$brewfile_content" | run "$HOMEBREW_PREFIX/bin/brew" bundle --no-upgrade install --file=-
 }
 
 check_child_script() {
