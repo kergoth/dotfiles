@@ -8,7 +8,6 @@ preferences.
 
 ## Prerequisites
 
-- (On macOS) Command-Line Tools or XCode must be installed (See scripts/extras/ for scripts to install these).
 - (On macOS) The user with admin privileges must have signed into the Mac App Store to allow `setup-system` to succeed.
 
 ## Usage

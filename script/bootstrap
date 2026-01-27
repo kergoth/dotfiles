@@ -82,6 +82,22 @@ sudorun() {
     command $SUDO "$@"
 }
 
+install_xcode_clt() {
+    if xcode-select -p >/dev/null 2>&1; then
+        return 0
+    fi
+
+    msg "Installing Xcode Command Line Tools..."
+    xcode-select --install 2>/dev/null || true
+
+    msg "Waiting for Xcode Command Line Tools installation to complete..."
+    msg "(Please complete the installation dialog if it appeared)"
+    until xcode-select -p >/dev/null 2>&1; do
+        sleep 5
+    done
+    msg "Xcode Command Line Tools installed successfully."
+}
+
 required_dependencies() {
     set --
     if ! has git; then
@@ -97,7 +113,9 @@ required_dependencies() {
         set -- "$@" unzip
     fi
     if [ $# -gt 0 ]; then
-        if [ "$DISTRO" = freebsd ]; then
+        if [ "$OS" = macos ]; then
+            install_xcode_clt
+        elif [ "$DISTRO" = freebsd ]; then
             need_sudo
             if ! doas pkg -N; then
                 sudorun pkg bootstrap
