@@ -250,6 +250,6 @@ set -g pane-border-style fg=colour235,bg=colour238
 set -g pane-active-border-style fg=colour236,bg=colour250
 
 # External {{{1
-if-shell "test -f ~/.tmux_local.conf" "source ~/.tmux_local.conf"
+if-shell "test -f ~/.tmux.conf.local" "source ~/.tmux.conf.local"
 
 # vim: set et sts=4 fdm=marker fdl=0 :

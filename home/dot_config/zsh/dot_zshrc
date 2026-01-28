@@ -95,7 +95,7 @@ done
 
 unset config_files
 
-for localrc in "$ZDOTDIR/.zshrc.local" "$HOME/.zshrc.local" "$HOME/.localrc"; do
+for localrc in "$HOME/.zshrc.local" "$HOME/.localrc"; do
     if [[ -e "$localrc" ]]; then
         . "$localrc"
     fi

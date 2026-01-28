@@ -81,6 +81,6 @@ if [ -n "$SSH_AUTH_SOCK" ] && [ -e "$HOME/.ssh/auth_sock" ] && [ "$SSH_AUTH_SOCK
     export SSH_AUTH_SOCK="$HOME/.ssh/auth_sock"
 fi
 
-if [[ -e $ZDOTDIR/.zprofile.local ]]; then
-    . "$ZDOTDIR/.zprofile.local"
+if [[ -e $HOME/.zprofile.local ]]; then
+    . "$HOME/.zprofile.local"
 fi

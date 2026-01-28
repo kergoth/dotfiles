@@ -20,6 +20,6 @@ elif [[ "${ZSH_PROFILE_STARTUP:-false}" == true ]]; then
     zmodload zsh/zprof
 fi
 
-if [[ -e $ZDOTDIR/.zshenv.local ]]; then
-    . "$ZDOTDIR/.zshenv.local"
+if [[ -e $HOME/.zshenv.local ]]; then
+    . "$HOME/.zshenv.local"
 fi
