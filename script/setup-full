@@ -7,5 +7,5 @@ PATH="$scriptdir:$PATH"
 
 ret=0
 setup-system || ret=$?
-setup-user || ret=$?
+setup || ret=$?
 exit $ret

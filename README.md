@@ -12,9 +12,9 @@ preferences.
 
 ## Usage
 
-### Initial dotfiles setup
+### Dotfiles setup
 
-This setup will apply the dotfiles, and will also install packages with home-manager, if nix is installed.
+This setup will apply the dotfiles and perform any user-setup tasks, such as installing packages with home-manager, homebrew, etc.
 
 If the repository has not yet been cloned:
 
@@ -27,22 +27,6 @@ If the repository is already cloned and you've changed directory to it:
 
 ```console
 ./script/setup
-```
-
-### User Setup
-
-This setup will apply the dotfiles, but will also apply other changes to the current user configuration.
-
-After cloning the repository, and changing directory to it, run:
-
-```console
-./script/setup-user
-```
-
-On windows (in powershell, not WSL), run this instead:
-
-```console
-./script/setup-user.ps1
 ```
 
 ### System Setup
