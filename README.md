@@ -14,7 +14,7 @@ preferences.
 
 ### Dotfiles setup
 
-This setup will apply the dotfiles and perform any user-setup tasks, such as installing packages with home-manager, homebrew, etc.
+This setup will apply the dotfiles and perform any user-setup tasks, such as installing packages with home-manager, homebrew, etc. If system setup is desired, run `setup-system` prior to running `setup`.
 
 If the repository has not yet been cloned:
 
