@@ -6,12 +6,15 @@ scriptdir="$(cd "$(dirname "$0")" && pwd -P)"
 # shellcheck source=./../common.sh
 . "$scriptdir/../common.sh" || exit 1
 
+{{- if not .work }}
 # Enable Firewall (socketfilterfw required for Sequoia+)
+# Note: Skipped on work machines as managed Macs don't allow firewall CLI modifications
 sudorun /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on
 sudorun /usr/libexec/ApplicationFirewall/socketfilterfw --setallowsigned off
 
 # Enable Stealth Mode
 sudorun /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on
+{{- end }}
 
 # Disable Guest account
 sudorun sysadminctl -guestAccount off
