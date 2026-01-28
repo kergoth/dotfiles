@@ -2,10 +2,8 @@
 
 set -eu
 
-timezone="America/Phoenix"
 initcpio_modules="crc32c"
 initcpio_extra_hooks=
-font="terminus-font ter-220n"
 
 usage() {
     echo >&2 "${0##*/} [options] HOSTNAME"
@@ -80,17 +78,13 @@ install_os() {
 }
 
 setup_os() {
-    pacman -Sy
+    pacman -Syu --noconfirm
 
     # Hostname
     if [ -n "$hostname" ] && [ "$OSTYPE" != WSL ]; then
         echo "$hostname" >/etc/hostname
         sed -i -e "s,\tlocalhost,\t$hostname localhost," /etc/hosts
     fi
-
-    # Timezone
-    ln -sf /usr/share/zoneinfo/$timezone /etc/localtime
-    hwclock --systohc
 
     if [ "$OSTYPE" != WSL ]; then
         root_fs="$(sed -n -e '/[         ]\/[    ]/p' /proc/mounts | awk '{print $3}')"
@@ -106,26 +100,12 @@ setup_os() {
             sed -i -e"s,^HOOKS=\"\(.*\)\",HOOKS=\"\1 $initcpio_extra_hooks\"," /etc/mkinitcpio.conf
         fi
         mkinitcpio -P
-
-        # Console font
-        if [ -n "$font" ]; then
-            package=$(echo $font | cut -d" " -f1)
-            fontname=$(echo $font | cut -d" " -f2)
-            pacman_install $package
-            echo "FONT=$fontname" >/etc/vconsole.conf
-        fi
     fi
 
-    pacman_install vi net-tools dhcpcd
+    pacman_install vi dhcpcd
 
     systemctl enable dhcpcd
 
-    groupadd -r -g 51 staff
-    chgrp -R staff /usr/local
-    chmod -R g+rwX /usr/local
-    find /usr/local -type d -exec chmod g+s "{}" \;
-
-    pacman_install zsh
     if [ "$OSTYPE" != WSL ]; then
         echo >&2 "Input password for root"
         passwd root

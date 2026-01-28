@@ -37,7 +37,14 @@ else
     usermod -a -G wheel "$user"
 fi
 
-pacman -Sy
+# Required for fresh ArchWSL where keyring isn't initialized
+if [ ! -d /etc/pacman.d/gnupg ] || [ -z "$(ls -A /etc/pacman.d/gnupg 2>/dev/null)" ]; then
+    echo >&2 "Initializing pacman keyring..."
+    pacman-key --init
+    pacman-key --populate
+fi
+
+pacman -Syu --noconfirm
 pacman_install sudo
 
 # Enable sudo for the wheel group

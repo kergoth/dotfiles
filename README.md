@@ -48,6 +48,47 @@ On windows (in powershell, not WSL), run this instead:
 
 ### Operating System Installation
 
+#### WSL2 Arch Linux Installation (ArchWSL)
+
+- Install ArchWSL via scoop: `scoop install archwsl`
+- Or download from [ArchWSL releases](https://github.com/yuk7/ArchWSL/releases)
+- Run `Arch.exe` to initialize the distribution and enter as root
+- Initial setup (as root):
+
+```console
+# Initialize keyring and do full system upgrade with git
+pacman-key --init
+pacman-key --populate
+pacman -Syu --noconfirm archlinux-keyring git
+
+# Clone dotfiles and run setup-root
+cd
+git clone https://github.com/kergoth/dotfiles .dotfiles
+./.dotfiles/script/arch/setup-root kergoth
+exit
+```
+
+- Set the new user as default: `Arch.exe config --default-user kergoth`
+- Re-enter WSL as the new user: `wsl -d Arch`
+- Clone the dotfiles and run setup:
+
+```console
+cd
+git clone https://github.com/kergoth/dotfiles .dotfiles
+./.dotfiles/script/setup-full
+```
+
+**Alternative (wget method):** If you prefer not to clone as root, you can download setup-root directly:
+
+```console
+cd
+wget https://raw.githubusercontent.com/kergoth/dotfiles/main/script/arch/setup-root
+sh setup-root kergoth
+exit
+```
+
+The setup-root script will initialize the keyring automatically if needed.
+
 #### WSL2 Chimera Linux Installation
 
 - Download the latest release zip file from [ChimeraWSL](https://github.com/tranzystorekk/ChimeraWSL) (Install Chimera Linux as a WSL instance).

@@ -133,7 +133,7 @@ required_dependencies() {
             sudorun apt-get -y install "$@"
         elif has pacman; then
             need_sudo
-            sudorun pacman -Sy
+            sudorun pacman -Syu --noconfirm
             sudorun pacman -S --noconfirm --needed "$@"
         else
             echo >&2 "Error: unsupported host, and git and/or bash and/or curl are not available, exiting"

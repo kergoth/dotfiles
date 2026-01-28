@@ -6,7 +6,7 @@ pkg="$1"
 shift
 
 if [ $# -gt 0 ]; then
-    pacman -Sya "$@"
+    pacman -Syua "$@"
 fi
 
 tempdir="$(mktemp -d -t "${0##*/}.XXXXXX")"

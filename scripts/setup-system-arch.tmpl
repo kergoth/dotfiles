@@ -14,6 +14,12 @@ locale="en_US.UTF-8"
 
 need_sudo
 
+# Partial upgrades are unsupported on Arch - always full upgrade first
+sudorun pacman -Syu --noconfirm
+
+# Keyring can become outdated on fresh/dormant installs
+pacman_install archlinux-keyring
+
 # Sync the files database
 sudorun pacman -Fy
 
@@ -21,6 +27,20 @@ sudorun pacman -Fy
 sudorun sed -i -e "/^#$locale /s/^#//" /etc/locale.gen
 sudorun locale-gen
 echo "LANG=$locale" | sudorun tee /etc/locale.conf
+
+# Timezone
+timezone="America/Phoenix"
+if [ ! -e /etc/localtime ] || [ "$(readlink -f /etc/localtime 2>/dev/null)" != "/usr/share/zoneinfo/$timezone" ]; then
+    sudorun ln -sf /usr/share/zoneinfo/$timezone /etc/localtime
+fi
+
+# Allow non-root users to install to /usr/local
+if ! getent group staff >/dev/null 2>&1; then
+    sudorun groupadd -r -g 51 staff
+fi
+sudorun chgrp -R staff /usr/local
+sudorun chmod -R g+rwX /usr/local
+sudorun find /usr/local -type d -exec chmod g+s "{}" \;
 
 pacman_install openssh
 
@@ -33,7 +53,10 @@ if ! grep -q '^MAKEFLAGS=.*-j' /etc/makepkg.conf; then
     fi
 fi
 
-{{ if not .wsl2 -}}
+{{ if .wsl2 -}}
+# Required for npiperelay (SSH agent forwarding from Windows)
+pacman_install socat
+{{- else }}
 sudorun systemctl enable --now sshd
 
 pacman_install nss-mdns avahi
@@ -49,6 +72,14 @@ pacman_install vi zsh which xz
 
 # Wget, unzip for installation of password manager cli
 pacman_install wget unzip
+
+{{ if and (not .ephemeral) (not .wsl2) -}}
+# Console font for bare-metal installations
+if ! pacman -Q terminus-font >/dev/null 2>&1; then
+    pacman_install terminus-font
+    echo "FONT=ter-220n" | sudorun tee /etc/vconsole.conf
+fi
+{{- end }}
 
 # Clean up
 if command pacman -Q nano >/dev/null 2>&1; then
