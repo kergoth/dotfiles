@@ -416,16 +416,9 @@ chezmoi update -R
 - [kitty](https://sw.kovidgoyal.net/kitty/) ([Open-Source](https://github.com/kovidgoyal/kitty)): The fast, feature-rich, GPU based terminal emulator.
 - [LuLu](https://objective-see.org/products/lulu.html): The free, open-source firewall that aims to block unknown outgoing connections.
 - [Maccy](https://maccy.app) ([Open-Source](https://github.com/p0deje/Maccy)): Lightweight clipboard manager for macOS.
-- [MusicHarbor](https://apps.apple.com/us/app/musicharbor-track-new-music/id1440405750?uo=4&at=10l4tL)
-- [Play](https://apps.apple.com/us/app/play-save-videos-watch-later/id1596506190): Bookmark and organize videos to watch later.
 - [PopClip](https://apps.apple.com/us/app/popclip/id445189367?mt=12&uo=4&at=10l4tL): Instant text actions.
 - [Readwise Reader](https://readwise.io/read): Save everything to one place, highlight like a pro, and replace several apps with Reader.
 - [Shifty](https://shifty.natethompson.io/): Menu bar app that provides more control over Night Shift.
-- If the work flag is enabled:
-  - [Slack](https://slack.com/): Team communication and collaboration platform.
-  - [Zoom](https://zoom.us/): Video conferencing and online meetings.
-- If the gaming flag is enabled:
-  - [Steam Link](https://store.steampowered.com/steamlink/about): Stream your Steam games.
 - [SwiftBar](https://swiftbar.app/)]: Powerful macOS menu bar customization tool. _Conditional: This is installed when a container runtime is enabled, as I use this to start/stop colima._
 - [SyncThing](https://syncthing.net/) ([Open-Source](https://github.com/syncthing/)): A continuous file synchronization program.
 - [Tailscale](https://apps.apple.com/us/app/tailscale/id1475387142): WireGuard-based mesh VPN for secure device connectivity.
@@ -434,15 +427,29 @@ chezmoi update -R
 - [WiFi Explorer](https://apps.apple.com/us/app/wifi-explorer/id494803304?mt=12&uo=4&at=10l4tL): Best Wi-Fi Analyzer & Monitor.
 - [WiFi Signal](https://apps.apple.com/us/app/wifi-signal-status-monitor/id525912054?mt=12&uo=4&at=10l4tL): WiFi Connection Status Monitor.
 
+##### Conditional Software
+
+- If the gaming flag is enabled:
+  - [Steam Link](https://store.steampowered.com/steamlink/about): Stream your Steam games.
+- If the music flag is enabled:
+  - [MusicHarbor](https://apps.apple.com/us/app/musicharbor-track-new-music/id1440405750?uo=4&at=10l4tL): Track new music releases from your favorite artists.
+- If the video flag is enabled:
+  - [Play](https://apps.apple.com/us/app/play-save-videos-watch-later/id1596506190): Bookmark and organize videos to watch later.
+- If the work flag is enabled:
+  - [Slack](https://slack.com/): Team communication and collaboration platform.
+  - [Zoom](https://zoom.us/): Video conferencing and online meetings.
+
 ##### Safari Extensions
 
 - [1Password for Safari](https://apps.apple.com/us/app/1password-for-safari/id1569813296?mt=12&uo=4&at=10l4tL)
 - [DeArrow](https://apps.apple.com/us/app/dearrow/id6451469297): Crowdsourced replacement of clickbait YouTube titles and thumbnails.
+- [Declutter](https://apps.apple.com/us/app/declutter-for-safari/id1574021257): Automatically closes duplicate tabs in Safari.
 - [Hush](https://apps.apple.com/us/app/hush-nag-blocker/id1544743900?uo=4&at=10l4tL) ([Open-Source](https://github.com/oblador/hush))
 - [Kagi for Safari](https://apps.apple.com/us/app/kagi-for-safari/id1622835804): Kagi search for Safari.
 - [Noir](https://apps.apple.com/us/app/noir/id1592917505): Dark mode for every website.
 - [Obsidian Web Clipper](https://apps.apple.com/us/app/obsidian-web-clipper/id6720708363): Clip web pages to Obsidian.
 - [SessionRestore](https://apps.apple.com/us/app/sessionrestore-for-safari/id1463334954?mt=12&uo=4&at=10l4tL)
+- [Save to Reader](https://apps.apple.com/us/app/save-to-reader/id1640236961): Save pages to Readwise Reader.
 - [SponsorBlock](https://apps.apple.com/us/app/sponsorblock/id1573461917): Skip sponsorships in YouTube videos.
 - [StopTheMadness Pro](https://apps.apple.com/us/app/stopthemadness-pro/id6471380298): A Safari extension that stops web site annoyances and privacy violations.
 - [Tampermonkey Classic](https://apps.apple.com/us/app/tampermonkey-classic/id1482490089?mt=12&uo=4&at=10l4tL): Temporary replacement for Userscripts while it's being updated.
