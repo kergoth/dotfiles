@@ -408,6 +408,7 @@ chezmoi update -R
 - [Brooklyn](https://github.com/pedrommcarrasco/Brooklyn) (Open-Source): Screen saver based on animations presented during Apple Special Event Brooklyn.
 - [Calibre](https://calibre-ebook.com) ([Open-Source](https://github.com/kovidgoyal/calibre)): E-books management software.
 - [DaisyDisk](https://daisydiskapp.com): Disk space visualizer. Get a visual breakdown of your disk space in form of an interactive map, reveal the biggest space wasters, and remove them with a simple drag and drop.
+- [Deliveries](https://apps.apple.com/us/app/deliveries-a-package-tracker/id290986013): Track your packages with support for dozens of services. Syncs via iCloud.
 - [ForkLift](https://binarynights.com): Advanced dual pane file manager and file transfer client for macOS. Available via brew as `forklift`.
 - [Juicy](https://getjuicy.app): Battery Alerts & Health. Available via [Mac App Store](https://apps.apple.com/us/app/juicy-battery-alerts-health/id6752221257?mt=12)
 - [Karabiner-Elements](https://karabiner-elements.pqrs.org) ([Open-Source](https://github.com/pqrs-org/Karabiner-Elements)): A powerful and stable keyboard customizer for macOS.
