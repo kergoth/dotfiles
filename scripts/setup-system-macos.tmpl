@@ -27,9 +27,6 @@ if [ "$USER" != "$OSX_ADMIN_LOGNAME" ]; then
     exit $?
 fi
 
-# Bootstrap dotfiles for the admin user to allow for templating
-"$DOTFILES_DIR/script/bootstrap"
-
 need_sudo
 
 # Hide admin user from the login window
@@ -59,14 +56,20 @@ if ! [ -x "$HOMEBREW_PREFIX/bin/brew" ]; then
 fi
 
 msg "Installing applications with homebrew"
-brewfile_install "$scriptdir/macos/Brewfile-admin"
-
-if [ -d "$scriptdir/macos/Brewfile-admin.d" ]; then
-    find "$scriptdir/macos/Brewfile-admin.d" -type f -not -name .keep -not -name .DS_Store |
-        while read -r brewfile; do
-            brewfile_install "$brewfile" || :
-        done
-fi
+brewfile_install - <<EOF
+{{ includeTemplate (joinPath .chezmoi.workingTree "scripts/macos/Brewfile-admin.tmpl") . }}
+EOF
+{{ $abs_glob := joinPath .chezmoi.sourceDir ".." "scripts/macos/Brewfile-admin.d/*" -}}
+{{ $root := . -}}
+{{ range $abs := (glob $abs_glob | sortAlpha) -}}
+{{   $rel := trimPrefix (printf "%s/" $root.chezmoi.sourceDir) $abs -}}
+{{/* Convert absolute back to a repo-relative path for include */}}
+{{   $repoRel := trimPrefix (printf "%s/" (clean (joinPath $root.chezmoi.sourceDir ".."))) $abs -}}
+{{   $name := base $abs -}}
+{{   if and (ne $name ".keep") (ne $name ".DS_Store") -}}
+{{     includeTemplate (joinPath $root.chezmoi.workingTree $repoRel) . -}}
+{{   end -}}
+{{ end }}
 
 # Configuration
-"$scriptdir/macos/configure-admin.tmpl"
+{{ includeTemplate (joinPath .chezmoi.workingTree "scripts/macos/configure-admin.tmpl") . }}

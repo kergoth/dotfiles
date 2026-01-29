@@ -28,7 +28,9 @@ run() {
 
 brewfile_cat() {
     local brewfile="$1"
-    if [ -f "$brewfile.tmpl.age" ] || echo "$brewfile" | grep -q "\.tmpl.age$"; then
+    if echo "$brewfile" | grep -Fqx "-"; then
+        cat
+    elif [ -f "$brewfile.tmpl.age" ] || echo "$brewfile" | grep -q "\.tmpl.age$"; then
         cat "${brewfile%.tmpl.age}.tmpl.age" | chezmoi decrypt | chezmoi execute-template
     elif [ -f "$brewfile.tmpl" ] || echo "$brewfile" | grep -q "\.tmpl$"; then
         cat "${brewfile%.tmpl}.tmpl" | chezmoi execute-template

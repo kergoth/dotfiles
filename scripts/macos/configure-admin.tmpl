@@ -1,11 +1,3 @@
-#!/usr/bin/env chezmoi-exec
-#!/usr/bin/env bash
-
-scriptdir="$(cd "$(dirname "$0")" && pwd -P)"
-
-# shellcheck source=./../common.sh
-. "$scriptdir/../common.sh" || exit 1
-
 {{- if not .work }}
 # Enable Firewall (socketfilterfw required for Sequoia+)
 # Note: Skipped on work machines as managed Macs don't allow firewall CLI modifications
