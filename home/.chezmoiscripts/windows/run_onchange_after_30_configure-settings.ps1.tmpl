@@ -18,6 +18,9 @@ Add-EnvironmentVariableItem "PATH" "$env:XDG_BIN_HOME" -User
 # Add ~/.local/bin to the PATH
 Add-EnvironmentVariableItem "PATH" "$env:USERPROFILE\.local\bin" -User
 
+# Add ~/bin to the PATH
+Add-EnvironmentVariableItem "PATH" "$env:USERPROFILE\bin" -User
+
 RefreshEnvPath
 
 # Add installed software to the user's PATH
