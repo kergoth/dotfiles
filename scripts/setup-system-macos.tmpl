@@ -58,7 +58,6 @@ fi
 msg "Installing applications with homebrew"
 brewfile_install - <<EOF
 {{ includeTemplate (joinPath .chezmoi.workingTree "scripts/macos/Brewfile-admin.tmpl") . }}
-EOF
 {{ $abs_glob := joinPath .chezmoi.sourceDir ".." "scripts/macos/Brewfile-admin.d/*" -}}
 {{ $root := . -}}
 {{ range $abs := (glob $abs_glob | sortAlpha) -}}
@@ -70,6 +69,7 @@ EOF
 {{     includeTemplate (joinPath $root.chezmoi.workingTree $repoRel) . -}}
 {{   end -}}
 {{ end }}
+EOF
 
 msg "Configuring system"
 {{ includeTemplate (joinPath .chezmoi.workingTree "scripts/macos/configure-admin.tmpl") . }}
