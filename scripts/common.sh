@@ -48,7 +48,7 @@ is_mas_signed_in() {
     if ! command -v mas >/dev/null 2>&1; then
         return 1
     fi
-    mas account >/dev/null 2>&1
+    mas list >/dev/null 2>&1
 }
 
 brewfile_install() {
