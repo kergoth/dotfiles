@@ -71,5 +71,5 @@ EOF
 {{   end -}}
 {{ end }}
 
-# Configuration
+msg "Configuring system"
 {{ includeTemplate (joinPath .chezmoi.workingTree "scripts/macos/configure-admin.tmpl") . }}
