@@ -161,7 +161,7 @@ chezmoi edit --watch ~/.config/zsh/.zshrc
 
 ### Apply dotfiles changes to the home directory
 
-This step is implicitly done by the boostrap script. To run it manually, for example, after editing files inside the repository checkout, run this:
+This step is implicitly done by the setup script. To run it manually, for example, after editing files inside the repository checkout, run this:
 
 ```console
 chezmoi apply
