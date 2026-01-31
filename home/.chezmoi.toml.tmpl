@@ -28,6 +28,7 @@
 {{- $music_library := false -}}{{/* true if this device will be used to manage my music library */}}
 {{- $ebook_library := false -}}{{/* true if this device will be used to manage my ebook library */}}
 {{- $gaming_device_library := false -}}{{/* true if this device will be used to manage my gaming device library */}}
+{{- $retro_computing := false -}}{{/* true if this device will be used for retro computing emulation (i.e. 86box) */}}
 
 {{- if eq .chezmoi.os "linux" }}
 {{-   if or $steamdeck (eq $osid "linux-chimera") -}}
@@ -93,6 +94,7 @@
 {{-     $music_library = true -}}
 {{-     $ebook_library = true -}}
 {{-     $gaming_device_library = true -}}
+{{-     $retro_computing = true -}}
 {{-   else if $steamdeck -}}
 {{-     $gaming = true -}}
 {{-     $personal = true -}}
@@ -219,6 +221,7 @@ encryption = "age"
     music_library = {{ $music_library }}
     ebook_library = {{ $ebook_library }}
     gaming_device_library = {{ $gaming_device_library }}
+    retro_computing = {{ $retro_computing }}
 
     secrets = {{ $secrets }}
     user_setup = {{ $user_setup }}

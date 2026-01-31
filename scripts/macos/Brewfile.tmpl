@@ -92,6 +92,10 @@ cask "notunes"
 # add music library apps here (i.e. beets)
 {{- end }}
 
+{{ if and .retro_computing (not .work) -}}
+cask "86box"
+{{- end }}
+
 # personal
 {{ if .personal -}}
 {{   if and (not .ephemeral) (not (env "CONTAINER_ID")) -}}

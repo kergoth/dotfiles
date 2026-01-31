@@ -438,6 +438,8 @@ chezmoi update -R
   - [MusicHarbor](https://apps.apple.com/us/app/musicharbor-track-new-music/id1440405750?uo=4&at=10l4tL): Track new music releases from your favorite artists.
 - If the video flag is enabled:
   - [Play](https://apps.apple.com/us/app/play-save-videos-watch-later/id1596506190): Bookmark and organize videos to watch later.
+- If the retro_computing flag is enabled:
+  - [86Box](https://www.86box.net/): Emulator of x86-based machines.
 - If the work flag is enabled:
   - [Slack](https://slack.com/): Team communication and collaboration platform.
   - [Zoom](https://zoom.us/): Video conferencing and online meetings.
