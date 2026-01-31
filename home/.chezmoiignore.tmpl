@@ -3,6 +3,12 @@
 **/.tmp*
 **/.DS_Store
 **/._*
+**/*.orig
+**/*.rej
+
+# Backup files
+.claude.json.backup
+.claude.json.backup.*
 
 # Explicitly not maintained via chezmoi
 .profile
@@ -23,6 +29,7 @@ Public
 Repos/*
 Sandbox
 Site Mirrors
+Sites
 Sync
 Templates
 Virtual Machines
@@ -48,8 +55,11 @@ Workspace
 .chezmoiscripts/posix/prepare_vim
 {{- end }}
 
-# Shell / tool history and dev tool state
+# Shell / tool history and tool state
 .bash_history
+.zsh_history
+.config/zsh/.zsh_history
+.sqlite_history
 .lesshst
 _lesshst
 .code-terminal
@@ -60,7 +70,13 @@ _lesshst
 .config/vscode-dev-containers
 .envrc
 
+# I don't track the GnuPG keychain
+.gnupg/private-keys-v1.d
+.gnupg/pubring.kbx
+.gnupg/trustdb.gpg
+
 # Cache handling (single source of truth)
+.cache/*
 {{- if eq .chezmoi.os "darwin" }}
 Library/Caches/*
 !Library/Caches/zsh
@@ -68,7 +84,6 @@ Library/Caches/zsh/*
 !Library/Caches/zsh/functions
 Library/Caches/zsh/functions/*
 {{- else }}
-.cache/*
 !.cache/zsh
 .cache/zsh/*
 !.cache/zsh/functions
