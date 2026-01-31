@@ -590,6 +590,7 @@ chezmoi update -R
 - [CPDT (Cross Platform Disk Test)](https://www.magesw.com/cpdt/): A disk benchmarking tool for Windows, macOS, and Linux. Available via direct download.
 - [czkawka](https://github.com/qarmin/czkawka): Multi functional app to find duplicates, empty folders, similar images etc.
 - [dupeGuru](https://dupeguru.voltaicideas.net): A cross-platform GUI tool to find duplicate files in a system.
+- [Eddie](https://eddie.website/) ([Open-Source](https://github.com/AirVPN/Eddie)): VPN client for AirVPN with OpenVPN and WireGuard support. Available via brew as `eddie` and winget as `AirVPN.Eddie`.
 - [HandBrake](https://handbrake.fr/): The open source video transcoder. Available via brew as `handbrake` and winget as `HandBrake.HandBrake`.
 - [jDownloader](https://jdownloader.org): A download management tool. Available via brew as `jdownloader`.
 - [Kegworks](https://github.com/Kegworks-App/Kegworks): A user-friendly tool used to make wine wrapped ports of Windows software for macOS. Formerly Wineskin Winery.
