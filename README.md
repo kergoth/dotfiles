@@ -428,10 +428,12 @@ chezmoi update -R
 - [WiFi Explorer](https://apps.apple.com/us/app/wifi-explorer/id494803304?mt=12&uo=4&at=10l4tL): Best Wi-Fi Analyzer & Monitor.
 - [WiFi Signal](https://apps.apple.com/us/app/wifi-signal-status-monitor/id525912054?mt=12&uo=4&at=10l4tL): WiFi Connection Status Monitor.
 
-##### Conditional Software
+##### Conditional GUI Software on macOS
 
 - If the gaming flag is enabled:
   - [Steam Link](https://store.steampowered.com/steamlink/about): Stream your Steam games.
+- If the gaming_device_library flag is enabled:
+  - [ScummVM](https://www.scummvm.org/): Graphic adventure game interpreter.
 - If the music flag is enabled:
   - [MusicHarbor](https://apps.apple.com/us/app/musicharbor-track-new-music/id1440405750?uo=4&at=10l4tL): Track new music releases from your favorite artists.
 - If the video flag is enabled:
