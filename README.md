@@ -436,6 +436,8 @@ chezmoi update -R
   - [ScummVM](https://www.scummvm.org/): Graphic adventure game interpreter.
 - If the music flag is enabled:
   - [MusicHarbor](https://apps.apple.com/us/app/musicharbor-track-new-music/id1440405750?uo=4&at=10l4tL): Track new music releases from your favorite artists.
+- If the music_library flag is enabled:
+  - [MusicBrainz Picard](https://picard.musicbrainz.org/): Music tagger and metadata editor.
 - If the video flag is enabled:
   - [Play](https://apps.apple.com/us/app/play-save-videos-watch-later/id1596506190): Bookmark and organize videos to watch later.
 - If the retro_computing flag is enabled:
