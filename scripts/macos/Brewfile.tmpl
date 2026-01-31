@@ -63,21 +63,6 @@ brew "git-crypt"
 cask "swiftbar"
 {{- end }}
 
-# fclones - efficient duplicate file finder
-{{ if or (not .use_nix) (eq (includeTemplate "find-tool" (dict "root" . "tool" "fclones")) "") -}}
-brew "fclones"
-{{- end }}
-
-# work
-{{ if and .work (not .use_nix) -}}
-brew "git-crypt"
-{{- end }}
-
-# containers
-{{ if .containers -}}
-cask "swiftbar"
-{{- end }}
-
 # ebook_library
 {{ if and .ebook_library (not .work) -}}
 cask "calibre"
