@@ -1,6 +1,18 @@
 cask_args appdir: "~/Applications"
 
 # apps
+cask "keepingyouawake"
+cask "keka"
+cask "kitty"
+cask "maccy"
+cask "obsidian"
+{{- if lt .macos_major_version 26 }}
+{{/* Skip on Tahoe */}}
+cask "raycast"
+cask "rectangle"
+{{- end }}
+cask "syncthing-app"
+cask "zed"
 
 {{ if and (not .work) (not .ephemeral) -}}
 # Commercial Apps I own personally
@@ -8,6 +20,8 @@ cask "daisydisk"
 cask "forklift"
 cask "omnioutliner"
 cask "popclip"
+
+cask "chatgpt"
 cask "claude-code"
 
 # Not at all related to work
@@ -19,6 +33,11 @@ cask "shifty"
 # I don't want personal content on work machines
 cask "reader"
 
+{{- if lt .macos_major_version 26 }}
+{{/* Skip on Tahoe */}}
+cask "jordanbaird-ice"
+{{- end }}
+
 # quicklook extensions (the ql extension is the only part I care about)
 # there are largely for security reasons, so are excluded from work machines
 cask "apparency"
@@ -27,6 +46,36 @@ cask "suspicious-package"
 # potential license concerns for commercial use
 # note: betterzip's extension requires macOS 10.9 or later
 cask "betterzip"
+{{- end }}
+
+# fclones - efficient duplicate file finder
+{{ if or (not .use_nix) (eq (includeTemplate "find-tool" (dict "root" . "tool" "fclones")) "") -}}
+brew "fclones"
+{{- end }}
+
+# work
+{{ if and .work (not .use_nix) -}}
+brew "git-crypt"
+{{- end }}
+
+# containers
+{{ if .containers -}}
+cask "swiftbar"
+{{- end }}
+
+# fclones - efficient duplicate file finder
+{{ if or (not .use_nix) (eq (includeTemplate "find-tool" (dict "root" . "tool" "fclones")) "") -}}
+brew "fclones"
+{{- end }}
+
+# work
+{{ if and .work (not .use_nix) -}}
+brew "git-crypt"
+{{- end }}
+
+# containers
+{{ if .containers -}}
+cask "swiftbar"
 {{- end }}
 
 # ebook_library
@@ -57,6 +106,10 @@ cask "notunes"
 {{   if and (not .ephemeral) (not (env "CONTAINER_ID")) -}}
 # No need for a screen saver in a VM or container
 cask "brooklyn"
+{{-     if lt .macos_major_version 14 }}
+# Install on pre-Sonoma macOS
+cask "aerial"
+{{-     end }}
 {{-   end }}
 cask "transmission-remote-gui"
 {{- end }}
