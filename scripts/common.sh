@@ -39,7 +39,7 @@ brewfile_cat() {
     elif [ -f "$brewfile" ]; then
         cat "$brewfile"
     else
-        msg_red "Brewfile $brewfile not found"
+        msg "Error: Brewfile $brewfile not found"
         return 1
     fi
 }
