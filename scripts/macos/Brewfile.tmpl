@@ -53,22 +53,18 @@ cask "betterzip"
 brew "fclones"
 {{- end }}
 
-# work
 {{ if and .work (not .use_nix) -}}
 brew "git-crypt"
 {{- end }}
 
-# containers
 {{ if .containers -}}
 cask "swiftbar"
 {{- end }}
 
-# ebook_library
 {{ if and .ebook_library (not .work) -}}
 cask "calibre"
 {{- end }}
 
-# gaming
 {{ if and .gaming (not .work) -}}
 cask "steam"
 {{- end }}
@@ -79,7 +75,6 @@ cask "steam"
 cask "scummvm-app"
 {{- end }}
 
-# music
 {{ if and .music (not .work) -}}
 # add music apps here
 {{- end }}
@@ -95,7 +90,6 @@ cask "musicbrainz-picard"
 cask "86box"
 {{- end }}
 
-# personal
 {{ if .personal -}}
 {{   if and (not .ephemeral) (not (env "CONTAINER_ID")) -}}
 # No need for a screen saver in a VM or container
@@ -108,7 +102,6 @@ cask "aerial"
 cask "transmission-remote-gui"
 {{- end }}
 
-# video
 {{ if and .video (not .work) -}}
 cask "vlc"
 {{- end }}
