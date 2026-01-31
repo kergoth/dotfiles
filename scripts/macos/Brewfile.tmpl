@@ -76,7 +76,7 @@ cask "steam"
 {{ if and .gaming_device_library (not .work) -}}
 # ScummVM is needed to determine scummvm ids for deployment to gaming
 # devices, such as the Steam Deck.
-cask "scummvm"
+cask "scummvm-app"
 {{- end }}
 
 # music
