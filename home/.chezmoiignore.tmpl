@@ -32,7 +32,14 @@ Site Mirrors
 Sites
 Sync
 Templates
+{{ $utm_dest := "Library/Containers/com.utmapp.UTM/Data/Documents" -}}
+{{- $utm_path := joinPath (printf "%s" .chezmoi.destDir) $utm_dest -}}
+{{- if not (glob $utm_path) -}}
 Virtual Machines
+{{ else }}
+Virtual Machines/*
+!Virtual Machines/UTM VMs
+{{- end }}
 Workspace
 
 # ChezMoi internals / repo-local state
@@ -149,6 +156,7 @@ Applications/
 Applications (Parallels)/
 Obsidian Vault
 My Kindle Content
+Virtual Machines
 # This wrapper is for macOS to use the zed-preview binary
 .local/bin/zed
 {{- end }}

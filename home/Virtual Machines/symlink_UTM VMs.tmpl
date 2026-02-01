@@ -1,0 +1,5 @@
+{{- $dest := "Library/Containers/com.utmapp.UTM/Data/Documents" -}}
+{{- $path := joinPath (printf "%s" .chezmoi.destDir) $dest -}}
+{{- if glob $path -}}
+{{-   joinPath ".." $dest -}}
+{{- end -}}
