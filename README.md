@@ -376,6 +376,7 @@ chezmoi update -R
 ### Installed GUI Software
 
 - [Zed](https://zed.dev): A cross-platform text editor. Available via brew, installer script, scoop, or [download](https://zed.dev/download).
+- [DevPod](https://devpod.sh) ([Open-Source](https://github.com/loft-sh/devpod)): Codespaces but open-source, client-only and unopinionated. Works with any IDE and cloud. _Conditional: This is installed when both coding and container runtime flags are enabled._
 
 #### GUI Software on Windows and macOS
 

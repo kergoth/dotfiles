@@ -1,7 +1,19 @@
-{{- if and .user_setup (not .headless) (not .steamdeck) (not (env "CONTAINER_ID")) -}}
-{{-   $zed := includeTemplate "find-tool" (dict "root" . "tool" "zed") -}}
-{{-   $claude := includeTemplate "find-tool" (dict "root" . "tool" "claude") -}}
-{{-   if or (not $zed) (and (not .work) (not $claude)) -}}
+{{- if or (and .user_setup (not .headless) (not .steamdeck) (not (env "CONTAINER_ID"))) (and .coding .containers) -}}
+{{-   $zed := "" -}}
+{{-   $claude := "" -}}
+{{-   $devpod := "" -}}
+{{-   $flatpak := "" -}}
+{{-   if and .user_setup (not .headless) (not .steamdeck) (not (env "CONTAINER_ID")) -}}
+{{-     $zed = includeTemplate "find-tool" (dict "root" . "tool" "zed") -}}
+{{-     $claude = includeTemplate "find-tool" (dict "root" . "tool" "claude") -}}
+{{-   end -}}
+{{-   if and .coding .containers -}}
+{{-     $devpod = includeTemplate "find-tool" (dict "root" . "tool" "devpod") -}}
+{{-     if not .headless -}}
+{{-       $flatpak = includeTemplate "find-tool" (dict "root" . "tool" "flatpak") -}}
+{{-     end -}}
+{{-   end -}}
+{{-   if or (not $zed) (and (not .work) (not $claude)) (and .coding .containers (not $devpod)) -}}
 #!/bin/sh
 set -eu
 
@@ -19,6 +31,22 @@ curl -f https://zed.dev/install.sh | sh
 {{-     if and (not .work) (not $claude) }}
 msg "Installing Claude Code"
 curl -fsSL https://claude.ai/install.sh | bash
+{{-     end }}
+
+{{-     if and .coding .containers (not $devpod) }}
+{{-       if and (not .headless) $flatpak }}
+msg "Installing DevPod from Flathub"
+flatpak install -y --user flathub sh.loft.devpod || true
+{{-       else }}
+msg "Installing DevPod CLI"
+devpod_arch="amd64"
+case "$(uname -m)" in
+    aarch64|arm64) devpod_arch="arm64" ;;
+esac
+curl -L -o /tmp/devpod "https://github.com/loft-sh/devpod/releases/latest/download/devpod-linux-$devpod_arch"
+install -c -m 0755 /tmp/devpod "$HOME/.local/bin/devpod"
+rm -f /tmp/devpod
+{{-       end }}
 {{-     end }}
 {{-   end }}
 {{- end }}

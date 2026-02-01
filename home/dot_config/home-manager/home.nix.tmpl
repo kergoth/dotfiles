@@ -107,6 +107,9 @@ in {
   {{- if .wsl2 }}
     socat
   {{- end }}
+  {{- if and .coding .containers (not .ephemeral) (not .headless) }}
+    devpod
+  {{- end }}
   ];
 
   programs = {

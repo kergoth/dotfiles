@@ -59,6 +59,9 @@ brew "git-crypt"
 
 {{ if .containers -}}
 cask "swiftbar"
+{{   if and .coding (not .ephemeral) (not .headless) -}}
+cask "devpod"
+{{-   end }}
 {{- end }}
 
 {{ if and .ebook_library (not .work) -}}

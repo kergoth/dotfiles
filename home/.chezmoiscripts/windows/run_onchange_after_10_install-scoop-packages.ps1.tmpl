@@ -43,6 +43,9 @@ Install-Scoop-IfNotPresent steam Valve.Steam | Out-Null
 Install-Scoop-IfNotPresent vlc VideoLAN.VLC | Out-Null
 {{-     end }}
 {{-   end }}
+{{    if and .coding .containers (not .ephemeral) -}}
+Install-Scoop-IfNotPresent devpod LoftLabs.DevPod | Out-Null
+{{    end -}}
 {{- end }}
 
 RefreshEnvPath
