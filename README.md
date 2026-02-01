@@ -616,7 +616,7 @@ chezmoi update -R
 - [AmorphousDiskMark](https://katsurashareware.com/amorphousdiskmark/): Disk benchmark utility. Available via brew as `amorphousdiskmark`.
 - [AnyToISO](https://www.crystalidea.com/anytoiso): Convert CD/DVD images to ISO format or extract files from them. Available via brew as `anytoiso`.
 - [Apple Configurator](https://support.apple.com/apple-configurator): Configure and deploy iPhone, iPad, and Apple TV. Available via Mac App Store.
-- [Audio Overload](https://www.bannister.org/software/ao.htm): Emulator for retro video game music. Available via brew as `audio-overload`.
+- [Audio Overload](https://www.bannister.org/software/ao.htm): Emulator for retro video game music. Available via Mac App Store (via mas as id `1512000244`).
 - [Blackmagic Disk Speed Test](https://apps.apple.com/us/app/blackmagic-disk-speed-test/id425264550): Test your disk performance. Available via Mac App Store.
 - [Burn](https://burn-osx.sourceforge.io/Pages/English/home.html): Simple but advanced burning for Mac OS X. Optional, as disk images can be burned with Finder or hdiutil. Available via brew as `burn`.
 - [Byword](https://bywordapp.com): Markdown editor. Available via Mac App Store.
