@@ -1,0 +1,13 @@
+provision:
+  - mode: system
+    script: |
+      #!/bin/sh
+      set -eu
+
+      # Persist across reboots
+      cat >/etc/sysctl.d/99-colima-userns.conf <<'EOF'
+      kernel.apparmor_restrict_unprivileged_userns=0
+      EOF
+
+      # Apply now (if the sysctl exists on this kernel)
+      sysctl -q -p /etc/sysctl.d/99-colima-userns.conf || true
