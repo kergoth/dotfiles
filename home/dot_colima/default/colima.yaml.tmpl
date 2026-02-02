@@ -151,21 +151,25 @@ docker: {}
 # Default: qemu
 vmType: vz
 
+vmOpts:
+  vz:
+    # Utilise rosetta for amd64 emulation (requires m1 mac and vmType `vz`)
+    # Default: false
+{{- $rosetta_enabled := false }}
+{{- if and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "arm64") }}
+{{-   $rosetta_pkg_check := output "/usr/sbin/pkgutil" "--pkg-info" "com.apple.pkg.RosettaUpdateAuto" }}
+{{-   $rosetta_enabled = not (not $rosetta_pkg_check) }}
+{{- end }}
+    rosetta: {{ $rosetta_enabled }}
+
+rosetta: {{ $rosetta_enabled }}
+
 # Port forwarder for the virtual machine (ssh, grpc).
 # ssh is more stable but supports only TCP.
 # grpc supports both TCP and UDP, but is experimental.
 #
 # Default: ssh
 portForwarder: ssh
-
-# Utilise rosetta for amd64 emulation (requires m1 mac and vmType `vz`)
-# Default: false
-{{- $rosetta_enabled := false }}
-{{- if and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "arm64") }}
-{{-   $rosetta_pkg_check := output "/usr/sbin/pkgutil" "--pkg-info" "com.apple.pkg.RosettaUpdateAuto" }}
-{{-   $rosetta_enabled = not (not $rosetta_pkg_check) }}
-{{- end }}
-rosetta: {{ $rosetta_enabled }}
 
 # Enable foreign architecture emulation via binfmt (e.g. amd64 on arm64, arm64 on amd64)
 # Default: true
