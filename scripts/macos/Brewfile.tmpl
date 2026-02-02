@@ -14,13 +14,65 @@ cask "rectangle"
 cask "syncthing-app"
 cask "zed"
 
-{{ if and (not .work) (not .ephemeral) -}}
+{{ if or (not .use_nix) (eq (includeTemplate "find-tool" (dict "root" . "tool" "fclones")) "") -}}
+brew "fclones"
+{{- end }}
+
+{{ if .containers -}}
+cask "swiftbar"
+{{   if and .coding (not .ephemeral) (not .headless) -}}
+cask "devpod"
+{{-   end }}
+{{- end }}
+
+{{ if not .work -}}
+
+cask "transmission-remote-gui"
+
+{{-   if lt .macos_major_version 26 }}
+{{/* Skip on Tahoe */}}
+cask "jordanbaird-ice"
+{{-   end }}
+
+# quicklook extensions (the ql extension is the only part I care about)
+# there are largely for security reasons, so are excluded from work machines
+cask "apparency"
+cask "suspicious-package"
+
+{{   if .ebook_library -}}
+cask "calibre"
+{{-   end }}
+
+{{   if .gaming -}}
+cask "steam"
+{{-   end }}
+
+{{   if .gaming_device_library -}}
+# ScummVM is needed to determine scummvm ids for deployment to gaming
+# devices, such as the Steam Deck.
+cask "scummvm-app"
+{{-   end }}
+
+{{   if .music_library -}}
+cask "musicbrainz-picard"
+{{-   end }}
+
+{{   if .retro_computing -}}
+cask "86box"
+{{-   end }}
+
+{{   if .video -}}
+cask "vlc"
+{{-   end }}
+
+{{   if not .ephemeral -}}
 # Commercial Apps I own personally
 cask "daisydisk"
 cask "forklift"
 cask "omnioutliner"
 cask "popclip"
 
+# LLMs
 cask "chatgpt"
 cask "claude-code"
 
@@ -33,68 +85,10 @@ cask "shifty"
 # I don't want personal content on work machines
 cask "reader"
 
-{{- if lt .macos_major_version 26 }}
-{{/* Skip on Tahoe */}}
-cask "jordanbaird-ice"
-{{- end }}
-
-# quicklook extensions (the ql extension is the only part I care about)
-# there are largely for security reasons, so are excluded from work machines
-cask "apparency"
-cask "suspicious-package"
-
 # potential license concerns for commercial use
 # note: betterzip's extension requires macOS 10.9 or later
 cask "betterzip"
-{{- end }}
 
-# fclones - efficient duplicate file finder
-{{ if or (not .use_nix) (eq (includeTemplate "find-tool" (dict "root" . "tool" "fclones")) "") -}}
-brew "fclones"
-{{- end }}
-
-{{ if and .work (not .use_nix) -}}
-brew "git-crypt"
-{{- end }}
-
-{{ if .containers -}}
-cask "swiftbar"
-{{   if and .coding (not .ephemeral) (not .headless) -}}
-cask "devpod"
-{{-   end }}
-{{- end }}
-
-{{ if and .ebook_library (not .work) -}}
-cask "calibre"
-{{- end }}
-
-{{ if and .gaming (not .work) -}}
-cask "steam"
-{{- end }}
-
-{{ if and .gaming_device_library (not .work) -}}
-# ScummVM is needed to determine scummvm ids for deployment to gaming
-# devices, such as the Steam Deck.
-cask "scummvm-app"
-{{- end }}
-
-{{ if and .music (not .work) -}}
-# add music apps here
-{{- end }}
-{{ if and .work (not .music) -}}
-cask "notunes"
-{{- end }}
-
-{{ if and .music_library (not .work) -}}
-cask "musicbrainz-picard"
-{{- end }}
-
-{{ if and .retro_computing (not .work) -}}
-cask "86box"
-{{- end }}
-
-{{ if .personal -}}
-{{   if and (not .ephemeral) (not (env "CONTAINER_ID")) -}}
 # No need for a screen saver in a VM or container
 cask "brooklyn"
 {{-     if lt .macos_major_version 14 }}
@@ -102,9 +96,16 @@ cask "brooklyn"
 cask "aerial"
 {{-     end }}
 {{-   end }}
-cask "transmission-remote-gui"
+
+{{- else }}
+
+{{/* work systems */}}
+{{   if not .use_nix -}}
+brew "git-crypt"
+{{-   end }}
+
+{{   if not .music -}}
+cask "notunes"
+{{-   end }}
 {{- end }}
 
-{{ if and .video (not .work) -}}
-cask "vlc"
-{{- end }}
