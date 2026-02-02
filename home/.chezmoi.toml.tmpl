@@ -74,16 +74,11 @@
 
 {{/* set defaults based on context */}}
 {{- if not $ephemeral -}}
-{{-   if eq $hostname "caf-clarson-p1" -}}
-{{-     if $wsl2 -}}
-{{-       $containers = true -}}
-{{/* I don't use wslg */}}
-{{-       $headless = true -}}
-{{-     else -}}
-{{-       $music = true -}}
-{{-     end -}}
+{{-   if eq $hostname "asano" -}}
 {{-     $work = true -}}
 {{-     $coding = true -}}
+{{-     $containers = true -}}
+{{-     $macos_split_user = false -}}
 {{-   else if or (eq $hostname "vaelin") (eq $hostname "zorian") -}}
 {{-     $personal = true -}}
 {{-     $coding = true -}}
