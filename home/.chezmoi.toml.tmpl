@@ -125,6 +125,12 @@
 {{-     $gaming = promptBoolOnce . "gaming" "Will this machine be used for gaming?" $gaming -}}
 {{-     $video = promptBoolOnce . "video" "Will this machine be used for local video playback (install VLC)?" $video -}}
 {{-     $music = promptBoolOnce . "music" "Will this machine be used to listen to music?" $music -}}
+{{-     if eq .chezmoi.os "darwin" -}}
+{{-       $macos_split_user = promptBoolOnce . "macos_split_user" "Will this macOS system use a separate user for admin tasks?" $macos_split_user -}}
+{{-       if $macos_split_user -}}
+{{-         $macos_admin_user = promptBoolOnce . "macos_admin_user" "What is the username of the administrative user?" $macos_admin_user -}}
+{{-       end -}}
+{{-     end -}}
 {{-   end -}}
 {{- end -}}
 
