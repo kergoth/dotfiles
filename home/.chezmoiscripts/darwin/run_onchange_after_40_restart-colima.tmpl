@@ -1,0 +1,12 @@
+{{- $colima := includeTemplate "find-tool" (dict "root" . "tool" "colima") -}}
+{{- if $colima -}}
+#!/bin/sh
+# hash: {{ includeTemplate (joinPath .chezmoi.sourceDir "dot_colima/default/colima.yaml.tmpl") . | sha256sum }}
+# lima override hash: {{ includeTemplate (joinPath .chezmoi.sourceDir "dot_colima/_lima/_config/override.yaml") . | sha256sum }}
+
+if pgrep -q colima; then
+    echo >&2 "Restarting colima..."
+    {{ $colima }} stop
+    {{ $colima }} start
+fi
+{{- end -}}
