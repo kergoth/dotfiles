@@ -155,11 +155,7 @@ vmOpts:
   vz:
     # Utilise rosetta for amd64 emulation (requires m1 mac and vmType `vz`)
     # Default: false
-{{- $rosetta_enabled := false }}
-{{- if and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "arm64") }}
-{{-   $rosetta_pkg_check := output "/usr/sbin/pkgutil" "--pkg-info" "com.apple.pkg.RosettaUpdateAuto" }}
-{{-   $rosetta_enabled = not (not $rosetta_pkg_check) }}
-{{- end }}
+{{- $rosetta_enabled := and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "arm64") (glob "/Library/Apple/usr/share/rosetta/rosetta") }}
     rosetta: {{ $rosetta_enabled }}
 
 rosetta: {{ $rosetta_enabled }}
