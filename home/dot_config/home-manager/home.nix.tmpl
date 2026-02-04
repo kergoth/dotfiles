@@ -102,6 +102,109 @@ in {
     lima
     mas
     reattach-to-user-namespace
+
+    # GUI Applications
+    #keepingyouawake
+    keka
+    kitty
+    maccy
+    obsidian
+    {{- if lt .macos_major_version 26 }}
+    {{/* Skip on Tahoe */}}
+    raycast
+    rectangle
+    {{- end }}
+    #syncthing
+    zed-editor
+
+    {{ if .containers -}}
+    swiftbar
+    {{   if and .coding (not .ephemeral) (not .headless) -}}
+    # This shows up as cli-only
+    #devpod
+    {{-   end }}
+    {{- end }}
+
+    {{ if not .work -}}
+    # Unavailable in nix, except as transmission-remote-gtk, which isn't supported on darwin in nix
+    #transmission-remote-gui
+
+    {{-   if lt .macos_major_version 26 }}
+    {{/* Skip on Tahoe */}}
+    ice-bar
+    {{-   end }}
+
+    # quicklook extensions (the ql extension is the only part I care about)
+    # there are largely for security reasons, so are excluded from work machines
+    apparency
+    suspicious-package
+
+    {{   if .ebook_library -}}
+    #calibre
+    {{-   end }}
+
+    {{   if .gaming -}}
+    #steam
+    {{-   end }}
+
+    {{   if .gaming_device_library -}}
+    # ScummVM is needed to determine scummvm ids for deployment to gaming
+    # devices, such as the Steam Deck.
+    # This works, but provides the CLI but not the GUI.
+    #scummvm
+    {{-   end }}
+
+    {{   if .music_library -}}
+    #picard
+    {{-   end }}
+
+    {{   if .retro_computing -}}
+    # This installs a wrapper, but no .app shows up
+    #_86Box
+    {{-   end }}
+
+    {{   if .video -}}
+    #vlc
+    {{-   end }}
+
+    {{   if not .ephemeral -}}
+    # Commercial Apps I own personally
+    #daisydisk
+    #forklift
+    #omnioutliner
+    #popclip
+
+    # LLMs
+    chatgpt
+    claude-code
+
+    # Not at all related to work
+    discord
+
+    # I don't use work machines at night, so don't use Night Shift
+    #shifty
+
+    # I don't want personal content on work machines
+    #reader
+
+    # potential license concerns for commercial use
+    # note: betterzip's extension requires macOS 10.9 or later
+    #betterzip
+
+    # No need for a screen saver in a VM or container
+    #brooklyn
+    {{-     if lt .macos_major_version 14 }}
+    # Install on pre-Sonoma macOS
+    #aerial
+    {{-     end }}
+    {{-   end }}
+
+    {{- else }}
+
+    {{   if not .music -}}
+    #notunes
+    {{-   end }}
+    {{- end }}
   ] ++ lib.optionals stdenv.isLinux [
     glibcLocales
   {{- if .wsl2 }}
@@ -118,7 +221,7 @@ in {
 
     # Enable directly supported programs
     direnv.enable = true;
-    # direnv.nix-direnv.enable = true;
+    direnv.nix-direnv.enable = true;
     fzf.enable = true;
     jq.enable = true;
     bat.enable = true;
@@ -146,8 +249,16 @@ in {
 
   nix.nixPath = ["nixpkgs=flake:nixpkgs"];
 
+  # Allow unfree packages
+  nixpkgs = {
+    config = {
+      allowUnfree = true;
+      allowUnfreePredicate = (_: true);
+    };
+  };
+
   # Disable linking apps into ~/Applications/Home Manager Apps
-  targets.darwin.linkApps.enable = false;
+  #targets.darwin.linkApps.enable = false;
 
   # Future-proof: if/when you bump home.stateVersion so copyApps becomes the default
   targets.darwin.copyApps.enable = false;

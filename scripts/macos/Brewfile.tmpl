@@ -2,42 +2,14 @@ cask_args appdir: "~/Applications"
 
 # apps
 cask "keepingyouawake"
-cask "keka"
-cask "kitty"
-cask "maccy"
-cask "obsidian"
-{{- if lt .macos_major_version 26 }}
-{{/* Skip on Tahoe */}}
-cask "raycast"
-cask "rectangle"
-{{- end }}
-cask "syncthing-app"
-cask "zed"
+cask "syncthing"
 
-{{ if or (not .use_nix) (eq (includeTemplate "find-tool" (dict "root" . "tool" "fclones")) "") -}}
-brew "fclones"
-{{- end }}
-
-{{ if .containers -}}
-cask "swiftbar"
-{{   if and .coding (not .ephemeral) (not .headless) -}}
+{{ if and .containers .coding (not .ephemeral) (not .headless) -}}
 cask "devpod"
-{{-   end }}
 {{- end }}
 
 {{ if not .work -}}
-
 cask "transmission-remote-gui"
-
-{{-   if lt .macos_major_version 26 }}
-{{/* Skip on Tahoe */}}
-cask "jordanbaird-ice"
-{{-   end }}
-
-# quicklook extensions (the ql extension is the only part I care about)
-# there are largely for security reasons, so are excluded from work machines
-cask "apparency"
-cask "suspicious-package"
 
 {{   if .ebook_library -}}
 cask "calibre"
@@ -72,13 +44,6 @@ cask "forklift"
 cask "omnioutliner"
 cask "popclip"
 
-# LLMs
-cask "chatgpt"
-cask "claude-code"
-
-# Not at all related to work
-cask "discord"
-
 # I don't use work machines at night, so don't use Night Shift
 cask "shifty"
 
@@ -96,16 +61,8 @@ cask "brooklyn"
 cask "aerial"
 {{-     end }}
 {{-   end }}
-
 {{- else }}
-
-{{/* work systems */}}
-{{   if not .use_nix -}}
-brew "git-crypt"
-{{-   end }}
-
 {{   if not .music -}}
 cask "notunes"
 {{-   end }}
 {{- end }}
-
