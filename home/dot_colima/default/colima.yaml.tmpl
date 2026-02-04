@@ -2,7 +2,7 @@
 {{- $profiles := .vmProfiles -}}
 {{- $default := .vmDefaultProfile -}}
 {{- $cfg := index $profiles $host | default $default -}}
-{{- $rosetta_enabled := and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "arm64") (glob "/Library/Apple/usr/share/rosetta/rosetta") }}
+{{- $rosetta_enabled := and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "arm64") (not (not (glob "/Library/Apple/usr/share/rosetta/rosetta"))) }}
 # Number of CPUs to be allocated to the virtual machine.
 # Default: 2
 cpu: {{ $cfg.colima_cpus }}
