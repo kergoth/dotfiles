@@ -142,7 +142,6 @@ Snapshots of my browser extension configurations from various browsers.
 
 - [Awesome Autocomplete for GitHub](https://github.com/algolia/github-awesome-autocomplete)
 - [CanvasBlocker](https://github.com/kkapsner/CanvasBlocker/)
-- [Cisco Webex Extension](https://www.webex.com/)
 - [ColorfulTabs](https://www.addongenie.com/)
 - [Download Star](https://addons.mozilla.org/en-US/firefox/addon/download-star/)
 - [DownThemAll! beta](https://downthemall.org/)
@@ -201,8 +200,6 @@ Snapshots of my browser extension configurations from various browsers.
 
 - [Amazon Smile Redirect](https://chrome.google.com/webstore/detail/ejglonclnjogoiegggjjcpapffbnangg): This Extension will automatically redirect you to the corresponding AmazonSmile page from Amazon.com
 - [Auto Tab Discard (suspend)](https://chrome.google.com/webstore/detail/jhnleheckmknfcgijgkadoemagpecfol): Increase browser speed and reduce memory load when you have numerous open tabs
-- [Cisco Webex Extension](https://chrome.google.com/webstore/detail/jlhmfgmfgeifomenelglieieghnjghma): Join Webex meetings using Google Chrome
-- [CNET Shopping](https://chrome.google.com/webstore/detail/lghjfnfolmcikomdjmoiemllfnlmmoko): Get the best price on your favorite products with CNET Shopping. When we find deals, we save you an average of $27 per purchase
 - [Ghostery Tracker & Ad Blocker - Privacy AdBlock](https://chrome.google.com/webstore/detail/mlomiejdfkolichcflejclcbmpeaniij): Powerful and easy-to-use privacy extension. Block ads, trackers & speed up your web
 - [Library Extension](https://chrome.google.com/webstore/detail/chkgcmmjoejpekoegkedcpifgfhpjmec): See books, music and more at your local library as you browse the internet
 - [PayPal Honey: Automated Coupons & Cash Back](https://chrome.google.com/webstore/detail/bmnlcjabgnpnenekpadlanbbkooimhnj): Save money and earn rewards when you shop online
