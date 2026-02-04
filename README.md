@@ -830,6 +830,10 @@ chezmoi update -R
 
 ### Formerly-Used Browser Extensions
 
+For comprehensive historical browser extension snapshots, see [docs/formerly-used-browser-extensions.md](docs/formerly-used-browser-extensions.md).
+
+#### Safari Extensions
+
 - [AdGuard for Safari](https://apps.apple.com/us/app/adguard-for-safari/id1440147259?mt=12&uo=4&at=10l4tL) ([Open-Source](https://github.com/AdguardTeam/AdguardForSafari)): Replaced with uBlock Origin Lite for more efficient ad blocking.
 - [PiPer](https://apps.apple.com/us/app/piper/id1421915518?mt=12&uo=4&at=10l4tL) ([Open-Source](https://github.com/amarcu5/PiPer)): Picture-in-Picture for Safari. No longer needed.
 - [Privacy Redirect](https://apps.apple.com/us/app/privacy-redirect/id1578144015?uo=4&at=10l4tL) ([Open-Source](https://github.com/smmr-software/privacy-redirect-safari)): No longer needed.
