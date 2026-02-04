@@ -4,6 +4,9 @@ Snapshots of my browser extension configurations from various browsers.
 
 ## Zen Browser
 
+**Browser Engine:** Firefox/Gecko
+**Extensions:** Firefox Add-ons (addons.mozilla.org) - Compatible with all Firefox extensions
+
 ### Extensions as of 2026-02-03
 
 #### Enabled
@@ -36,6 +39,9 @@ Snapshots of my browser extension configurations from various browsers.
 - [Textarea Cache](https://addons.mozilla.org/en-US/firefox/addon/textarea-cache/): Saves text you enter in text areas to prevent data loss
 
 ## Vivaldi Browser
+
+**Browser Engine:** Chromium/Blink
+**Extensions:** Chrome Web Store (chrome.google.com/webstore) - Compatible with most Chrome extensions
 
 ### Extensions as of 2026-02-02
 
