@@ -5,7 +5,7 @@
 ["bin"]
     type = "git-repo"
     url = "https://github.com/kergoth/scripts"
-    refreshPeriod = "{{ $refreshPeriod }}"
+    refreshPeriod = "24h"
     [bin.clone]
     args = {{ $clone_args | toToml }}
     [bin.pull]
