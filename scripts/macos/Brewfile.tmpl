@@ -1,28 +1,5 @@
 cask_args appdir: "~/Applications"
 
-# apps
-cask "keepingyouawake"
-cask "keka"
-cask "kitty"
-cask "maccy"
-cask "obsidian"
-{{ if and .work (not .headless) -}}
-cask "raspberry-pi-imager"
-{{- end }}
-{{ if lt .macos_major_version 26 -}}
-{{/* Skip on Tahoe */}}
-cask "raycast"
-cask "rectangle"
-{{- end }}
-{{ if and .user_setup (not .ephemeral) (not .headless) -}}
-cask "syncthing-app"
-{{- end }}
-cask "zed"
-
-{{ if or (not .use_nix) (eq (includeTemplate "find-tool" (dict "root" . "tool" "fclones")) "") -}}
-brew "fclones"
-{{- end }}
-
 {{ if not .use_nix -}}
 brew "node"
 brew "uv"
@@ -53,15 +30,15 @@ brew "tealdeer"
 brew "zoxide"
 {{- end }}
 
-{{ if .containers -}}
-cask "swiftbar"
-{{   if and .coding (not .ephemeral) (not .headless) -}}
-cask "devpod"
-{{-   end }}
+# apps
+cask "keepingyouawake"
+{{ if and .user_setup (not .ephemeral) (not .headless) -}}
+cask "syncthing-app"
 {{- end }}
 
-# LLMs
-cask "chatgpt"
+{{ if and .containers .coding (not .ephemeral) (not .headless) -}}
+cask "devpod"
+{{- end }}
 
 # These are CLI tools, but homebrew has newer version than nix,
 # and these update frequently enough to be worth installing here.
@@ -72,16 +49,6 @@ brew "jj"
 cask "codex"
 
 cask "transmission-remote-gui"
-
-{{-   if lt .macos_major_version 26 }}
-{{/* Skip on Tahoe */}}
-cask "jordanbaird-ice"
-{{-   end }}
-
-# quicklook extensions (the ql extension is the only part I care about)
-# there are largely for security reasons, so are excluded from work machines
-cask "apparency"
-cask "suspicious-package"
 
 {{   if .ebook_library -}}
 cask "calibre"
@@ -115,9 +82,6 @@ cask "daisydisk"
 cask "forklift"
 cask "omnioutliner"
 cask "popclip"
-
-# Not at all related to work
-cask "discord"
 
 # I don't use work machines at night, so don't use Night Shift
 cask "shifty"
