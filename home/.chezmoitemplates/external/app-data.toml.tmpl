@@ -10,8 +10,8 @@
 {{-   $clone_args := dig "external" "clone" "args" (list) . -}}
 {{-   $clone_args = append $clone_args "--depth=1" -}}
 {{-   $pull_args := dig "external" "pull" "args" (list) . -}}
-{{-   $86box_data := "" -}}
 
+{{-   $86box_data := "" -}}
 {{-   if eq .chezmoi.os "darwin" -}}
 {{-     $86box_data = joinPath "Library" "Application Support" "86Box" }}
 {{-   else if eq .chezmoi.os "windows" -}}
