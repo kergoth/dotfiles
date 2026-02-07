@@ -1,0 +1,40 @@
+{{- $86box := "" -}}
+{{- if eq .chezmoi.os "darwin" -}}
+{{-   $installed_apps := includeTemplate "installedMacApps" (dict "root" . "apps" ( list "86Box.app" )) | fromJson -}}
+{{-   $86box = index $installed_apps "86Box.app" -}}
+{{- else -}}
+{{-   $86box = includeTemplate "find-tool" (dict "root" . "tool" "86box") -}}
+{{- end -}}
+{{- $86box_data := "" -}}
+{{- if eq .chezmoi.os "darwin" -}}
+{{-   $86box_data = joinPath "Library" "Application Support" "86Box" }}
+{{- else if eq .chezmoi.os "windows" -}}
+{{-   $86box_data = joinPath "AppData" "Local" "86Box" }}
+{{- else -}}
+{{-   $86box_data = joinPath ".config" "86Box" }}
+{{- end -}}
+{{- if $86box -}}
+{{-   $refreshPeriod := .external.refreshPeriod -}}
+{{-   $clone_args := dig "external" "clone" "args" (list) . -}}
+{{-   $clone_args = append $clone_args "--depth=1" -}}
+{{-   $pull_args := dig "external" "pull" "args" (list) . -}}
+{{-   $assetsDir := joinPath $86box_data "assets" -}}
+[{{ $assetsDir | quote }}]
+    type = "git-repo"
+    url = "https://github.com/86Box/assets"
+    refreshPeriod = {{ $refreshPeriod | toToml }}
+    ["{{ $assetsDir }}".clone]
+      args = {{ $clone_args | toToml }}
+    ["{{ $assetsDir }}".pull]
+      args = {{ $pull_args | toToml }}
+{{- $romsDir := joinPath $86box_data "roms" }}
+[{{ $romsDir | quote }}]
+    type = "git-repo"
+    url = "https://github.com/86Box/roms"
+    refreshPeriod = {{ $refreshPeriod | toToml }}
+    ["{{ $romsDir }}".clone]
+      args = {{ $clone_args | toToml }}
+    ["{{ $romsDir }}".pull]
+      args = {{ $pull_args | toToml }}
+
+{{- end }}
