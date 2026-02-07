@@ -20,7 +20,7 @@
 {{-     $86box_data = joinPath ".config" "86Box" }}
 {{-   end -}}
 
-{{-   $assetsDir := joinPath $86box_data "assets" -}}
+{{- $assetsDir := joinPath $86box_data "assets" -}}
 [{{ $assetsDir | quote }}]
     type = "git-repo"
     url = "https://github.com/86Box/assets"
