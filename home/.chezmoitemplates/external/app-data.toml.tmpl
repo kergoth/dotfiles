@@ -5,19 +5,21 @@
 {{- else -}}
 {{-   $86box = includeTemplate "find-tool" (dict "root" . "tool" "86box") -}}
 {{- end -}}
-{{- $86box_data := "" -}}
-{{- if eq .chezmoi.os "darwin" -}}
-{{-   $86box_data = joinPath "Library" "Application Support" "86Box" }}
-{{- else if eq .chezmoi.os "windows" -}}
-{{-   $86box_data = joinPath "AppData" "Local" "86Box" }}
-{{- else -}}
-{{-   $86box_data = joinPath ".config" "86Box" }}
-{{- end -}}
 {{- if or .retro_computing $86box -}}
 {{-   $refreshPeriod := .external.refreshPeriod -}}
 {{-   $clone_args := dig "external" "clone" "args" (list) . -}}
 {{-   $clone_args = append $clone_args "--depth=1" -}}
 {{-   $pull_args := dig "external" "pull" "args" (list) . -}}
+{{-   $86box_data := "" -}}
+
+{{-   if eq .chezmoi.os "darwin" -}}
+{{-     $86box_data = joinPath "Library" "Application Support" "86Box" }}
+{{-   else if eq .chezmoi.os "windows" -}}
+{{-     $86box_data = joinPath "AppData" "Local" "86Box" }}
+{{-   else -}}
+{{-     $86box_data = joinPath ".config" "86Box" }}
+{{-   end -}}
+
 {{-   $assetsDir := joinPath $86box_data "assets" -}}
 [{{ $assetsDir | quote }}]
     type = "git-repo"
@@ -27,6 +29,7 @@
       args = {{ $clone_args | toToml }}
     ["{{ $assetsDir }}".pull]
       args = {{ $pull_args | toToml }}
+
 {{- $romsDir := joinPath $86box_data "roms" }}
 [{{ $romsDir | quote }}]
     type = "git-repo"
