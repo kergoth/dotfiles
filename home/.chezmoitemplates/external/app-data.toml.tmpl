@@ -13,7 +13,7 @@
 {{- else -}}
 {{-   $86box_data = joinPath ".config" "86Box" }}
 {{- end -}}
-{{- if $86box -}}
+{{- if or .retro_computing $86box -}}
 {{-   $refreshPeriod := .external.refreshPeriod -}}
 {{-   $clone_args := dig "external" "clone" "args" (list) . -}}
 {{-   $clone_args = append $clone_args "--depth=1" -}}
