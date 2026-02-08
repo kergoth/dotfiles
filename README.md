@@ -732,7 +732,8 @@ chezmoi update -R
 - [Simplenote](https://simplenote.com): An easy way to keep notes, lists, ideas, and more.
 - [Workflowy](https://workflowy.com): Organize your brain.
 - [EverNote](https://evernote.com): A note-taking app.
-- LibreWolf
+- [LibreWolf](https://librewolf.net): A privacy-focused web browser.
+- [Zen Browser](https://www.zenbrowser.com): Beautifully designed, privacy-focused web browser.
 
 ### Formerly-Used macOS Software
 
@@ -754,6 +755,7 @@ chezmoi update -R
 - [MacDown](https://macdown.uranusjr.com): Markdown editor.
 - [MacVim](https://macvim-dev.github.io/macvim): Vim - the text editor - for macOS
 - [Magnet](https://magnet.crowdcafe.com): Organize your workspace. Replaced by Rectangle.
+- [Orion Browser](https://www.orionbrowser.com): A fast, secure, and private browser.
 - [QLColorCode](https://github.com/anthonygelibert/QLColorCode) (Open-Source): QuickLook plugin for syntax highlighting source code. No longer maintained.
 - [qlImageSize](https://github.com/Nyx0uf/qlImageSize) (Open-Source): QuickLook plugin to display image size and resolution. No longer needed.
 - [QLMarkDown](https://github.com/toland/qlmarkdown) (Open-Source): QuickLook plugin for Markdown files. No longer maintained.
