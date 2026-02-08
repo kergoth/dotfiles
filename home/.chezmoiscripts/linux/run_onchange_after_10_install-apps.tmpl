@@ -1,19 +1,25 @@
-{{- if or (and .user_setup (not .headless) (not .steamdeck) (not (env "CONTAINER_ID"))) (and .coding .containers) -}}
-{{-   $zed := "" -}}
-{{-   $claude := "" -}}
-{{-   $devpod := "" -}}
-{{-   $flatpak := "" -}}
-{{-   if and .user_setup (not .headless) (not .steamdeck) (not (env "CONTAINER_ID")) -}}
-{{-     $zed = includeTemplate "find-tool" (dict "root" . "tool" "zed") -}}
-{{-     $claude = includeTemplate "find-tool" (dict "root" . "tool" "claude") -}}
-{{-   end -}}
-{{-   if and .coding .containers -}}
-{{-     $devpod = includeTemplate "find-tool" (dict "root" . "tool" "devpod") -}}
-{{-     if not .headless -}}
-{{-       $flatpak = includeTemplate "find-tool" (dict "root" . "tool" "flatpak") -}}
-{{-     end -}}
-{{-   end -}}
-{{-   if or (not $zed) (and (not .work) (not $claude)) (and .coding .containers (not $devpod)) -}}
+{{- $zed := "" -}}
+{{- $claude := "" -}}
+{{- $vivaldi := "" -}}
+{{- $devpod := "" -}}
+{{- $flatpak := "" -}}
+{{- $need_install := false -}}
+{{- if not .headless -}}
+{{-   $flatpak = includeTemplate "find-tool" (dict "root" . "tool" "flatpak") -}}
+{{- end -}}
+{{- if and .user_setup (not .headless) (not .steamdeck) (not (env "CONTAINER_ID")) -}}
+{{-   $zed = includeTemplate "find-tool" (dict "root" . "tool" "zed") -}}
+{{-   $claude = includeTemplate "find-tool" (dict "root" . "tool" "claude") -}}
+{{-   $vivaldi = includeTemplate "find-tool" (dict "root" . "tool" "vivaldi") -}}
+{{-   if not $zed -}}{{- $need_install = true -}}{{- end -}}
+{{-   if and (not .work) (not $claude) -}}{{- $need_install = true -}}{{- end -}}
+{{-   if and (not $vivaldi) $flatpak -}}{{- $need_install = true -}}{{- end -}}
+{{- end -}}
+{{- if and .coding .containers -}}
+{{-   $devpod = includeTemplate "find-tool" (dict "root" . "tool" "devpod") -}}
+{{-   if not $devpod -}}{{- $need_install = true -}}{{- end -}}
+{{- end -}}
+{{- if $need_install -}}
 #!/bin/sh
 set -eu
 
@@ -23,21 +29,26 @@ PATH="$scriptsdir:$PATH"
 # shellcheck source=./common.sh
 . "$scriptsdir/common.sh" || exit 1
 
-{{-     if not $zed }}
+{{-   if not $zed }}
 msg "Installing Zed"
 curl -f https://zed.dev/install.sh | sh
-{{-     end }}
+{{-   end }}
 
-{{-     if and (not .work) (not $claude) }}
+{{-   if and (not .work) (not $claude) }}
 msg "Installing Claude Code"
 curl -fsSL https://claude.ai/install.sh | bash
-{{-     end }}
+{{-   end }}
 
-{{-     if and .coding .containers (not $devpod) }}
-{{-       if and (not .headless) $flatpak }}
+{{-   if and (not $vivaldi) $flatpak }}
+msg "Installing Vivaldi from Flathub"
+flatpak install -y --user flathub com.vivaldi.Vivaldi || true
+{{-   end }}
+
+{{-   if and .coding .containers (not $devpod) }}
+{{-     if and (not .headless) $flatpak }}
 msg "Installing DevPod from Flathub"
 flatpak install -y --user flathub sh.loft.devpod || true
-{{-       else }}
+{{-     else }}
 msg "Installing DevPod CLI"
 devpod_arch="amd64"
 case "$(uname -m)" in
@@ -46,7 +57,6 @@ esac
 curl -L -o /tmp/devpod "https://github.com/loft-sh/devpod/releases/latest/download/devpod-linux-$devpod_arch"
 install -c -m 0755 /tmp/devpod "$HOME/.local/bin/devpod"
 rm -f /tmp/devpod
-{{-       end }}
 {{-     end }}
 {{-   end }}
 {{- end }}

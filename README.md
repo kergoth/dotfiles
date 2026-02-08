@@ -383,10 +383,13 @@ chezmoi update -R
 - [1Password](https://1password.com): A password manager developed by AgileBits.
 - [Discord](https://discord.com): A VoIP and instant messaging social platform.
 - [Obsidian](https://obsidian.md): A powerful knowledge base that works on top of a local folder of plain text Markdown files. Available on Linux, macOS, and Windows via brew, scoop, flatpak, or [download](https://obsidian.md/download).
-- [Vivaldi](https://vivaldi.com/): Web browser with built-in email client focusing on customization and control.
 - [VLC](https://www.videolan.org/vlc/download-macosx.html) ([Open-Source](https://code.videolan.org/videolan/vlc)): A free and open source cross-platform multimedia player.
 - If the gaming flag is enabled:
   - [Steam](https://store.steampowered.com): A digital distribution platform for purchasing and playing video games.
+
+#### GUI Software on Windows, macOS, and Linux
+
+- [Vivaldi](https://vivaldi.com/): Web browser with built-in email client focusing on customization and control. Available via brew, scoop, or flatpak.
 
 #### GUI Software on Windows
 
