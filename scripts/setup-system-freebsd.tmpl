@@ -117,6 +117,8 @@ freebsd_check sysutils/lsblk lsblk
 
 # GUI Applications
 {{ if not .headless -}}
+freebsd_check www/librewolf librewolf
+
 eget_install() {
     local repo="$1"
     shift

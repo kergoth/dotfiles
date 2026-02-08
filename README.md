@@ -391,6 +391,10 @@ chezmoi update -R
 
 - [Vivaldi](https://vivaldi.com/): Web browser with built-in email client focusing on customization and control. Available via brew, scoop, or flatpak.
 
+#### GUI Software on FreeBSD
+
+- [LibreWolf](https://librewolf.net/) ([Open-Source](https://codeberg.org/librewolf)): A custom version of Firefox, focused on privacy, security, and freedom. Available via FreeBSD ports (`www/librewolf`).
+
 #### GUI Software on Windows
 
 - [SquirrelDisk](https://www.squirreldisk.com/) ([Open-Source](https://github.com/adileo/squirreldisk)): Beautiful, Cross-Platform and Super Fast Disk Usage Analysis Tool. Available via scoop, winget.
