@@ -75,6 +75,8 @@ Snapshots of my browser extension configurations from various browsers.
 ### Extensions as of 2026-02-07
 
 - [1Password](https://addons.mozilla.org/en-US/firefox/addon/1password-x-password-manager/): The best way to experience 1Password in your browser. Easily sign in to sites, generate passwords, and store secure information.
+- [Auto Tab Discard (suspend)](https://chrome.google.com/webstore/detail/jhnleheckmknfcgijgkadoemagpecfol): Increase browser speed and reduce memory load when you have numerous open tabs.
+- [Dark Reader](https://addons.mozilla.org/en-US/firefox/addon/darkreader/?utm_source=addons.mozilla.org&utm_medium=referral&utm_content=search): Dark mode for every website.
 - [DeArrow - Better Titles and Thumbnails](https://addons.mozilla.org/en-US/firefox/addon/dearrow/): Crowdsourcing titles and thumbnails to be descriptive and not sensational
 - [Decentraleyes](https://addons.mozilla.org/en-US/firefox/addon/decentraleyes/): Protects you against tracking through centralized content delivery
 - [Duplicate Tabs Closer](https://addons.mozilla.org/en-US/firefox/addon/duplicate-tabs-closer/): Detects and closes duplicate tabs automatically
