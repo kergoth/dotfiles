@@ -7,6 +7,9 @@
 // custom settings, run the `open default settings` command
 // from the command palette or from `Zed` application menu.
 {
+  "edit_predictions": {
+    "provider": "zed"
+  },
   "title_bar": {
     "show_user_picture": false
   },
@@ -16,9 +19,6 @@
   "auto_indent_on_paste": false,
   "outline_panel": {
     "dock": "right"
-  },
-  "features": {
-    "edit_prediction_provider": "zed"
   },
 {{- if .secrets }}
   "ssh_connections": {{- if .work }}
