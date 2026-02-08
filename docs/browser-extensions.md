@@ -2,42 +2,6 @@
 
 Snapshots of my browser extension configurations from various browsers.
 
-## Zen Browser
-
-**Browser Engine:** Firefox/Gecko
-**Extensions:** Firefox Add-ons (addons.mozilla.org) - Compatible with all Firefox extensions
-
-### Extensions as of 2026-02-03
-
-#### Enabled
-
-- [1Password](https://addons.mozilla.org/en-US/firefox/addon/1password-x-password-manager/): The best way to experience 1Password in your browser for signing in to sites, generating passwords, and storing secure information
-- [Auto Tab Discard](https://addons.mozilla.org/en-US/firefox/addon/auto-tab-discard/): Increase browser speed and reduce memory load by automatically discarding unused tabs
-- [Canonical](https://github.com/bhadaway/canonical): Gets the canonical URL for the current page
-- [Decentraleyes](https://addons.mozilla.org/en-US/firefox/addon/decentraleyes/): Protects you against tracking through centralized content delivery
-- [h264ify](https://addons.mozilla.org/en-US/firefox/addon/h264ify/): Makes YouTube stream H.264 videos instead of VP8/VP9 videos
-- [OneTab](https://addons.mozilla.org/en-US/firefox/addon/onetab/): Save up to 95% memory and reduce tab clutter by converting tabs to a list
-- [Prevent Duplicate Tabs](https://addons.mozilla.org/en-US/firefox/addon/duplicate-tab-detector/): Prevents opening duplicate tabs
-- [Privacy Badger](https://addons.mozilla.org/en-US/firefox/addon/privacy-badger17/): Automatically learns to block hidden trackers
-- [Readwise](https://addons.mozilla.org/en-US/firefox/addon/readwise/): Sync your Kindle highlights and review them daily
-- [Readwise Highlighter](https://addons.mozilla.org/en-US/firefox/addon/readwise-highlighter/): Save articles to Reader and highlight the open web
-- [Tab Session Manager](https://addons.mozilla.org/en-US/firefox/addon/tab-session-manager/): Save and restore the state of windows and tabs with automatic saving
-- [uBlock Origin](https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/): An efficient blocker. Easy on CPU and memory
-
-#### Disabled
-
-- [Containers On The Go](https://addons.mozilla.org/en-US/firefox/addon/containers-on-the-go/): Quickly switch container tabs with keyboard shortcuts
-- [Cookie AutoDelete](https://addons.mozilla.org/en-US/firefox/addon/cookie-autodelete/): Automatically delete unwanted cookies from closed tabs
-- [Duplicate Tabs Closer](https://addons.mozilla.org/en-US/firefox/addon/duplicate-tabs-closer/): Detects and closes duplicate tabs automatically
-- [HoldTab](https://addons.mozilla.org/en-US/firefox/addon/holdtab/): Delays new tab loading until you activate it
-- [Redirector](https://addons.mozilla.org/en-US/firefox/addon/redirector-2/): Automatically redirect URLs based on user-defined rules
-- [Referer Control](https://addons.mozilla.org/en-US/firefox/addon/referercontrol/): Control the HTTP Referer on a per-site basis
-- [Request Control](https://addons.mozilla.org/en-US/firefox/addon/requestcontrol/): Control requests with filtering, redirecting, and blocking rules
-- [Resurrect Pages](https://addons.mozilla.org/en-US/firefox/addon/resurrect-pages-isup-edition/): View cached or archived versions of dead web pages
-- [Shut Up: Comment Blocker](https://addons.mozilla.org/en-US/firefox/addon/shut-up-comment-blocker/): Blocks comment sections on many popular websites
-- [Skip Redirect](https://addons.mozilla.org/en-US/firefox/addon/skip-redirect/): Skip intermediary redirect pages automatically
-- [Textarea Cache](https://addons.mozilla.org/en-US/firefox/addon/textarea-cache/): Saves text you enter in text areas to prevent data loss
-
 ## Vivaldi Browser
 
 **Browser Engine:** Chromium/Blink
@@ -105,6 +69,43 @@ Snapshots of my browser extension configurations from various browsers.
 - [Violentmonkey](https://chrome.google.com/webstore/detail/jinjaccalgkegednnccohejagnlnfdag): An open source userscript manager that supports a lot of browsers
 - [xStyle](https://chrome.google.com/webstore/detail/hncgkmhphmncjohllpoleelnibpmccpj): Restyle the web with xStyle, a user styles manager. With xStyle you can install themes & skins for many sites and create your own.
 - [Zoom Page WE](https://chrome.google.com/webstore/detail/bcdjhkphgmiapajkphennjfgoehpodpk): Zoom web pages (either per-site or per-tab) using full-page zoom, text-only zoom, automatic fit-to-width and minimum font size.
+
+
+## Zen Browser
+
+**Browser Engine:** Firefox/Gecko
+**Extensions:** Firefox Add-ons (addons.mozilla.org) - Compatible with all Firefox extensions
+
+### Extensions as of 2026-02-03
+
+#### Enabled
+
+- [1Password](https://addons.mozilla.org/en-US/firefox/addon/1password-x-password-manager/): The best way to experience 1Password in your browser for signing in to sites, generating passwords, and storing secure information
+- [Auto Tab Discard](https://addons.mozilla.org/en-US/firefox/addon/auto-tab-discard/): Increase browser speed and reduce memory load by automatically discarding unused tabs
+- [Canonical](https://github.com/bhadaway/canonical): Gets the canonical URL for the current page
+- [Decentraleyes](https://addons.mozilla.org/en-US/firefox/addon/decentraleyes/): Protects you against tracking through centralized content delivery
+- [h264ify](https://addons.mozilla.org/en-US/firefox/addon/h264ify/): Makes YouTube stream H.264 videos instead of VP8/VP9 videos
+- [OneTab](https://addons.mozilla.org/en-US/firefox/addon/onetab/): Save up to 95% memory and reduce tab clutter by converting tabs to a list
+- [Prevent Duplicate Tabs](https://addons.mozilla.org/en-US/firefox/addon/duplicate-tab-detector/): Prevents opening duplicate tabs
+- [Privacy Badger](https://addons.mozilla.org/en-US/firefox/addon/privacy-badger17/): Automatically learns to block hidden trackers
+- [Readwise](https://addons.mozilla.org/en-US/firefox/addon/readwise/): Sync your Kindle highlights and review them daily
+- [Readwise Highlighter](https://addons.mozilla.org/en-US/firefox/addon/readwise-highlighter/): Save articles to Reader and highlight the open web
+- [Tab Session Manager](https://addons.mozilla.org/en-US/firefox/addon/tab-session-manager/): Save and restore the state of windows and tabs with automatic saving
+- [uBlock Origin](https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/): An efficient blocker. Easy on CPU and memory
+
+#### Disabled
+
+- [Containers On The Go](https://addons.mozilla.org/en-US/firefox/addon/containers-on-the-go/): Quickly switch container tabs with keyboard shortcuts
+- [Cookie AutoDelete](https://addons.mozilla.org/en-US/firefox/addon/cookie-autodelete/): Automatically delete unwanted cookies from closed tabs
+- [Duplicate Tabs Closer](https://addons.mozilla.org/en-US/firefox/addon/duplicate-tabs-closer/): Detects and closes duplicate tabs automatically
+- [HoldTab](https://addons.mozilla.org/en-US/firefox/addon/holdtab/): Delays new tab loading until you activate it
+- [Redirector](https://addons.mozilla.org/en-US/firefox/addon/redirector-2/): Automatically redirect URLs based on user-defined rules
+- [Referer Control](https://addons.mozilla.org/en-US/firefox/addon/referercontrol/): Control the HTTP Referer on a per-site basis
+- [Request Control](https://addons.mozilla.org/en-US/firefox/addon/requestcontrol/): Control requests with filtering, redirecting, and blocking rules
+- [Resurrect Pages](https://addons.mozilla.org/en-US/firefox/addon/resurrect-pages-isup-edition/): View cached or archived versions of dead web pages
+- [Shut Up: Comment Blocker](https://addons.mozilla.org/en-US/firefox/addon/shut-up-comment-blocker/): Blocks comment sections on many popular websites
+- [Skip Redirect](https://addons.mozilla.org/en-US/firefox/addon/skip-redirect/): Skip intermediary redirect pages automatically
+- [Textarea Cache](https://addons.mozilla.org/en-US/firefox/addon/textarea-cache/): Saves text you enter in text areas to prevent data loss
 
 ## Firefox
 
