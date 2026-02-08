@@ -27,5 +27,15 @@
     "bindings": {
       "alt-q": "editor::Rewrap",
     }
+  },
+  // Allow shift-enter in claude-code
+  {
+    "context": "Terminal",
+    "bindings": {
+      "shift-enter": [
+        "terminal::SendText",
+        "\u001b\r"
+      ]
+    }
   }
 ]
