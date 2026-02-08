@@ -828,9 +828,9 @@ chezmoi update -R
 - Paragon Partition Manager for DOS
 - Partition Magic
 
-### Formerly-Used Browser Extensions
+### Browser Extensions
 
-For comprehensive historical browser extension snapshots, see [docs/formerly-used-browser-extensions.md](docs/formerly-used-browser-extensions.md).
+For comprehensive browser extension snapshots, see [docs/browser-extensions.md](docs/browser-extensions.md).
 
 #### Safari Extensions
 

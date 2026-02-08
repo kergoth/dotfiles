@@ -1,4 +1,4 @@
-# Formerly-Used Browser Extensions
+# Browser Extensions
 
 Snapshots of my browser extension configurations from various browsers.
 
@@ -42,6 +42,21 @@ Snapshots of my browser extension configurations from various browsers.
 
 **Browser Engine:** Chromium/Blink
 **Extensions:** Chrome Web Store (chrome.google.com/webstore) - Compatible with most Chrome extensions
+
+### Extensions as of 2026-02-07
+
+- [1Password -- Password Manager](https://chrome.google.com/webstore/detail/aeblfdkhhhdcdjpifhhbdiojplfjncoa): The best way to experience 1Password in your browser. Easily sign in to sites, generate passwords, and store secure information.
+- [DeArrow - Better Titles and Thumbnails](https://chrome.google.com/webstore/detail/enamippconapkdmgfgjchkhakpfinmaj): Crowdsourcing titles and thumbnails to be descriptive and not sensational
+- [Decentraleyes](https://chrome.google.com/webstore/detail/ldpochfccmkkmhdbclfhpagapcfdljkj): Protects you against tracking through centralized content delivery
+- [Duplicate Tabs Closer](https://chrome.google.com/webstore/detail/gnmdbogfankgjepgglmmfmbnimcmcjle): Detects and closes duplicate tabs automatically
+- [Obsidian Web Clipper](https://chrome.google.com/webstore/detail/cnjifjpddelmedmihgijeibhnjfabmlf): Save and highlight web pages in a private and durable format that you can access offline
+- [Readwise Highlighter](https://chrome.google.com/webstore/detail/jjhefcfhmnkfeepcpnilbbkaadhngkbi): Save a page to Readwise Reader
+- [SponsorBlock for YouTube - Skip Sponsorships](https://chrome.google.com/webstore/detail/mnjggcdmjocbbbhaepdhchncahnbgone): Skip sponsorships, subscription begging and more on YouTube videos
+- [Tab Session Manager](https://chrome.google.com/webstore/detail/iaiomicjabeggjcfkbimgmglanimpnae): Save and restore the state of windows and tabs. It also supports automatic saving.
+- [Tampermonkey](https://chrome.google.com/webstore/detail/dhdgffkkebhmkfjojejmpbldmpobfkfo): Change the web at will with userscripts
+- [Things To Get Me](https://chrome.google.com/webstore/detail/hikgojdlmopjpjfbmmpoleceddnhdjbi): The universal wish-list maker. Add items to your gift list from any website.
+- [Toolkit for YNAB](https://chrome.google.com/webstore/detail/lmhdkkhepllpnondndgpgclfjnlofgjl): UI customizations and tweaks for the web version of YNAB.
+- [uBlock Origin](https://chrome.google.com/webstore/detail/cjpalhdlnbpafiamejdnhcphjbkeiagm): Finally, an efficient blocker. Easy on CPU and memory.
 
 ### Extensions as of 2026-02-02
 
