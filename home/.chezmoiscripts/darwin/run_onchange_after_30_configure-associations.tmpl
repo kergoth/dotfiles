@@ -1,4 +1,15 @@
 #!/bin/sh
 # hash: {{ includeTemplate "dot_config/duti/associations.duti.tmpl" . | sha256sum }}
+
 echo >&2 "Configuring file associations.."
 duti ~/.config/duti/associations.duti 2>/dev/null || true
+
+# Open SVG Images in the default browser
+BROWSER_BUNDLE_ID="$(
+  plutil -convert json -o - \
+    "$HOME/Library/Preferences/com.apple.LaunchServices/com.apple.launchservices.secure.plist" \
+  | jq -r '.LSHandlers[] | select(.LSHandlerURLScheme=="https") | .LSHandlerRoleAll'
+)"
+if [ -n "$BROWSER_BUNDLE_ID" ]; then
+    duti -s "$BROWSER_BUNDLE_ID" public.svg-image all
+fi
