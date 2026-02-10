@@ -7,6 +7,6 @@
 if pgrep -q colima; then
     echo >&2 "Restarting colima..."
     {{ $colima }} stop
-    {{ $colima }} start
+    LIMA_SHELL= {{ $colima }} start
 fi
 {{- end -}}
