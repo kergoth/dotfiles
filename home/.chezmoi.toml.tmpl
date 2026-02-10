@@ -22,6 +22,7 @@
 {{/* device usage flags */}}
 {{- $coding := true -}}{{/* true if this device will be used for coding, beyond just shell scripting */}}
 {{- $containers := false -}}{{/* true if this machine should have a container runtime installed */}}
+{{- $containers_crossarch := false -}}{{/* true if this machine should support cross-architecture containers */}}
 {{- $gaming := false -}}{{/* true if this device will be used for gaming */}}
 {{- $video := false -}}{{/* true if this device will be used to stream video, controls VLC/etc installation */}}
 {{- $music := false -}}{{/* true if this device will be used to listen to music */}}
@@ -106,6 +107,10 @@
 {{-   end -}}
 {{- end -}}
 
+{{- if and (eq .chezmoi.os "darwin") $containers -}}
+{{-   $containers_crossarch = true -}}
+{{- end -}}
+
 {{- $secrets := false -}}
 
 {{/* prompt for overrides */}}
@@ -122,6 +127,9 @@
 {{-     end -}}
 {{-     $coding = promptBoolOnce . "coding" "Will this machine be used for coding (beyond just scripting)?" $coding -}}
 {{-     $containers = promptBoolOnce . "containers" "Should a container runtime be installed?" $containers -}}
+{{-     if and (eq .chezmoi.os "darwin") $containers -}}
+{{-       $containers_crossarch = promptBoolOnce . "containers_crossarch" "Should cross-architecture containers be supported?" $containers_crossarch -}}
+{{-     end -}}
 {{-     $gaming = promptBoolOnce . "gaming" "Will this machine be used for gaming?" $gaming -}}
 {{-     $video = promptBoolOnce . "video" "Will this machine be used for local video playback (install VLC)?" $video -}}
 {{-     $music = promptBoolOnce . "music" "Will this machine be used to listen to music?" $music -}}
@@ -212,6 +220,7 @@ encryption = "age"
     ephemeral = {{ $ephemeral }}
     headless = {{ $headless }}
     containers = {{ $containers }}
+    containers_crossarch = {{ $containers_crossarch }}
     personal = {{ $personal }}
     work = {{ $work }}
 

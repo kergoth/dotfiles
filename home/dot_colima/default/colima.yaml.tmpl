@@ -2,7 +2,7 @@
 {{- $profiles := .vmProfiles -}}
 {{- $default := .vmDefaultProfile -}}
 {{- $cfg := index $profiles $host | default $default -}}
-{{- $rosetta_enabled := and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "arm64") (not (not (glob "/Library/Apple/usr/share/rosetta/rosetta"))) }}
+{{- $rosetta_enabled := and .containers_crossarch (eq .chezmoi.os "darwin") (eq .chezmoi.arch "arm64") (not (not (glob "/Library/Apple/usr/share/rosetta/rosetta"))) }}
 # Number of CPUs to be allocated to the virtual machine.
 # Default: 2
 cpu: {{ $cfg.colima_cpus }}
@@ -169,7 +169,7 @@ portForwarder: ssh
 
 # Enable foreign architecture emulation via binfmt (e.g. amd64 on arm64, arm64 on amd64)
 # Default: true
-binfmt: true
+binfmt: {{ .containers_crossarch }}
 
 # Enable nested virtualization for the virtual machine (requires m3 mac and vmType `vz`)
 # Default: false
