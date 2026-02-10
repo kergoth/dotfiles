@@ -5,7 +5,7 @@
 # lima override hash: {{ includeTemplate (joinPath .chezmoi.sourceDir "dot_colima/_lima/_config/override.yaml") . | sha256sum }}
 
 if pgrep -q colima; then
-    if command -v docker >/dev/null 2>&1 && [ -n "$(docker ps --format '{{.Names}}')" ]; then
+    if command -v docker >/dev/null 2>&1 && [ -n "$(docker ps --format '{{ "{{" }}.Names{{ "}}" }}')" ]; then
         echo >&2 "Warning: colima should be restarted, but there are running containers."
         echo >&2 "Restarting is recommended: colima stop && LIMA_SHELL= colima start"
     else
