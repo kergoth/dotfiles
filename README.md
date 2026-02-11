@@ -414,6 +414,7 @@ chezmoi update -R
 
 - [BlockBlock](https://objective-see.org/products/blockblock.html): Monitors common persistence locations and alerts whenever a persistent component is added.
 - [Brooklyn](https://github.com/pedrommcarrasco/Brooklyn) (Open-Source): Screen saver based on animations presented during Apple Special Event Brooklyn.
+- [ChatGPT](https://openai.com/chatgpt/desktop/): OpenAI's AI assistant desktop app.
 - [Calibre](https://calibre-ebook.com) ([Open-Source](https://github.com/kovidgoyal/calibre)): E-books management software.
 - [DaisyDisk](https://daisydiskapp.com): Disk space visualizer. Get a visual breakdown of your disk space in form of an interactive map, reveal the biggest space wasters, and remove them with a simple drag and drop.
 - [Deliveries](https://apps.apple.com/us/app/deliveries-a-package-tracker/id290986013): Track your packages with support for dozens of services. Syncs via iCloud.
