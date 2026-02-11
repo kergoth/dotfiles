@@ -1,4 +1,4 @@
 {{- $path := joinPath (printf "%s" .chezmoi.destDir) "Library/Application Support/Kindle/My Kindle Content" -}}
-{{- if glob $path -}}
+{{- if stat $path -}}
 Library/Application Support/Kindle/My Kindle Content
 {{- end -}}

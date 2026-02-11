@@ -20,10 +20,10 @@ IdentityFile ~/.ssh/keys/work
 {{- end }}
 
 {{ if eq .chezmoi.os "darwin" }}
-{{-   if glob ".config/colima/ssh_config" }}
+{{-   if stat ".config/colima/ssh_config" }}
 Include ~/.config/colima/ssh_config
 {{-   end }}
-{{-   if glob ".colima/ssh_config" }}
+{{-   if stat ".colima/ssh_config" }}
 Include ~/.colima/ssh_config
 {{-   end }}
 {{-   $lima_configs := glob ".lima/*/ssh.config" }}

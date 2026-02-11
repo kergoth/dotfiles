@@ -12,7 +12,7 @@
 {{- $paths := .paths -}}
 {{- range $path := $paths -}}
   {{- $path := joinPath $path $name -}}
-  {{- if glob $path -}}
+  {{- if stat $path -}}
     {{- $path -}}
     {{- break -}}
   {{- end -}}

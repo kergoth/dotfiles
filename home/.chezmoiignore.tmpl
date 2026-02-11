@@ -34,7 +34,7 @@ Sync
 Templates
 {{ $utm_dest := "Library/Containers/com.utmapp.UTM/Data/Documents" -}}
 {{- $utm_path := joinPath (printf "%s" .chezmoi.destDir) $utm_dest -}}
-{{- if not (glob $utm_path) -}}
+{{- if not (stat $utm_path) -}}
 Virtual Machines
 {{ else }}
 Virtual Machines/*
@@ -58,7 +58,7 @@ Workspace
 
 # Vim data files migration after path changes
 {{- $vimPath := joinPath (printf "%s" .chezmoi.destDir) ".config/vim" -}}
-{{- if or (not (glob $vimPath)) (ne ($vimPath | lstat).type "symlink") }}
+{{- if or (not (stat $vimPath)) (ne ($vimPath | lstat).type "symlink") }}
 .chezmoiscripts/posix/prepare_vim
 {{- end }}
 
