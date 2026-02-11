@@ -25,6 +25,10 @@ cask "devpod"
 {{-   end }}
 {{- end }}
 
+# LLMs
+cask "chatgpt"
+cask "claude-code"
+
 {{ if not .work -}}
 
 cask "transmission-remote-gui"
@@ -71,10 +75,6 @@ cask "daisydisk"
 cask "forklift"
 cask "omnioutliner"
 cask "popclip"
-
-# LLMs
-cask "chatgpt"
-cask "claude-code"
 
 # Not at all related to work
 cask "discord"
