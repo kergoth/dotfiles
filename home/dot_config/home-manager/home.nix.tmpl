@@ -1,6 +1,14 @@
 { config, pkgs, lib, ... }:
 
 let
+  modulesDir = ./modules;
+  modules =
+    builtins.map
+      (name: modulesDir + "/${name}")
+      (builtins.filter
+        (name: lib.hasSuffix ".nix" name)
+        (builtins.attrNames (builtins.readDir modulesDir)));
+
   # Choose the right pinentry program depending on platform
   pinentry =
     if pkgs.stdenv.isDarwin then pkgs.pinentry_mac
@@ -14,6 +22,9 @@ in {
   # Configuration options are documented at:
   #
   #   https://rycee.gitlab.io/home-manager/options.html
+
+  imports = modules
+    ++ lib.optional (builtins.pathExists ./local.nix) ./local.nix;
 
   home.stateVersion = "22.05";
 
@@ -95,9 +106,6 @@ in {
 {{- end }}
   ] ++ lib.optionals stdenv.isDarwin [
     darwin.trash
-{{- if .containers }}
-    colima
-{{- end }}
     duti
     lima
     mas
@@ -122,6 +130,9 @@ in {
     fzf.enable = true;
     jq.enable = true;
     bat.enable = true;
+{{- if and .containers (not .ephemeral) (eq .chezmoi.os "darwin") }}
+    colima.enable = true;
+{{- end }}
 {{- if not .devpod }}
     # gnupg
     gpg.enable = true;
@@ -129,9 +140,7 @@ in {
   };
 
 {{- if and .work .containers (not .ephemeral) (eq .chezmoi.os "darwin") }}
-  services.colima = {
-    enable = true;
-  };
+  services.colima.enable = true;
 {{- end }}
 {{- if not .devpod }}
   # Enable gpg-agent with pinentry
@@ -150,7 +159,4 @@ in {
 
   # Future-proof: if/when you bump home.stateVersion so copyApps becomes the default
   targets.darwin.copyApps.enable = false;
-
-  imports =
-    lib.optional (builtins.pathExists ./local.nix) ./local.nix;
 }
