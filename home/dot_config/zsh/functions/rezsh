@@ -1,0 +1,8 @@
+unset __HM_SESS_VARS_SOURCED
+hash -r
+
+if (( $+commands[direnv] )); then
+    exec direnv exec / zsh --login
+else
+    exec zsh --login
+fi

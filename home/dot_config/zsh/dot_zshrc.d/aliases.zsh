@@ -41,12 +41,6 @@ alias gncl='git clone'
 alias ghcl='gh repo clone'
 alias gist='gh gist create'
 
-if (( $+commands[direnv] )); then
-    alias rezsh='exec direnv exec / zsh --login'
-else
-    alias rezsh='exec zsh --login'
-fi
-
 if [[ $OSTYPE =~ darwin ]]; then
     alias relogin='login -f $USER'
 else
