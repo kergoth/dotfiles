@@ -17,8 +17,8 @@ disk: {{ $cfg.vm_disk_gib }}
 # Size of the memory in GiB to be allocated to the virtual machine.
 # Default: 2
 {{- if .containers_crossarch -}}
-{{-   $increase := div $memory 4 -}}
-# Memory is increased by $increase gigs due to cross-arch support
+{{-   $increase := div $memory 4 }}
+# Memory is increased by {{ $increase }} GiB due to cross-arch support
 {{-   $memory = add $memory $increase -}}
 {{- end }}
 memory: {{ $memory }}
