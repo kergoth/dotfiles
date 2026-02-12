@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 let
   # Choose the right pinentry program depending on platform
@@ -133,7 +133,6 @@ in {
     enable = true;
   };
 {{- end }}
-
 {{- if not .devpod }}
   # Enable gpg-agent with pinentry
   services.gpg-agent = {
@@ -151,4 +150,7 @@ in {
 
   # Future-proof: if/when you bump home.stateVersion so copyApps becomes the default
   targets.darwin.copyApps.enable = false;
+
+  imports =
+    lib.optional (builtins.pathExists ./local.nix) ./local.nix;
 }
