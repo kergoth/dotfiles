@@ -107,7 +107,8 @@
 {{-   end -}}
 {{- end -}}
 
-{{- if and (eq .chezmoi.os "darwin") $containers -}}
+{{- $rosetta_enabled := and .containers_crossarch (eq .chezmoi.os "darwin") (eq .chezmoi.arch "arm64") (not (not (stat "/Library/Apple/usr/share/rosetta/rosetta"))) -}}
+{{- if $rosetta_enabled -}}
 {{-   $containers_crossarch = true -}}
 {{- end -}}
 
