@@ -872,6 +872,38 @@ Software that I've used in the past but now actively avoid due to specific issue
   is that these changes will not be highly visible. I may change this back, or
   keep the including file but track it so the changes are visible.
 
+## Local Configuration
+
+These files are not tracked in the repository and allow per-machine customization without modifying managed dotfiles.
+
+### Shell (Zsh)
+
+- **`~/.zshenv.local`** — Sourced at the end of `.zshenv`. Use for early environment variable overrides that need to be set in all shell types (interactive, non-interactive, login, non-login).
+- **`~/.zprofile.local`** — Sourced at the end of `.zprofile`. Use for login-shell-specific overrides such as PATH modifications or environment setup that only applies to login shells.
+- **`~/.zshrc.local`** or **`~/.localrc`** — Sourced at the end of `.zshrc`. Use for interactive shell customizations such as aliases, functions, or prompt tweaks specific to this machine.
+- **New `.zsh` files in `~/.config/zsh/.zshrc.d/`** — Any `.zsh` file placed here is automatically sourced by `.zshrc`. Files are loaded in glob order, with special handling for `path.zsh` (loaded first), `early.zsh`, `completion.zsh`, and `final.zsh`. Unmanaged files in this directory coexist with chezmoi-managed ones.
+
+### Git
+
+- **`~/.gitconfig.local`** — Included by the main git config via `[include]`. Use for per-machine settings such as `user.email`, `user.signingkey`, credential helpers, or work-specific overrides.
+
+### Tmux
+
+- **`~/.tmux.conf.local`** — Sourced at the end of the tmux configuration if the file exists. Use for per-machine tmux overrides such as different key bindings, status bar customization, or display settings.
+
+### SSH
+
+- **Files in `~/.ssh/config.d/`** — All files in this directory are included by the SSH config via `Include ~/.ssh/config.d/*`. Use for per-machine host definitions, jump host configurations, or other SSH settings.
+
+### Nix / Home Manager
+
+- **`~/.config/home-manager/local.nix`** — Optionally imported by `home.nix` if the file exists. Use to install additional Nix packages, enable or disable Home Manager programs, or override settings from the main configuration.
+
+### Homebrew (macOS)
+
+- **Files in `scripts/macos/Brewfile.d/`** — Each file in this directory is processed as an additional Brewfile during `chezmoi apply`. Use to extend the Homebrew package list with machine-specific formulae or casks.
+- **Files in `scripts/macos/Brewfile-admin.d/`** — Each file is processed as an additional Brewfile during `setup-system`. Use to extend the admin Homebrew package list (for packages requiring the shared admin Homebrew prefix).
+
 ## Reference
 
 ### Chezmoi Usage
