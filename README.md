@@ -913,10 +913,10 @@ These files are not tracked in the repository and allow per-machine customizatio
 
 ## Supported Platforms
 
-- Linux. Tested on Arch, Ubuntu, and Debian.
+- Linux. Tested on Arch, Ubuntu, Debian, and Chimera Linux.
 - MacOS.
 - FreeBSD.
-- Windows.
+- Windows. Both direct via PowerShell and via WSL.
 
 ## Help
 
