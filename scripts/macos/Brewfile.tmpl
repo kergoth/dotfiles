@@ -18,6 +18,10 @@ cask "zed"
 brew "fclones"
 {{- end }}
 
+{{ if not .use_nix -}}
+brew "node"
+{{- end }}
+
 {{ if .containers -}}
 cask "swiftbar"
 {{   if and .coding (not .ephemeral) (not .headless) -}}

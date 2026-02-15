@@ -14,6 +14,7 @@ Install-Scoop-IfNotPresent gsudo gerardog.gsudo | Out-Null
 Install-Scoop-IfNotPresent gpg4win GnuPG.Gpg4win | Out-Null
 Install-Scoop-IfNotPresent bulk-crap-uninstaller Klocman.BulkCrapUninstaller | Out-Null
 Install-Scoop-IfNotPresent pwsh Microsoft.PowerShell | Out-Null
+Install-Scoop-IfNotPresent nodejs-lts OpenJS.NodeJS.LTS | Out-Null
 if (Install-Scoop-IfNotPresent powertoys Microsoft.PowerToys) {
     Invoke-Expression -Command "C:\Users\WDAGUtilityAccount\scoop\apps\powertoys\current\install-context.ps1"
 }

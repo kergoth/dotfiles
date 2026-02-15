@@ -261,6 +261,7 @@ chezmoi update -R
 - [neovim](https://neovim.io): Hyperextensible Vim-based text editor.
 - [gnupg](https://www.gnupg.org): A complete and free implementation of the OpenPGP standard.
 
+- [nodejs](https://nodejs.org) ([Open-Source](https://github.com/nodejs/node)): A JavaScript runtime built on Chrome's V8 JavaScript engine.
 - [python](https://www.python.org): A programming language that lets you work quickly and integrate systems more effectively.
 - [uv](https://github.com/astral-sh/uv): An extremely fast Python package installer and resolver, written in Rust.
 
