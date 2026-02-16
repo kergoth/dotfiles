@@ -26,8 +26,8 @@
 {{-   $ghq_suffix = printf "darwin_%s.zip" $arch -}}
 {{- end -}}
 
-{{/* Skip for Nix, FreeBSD, and Chimera Linux */}}
-{{ if and (ne $ghq_suffix "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
+{{/* Skip for Nix, macOS (Homebrew), Windows (Scoop), FreeBSD, and Chimera Linux */}}
+{{ if and (ne $ghq_suffix "") (not (or .use_nix (eq .chezmoi.os "darwin") (eq .chezmoi.os "windows") (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
 
 ["{{ $binpath }}/ghq{{ $binsuffix }}"]
   type = "archive-file"
@@ -65,8 +65,8 @@
 {{-   end -}}
 {{- end -}}
 
-{{/* Skip for Nix, FreeBSD, and Chimera Linux */}}
-{{ if and (ne $delta_target "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
+{{/* Skip for Nix, macOS (Homebrew), Windows (Scoop), FreeBSD, and Chimera Linux */}}
+{{ if and (ne $delta_target "") (not (or .use_nix (eq .chezmoi.os "darwin") (eq .chezmoi.os "windows") (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
 
 ["{{ $binpath }}/delta{{ $binsuffix }}"]
   type = "archive-file"
@@ -111,8 +111,8 @@
 {{-   end -}}
 {{- end -}}
 
-{{/* Skip for Nix, FreeBSD, and Chimera Linux */}}
-{{ if and (ne $gh_arch "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
+{{/* Skip for Nix, macOS (Homebrew), Windows (Scoop), FreeBSD, and Chimera Linux */}}
+{{ if and (ne $gh_arch "") (not (or .use_nix (eq .chezmoi.os "darwin") (eq .chezmoi.os "windows") (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
 
 ["{{ $binpath }}/gh{{ $binsuffix }}"]
   type = "archive-file"
@@ -148,8 +148,8 @@
 {{-   end -}}
 {{- end -}}
 
-{{/* Skip for Nix, FreeBSD, and Chimera Linux */}}
-{{ if and (ne $jj_target "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
+{{/* Skip for Nix, macOS (Homebrew), Windows (Scoop), FreeBSD, and Chimera Linux */}}
+{{ if and (ne $jj_target "") (not (or .use_nix (eq .chezmoi.os "darwin") (eq .chezmoi.os "windows") (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
 
 ["{{ $binpath }}/jj{{ $binsuffix }}"]
   type = "archive-file"
@@ -185,8 +185,8 @@
 {{-   end -}}
 {{- end -}}
 
-{{/* Skip for Nix, FreeBSD, and Chimera Linux - Note: NO version in filename! */}}
-{{ if and (ne $difft_target "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
+{{/* Skip for Nix, macOS (Homebrew), Windows (Scoop), FreeBSD, and Chimera Linux - Note: NO version in filename! */}}
+{{ if and (ne $difft_target "") (not (or .use_nix (eq .chezmoi.os "darwin") (eq .chezmoi.os "windows") (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
 
 ["{{ $binpath }}/difft{{ $binsuffix }}"]
   type = "archive-file"
@@ -220,8 +220,8 @@
 {{-   end -}}
 {{- end -}}
 
-{{/* Skip for Nix, FreeBSD, Chimera, and arm64 (no binaries) */}}
-{{ if and (ne $absorb_target "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
+{{/* Skip for Nix, macOS (Homebrew), Windows (Scoop), FreeBSD, Chimera, and arm64 (no binaries) */}}
+{{ if and (ne $absorb_target "") (not (or .use_nix (eq .chezmoi.os "darwin") (eq .chezmoi.os "windows") (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
 
 ["{{ $binpath }}/git-absorb{{ $binsuffix }}"]
   type = "archive-file"
@@ -247,8 +247,8 @@
 {{-   $jira_ext = "zip" -}}
 {{- end -}}
 
-{{/* Skip for Nix, FreeBSD, and Chimera Linux - Uses macOS/linux/windows naming */}}
-{{ if not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera")) }}
+{{/* Skip for Nix, macOS (Homebrew), Windows (Scoop), FreeBSD, and Chimera Linux */}}
+{{ if not (or .use_nix (eq .chezmoi.os "darwin") (eq .chezmoi.os "windows") (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera")) }}
 
 ["{{ $binpath }}/jira{{ $binsuffix }}"]
   type = "archive-file"

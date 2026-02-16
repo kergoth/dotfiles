@@ -18,8 +18,8 @@
 {{/* Direnv */}}
 {{- $direnv_version := (gitHubLatestRelease "direnv/direnv").TagName -}}
 
-{{/* Skip for Nix and Chimera Linux */}}
-{{ if not (or .use_nix (eq .osid "linux-chimera")) }}
+{{/* Skip for Nix, macOS (Homebrew), Windows (Scoop), and Chimera Linux */}}
+{{ if not (or .use_nix (eq .chezmoi.os "darwin") (eq .chezmoi.os "windows") (eq .osid "linux-chimera")) }}
 
 ["{{ $binpath }}/direnv{{ $binsuffix }}"]
   type = "file"
@@ -36,8 +36,8 @@
 {{-   $fzf_ext = "zip" -}}
 {{- end -}}
 
-{{/* Skip for Nix and Chimera Linux */}}
-{{ if not (or .use_nix (eq .osid "linux-chimera")) }}
+{{/* Skip for Nix, macOS (Homebrew), Windows (Scoop), and Chimera Linux */}}
+{{ if not (or .use_nix (eq .chezmoi.os "darwin") (eq .chezmoi.os "windows") (eq .osid "linux-chimera")) }}
 
 ["{{ $binpath }}/fzf{{ $binsuffix }}"]
   type = "archive-file"
@@ -77,8 +77,8 @@
 {{-   end -}}
 {{- end -}}
 
-{{/* Skip for Nix, FreeBSD, and Chimera Linux */}}
-{{ if and (ne $zoxide_target "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
+{{/* Skip for Nix, macOS (Homebrew), Windows (Scoop), FreeBSD, and Chimera Linux */}}
+{{ if and (ne $zoxide_target "") (not (or .use_nix (eq .chezmoi.os "darwin") (eq .chezmoi.os "windows") (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
 
 ["{{ $binpath }}/zoxide{{ $binsuffix }}"]
   type = "archive-file"
@@ -106,8 +106,8 @@
 {{-   end -}}
 {{- end -}}
 
-{{/* Skip for Nix, FreeBSD, Chimera Linux, and Windows (no binaries - use cargo) */}}
-{{ if and (ne $atuin_target "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera") (eq .chezmoi.os "windows"))) }}
+{{/* Skip for Nix, macOS (Homebrew), FreeBSD, Chimera Linux, and Windows (no binaries) */}}
+{{ if and (ne $atuin_target "") (not (or .use_nix (eq .chezmoi.os "darwin") (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera") (eq .chezmoi.os "windows"))) }}
 
 ["{{ $binpath }}/atuin{{ $binsuffix }}"]
   type = "archive-file"

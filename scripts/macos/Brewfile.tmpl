@@ -20,6 +20,33 @@ brew "fclones"
 
 {{ if not .use_nix -}}
 brew "node"
+brew "uv"
+
+# CLI tools
+brew "atuin"
+brew "bat"
+brew "choose-rust"
+brew "difftastic"
+brew "direnv"
+brew "dua-cli"
+brew "duf"
+brew "fd"
+brew "fzf"
+brew "gh"
+brew "ghq"
+brew "git-absorb"
+brew "git-delta"
+brew "jira-cli"
+brew "jj"
+brew "jq"
+brew "restic"
+brew "ripgrep"
+brew "sad"
+brew "sd"
+brew "shellcheck"
+brew "shfmt"
+brew "tealdeer"
+brew "zoxide"
 {{- end }}
 
 {{ if .containers -}}
@@ -34,7 +61,6 @@ cask "chatgpt"
 cask "claude-code"
 
 {{ if not .work -}}
-
 cask "transmission-remote-gui"
 
 {{-   if lt .macos_major_version 26 }}

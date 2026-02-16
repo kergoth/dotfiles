@@ -18,8 +18,8 @@
 {{/* Shfmt - shell formatter */}}
 {{- $shfmt_version := (gitHubLatestRelease "mvdan/sh").TagName -}}
 
-{{/* Skip for Nix, FreeBSD, and Chimera Linux */}}
-{{ if not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera")) }}
+{{/* Skip for Nix, macOS (Homebrew), Windows (Scoop), FreeBSD, and Chimera Linux */}}
+{{ if not (or .use_nix (eq .chezmoi.os "darwin") (eq .chezmoi.os "windows") (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera")) }}
 
 ["{{ $binpath }}/shfmt{{ $binsuffix }}"]
   type = "file"
@@ -37,8 +37,8 @@
 {{-   $shellcheck_suffix = printf ".darwin.%s.tar.xz" $binarch -}}
 {{- end -}}
 
-{{/* Skip for Nix, FreeBSD, Chimera Linux, and Windows (no binary available) */}}
-{{ if and (ne $shellcheck_suffix "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
+{{/* Skip for Nix, macOS (Homebrew), FreeBSD, Chimera Linux, and Windows (no binary available) */}}
+{{ if and (ne $shellcheck_suffix "") (not (or .use_nix (eq .chezmoi.os "darwin") (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
 
 ["{{ $binpath }}/shellcheck{{ $binsuffix }}"]
   type = "archive-file"

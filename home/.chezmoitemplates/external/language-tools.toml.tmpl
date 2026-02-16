@@ -28,8 +28,8 @@
 {{-   $uv_cmds = mustAppend $uv_cmds "uvw" -}}
 {{- end -}}
 
-{{/* Skip for FreeBSD, and Chimera Linux */}}
-{{ if and (ne $uv_suffix "") (not (or (eq $os "freebsd") (eq .osid "linux-chimera"))) }}
+{{/* Skip for Nix, macOS (Homebrew), Windows (Scoop), FreeBSD, and Chimera Linux */}}
+{{ if and (ne $uv_suffix "") (not (or .use_nix (eq $os "darwin") (eq $os "windows") (eq $os "freebsd") (eq .osid "linux-chimera"))) }}
 {{   range $index, $cmd := $uv_cmds -}}
 
 ["{{ $binpath }}/{{ $cmd }}{{ $binsuffix }}"]

@@ -47,8 +47,8 @@ refreshPeriod = "{{ $refreshPeriod }}"
 {{-   $restic_ext = "zip" -}}
 {{- end -}}
 
-{{/* Skip for Nix and Chimera Linux - use package managers instead */}}
-{{ if not (or .use_nix (eq .osid "linux-chimera")) }}
+{{/* Skip for Nix, macOS (Homebrew), Windows (Scoop), and Chimera Linux - use package managers instead */}}
+{{ if not (or .use_nix (eq .chezmoi.os "darwin") (eq .chezmoi.os "windows") (eq .osid "linux-chimera")) }}
 
 ["{{ $binpath }}/restic{{ $binsuffix }}"]
 {{ if eq $restic_type "archive-file" }}
@@ -68,9 +68,8 @@ refreshPeriod = "{{ $refreshPeriod }}"
 {{/* Fclones - Efficient duplicate file finder */}}
 {{- $fclones_version := (gitHubLatestRelease "pkolaczk/fclones").TagName | trimPrefix "v" -}}
 
-{{/* Only install on x86_64 architectures - fclones doesn't have arm64 musl builds */}}
-{{ if eq $binarch "x86_64" }}
-{{ if eq $os "linux" }}
+{{/* Only install on x86_64 Linux - fclones doesn't have arm64 musl builds; macOS uses Homebrew, Windows uses Scoop */}}
+{{ if and (eq $binarch "x86_64") (eq $os "linux") }}
 
 ["{{ $binpath }}/fclones"]
   type = "archive-file"
@@ -78,15 +77,6 @@ refreshPeriod = "{{ $refreshPeriod }}"
   path = "target/x86_64-unknown-linux-musl/release/fclones"
   executable = true
 
-{{ else if eq $os "windows" }}
-
-["{{ $binpath }}/fclones{{ $binsuffix }}"]
-  type = "archive-file"
-  url = "https://github.com/pkolaczk/fclones/releases/download/v{{ $fclones_version }}/fclones-{{ $fclones_version }}-windows-x86_64.zip"
-  path = "fclones{{ $binsuffix }}"
-  executable = true
-
-{{ end }}
 {{ end }}
 
 {{ if .steamdeck }}
