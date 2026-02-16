@@ -1,0 +1,9 @@
+{{- if .user_setup -}}
+{{-   $pwsh := includeTemplate "find-tool" (dict "root" . "tool" "pwsh") -}}
+{{-   if $pwsh -}}
+#!/usr/bin/env bash
+set -euo pipefail
+
+"{{ $pwsh }}" -NoProfile -File "$CHEZMOI_WORKING_TREE/scripts/install-pwsh-modules.ps1"
+{{-   end -}}
+{{- end -}}
