@@ -271,20 +271,25 @@ chezmoi update -R
 - [choose](https://github.com/theryangeary/choose): A human-friendly and fast alternative to cut and (sometimes) awk.
 - [Claude Code](https://code.claude.com): Anthropic's agentic coding tool for your terminal. Available via brew (`claude-code`), official installer, and npm.
 - [delta](https://github.com/dandavison/delta): A syntax-highlighting pager for git, diff, and grep output.
+- [difftastic](https://github.com/Wilfred/difftastic) ([Open-Source](https://github.com/Wilfred/difftastic)): A structural diff tool that compares files based on their syntax.
 - [direnv](https://direnv.net): An extension for your shell which can load and unload environment variables depending on the current directory.
+- [docker](https://www.docker.com/) ([Open-Source](https://github.com/moby/moby)): Platform for developing, shipping, and running applications in containers. _Conditional: containers flag._
+- [docker-compose](https://docs.docker.com/compose/) ([Open-Source](https://github.com/docker/compose)): Define and run multi-container Docker applications. _Conditional: containers flag._
 - [duf](https://github.com/muesli/duf): Disk Usage/Free Utility - a better 'df' alternative.
 - [dua](https://github.com/Byron/dua-cli): View disk space usage and delete unwanted data, fast. This is a faster version of ncdu.
 - [fclones](https://github.com/pkolaczk/fclones): Finds and removes duplicate files.
 - [restic](https://restic.net) ([Open-Source](https://github.com/restic/restic)): Fast, secure, efficient backup program.
 - [rsync](https://rsync.samba.org/): Fast, versatile file copying tool for remote and local files.
-- [Tailscale](https://tailscale.com) ([Open-Source](https://github.com/tailscale/tailscale)): WireGuard-based mesh VPN that makes it easy to connect your devices securely.
+- [Tailscale](https://tailscale.com) ([Open-Source](https://github.com/tailscale/tailscale)): WireGuard-based mesh VPN that makes it easy to connect your devices securely. _Conditional: personal, non-ephemeral._
 - [eza](https://github.com/eza-community/eza) or [exa](https://github.com/ogham/exa): A modern replacement for ls.
 - [fd](https://github.com/sharkdp/fd): A simple, fast and user-friendly alternative to 'find'.
 - [fzf](https://github.com/junegunn/fzf): A command-line fuzzy finder.
 - [ghq](https://github.com/x-motemen/ghq): Remote repository management made easy.
 - [git-absorb](https://github.com/tummychow/git-absorb): git commit --fixup, but automatic.
+- [git-crypt](https://github.com/AGWA/git-crypt) ([Open-Source](https://github.com/AGWA/git-crypt)): Transparent file encryption in git. _Conditional: work._
 - [git-imerge](https://github.com/mhagger/git-imerge): Incremental merge for git.
 - [git-revise](https://github.com/mystor/git-revise): A handy tool for doing efficient in-memory commit rebases & fixups.
+- [google-cloud-sdk](https://cloud.google.com/sdk): Tools for the Google Cloud Platform. _Conditional: work._
 - [jira-cli](https://github.com/ankitpokhrel/jira-cli) (_Only on Work machines_): Feature-rich interactive Jira command line.
 - [jujutsu](https://github.com/jj-vcs/jj) ([Open-Source](https://github.com/jj-vcs/jj)): Git-compatible VCS that is both simple and powerful.
 - [jq](https://github.com/stedolan/jq): A lightweight and flexible command-line JSON processor.
@@ -339,6 +344,10 @@ chezmoi update -R
 
 - [zsh](https://zsh.sourceforge.io): A shell designed for interactive use, although it is also a powerful scripting language. This is installed by default on macOS.
 
+#### CLI Software on Linux
+
+- [distrobox](https://distrobox.it/) ([Open-Source](https://github.com/89luca89/distrobox)): Use any Linux distribution inside your terminal.
+
 ##### CLI Software on Arch Linux
 
 - [openssh](https://www.openssh.com): The premier connectivity tool for remote login with the SSH protocol.
@@ -385,6 +394,7 @@ chezmoi update -R
 - [Discord](https://discord.com): A VoIP and instant messaging social platform.
 - [Obsidian](https://obsidian.md): A powerful knowledge base that works on top of a local folder of plain text Markdown files. Available on Linux, macOS, and Windows via brew, scoop, flatpak, or [download](https://obsidian.md/download).
 - [VLC](https://www.videolan.org/vlc/download-macosx.html) ([Open-Source](https://code.videolan.org/videolan/vlc)): A free and open source cross-platform multimedia player.
+- [Tailscale](https://tailscale.com) ([Open-Source](https://github.com/tailscale/tailscale)): WireGuard-based mesh VPN for secure device connectivity. _Conditional: personal, non-ephemeral._
 - If the gaming flag is enabled:
   - [Steam](https://store.steampowered.com): A digital distribution platform for purchasing and playing video games.
 
@@ -417,22 +427,27 @@ chezmoi update -R
 - [Brooklyn](https://github.com/pedrommcarrasco/Brooklyn) (Open-Source): Screen saver based on animations presented during Apple Special Event Brooklyn.
 - [ChatGPT](https://openai.com/chatgpt/desktop/): OpenAI's AI assistant desktop app.
 - [Calibre](https://calibre-ebook.com) ([Open-Source](https://github.com/kovidgoyal/calibre)): E-books management software.
+- [Carbon Copy Cloner](https://bombich.com): Backups and disk cloning for macOS.
 - [DaisyDisk](https://daisydiskapp.com): Disk space visualizer. Get a visual breakdown of your disk space in form of an interactive map, reveal the biggest space wasters, and remove them with a simple drag and drop.
 - [Deliveries](https://apps.apple.com/us/app/deliveries-a-package-tracker/id290986013): Track your packages with support for dozens of services. Syncs via iCloud.
 - [ForkLift](https://binarynights.com): Advanced dual pane file manager and file transfer client for macOS. Available via brew as `forklift`.
 - [Juicy](https://getjuicy.app): Battery Alerts & Health. Available via [Mac App Store](https://apps.apple.com/us/app/juicy-battery-alerts-health/id6752221257?mt=12)
 - [Karabiner-Elements](https://karabiner-elements.pqrs.org) ([Open-Source](https://github.com/pqrs-org/Karabiner-Elements)): A powerful and stable keyboard customizer for macOS.
 - [Kagi News](https://apps.apple.com/us/app/kagi-news/id6748314243): Daily AI-distilled press review with global news from community-curated sources.
+- [KeepingYouAwake](https://keepingyouawake.app/) ([Open-Source](https://github.com/newmarcel/KeepingYouAwake)): Prevents your Mac from going to sleep.
 - [Keka](https://www.keka.io/en/) ([Open-Source](https://github.com/aonez/Keka)): The macOS file archiver.
 - [kitty](https://sw.kovidgoyal.net/kitty/) ([Open-Source](https://github.com/kovidgoyal/kitty)): The fast, feature-rich, GPU based terminal emulator.
 - [LuLu](https://objective-see.org/products/lulu.html): The free, open-source firewall that aims to block unknown outgoing connections.
 - [Maccy](https://maccy.app) ([Open-Source](https://github.com/p0deje/Maccy)): Lightweight clipboard manager for macOS.
+- [OmniOutliner](https://www.omnigroup.com/omnioutliner): Organize your ideas, projects, and plans in a powerful outliner.
+- [OverSight](https://objective-see.org/products/oversight.html): Monitors a Mac's microphone and webcam, alerting the user when the internal mic is activated, or whenever a process accesses the webcam.
+- [Parallels Desktop](https://www.parallels.com/products/desktop/): Run Windows, Linux, and other operating systems on Mac.
 - [PopClip](https://apps.apple.com/us/app/popclip/id445189367?mt=12&uo=4&at=10l4tL): Instant text actions.
 - [Readwise Reader](https://readwise.io/read): Save everything to one place, highlight like a pro, and replace several apps with Reader.
+- [ReiKey](https://objective-see.org/products/reikey.html): Scans, detects, and monitors for software that installs keyboard event taps.
 - [Shifty](https://shifty.natethompson.io/): Menu bar app that provides more control over Night Shift.
 - [SwiftBar](https://swiftbar.app/)]: Powerful macOS menu bar customization tool. _Conditional: This is installed when a container runtime is enabled, as I use this to start/stop colima._
 - [SyncThing](https://syncthing.net/) ([Open-Source](https://github.com/syncthing/)): A continuous file synchronization program.
-- [Tailscale](https://apps.apple.com/us/app/tailscale/id1475387142): WireGuard-based mesh VPN for secure device connectivity.
 - [Transmission Remote GUI](https://github.com/transmission-remote-gui/transgui) (Open-Source): A feature rich cross platform Transmission BitTorrent client. Faster and has more functionality than the built-in web GUI.
 - [Under My Roof](https://apps.apple.com/us/app/under-my-roof-home-inventory/id1524335878): Home inventory app for organizing and tracking your home and belongings.
 - [WiFi Explorer](https://apps.apple.com/us/app/wifi-explorer/id494803304?mt=12&uo=4&at=10l4tL): Best Wi-Fi Analyzer & Monitor.
@@ -453,6 +468,7 @@ chezmoi update -R
 - If the retro_computing flag is enabled:
   - [86Box](https://www.86box.net/): Emulator of x86-based machines.
 - If the work flag is enabled:
+  - [noTunes](https://github.com/tombonez/noTunes) (Open-Source): Prevents Apple Music from launching. _Conditional: music flag not enabled._
   - [Slack](https://slack.com/): Team communication and collaboration platform.
   - [Zoom](https://zoom.us/): Video conferencing and online meetings.
 
@@ -491,8 +507,8 @@ chezmoi update -R
 - [Notepad++](https://notepad-plus-plus.org/) ([Open-Source](https://github.com/notepad-plus-plus/notepad-plus-plus))
 - [PowerShell](https://learn.microsoft.com/en-us/powershell/) ([Open-Source](https://github.com/PowerShell/PowerShell))
 - [PowerToys](https://learn.microsoft.com/en-us/windows/powertoys/) ([Open-Source](https://github.com/microsoft/PowerToys))
-- [PuTTY](https://www.chiark.greenend.org.uk/~sgtatham/putty/) ([Open-Source](https://git.tartarus.org/?p=simon/putty.git))
-- [Rufus](https://rufus.ie/) ([Open-Source](https://github.com/pbatard/rufus))
+- [PuTTY](https://www.chiark.greenend.org.uk/~sgtatham/putty/) ([Open-Source](https://git.tartarus.org/?p=simon/putty.git)). _Conditional: work._
+- [Rufus](https://rufus.ie/) ([Open-Source](https://github.com/pbatard/rufus)): Create bootable USB flash drives. _Conditional: work, non-ephemeral._
 - [SnipDo](https://snipdo-app.com): Select a text in any application and SnipDo pops up to help you.
 - [SyncTrayzor](https://github.com/canton7/SyncTrayzor) (Open-Source)
 - [WiFi Analyzer](https://apps.microsoft.com/detail/9NBLGGH33N0N?hl=en-US&gl=US): Identify Wi-Fi problems or find the best channel.
