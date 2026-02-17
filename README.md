@@ -275,6 +275,7 @@ chezmoi update -R
 - [direnv](https://direnv.net): An extension for your shell which can load and unload environment variables depending on the current directory.
 - [docker](https://www.docker.com/) ([Open-Source](https://github.com/moby/moby)): Platform for developing, shipping, and running applications in containers. _Conditional: containers flag._
 - [docker-compose](https://docs.docker.com/compose/) ([Open-Source](https://github.com/docker/compose)): Define and run multi-container Docker applications. _Conditional: containers flag._
+- [dtrx](https://github.com/dtrx-py/dtrx): Intelligent archive extraction tool. Installed as a fallback when unar is unavailable.
 - [duf](https://github.com/muesli/duf): Disk Usage/Free Utility - a better 'df' alternative.
 - [dua](https://github.com/Byron/dua-cli): View disk space usage and delete unwanted data, fast. This is a faster version of ncdu.
 - [fclones](https://github.com/pkolaczk/fclones): Finds and removes duplicate files.
@@ -286,6 +287,7 @@ chezmoi update -R
 - [fzf](https://github.com/junegunn/fzf): A command-line fuzzy finder.
 - [ghq](https://github.com/x-motemen/ghq): Remote repository management made easy.
 - [git-absorb](https://github.com/tummychow/git-absorb): git commit --fixup, but automatic.
+- [git-assembler](https://gitlab.com/wavexx/git-assembler): Update git branches using high-level assembly instructions.
 - [git-crypt](https://github.com/AGWA/git-crypt) ([Open-Source](https://github.com/AGWA/git-crypt)): Transparent file encryption in git. _Conditional: work._
 - [git-imerge](https://github.com/mhagger/git-imerge): Incremental merge for git.
 - [git-revise](https://github.com/mystor/git-revise): A handy tool for doing efficient in-memory commit rebases & fixups.
@@ -293,6 +295,7 @@ chezmoi update -R
 - [jira-cli](https://github.com/ankitpokhrel/jira-cli) (_Only on Work machines_): Feature-rich interactive Jira command line.
 - [jujutsu](https://github.com/jj-vcs/jj) ([Open-Source](https://github.com/jj-vcs/jj)): Git-compatible VCS that is both simple and powerful.
 - [jq](https://github.com/stedolan/jq): A lightweight and flexible command-line JSON processor.
+- [repo](https://gerrit.googlesource.com/git-repo): Google's tool for managing multi-repository projects.
 - [ripgrep](https://github.com/BurntSushi/ripgrep): A line-oriented search tool that recursively searches the current directory for a regex pattern.
 - [rusage.com](https://justine.lol/rusage/): Provides the best possible way to report resource usage statistics when launching command line programs.
 - [sad](https://github.com/ms-jpq/sad): CLI search and replace | Space Age seD.
@@ -382,6 +385,18 @@ chezmoi update -R
 #### Powershell Modules on Windows only
 
 - [Microsoft.WinGet.Client](https://www.powershellgallery.com/packages/Microsoft.WinGet.Client): PowerShell Module for the Windows Package Manager Client.
+
+### Included Third-Party Scripts
+
+- **git-alias** ([source](https://github.com/tj/git-extras)): Manage git command aliases.
+- **[git-attic](https://chneukirchen.org/dotfiles/bin/git-attic)**: List deleted files from git history with their deletion details.
+- **git-j** ([source](https://github.com/beanbaginc/dev-goodies)): Jump between git branches with history tracking.
+- **git-rebase-chain** ([source](https://github.com/beanbaginc/dev-goodies)): Rebase a stack of branches from one base to another.
+- **ifne** ([source](https://github.com/fumiyas/home-commands)): Run a command only if standard input is not empty. This is a third-party script reimplementation of a tool from [moreutils by Joey Hess](https://joeyh.name/code/moreutils/).
+- **linux-bundle-clone** ([source](https://git.kernel.org/pub/scm/linux/kernel/git/mricon/korg-helpers.git)): Clone Linux kernel repositories using CDN-hosted bundles.
+- **tmux-resize-adaptable** ([source](https://github.com/tony/tmux-config)): Resize tmux pane layouts by percentage.
+- **vipe** ([source](https://github.com/madx/moreutils)): Edit pipe content in your text editor mid-pipeline. This is a third-party script reimplementation of a tool from [moreutils by Joey Hess](https://joeyh.name/code/moreutils/).
+- **[wsl-open](https://github.com/4U6U57/wsl-open)**: Open files and URLs from WSL in Windows default applications.
 
 ### Installed GUI Software
 
