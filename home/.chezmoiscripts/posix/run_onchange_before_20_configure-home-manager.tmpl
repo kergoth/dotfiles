@@ -1,4 +1,5 @@
-{{- if and .user_setup .use_nix -}}
+{{- $nix := includeTemplate "find-tool" (dict "root" . "tool" "nix") -}}
+{{- if and .user_setup .use_nix $nix -}}
 #!/usr/bin/env bash
 # Apply home manager configuration
 #
@@ -7,7 +8,7 @@
 #   flake.nix hash: {{ includeTemplate "dot_config/home-manager/flake.nix.tmpl" . | sha256sum }}
 #   flake.lock hash: {{ include "dot_config/home-manager/private_flake.lock" | sha256sum }}
 # Re-run after installing nix:
-#   nix binary path: {{ lookPath "nix" }}
+#   nix binary path: {{ $nix }}
 
 set -euo pipefail
 
@@ -48,5 +49,5 @@ find "$CHEZMOI_SOURCE_DIR/dot_config/home-manager" -name \*.nix -o -name \*.nix.
 
 echo >&2 "Applying home manager configuration"
 export USER="${USER:-${LOGNAME:-$(whoami)}}"
-HOME="$CHEZMOI_HOME_DIR" nix run 'home-manager/master' -- switch
+HOME="$CHEZMOI_HOME_DIR" "$nix" run 'home-manager/master' -- switch
 {{- end -}}
