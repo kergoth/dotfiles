@@ -1,6 +1,7 @@
 {{- $claude := includeTemplate "find-tool" (dict "root" . "tool" "claude") -}}
 {{- if and $claude (eq .chezmoi.os "darwin") -}}
 if [[ ${commands[claude]} = "$HOMEBREW_PREFIX/bin/claude" ]]; then
+    echo >&2 "Checking for Claude Code updates..."
     HOMEBREW_AUTO_UPDATE=1 brew upgrade --quiet claude-code
 fi
 command claude "$@"
