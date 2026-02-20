@@ -49,5 +49,5 @@ find "$CHEZMOI_SOURCE_DIR/dot_config/home-manager" -name \*.nix -o -name \*.nix.
 
 echo >&2 "Applying home manager configuration"
 export USER="${USER:-${LOGNAME:-$(whoami)}}"
-HOME="$CHEZMOI_HOME_DIR" "$nix" run 'home-manager/master' -- switch
+HOME="$CHEZMOI_HOME_DIR" "{{ $nix }}" run 'home-manager/master' -- switch
 {{- end -}}
