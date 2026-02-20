@@ -2,9 +2,42 @@
 
 [![BlueOak 1.0.0 License](https://img.shields.io/badge/License-BlueOak%201.0.0-2D6B79.svg)](https://spdx.org/licenses/BlueOak-1.0.0.html)
 
-This repository includes my personal application configuration and settings (dotfiles), as well as scripts for
-setting up systems per my personal preferences, including software installation, at both the system and user
-level.
+Personal dotfiles and system setup, managed with [chezmoi] and [Nix Home Manager][home-manager]. This repository covers application configuration, shell customization, package installation, and system-level setup across macOS, Linux, FreeBSD, and Windows. All machine-specific differences and optional feature flags are handled through chezmoi's template system.
+
+**A note on scope:** This setup has evolved over many years to cover a wide range of platforms, package managers, and personal preferences. It is not intended as a starter template, as adopting it wholesale would likely be more complex than most people need. That said, it may be useful as a reference for specific patterns, such as chezmoi templating, Home Manager integration, multi-platform handling, age-encrypted secrets, and so on.
+
+## How It Works
+
+### Core Tooling
+
+[Chezmoi][chezmoi] manages dotfiles: it templates configuration files, applies them to `$HOME`, handles encrypted secrets via [age], and runs setup scripts as part of the apply process. [Nix Home Manager][home-manager] provides the primary method of declarative, reproducible package management at the user level on platforms that support Nix (Linux and macOS), supplemented by [Homebrew] on macOS, [Scoop] on Windows, chezmoi externals, and language-specific package managers as needed. On platforms without Nix support (Chimera Linux, FreeBSD), system package managers are used instead.
+
+### Setup Entry Points
+
+The setup scripts form a progression from OS installation to day-to-day dotfiles application:
+
+- **OS installation** (distro-specific, self-contained):
+  - **`os-install`**: Installs the OS from a live environment. Available for Arch and Chimera Linux.
+  - **`setup-root`**: Runs as root to create users, install base packages, and prepare for user-level setup. Available for Arch, Chimera Linux, and FreeBSD.
+- **`bootstrap`**: Installs prerequisites, clones the repository, and initializes chezmoi. Run automatically by the setup scripts below.
+- **`setup-system`**: Installs system-level packages, Nix, and other prerequisites. Run by a non-root user with sudo/doas access.
+- **`setup`** / `chezmoi apply`: Applies dotfiles and runs chezmoi scripts for user-level package installation, application configuration, and shell setup.
+- **`setup-full`**: Runs `setup-system` then `setup`.
+
+### Customization
+
+Chezmoi templates drive per-machine configuration. Flags in `~/.config/chezmoi/chezmoi.toml` control what gets installed and configured — for example, whether the machine is a work system, has a container runtime, or is headless. Sensitive files are encrypted with age, with the key bootstrapped from 1Password on first setup if not placed manually.
+
+### What's Included
+
+The repository manages CLI tools, GUI applications, shell plugins and configuration (zsh), fonts, browser extensions, and platform-specific settings. See the detailed [What's Included](#whats-included) section below for the full inventory.
+
+## Supported Platforms
+
+- **macOS**: Full support (Homebrew, Nix, GUI apps)
+- **Linux**: Tested on Arch, Ubuntu, Debian, Chimera Linux, and SteamOS
+- **FreeBSD**: Basic support (system packages, no Nix)
+- **Windows**: PowerShell-based setup and WSL
 
 ## Prerequisites
 
@@ -12,9 +45,42 @@ level.
 
 ## Usage
 
-### Dotfiles setup
+### Bootstrap (Optional)
 
-This setup will apply the dotfiles and perform any user-setup tasks, such as installing packages with home-manager, homebrew, etc. If system setup is desired, run `setup-system` prior to running `setup`.
+The setup scripts below handle bootstrapping automatically. If you prefer to initialize chezmoi separately — or need to run on a system where the repository isn't yet cloned and git isn't yet available — you can run `script/bootstrap` standalone:
+
+```console
+curl -fsLS https://raw.githubusercontent.com/kergoth/dotfiles/main/script/bootstrap | sh
+```
+
+This installs prerequisites (git, bash, curl, unzip), clones the repository if needed, and installs and initializes chezmoi.
+
+### Full Setup
+
+Clone the repository and run `setup-full` for both system-level setup and dotfiles on a fresh machine:
+
+```console
+git clone https://github.com/kergoth/dotfiles .dotfiles
+~/.dotfiles/script/setup-full
+```
+
+### System Setup
+
+**Run this before dotfiles setup** if you need system-level packages, Nix, or other prerequisites. This script is run by a non-root user with sudo/doas access.
+
+```console
+./script/setup-system
+```
+
+On Windows (in PowerShell, not WSL):
+
+```console
+./script/setup-system.ps1
+```
+
+### Dotfiles Setup
+
+Applies dotfiles and runs chezmoi scripts for user-level package installation and configuration. **If system setup is needed, run `setup-system` first** — dotfiles application may depend on tools it installs (e.g. Nix).
 
 If the repository has not yet been cloned:
 
@@ -23,30 +89,18 @@ chezmoi init kergoth/dotfiles
 ~/.dotfiles/script/setup
 ```
 
-If the repository is already cloned and you've changed directory to it:
+If the repository is already cloned:
 
 ```console
 ./script/setup
 ```
 
-### System Setup
-
-The setup-system script is run by a non-root user with sudo/doas access, to perform system-level setup and configuration.
-This script will apply changes to the system as a whole. This may include installing packages through the package manager, installing nix, et cetera. Ideally this should be run prior to setting up the user, and should be run as a user with sudo access.
-
-After cloning the repository, and changing directory to it, run:
-
-```console
-./script/setup-system
-```
-
-On windows (in powershell, not WSL), run this instead:
-
-```console
-./script/setup-system.ps1
-```
-
 ### Operating System Installation
+
+Some platforms have lower-level scripts for fresh OS installation or live environments:
+
+- **`os-install`** (`script/{distro}/os-install`): Installs the OS from a live environment. Available for Arch and Chimera Linux.
+- **`setup-root`** (`script/{distro}/setup-root`): Runs as root to create users, install base packages, and prepare for `setup-full`. Available for Arch, Chimera Linux, and FreeBSD.
 
 #### WSL2 Arch Linux Installation (ArchWSL)
 
@@ -895,8 +949,6 @@ Software that I've used in the past but now actively avoid due to specific issue
 
 ## Implementation Notes
 
-- Chezmoi is used to apply my dotfiles changes.
-- A script is run by chezmoi which applies my nix home-manager configuration, if nix is installed.
 - .config/git/config is not my main configuration, but is instead a small file
   which includes my main configuration. This allows for automatic git
   configuration changes such as vscode's change to credential.manager to be
@@ -943,13 +995,6 @@ These files are not tracked in the repository and allow per-machine customizatio
 - [Handle different file locations on different systems with the same contents](https://www.chezmoi.io/user-guide/manage-machine-to-machine-differences/#handle-different-file-locations-on-different-systems-with-the-same-contents)
 - [Use completely different dotfiles on different machines](https://www.chezmoi.io/user-guide/manage-machine-to-machine-differences/#use-completely-different-dotfiles-on-different-machines)
 
-## Supported Platforms
-
-- Linux. Tested on Arch, Ubuntu, Debian, and Chimera Linux.
-- MacOS.
-- FreeBSD.
-- Windows. Both direct via PowerShell and via WSL.
-
 ## Help
 
 Questions and comments are always welcome, please open an issue.
@@ -976,3 +1021,9 @@ Distributed under the terms of the [Blue Oak Model License 1.0.0](LICENSE.md) li
 - [win-setup](https://github.com/kergoth/win-setup)
 - [dotfiles/system-setup](https://github.com/kergoth/dotfiles/tree/d9bdcb2187ea66847a21ebd6591c0f1ec1a3f0a5/system-setup)
 - [arch-setup](https://github.com/kergoth/kergoth-arch-setup)
+
+[chezmoi]: https://www.chezmoi.io/
+[home-manager]: https://nix-community.github.io/home-manager/
+[age]: https://age-encryption.org/
+[Homebrew]: https://brew.sh/
+[Scoop]: https://scoop.sh/
