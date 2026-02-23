@@ -4,3 +4,4 @@ Brewfile.lock.json
 others
 .devpod-internal
 .worktrees
+.claude/settings.local.json
