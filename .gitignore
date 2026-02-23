@@ -3,3 +3,4 @@ __pycache__
 Brewfile.lock.json
 others
 .devpod-internal
+.worktrees
