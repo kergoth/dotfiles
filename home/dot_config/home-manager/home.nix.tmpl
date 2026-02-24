@@ -9,6 +9,16 @@ let
         (name: lib.hasSuffix ".nix" name)
         (builtins.attrNames (builtins.readDir modulesDir)));
 
+{{- if .work }}
+  # Bitdefender SSL inspection re-signs TLS certs with its own CA, which is
+  # trusted in macOS Keychain but missing from the Nix CA bundle. Build a
+  # combined bundle so Nix-provided curl/wget/etc. can verify connections.
+  combinedCaBundle = pkgs.runCommand "combined-ca-bundle" { } ''
+    cat ${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt \
+        ${./certs/bitdefender-ca-ssl.pem} > $out
+  '';
+{{- end }}
+
   # Choose the right pinentry program depending on platform
   pinentry =
     if pkgs.stdenv.isDarwin then pkgs.pinentry_mac
@@ -25,6 +35,14 @@ in {
 
   imports = modules
     ++ lib.optional (builtins.pathExists ./local.nix) ./local.nix;
+
+{{- if .work }}
+  # Point Nix tools at the combined CA bundle (Bitdefender SSL inspection)
+  home.sessionVariables = {
+    NIX_SSL_CERT_FILE = "${combinedCaBundle}";
+    SSL_CERT_FILE = "${combinedCaBundle}";
+  };
+{{- end }}
 
   home.stateVersion = "22.05";
 
