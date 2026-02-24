@@ -304,18 +304,18 @@ chezmoi update -R
 
 #### MCP Servers
 
-- **[GitHub MCP](https://github.com/github/github-mcp-server)**
+- **[GitHub](https://github.com/github/github-mcp-server)**
   GitHub-aware context and operations for Claude Code
 
 #### Plugins
 
-- **[superpowers](https://github.com/anthropics/claude-plugins/tree/main/plugins/superpowers)**
+- **[Superpowers](https://claude.com/plugins/superpowers)**
   Enhances Claude Code with additional power-user capabilities
 
-- **[claude-md-management](https://github.com/anthropics/claude-plugins/tree/main/plugins/claude-md-management)**
+- **[CLAUDE.md Management](https://claude.com/plugins/claude-md-management)**
   Structured management of `CLAUDE.md` and Markdown-based instruction files
 
-- **[learning-output-style](https://github.com/anthropics/claude-plugins/tree/main/plugins/learning-output-style)**
+- **[Learning Output Style](https://claude.com/plugins/learning-output-style)**
   Enforces consistent learning- and explanation-oriented output styles
 
 - **[Astral](https://github.com/astral-sh/claude-plugin)**
