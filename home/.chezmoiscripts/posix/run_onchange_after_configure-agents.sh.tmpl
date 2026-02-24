@@ -1,0 +1,42 @@
+{{- $claude := includeTemplate "find-tool" (dict "root" . "tool" "claude") -}}
+{{- if $claude -}}
+#!/usr/bin/env bash
+
+has_mcp_server() {
+    # claude mcp list works but runs a health check adding latency;
+    # checking the config file directly with jq is faster
+    jq -e --arg name "$1" '.mcpServers[$name] // empty' ~/.claude.json >/dev/null 2>&1
+}
+
+add_mcp_server() {
+    local name="$1"; shift
+{{- if stat (joinPath (printf "%s" .chezmoi.destDir) ".claude.json") }}
+    if has_mcp_server "$name"; then
+        return 0
+    fi
+{{- end }}
+    claude mcp add "$@" "$name" || { echo "Failed to add MCP server: $name" >&2; return 1; }
+}
+
+plugin_enabled() {
+    jq -e --arg name "$1" '.enabledPlugins[$name] // empty' ~/.claude/settings.json >/dev/null 2>&1
+}
+
+install_plugin() {
+    local name="$1"; shift
+{{- if stat (joinPath (printf "%s" .chezmoi.destDir) ".claude" "settings.json") }}
+    if plugin_enabled "$name"; then
+        return 0
+    fi
+{{- end }}
+    claude plugin install "$name" "$@" || { echo "Failed to install plugin: $name" >&2; return 1; }
+}
+
+
+add_mcp_server github --scope user --transport http https://api.githubcopilot.com/mcp/
+
+install_plugin superpowers@claude-plugins-official --scope user
+install_plugin claude-md-management@claude-plugins-official --scope user
+install_plugin learning-output-style@claude-plugins-official --scope user
+install_plugin astral@astral-sh --scope user
+{{- end }}

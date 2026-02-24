@@ -300,6 +300,27 @@ chezmoi update -R
 - [zsh-nix-shell](https://github.com/chisui/zsh-nix-shell): Zsh plugin that lets you use zsh in nix-shell shells.
 - [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting): Fish shell like syntax highlighting for Zsh.
 
+### Claude Code Additions
+
+#### MCP Servers
+
+- **[GitHub MCP](https://github.com/github/github-mcp-server)**
+  GitHub-aware context and operations for Claude Code
+
+#### Plugins
+
+- **[superpowers](https://github.com/anthropics/claude-plugins/tree/main/plugins/superpowers)**
+  Enhances Claude Code with additional power-user capabilities
+
+- **[claude-md-management](https://github.com/anthropics/claude-plugins/tree/main/plugins/claude-md-management)**
+  Structured management of `CLAUDE.md` and Markdown-based instruction files
+
+- **[learning-output-style](https://github.com/anthropics/claude-plugins/tree/main/plugins/learning-output-style)**
+  Enforces consistent learning- and explanation-oriented output styles
+
+- **[Astral](https://github.com/astral-sh/claude-plugin)**
+  Integrates Astral tooling and conventions (e.g. Python / Ruff ecosystem)
+
 ### Fonts
 
 - [iA-Fonts](https://github.com/iaolo/iA-Fonts): iA Writer Mono, Duo, and Quattro.

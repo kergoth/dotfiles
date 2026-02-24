@@ -1,0 +1,132 @@
+{{- $claude := includeTemplate "find-tool" (dict "root" . "tool" "claude") -}}
+{{- if $claude -}}
+#requires -Version 7.0
+
+Set-StrictMode -Version Latest
+$ErrorActionPreference = 'Stop'
+
+function Get-JsonFile {
+    param(
+        [Parameter(Mandatory)]
+        [string]$Path
+    )
+
+    if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) {
+        return $null
+    }
+
+    try {
+        $raw = Get-Content -LiteralPath $Path -Raw -ErrorAction Stop
+        if ([string]::IsNullOrWhiteSpace($raw)) {
+            return $null
+        }
+        return $raw | ConvertFrom-Json -ErrorAction Stop
+    } catch {
+        # Treat unreadable/invalid JSON as "unknown"; caller can decide to proceed.
+        return $null
+    }
+}
+
+function Test-HasMcpServer {
+    param(
+        [Parameter(Mandatory)]
+        [string]$Name
+    )
+
+    $cfgPath = Join-Path $HOME ".claude.json"
+    $cfg = Get-JsonFile -Path $cfgPath
+    if ($null -eq $cfg) {
+        return $false
+    }
+
+    # Expected schema: { "mcpServers": { "<name>": { ... } } }
+    $servers = $cfg.mcpServers
+    if ($null -eq $servers) {
+        return $false
+    }
+
+    $prop = $servers.PSObject.Properties[$Name]
+    return ($null -ne $prop) -and ($null -ne $prop.Value)
+}
+
+function Add-McpServer {
+    param(
+        [Parameter(Mandatory)]
+        [string]$Name,
+
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Args
+    )
+
+{{- if stat (joinPath (printf "%s" .chezmoi.destDir) ".claude.json") }}
+    if (Test-HasMcpServer -Name $Name) {
+        return
+    }
+{{- end }}
+
+    try {
+        & claude mcp add @Args $Name
+        if ($LASTEXITCODE -ne 0) {
+            throw "claude mcp add failed with exit code $LASTEXITCODE"
+        }
+    } catch {
+        Write-Error "Failed to add MCP server: $Name. $($_.Exception.Message)"
+        exit 1
+    }
+}
+
+function Test-PluginEnabled {
+    param(
+        [Parameter(Mandatory)]
+        [string]$Name
+    )
+
+    $settingsPath = Join-Path (Join-Path $HOME ".claude") "settings.json"
+    $settings = Get-JsonFile -Path $settingsPath
+    if ($null -eq $settings) {
+        return $false
+    }
+
+    # Expected schema: { "enabledPlugins": { "<name>": ... } }
+    $enabled = $settings.enabledPlugins
+    if ($null -eq $enabled) {
+        return $false
+    }
+
+    $prop = $enabled.PSObject.Properties[$Name]
+    return ($null -ne $prop) -and ($null -ne $prop.Value)
+}
+
+function Install-Plugin {
+    param(
+        [Parameter(Mandatory)]
+        [string]$Name,
+
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Args
+    )
+
+{{- if stat (joinPath (printf "%s" .chezmoi.destDir) ".claude" "settings.json") }}
+    if (Test-PluginEnabled -Name $Name) {
+        return
+    }
+{{- end }}
+
+    try {
+        & claude plugin install $Name @Args
+        if ($LASTEXITCODE -ne 0) {
+            throw "claude plugin install failed with exit code $LASTEXITCODE"
+        }
+    } catch {
+        Write-Error "Failed to install plugin: $Name. $($_.Exception.Message)"
+        exit 1
+    }
+}
+
+Add-McpServer github --scope user --transport http https://api.githubcopilot.com/mcp/
+
+Install-Plugin superpowers@claude-plugins-official --scope user
+Install-Plugin claude-md-management@claude-plugins-official --scope user
+Install-Plugin learning-output-style@claude-plugins-official --scope user
+Install-Plugin astral@astral-sh --scope user
+{{- end }}
