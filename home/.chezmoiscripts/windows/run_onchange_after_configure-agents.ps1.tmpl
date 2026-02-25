@@ -123,7 +123,55 @@ function Install-Plugin {
     }
 }
 
+function Test-HasMarketplace {
+    param(
+        [Parameter(Mandatory)]
+        [string]$Repo
+    )
+
+    $mpPath = Join-Path (Join-Path $HOME ".claude") (Join-Path "plugins" "known_marketplaces.json")
+    $mp = Get-JsonFile -Path $mpPath
+    if ($null -eq $mp) {
+        return $false
+    }
+
+    foreach ($prop in $mp.PSObject.Properties) {
+        if ($prop.Value.source.repo -eq $Repo) {
+            return $true
+        }
+    }
+    return $false
+}
+
+function Add-Marketplace {
+    param(
+        [Parameter(Mandatory)]
+        [string]$Repo,
+
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Args
+    )
+
+{{- if stat (joinPath (printf "%s" .chezmoi.destDir) ".claude" "plugins" "known_marketplaces.json") }}
+    if (Test-HasMarketplace -Repo $Repo) {
+        return
+    }
+{{- end }}
+
+    try {
+        & claude plugin marketplace add $Repo @Args
+        if ($LASTEXITCODE -ne 0) {
+            throw "claude plugin marketplace add failed with exit code $LASTEXITCODE"
+        }
+    } catch {
+        Write-Error "Failed to add marketplace: $Repo. $($_.Exception.Message)"
+        exit 1
+    }
+}
+
 Add-McpServer github --scope user --transport http https://api.githubcopilot.com/mcp/
+
+Add-Marketplace astral-sh/claude-code-plugins
 
 Install-Plugin superpowers@claude-plugins-official --scope user
 Install-Plugin claude-md-management@claude-plugins-official --scope user

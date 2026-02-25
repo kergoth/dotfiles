@@ -32,8 +32,24 @@ install_plugin() {
     claude plugin install "$name" "$@" || { echo "Failed to install plugin: $name" >&2; return 1; }
 }
 
+has_marketplace() {
+    jq -e --arg repo "$1" 'any(.[]; .source.repo == $repo)' ~/.claude/plugins/known_marketplaces.json >/dev/null 2>&1
+}
+
+add_marketplace() {
+    local repo="$1"; shift
+{{- if stat (joinPath (printf "%s" .chezmoi.destDir) ".claude" "plugins" "known_marketplaces.json") }}
+    if has_marketplace "$repo"; then
+        return 0
+    fi
+{{- end }}
+    claude plugin marketplace add "$repo" "$@" || { echo "Failed to add marketplace: $repo" >&2; return 1; }
+}
+
 
 add_mcp_server github --scope user --transport http https://api.githubcopilot.com/mcp/
+
+add_marketplace astral-sh/claude-code-plugins
 
 install_plugin superpowers@claude-plugins-official --scope user
 install_plugin claude-md-management@claude-plugins-official --scope user
