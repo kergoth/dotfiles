@@ -12,7 +12,7 @@
 
 set -euo pipefail
 
-find "$CHEZMOI_SOURCE_DIR/dot_config/home-manager" -name \*.nix -o -name \*.nix.tmpl -o -name \*.lock |
+find "$CHEZMOI_SOURCE_DIR/dot_config/home-manager" -name \*.nix -o -name \*.nix.tmpl -o -name \*.pem -o -name \*.pem.tmpl -o -name \*.lock |
     while read -r src; do
         file="${src#"$CHEZMOI_SOURCE_DIR/dot_config/"}"
         dest="$CHEZMOI_HOME_DIR/.config/${file%.tmpl}"
@@ -49,5 +49,23 @@ find "$CHEZMOI_SOURCE_DIR/dot_config/home-manager" -name \*.nix -o -name \*.nix.
 
 echo >&2 "Applying home manager configuration"
 export USER="${USER:-${LOGNAME:-$(whoami)}}"
+{{- if .work }}
+# Bitdefender SSL inspection requires a combined CA bundle for Nix curl.
+# home.sessionVariables sets this for future shells, but the activation
+# script running right now needs it too. Skip if already configured.
+if [ -n "${SSL_CERT_FILE:-}" ] && grep -q "Bitdefender" "$SSL_CERT_FILE" 2>/dev/null; then
+    : # SSL_CERT_FILE already includes Bitdefender CA
+else
+    hm_certs="$CHEZMOI_HOME_DIR/.config/home-manager/certs"
+    if [ -f "$hm_certs/bitdefender-ca-ssl.pem" ]; then
+        combined=$(mktemp)
+        cat "$CHEZMOI_HOME_DIR/.nix-profile/etc/ssl/certs/ca-bundle.crt" \
+            "$hm_certs/bitdefender-ca-ssl.pem" > "$combined"
+        export SSL_CERT_FILE="$combined"
+        export NIX_SSL_CERT_FILE="$combined"
+        trap 'rm -f "$combined"' EXIT
+    fi
+fi
+{{- end }}
 HOME="$CHEZMOI_HOME_DIR" "{{ $nix }}" run 'home-manager/master' -- switch
 {{- end -}}
