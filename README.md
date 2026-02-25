@@ -344,7 +344,7 @@ chezmoi update -R
 - [bat](https://github.com/sharkdp/bat): A cat(1) clone with syntax highlighting and Git integration.
   - [bat-extras](https://github.com/eth-p/bat-extras): Scripts that integrate bat with various command line tools.
 - [choose](https://github.com/theryangeary/choose): A human-friendly and fast alternative to cut and (sometimes) awk.
-- [Claude Code](https://code.claude.com): Anthropic's agentic coding tool for your terminal. Available via brew (`claude-code`), official installer, and npm.
+- [Claude Code](https://code.claude.com): Anthropic's agentic coding tool for your terminal.
 - [delta](https://github.com/dandavison/delta): A syntax-highlighting pager for git, diff, and grep output.
 - [difftastic](https://github.com/Wilfred/difftastic) ([Open-Source](https://github.com/Wilfred/difftastic)): A structural diff tool that compares files based on their syntax.
 - [direnv](https://direnv.net): An extension for your shell which can load and unload environment variables depending on the current directory.
