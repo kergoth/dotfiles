@@ -12,7 +12,7 @@
 {{-   $claude = includeTemplate "find-tool" (dict "root" . "tool" "claude") -}}
 {{-   $vivaldi = includeTemplate "find-tool" (dict "root" . "tool" "vivaldi") -}}
 {{-   if not $zed -}}{{- $need_install = true -}}{{- end -}}
-{{-   if and (not .work) (not $claude) -}}{{- $need_install = true -}}{{- end -}}
+{{-   if not $claude -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and (not $vivaldi) $flatpak -}}{{- $need_install = true -}}{{- end -}}
 {{- end -}}
 {{- if and .coding .containers -}}
@@ -34,7 +34,7 @@ msg "Installing Zed"
 curl -f https://zed.dev/install.sh | sh
 {{-   end }}
 
-{{-   if and (not .work) (not $claude) }}
+{{-   if not $claude }}
 msg "Installing Claude Code"
 curl -fsSL https://claude.ai/install.sh | bash
 {{-   end }}
