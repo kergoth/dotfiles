@@ -1,13 +1,16 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
-# Usage: download-github-release [-h] [-r release_tag] [-p pattern] [-o output_dir] [-m] user/repo
+# Usage: download-github-release [-h] [-r release_tag] [-p pattern] [-o output_dir] [-m] [-s] user/repo
 #
 # This script downloads release assets from GitHub projects.
 #
 # Options:
 #   -m                  Match the latest release with an asset matching the pattern.
+#   -s                  Download the release Source Code archive (tarball/zipball) instead of assets.
+#                       By default, downloads tarball_url. If -p looks like a zip (e.g. "*.zip"),
+#                       downloads zipball_url instead.
 #   -r release_tag      Specify a release tag. If not provided, the latest release is used.
-#   -p pattern          Specify a wildcard pattern to filter assets.
+#   -p pattern          Specify a wildcard pattern to filter assets (and to pick zip vs tar with -s).
 #   -o output_dir       Specify the output directory. Defaults to the current working directory.
 #   -h                  Show this help message and exit.
 
@@ -19,10 +22,11 @@ show_help() {
 
 release_tag=
 match_pattern=0
+source_code=0
 pattern="*"
 output_dir="."
 
-while getopts ":hr:p:o:m" opt; do
+while getopts ":hr:p:o:ms" opt; do
     case ${opt} in
     h)
         show_help
@@ -39,6 +43,9 @@ while getopts ":hr:p:o:m" opt; do
         ;;
     m)
         match_pattern=1
+        ;;
+    s)
+        source_code=1
         ;;
     \?)
         echo "Invalid option: -$OPTARG" >&2
@@ -61,25 +68,52 @@ if [ $# -lt 1 ]; then
 fi
 
 repo="$1"
+repo_name="${repo##*/}"
 
 GITHUB_AUTH_HEADER="${GITHUB_TOKEN:+Authorization: token $GITHUB_TOKEN}"
+ACCEPT_HEADER="Accept: application/vnd.github.v3+json"
+
+fetch_release_json() {
+    local url="$1"
+    curl -s --connect-timeout 60 -H "$ACCEPT_HEADER" ${GITHUB_AUTH_HEADER:+-H "$GITHUB_AUTH_HEADER"} "$url"
+}
+
+fail_if_github_error() {
+    local json="$1"
+    local message
+    message="$(echo "$json" | jq -r '.message // empty' 2>/dev/null)" || message=""
+    if [ -n "$message" ] && [ "$message" != "null" ]; then
+        # Not all API responses with "message" are fatal, but for release endpoints it generally is.
+        echo "Error: GitHub API error: $message" >&2
+        exit 1
+    fi
+}
 
 if [ -z "$release_tag" ]; then
     if [ $match_pattern -eq 1 ]; then
-        release_data=$(curl -s --connect-timeout 60 -H "Accept: application/vnd.github.v3+json" ${GITHUB_AUTH_HEADER:+-H "$GITHUB_AUTH_HEADER"} "https://api.github.com/repos/$repo/releases")
-        message="$(echo "$release_data" | jq -r '.message' 2>/dev/null)" || :
-        if [ -n "$message" ]; then
-            echo "Error: failed to determine a release tag to use: $message"
-            exit 1
-        fi
-        release_data=$(echo "$release_data" | jq -c '[.[] | select(.assets[].name | test("'"$pattern"'"))] | sort_by(.published_at) | .[-1]')
-        release_url=$(echo "$release_data" | jq -r '.url')
-        if [ -z "$release_url" ] || [ "$release_url" == "null" ]; then
+        releases_json="$(fetch_release_json "https://api.github.com/repos/$repo/releases")"
+        fail_if_github_error "$releases_json"
+
+        # Pick the most recently published release that has at least one asset matching the pattern.
+        # Note: this intentionally matches against assets[].name (not source archives), per original behavior.
+        release_data="$(
+            echo "$releases_json" | jq -c '
+                [ .[]
+                  | select((.assets // []) | length > 0)
+                  | select(.assets[].name | test("'"$pattern"'"))
+                ]
+                | sort_by(.published_at)
+                | .[-1]
+            '
+        )"
+
+        release_url="$(echo "$release_data" | jq -r '.url // empty')"
+        if [ -z "$release_url" ] || [ "$release_url" = "null" ]; then
             echo "Error: No release found with an asset matching the pattern '$pattern'." >&2
             exit 1
-        else
-            release_tag=$(echo "$release_data" | jq -r '.tag_name')
         fi
+
+        release_tag="$(echo "$release_data" | jq -r '.tag_name')"
     else
         release_url="https://api.github.com/repos/$repo/releases/latest"
     fi
@@ -87,23 +121,66 @@ else
     release_url="https://api.github.com/repos/$repo/releases/tags/$release_tag"
 fi
 
-release_data=$(curl -s --connect-timeout 60 -H "Accept: application/vnd.github.v3+json" ${GITHUB_AUTH_HEADER:+-H "$GITHUB_AUTH_HEADER"} "$release_url")
-if [ "$(echo "$release_data" | jq -r '.message')" == "Not Found" ]; then
+release_data="$(fetch_release_json "$release_url")"
+fail_if_github_error "$release_data"
+
+# Extra guard for the common "Not Found" case (some GitHub API errors come through as message-only bodies).
+if [ "$(echo "$release_data" | jq -r '.message // empty')" = "Not Found" ]; then
     echo "Error: Release not found." >&2
     exit 1
 fi
 
-assets=$(echo "$release_data" | jq -r '.assets[] | select(.name | test("'"$pattern"'")) | .browser_download_url')
+mkdir -p "$output_dir"
+
+if [ $source_code -eq 1 ]; then
+    # Source Code is not an "asset" in the release assets list; it is exposed as tarball_url/zipball_url.
+    # Pick zip if the user-supplied pattern looks zip-ish; otherwise default to tarball.
+    use_zip=0
+    if [[ "$pattern" =~ \.zip(\$|[^a-zA-Z0-9]) ]] || [[ "$pattern" == *zip* ]]; then
+        use_zip=1
+    fi
+
+    tag_name="$(echo "$release_data" | jq -r '.tag_name // empty')"
+    if [ -z "$tag_name" ] || [ "$tag_name" = "null" ]; then
+        echo "Error: release JSON missing tag_name; cannot name source archive." >&2
+        exit 1
+    fi
+
+    if [ $use_zip -eq 1 ]; then
+        src_url="$(echo "$release_data" | jq -r '.zipball_url // empty')"
+        ext="zip"
+    else
+        src_url="$(echo "$release_data" | jq -r '.tarball_url // empty')"
+        ext="tar.gz"
+    fi
+
+    if [ -z "$src_url" ] || [ "$src_url" = "null" ]; then
+        echo "Error: release JSON missing $( [ $use_zip -eq 1 ] && echo "zipball_url" || echo "tarball_url" )." >&2
+        exit 1
+    fi
+
+    out_file="$output_dir/${repo_name}-${tag_name}-source.${ext}"
+    curl -fsSL --connect-timeout 60 --retry 3 --retry-delay 5 \
+        ${GITHUB_AUTH_HEADER:+-H "$GITHUB_AUTH_HEADER"} \
+        -o "$out_file" \
+        "$src_url"
+
+    echo "Source archive '$src_url' downloaded to '$out_file'."
+    exit 0
+fi
+
+assets="$(echo "$release_data" | jq -r '.assets[]? | select(.name | test("'"$pattern"'")) | .browser_download_url')"
 
 if [ -z "$assets" ]; then
     echo "No assets found matching pattern '$pattern'." >&2
     exit 1
 fi
 
-mkdir -p "$output_dir"
-
 for asset_url in $assets; do
-    curl -fsSL --connect-timeout 60 --retry 3 --retry-delay 5 ${GITHUB_AUTH_HEADER:+-H "$GITHUB_AUTH_HEADER"} -o "$output_dir/$(basename "$asset_url")" "$asset_url"
+    curl -fsSL --connect-timeout 60 --retry 3 --retry-delay 5 \
+        ${GITHUB_AUTH_HEADER:+-H "$GITHUB_AUTH_HEADER"} \
+        -o "$output_dir/$(basename "$asset_url")" \
+        "$asset_url"
     echo "Asset '$asset_url' downloaded to '$output_dir'."
 done
 
