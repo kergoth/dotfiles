@@ -370,6 +370,7 @@ chezmoi update -R
 - [jira-cli](https://github.com/ankitpokhrel/jira-cli) (_Only on Work machines_): Feature-rich interactive Jira command line.
 - [jujutsu](https://github.com/jj-vcs/jj) ([Open-Source](https://github.com/jj-vcs/jj)): Git-compatible VCS that is both simple and powerful.
 - [jq](https://github.com/stedolan/jq): A lightweight and flexible command-line JSON processor.
+- [peon-ping](https://www.peonping.com) ([Open-Source](https://github.com/PeonPing/peon-ping)): Game character voice lines the instant your AI agent finishes or needs permission.
 - [repo](https://gerrit.googlesource.com/git-repo): Google's tool for managing multi-repository projects.
 - [ripgrep](https://github.com/BurntSushi/ripgrep): A line-oriented search tool that recursively searches the current directory for a regex pattern.
 - [rusage.com](https://justine.lol/rusage/): Provides the best possible way to report resource usage statistics when launching command line programs.

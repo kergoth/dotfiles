@@ -1,4 +1,5 @@
 {{- $claude := includeTemplate "find-tool" (dict "root" . "tool" "claude") -}}
+{{- $peon := includeTemplate "find-tool" (dict "root" . "tool" "peon") -}}
 {{- if $claude -}}
 #!/usr/bin/env bash
 
@@ -55,4 +56,58 @@ install_plugin superpowers@claude-plugins-official --scope user
 install_plugin claude-md-management@claude-plugins-official --scope user
 install_plugin learning-output-style@claude-plugins-official --scope user
 install_plugin astral@astral-sh --scope user
+{{- if $peon }}
+
+# --- peon-ping: hook registration, config, and packs ---
+PEON_HOOKS_DIR="$HOME/.claude/hooks/peon-ping"
+if [ ! -f "$PEON_HOOKS_DIR/peon.sh" ]; then
+    echo "Setting up peon-ping hooks..."
+    curl -fsSL https://raw.githubusercontent.com/PeonPing/peon-ping/main/install.sh | bash -s -- --no-rc --packs=peon,d2_deckard_cain
+fi
+
+# Write config (always, to ensure chezmoi-managed values)
+mkdir -p "$PEON_HOOKS_DIR"
+cat > "$PEON_HOOKS_DIR/config.json" << 'PEON_CONFIG'
+{
+  "default_pack": "d2_deckard_cain",
+  "volume": 0.7,
+  "enabled": true,
+  "desktop_notifications": true,
+  "categories": {
+    "session.start": true,
+    "task.acknowledge": false,
+    "task.complete": true,
+    "task.error": true,
+    "input.required": true,
+    "resource.limit": true,
+    "user.spam": true
+  },
+  "annoyed_threshold": 3,
+  "annoyed_window_seconds": 10,
+  "silent_window_seconds": 0,
+  "suppress_subagent_complete": false,
+  "no_rc": true,
+  "pack_rotation": [],
+  "pack_rotation_mode": "random",
+  "path_rules": [],
+  "session_ttl_days": 7,
+  "use_sound_effects_device": true,
+  "linux_audio_player": "",
+  "headphones_only": false,
+  "suppress_sound_when_tab_focused": false,
+  "trainer": {
+    "enabled": false,
+    "exercises": {
+      "pushups": 300,
+      "squats": 300
+    },
+    "reminder_interval_minutes": 20,
+    "reminder_min_gap_minutes": 5
+  }
+}
+PEON_CONFIG
+
+# Ensure desired packs are installed
+"{{ $peon }}" packs install peon,d2_deckard_cain || true
+{{- end }}
 {{- end }}

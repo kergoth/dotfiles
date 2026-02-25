@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, inputs, pkgs, lib, ... }:
 
 let
   modulesDir = ./modules;
@@ -124,6 +124,9 @@ in {
 {{- if .devpod }}
     gnupg
 {{- end }}
+
+    # AI agent notifications
+    inputs.peon-ping.packages.${pkgs.system}.default
   ] ++ lib.optionals stdenv.isDarwin [
     darwin.trash
     duti
@@ -157,6 +160,7 @@ in {
     # gnupg
     gpg.enable = true;
 {{- end }}
+
   };
 
 {{- if and .work .containers (not .ephemeral) (eq .chezmoi.os "darwin") }}

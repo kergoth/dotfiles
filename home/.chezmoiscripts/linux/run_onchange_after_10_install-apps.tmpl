@@ -1,3 +1,4 @@
+{{- $peon := "" -}}
 {{- $zed := "" -}}
 {{- $claude := "" -}}
 {{- $vivaldi := "" -}}
@@ -10,9 +11,13 @@
 {{- if and .user_setup (not .headless) (not .steamdeck) (not (env "CONTAINER_ID")) -}}
 {{-   $zed = includeTemplate "find-tool" (dict "root" . "tool" "zed") -}}
 {{-   $claude = includeTemplate "find-tool" (dict "root" . "tool" "claude") -}}
+{{-   $peon = includeTemplate "find-tool" (dict "root" . "tool" "peon") -}}
 {{-   $vivaldi = includeTemplate "find-tool" (dict "root" . "tool" "vivaldi") -}}
 {{-   if not $zed -}}{{- $need_install = true -}}{{- end -}}
-{{-   if and (not .work) (not $claude) -}}{{- $need_install = true -}}{{- end -}}
+{{-   if not .work -}}
+{{-     if not $claude -}}{{- $need_install = true -}}{{- end -}}
+{{-     if and (not .use_nix) (not $peon) -}}{{- $need_install = true -}}{{- end -}}
+{{-   end -}}
 {{-   if and (not $vivaldi) $flatpak -}}{{- $need_install = true -}}{{- end -}}
 {{- end -}}
 {{- if and .coding .containers -}}
@@ -34,9 +39,15 @@ msg "Installing Zed"
 curl -f https://zed.dev/install.sh | sh
 {{-   end }}
 
-{{-   if and (not .work) (not $claude) }}
+{{-   if not .work }}
+{{-     if not $claude }}
 msg "Installing Claude Code"
 curl -fsSL https://claude.ai/install.sh | bash
+{{-     end }}
+{{-     if and (not .use_nix) (not $peon) }}
+msg "Installing peon-ping"
+curl -fsSL https://raw.githubusercontent.com/PeonPing/peon-ping/main/install.sh | bash -s -- --no-rc --packs=peon,d2_deckard_cain
+{{-     end }}
 {{-   end }}
 
 {{-   if and (not $vivaldi) $flatpak }}

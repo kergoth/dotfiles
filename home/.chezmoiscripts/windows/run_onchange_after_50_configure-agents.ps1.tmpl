@@ -1,4 +1,5 @@
 {{- $claude := includeTemplate "find-tool" (dict "root" . "tool" "claude") -}}
+{{- $peon := includeTemplate "find-tool" (dict "root" . "tool" "peon") -}}
 {{- if $claude -}}
 #requires -Version 7.0
 
@@ -177,4 +178,55 @@ Install-Plugin superpowers@claude-plugins-official --scope user
 Install-Plugin claude-md-management@claude-plugins-official --scope user
 Install-Plugin learning-output-style@claude-plugins-official --scope user
 Install-Plugin astral@astral-sh --scope user
+{{- if $peon }}
+
+# --- peon-ping: hook registration, config, and packs ---
+$peonHooksDir = Join-Path (Join-Path $HOME ".claude") (Join-Path "hooks" "peon-ping")
+$peonScript = Join-Path $peonHooksDir "peon.ps1"
+
+if (-not (Test-Path $peonScript)) {
+    Write-Host "Setting up peon-ping hooks..."
+    $installScript = Join-Path $env:TEMP "peon-ping-install.ps1"
+    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/PeonPing/peon-ping/main/install.ps1" -OutFile $installScript
+    & powershell -ExecutionPolicy Bypass -File $installScript -Packs @("peon", "d2_deckard_cain")
+    Remove-Item $installScript -ErrorAction SilentlyContinue
+}
+
+# Write config (always, to ensure chezmoi-managed values)
+New-Item -ItemType Directory -Path $peonHooksDir -Force | Out-Null
+@'
+{
+  "default_pack": "d2_deckard_cain",
+  "volume": 0.7,
+  "enabled": true,
+  "desktop_notifications": true,
+  "categories": {
+    "session.start": true,
+    "task.acknowledge": false,
+    "task.complete": true,
+    "task.error": true,
+    "input.required": true,
+    "resource.limit": true,
+    "user.spam": true
+  },
+  "annoyed_threshold": 3,
+  "annoyed_window_seconds": 10,
+  "silent_window_seconds": 0,
+  "suppress_subagent_complete": false,
+  "no_rc": true,
+  "pack_rotation": [],
+  "pack_rotation_mode": "random",
+  "path_rules": [],
+  "session_ttl_days": 7,
+  "use_sound_effects_device": true,
+  "headphones_only": false,
+  "suppress_sound_when_tab_focused": false
+}
+'@ | Set-Content -Path (Join-Path $peonHooksDir "config.json") -Encoding UTF8
+
+# Ensure desired packs are installed
+try {
+    & "{{ $peon }}" packs install peon,d2_deckard_cain
+} catch { }
+{{- end }}
 {{- end }}

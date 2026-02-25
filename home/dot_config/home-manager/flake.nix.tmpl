@@ -14,9 +14,13 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    peon-ping = {
+      url = "github:PeonPing/peon-ping";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { nixpkgs, home-manager, ... }:
+  outputs = inputs@{ nixpkgs, home-manager, peon-ping, ... }:
     let
       system = "{{ $nixarch }}-{{ .chezmoi.os }}";
       pkgs = nixpkgs.legacyPackages.${system};
@@ -26,10 +30,11 @@
 
         # Specify your home configuration modules here, for example,
         # the path to your home.nix.
-        modules = [ ./home.nix ];
+        modules = [
+          ./home.nix
+        ];
 
-        # Optionally use extraSpecialArgs
-        # to pass through arguments to home.nix
+        extraSpecialArgs = { inherit inputs; };
       };
     };
 }
