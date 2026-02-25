@@ -126,18 +126,4 @@ cask "brooklyn"
 cask "aerial"
 {{-     end }}
 {{-   end }}
-
-{{- else }}
-
-{{/* work systems */}}
-{{   if not .use_nix -}}
-brew "git-crypt"
-{{-   end }}
-
-cask "slack"
-cask "zoom"
-
-{{   if not .music -}}
-cask "notunes"
-{{-   end }}
 {{- end }}
