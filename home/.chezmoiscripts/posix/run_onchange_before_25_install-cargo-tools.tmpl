@@ -1,6 +1,7 @@
 {{- if and .user_setup (not .use_nix) (ne .chezmoi.os "darwin") -}}
-{{-   $cargo_tools := dict "choose" "choose" "atuin" "atuin" -}}
+{{-   $cargo_tools := dict "atuin" "atuin" -}}
 {{-   if eq .osid "linux-chimera" -}}
+{{-     $_ := set $cargo_tools "choose" "choose" -}}
 {{-     $_ := set $cargo_tools "dua" "dua-cli" -}}
 {{-     $_ := set $cargo_tools "fclones" "fclones" -}}
 {{-     $_ := set $cargo_tools "sd" "sd" -}}
