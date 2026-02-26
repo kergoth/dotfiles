@@ -67,6 +67,7 @@ in {
     docker-compose
 {{- end }}
     nixpkgs-fmt
+    shellcheck
 
     # Languages
     (python3.withPackages (ps: with ps; [ pip ]))
