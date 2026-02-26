@@ -327,14 +327,12 @@ eget_install() {
 }
 
 install_nix() {
-    if [ "$OSTYPE" = WSL ]; then
-        if ! has nix; then
-            curl -fsSL https://install.determinate.systems/nix | sh -s -- install --determinate --no-confirm
-        fi
-    elif [ "$DISTRO" = arch ]; then
-        if ! has nix; then
-            pacman -S nix
-        fi
+    if has nix; then
+        return
+    fi
+
+    if [ "$DISTRO" = arch ] && ! [ "$OSTYPE" = "WSL" ]; then
+        pacman -S nix
 
         if ! grep -q "^nix-users:.*$USER" /etc/group; then
             sudorun sed -i -e "/^nix-users:/s/\$/ $USER/; /^nix-users:/s/: /:/;" /etc/group
@@ -348,14 +346,10 @@ install_nix() {
         sudorun systemctl enable nix-daemon
         sudorun systemctl start nix-daemon
     elif uname -n | grep -qF lima; then
-        if ! has nix; then
-            curl -fsSL https://install.determinate.systems/nix | sh -s -- install --determinate --no-confirm -- --init none
-        fi
-    else
-        if ! has nix; then
-            curl -fsSL https://install.determinate.systems/nix | sh -s -- install --determinate --no-confirm
-        fi
+        set -- -- --init none
     fi
+
+    curl -fsSL https://install.determinate.systems/nix | sh -s -- install --determinate --no-confirm "$@"
 }
 
 devpod_configure() {
