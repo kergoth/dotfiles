@@ -349,7 +349,7 @@ install_nix() {
         set -- -- --init none
     fi
 
-    curl -fsSL https://install.determinate.systems/nix | sh -s -- install --determinate --no-confirm "$@"
+    curl -fsSL https://install.determinate.systems/nix | sh -s -- install --determinate --no-confirm --no-modify-profile "$@"
 }
 
 devpod_configure() {
