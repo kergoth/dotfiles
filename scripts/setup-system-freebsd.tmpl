@@ -110,6 +110,11 @@ freebsd_check sysutils/restic restic
 freebsd_check devel/hs-ShellCheck shellcheck
 freebsd_check devel/shfmt shfmt
 
+# Development, work
+{{ if .work -}}
+freebsd_check www/jira-cli jira
+{{- end }}
+
 # Directly supported by nix home-manager
 freebsd_check textproc/jq jq
 freebsd_check textproc/bat bat
