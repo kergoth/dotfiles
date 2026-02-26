@@ -13,7 +13,7 @@ PATH="$scriptdir/linux:$scriptdir:$PATH"
 need_sudo
 
 if ! has nix; then
-{{   if .ephemeral -}}
+{{   if and .ephemeral (eq .chezmoi.os "linux") -}}
     curl --proto '=https' --tlsv1.2 -sSf -L https://nixos.org/nix/install |
         bash -s -- --no-daemon
 {{   else -}}
