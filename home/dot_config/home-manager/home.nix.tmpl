@@ -121,11 +121,6 @@ in {
 
     # Nix tools
     nvd
-
-    # Security
-{{- if .devpod }}
-    gnupg
-{{- end }}
   ] ++ lib.optionals stdenv.isDarwin [
     darwin.trash
     duti
