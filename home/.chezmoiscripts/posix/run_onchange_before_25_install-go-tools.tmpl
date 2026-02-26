@@ -1,5 +1,8 @@
 {{- if and .user_setup (not .use_nix) (ne .chezmoi.os "darwin") .work -}}
 {{-   $go_tools := dict "jira" "github.com/ankitpokhrel/jira-cli/...@latest" -}}
+{{-   if eq .osid "linux-chimera" -}}
+{{-     $_ := set $go_tools "duf" "github.com/muesli/duf/...@latest" -}}
+{{-   end -}}
 {{-   $to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $go_tools) | fromJson -}}
 {{-   if $to_install -}}
 {{-     $go := includeTemplate "find-tool" (dict "root" . "tool" "go") -}}
