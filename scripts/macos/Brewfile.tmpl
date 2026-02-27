@@ -58,6 +58,9 @@ cask "devpod"
 
 # LLMs
 cask "chatgpt"
+
+# This is a CLI tool, but the homebrew version is newer than there
+# version available in nix, even nixpkgs-unstable, so use brew.
 cask "claude-code"
 
 {{ if not .work -}}
