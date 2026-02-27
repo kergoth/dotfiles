@@ -36,14 +36,18 @@ find "$CHEZMOI_SOURCE_DIR/dot_config/home-manager" -name \*.nix -o -name \*.nix.
                     echo >&2 "Error processing chezmoi template $src"
                     exit 1
                 }
-                if [ "$private" -eq 1 ]; then
-                    chmod go-rwx "$dest"
+                if ! [ -s "$dest" ]; then
+                    # Without empty_, chezmoi doesn't apply empty files
+                    rm -f "$dest"
                 fi
                 ;;
             *)
                 cp -af "$src" "$dest"
                 ;;
             esac
+            if [ "$private" -eq 1 ]; then
+                chmod go-rwx "$dest"
+            fi
         fi
     done
 
