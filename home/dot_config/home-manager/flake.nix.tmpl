@@ -20,12 +20,25 @@
   outputs = { nixpkgs, nixpkgs-unstable, home-manager, ... }:
     let
       system = "{{ $nixarch }}-{{ .chezmoi.os }}";
-      pkgs = nixpkgs.legacyPackages.${system};
+      lib = nixpkgs.lib;
+
+      allowedUnfree = [];
+      allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) allowedUnfree;
+
+      pkgs = import nixpkgs {
+        inherit system;
+        config.allowUnfreePredicate = allowUnfreePredicate;
+      };
+
+      pkgs-unstable = import nixpkgs-unstable {
+        inherit system;
+        config.allowUnfreePredicate = allowUnfreePredicate;
+      };
     in {
       homeConfigurations."{{ .chezmoi.username }}" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
         extraSpecialArgs = {
-          inherit nixpkgs nixpkgs-unstable;
+          inherit nixpkgs nixpkgs-unstable pkgs-unstable;
         };
 
         modules = [ ./home.nix ];

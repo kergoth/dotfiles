@@ -1,4 +1,4 @@
-{ config, pkgs, lib, nixpkgs, nixpkgs-unstable, ... }:
+{ config, pkgs, lib, nixpkgs, nixpkgs-unstable, pkgs-unstable, ... }:
 
 let
   modulesDir = ./modules;
@@ -28,8 +28,6 @@ let
     if pkgs.stdenv.isDarwin then pkgs.pinentry_mac
     else if pkgs.stdenv.isLinux && !isWSL then pkgs.pinentry-curses
     else null; # WSL uses Windows pinentry via extraConfig.
-
-  pkgs-unstable = nixpkgs-unstable.legacyPackages.${pkgs.system};
 in {
   # The home-manager manual is at:
   #
