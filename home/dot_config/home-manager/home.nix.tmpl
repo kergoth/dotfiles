@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, nixpkgs, nixpkgs-unstable, ... }:
 
 let
   modulesDir = ./modules;
@@ -19,11 +19,17 @@ let
   '';
 {{- end }}
 
-  # Choose the right pinentry program depending on platform
+  isWSL =
+    pkgs.stdenv.isLinux
+    && builtins.pathExists /proc/sys/fs/binfmt_misc/WSLInterop;
+
+  # Choose the right pinentry program depending on platform.
   pinentry =
     if pkgs.stdenv.isDarwin then pkgs.pinentry_mac
-    else if pkgs.stdenv.isLinux then pkgs.pinentry-curses
-    else null;  # Windows is handled differently
+    else if pkgs.stdenv.isLinux && !isWSL then pkgs.pinentry-curses
+    else null; # WSL uses Windows pinentry via extraConfig.
+
+  pkgs-unstable = nixpkgs-unstable.legacyPackages.${pkgs.system};
 in {
   # The home-manager manual is at:
   #
@@ -44,7 +50,7 @@ in {
   };
 {{- end }}
 
-  home.stateVersion = "22.05";
+  home.stateVersion = "25.11";
 
   home.username = "{{ .chezmoi.username }}";
   home.homeDirectory = "{{ .chezmoi.destDir }}";
@@ -59,7 +65,6 @@ in {
     neovim
     ssh-copy-id
     tmux
-    gnupg
 
     # Development
 {{- if .containers }}
@@ -94,7 +99,6 @@ in {
     delta
     difftastic
     gh
-    ghq
     git-absorb
     git-imerge
     git-revise
@@ -119,6 +123,7 @@ in {
 
     # Nix tools
     nvd
+
   ] ++ lib.optionals stdenv.isDarwin [
     darwin.trash
     duti
@@ -162,12 +167,18 @@ in {
   services.gpg-agent = {
     enable = true;
     pinentry.package = pinentry;
+    extraConfig = lib.mkIf isWSL ''
+      pinentry-program /mnt/c/Program Files (x86)/Gpg4win/bin/pinentry.exe
+    '';
     defaultCacheTtl = 3600;
     maxCacheTtl = 72000;
   };
 {{- end }}
 
-  nix.nixPath = ["nixpkgs=flake:nixpkgs"];
+  nix.registry = {
+    nixpkgs.flake = nixpkgs;
+    nixpkgs-unstable.flake = nixpkgs-unstable;
+  };
 
   # Disable linking apps into ~/Applications/Home Manager Apps
   targets.darwin.linkApps.enable = false;
