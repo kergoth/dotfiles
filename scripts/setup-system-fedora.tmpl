@@ -10,13 +10,13 @@ PATH="$scriptdir/debian:$scriptdir/linux:$scriptdir:$PATH"
 
 # Install xz for nix
 if ! has xz; then
-    sudorun yum -y install --no-interactive xz
+    sudorun dnf -y --setopt=install_weak_deps=False install xz
 fi
 
 # Install zsh
 if ! has zsh; then
-    sudorun yum -y install --no-interactive zsh
+    sudorun dnf -y --setopt=install_weak_deps=False install zsh
 fi
 
 # Install neovim
-sudorun yum -y install --no-interactive neovim
+sudorun dnf -y --setopt=install_weak_deps=False install neovim
