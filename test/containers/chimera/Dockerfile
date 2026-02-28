@@ -4,4 +4,5 @@ RUN apk update \
     && apk add --no-interactive \
         curl \
         git \
-        opendoas
+        opendoas \
+        shadow
