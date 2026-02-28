@@ -33,14 +33,16 @@ if ! getent passwd "$user" >/dev/null 2>&1; then
         chsh -s /bin/zsh "$user"
     fi
 
-    if [ -n "${USER_PASSWORD:-}" ]; then
+    if [ -n "${NO_USER_PASSWORD:-}" ]; then
+        : # Explicitly skip password setup.
+    elif [ -n "${USER_PASSWORD:-}" ]; then
         echo "$user:$USER_PASSWORD" | chpasswd
     elif [ -t 0 ]; then
         echo >&2 "Input password for $user"
         passwd "$user"
     elif ! is_container; then
         echo >&2 "Error: no password for $user and not in a container."
-        echo >&2 "Set USER_PASSWORD or run interactively."
+        echo >&2 "Set USER_PASSWORD, set NO_USER_PASSWORD=1 to skip, or run interactively."
         exit 1
     fi
 else
