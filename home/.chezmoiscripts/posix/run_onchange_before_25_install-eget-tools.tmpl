@@ -1,0 +1,33 @@
+{{- if and .user_setup (not .use_nix) -}}
+{{-   $eget_tools := dict -}}
+{{-   if eq .osid "linux-chimera" -}}
+{{-     $_ := set $eget_tools "choose" "theryangeary/choose" -}}
+{{-     $_ := set $eget_tools "dua" "Byron/dua-cli" -}}
+{{-     $_ := set $eget_tools "ghq" "x-motemen/ghq" -}}
+{{-     $_ := set $eget_tools "sd" "chmln/sd" -}}
+{{-     $_ := set $eget_tools "shellcheck" "-a xz koalaman/shellcheck" -}}
+{{-     $_ := set $eget_tools "duf" "-a tar muesli/duf" -}}
+{{-     if eq .chezmoi.arch "amd64" -}}
+{{-       $_ := set $eget_tools "fclones" "pkolaczk/fclones" -}}
+{{-     end -}}
+{{-     if .work -}}
+{{-       $_ := set $eget_tools "jira" "ankitpokhrel/jira-cli" -}}
+{{-     end -}}
+{{-   end -}}
+{{-   if .steamdeck -}}
+{{-     $_ := set $eget_tools "rclone" "rclone/rclone" -}}
+{{-   end -}}
+{{-   $to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $eget_tools) | fromJson -}}
+{{-   if $to_install -}}
+{{-     $eget := includeTemplate "find-tool" (dict "root" . "tool" "eget") -}}
+{{-     if $eget -}}
+#!/bin/sh
+set -eu
+
+{{-       range $to_install }}
+echo >&2 "Installing {{ . }}"
+"{{ $eget }}" --to="$HOME/.local/bin" {{ . }}
+{{-       end }}
+{{-     end }}
+{{-   end }}
+{{- end }}
