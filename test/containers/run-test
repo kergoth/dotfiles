@@ -268,12 +268,17 @@ run_container() {
         return 0
     fi
 
+    emit_container_script "$setup_cmd" >"$tmpdir/run-test"
+    chmod +x "$tmpdir/run-test"
+
     if [ "$shell_after" -eq 1 ]; then
-        emit_container_script "$setup_cmd" \
-            | run docker run --entrypoint /bin/sh -it -e SHELL_AFTER=1 "$@" "$image_name" -s
+        run docker run --entrypoint /bin/sh -it -e SHELL_AFTER=1 \
+            -v "$tmpdir/run-test:/tmp/run-test:ro" \
+            "$@" "$image_name" /tmp/run-test
     else
-        emit_container_script "$setup_cmd" \
-            | run docker run --entrypoint /bin/sh -i "$@" "$image_name" -s
+        run docker run --entrypoint /bin/sh -i \
+            -v "$tmpdir/run-test:/tmp/run-test:ro" \
+            "$@" "$image_name" /tmp/run-test
     fi
 }
 
@@ -296,6 +301,8 @@ run_one() {
 
 main() {
     process_arguments "$@"
+    tmpdir=$(mktemp -d "$HOME/.tmp.run-test.XXXXXX")
+    trap 'rm -rf "$tmpdir"' EXIT INT TERM
 
     if [ "$all_distros" -eq 1 ]; then
         distros=$(find_distros)
