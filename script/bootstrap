@@ -133,7 +133,7 @@ required_dependencies() {
         elif has apk; then
             need_sudo
             sudorun apk update
-            sudorun apk add "$@"
+            sudorun apk add --interactive=no "$@"
         elif has apt-get; then
             need_sudo
             sudorun apt-get update
