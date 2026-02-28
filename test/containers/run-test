@@ -194,7 +194,9 @@ arch_base_image_for_host() {
 
 emit_container_script() {
     setup_cmd=$1
+    GITHUB_TOKEN=${GITHUB_TOKEN:-}
 
+    # shellcheck disable=SC2016
     cat <<EOF
 #!/bin/sh
 set -eu
@@ -209,9 +211,9 @@ chown -R "$user" "$dotfiles_mount"
 export DOTFILES_DIR="$dotfiles_mount"
 
 if command -v su >/dev/null 2>&1; then
-    su - "$user" -c "export DOTFILES_DIR='$dotfiles_mount'; cd '$dotfiles_mount' && './$setup_cmd' </dev/null"
+    su - "$user" -c "set -x; export DOTFILES_DIR='$dotfiles_mount' GITHUB_TOKEN='$GITHUB_TOKEN'; cd '$dotfiles_mount' && './$setup_cmd' </dev/null"
 elif command -v doas >/dev/null 2>&1; then
-    doas -u "$user" sh -c "export DOTFILES_DIR='$dotfiles_mount'; cd '$dotfiles_mount' && './$setup_cmd' </dev/null"
+    doas -u "$user" sh -c "set -x; export DOTFILES_DIR='$dotfiles_mount' GITHUB_TOKEN='$GITHUB_TOKEN'; cd '$dotfiles_mount' && './$setup_cmd' </dev/null"
 else
     echo "Error: need su or doas in container to run as user" >&2
     exit 1
@@ -260,7 +262,7 @@ run_container() {
         --rm \
         -v "$repodir:$dotfiles_mount" \
         -e NO_USER_PASSWORD=1 \
-        ${GITHUB_TOKEN:+-e GITHUB_TOKEN='$GITHUB_TOKEN'}
+        ${GITHUB_TOKEN:+-e GITHUB_TOKEN="$GITHUB_TOKEN"}
 
     if [ "$interactive" -eq 1 ]; then
         msg "Dropping into interactive root shell..."
