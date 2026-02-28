@@ -216,6 +216,7 @@ else
     echo "Error: need su or doas in container to run as user" >&2
     exit 1
 fi
+echo >&2 "$distro test complete."
 
 if [ "\${SHELL_AFTER:-0}" -eq 1 ]; then
     echo "Setup complete. Dropping into user shell..." >&2
@@ -296,7 +297,6 @@ run_one() {
     fi
 
     run_container "$image_name"
-    echo >&2 "$distro test complete."
 }
 
 main() {
