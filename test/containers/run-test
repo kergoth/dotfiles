@@ -1,6 +1,11 @@
 #!/bin/sh
 # Usage: run-test [options] [DISTRO]
 #
+# Env overrides:
+#     ARCH_BASE_IMAGE         Override base image for arch container (all arches).
+#     ARCH_ARM64_BASE_IMAGE   Override base image for arch container on arm64 only.
+#                             Default: ghcr.io/baerenbude-org/archlinuxarm-arm64v8:latest
+#
 # Build and run a test container to validate dotfiles setup scripts.
 #
 # Distros:
@@ -159,6 +164,34 @@ validate_distro() {
     fi
 }
 
+docker_server_arch() {
+    # Prefer docker version formatting (fast, stable), fall back to docker info.
+    arch=$(docker version -f '{{.Server.Arch}}' 2>/dev/null || true)
+    if [ -n "$arch" ]; then
+        printf "%s" "$arch"
+        return 0
+    fi
+    arch=$(docker info -f '{{.Architecture}}' 2>/dev/null || true)
+    if [ -n "$arch" ]; then
+        printf "%s" "$arch"
+        return 0
+    fi
+    # Unknown; let docker decide.
+    printf "%s" "unknown"
+}
+
+arch_base_image_for_host() {
+    if [ -n "${ARCH_BASE_IMAGE:-}" ]; then
+        printf "%s" "$ARCH_BASE_IMAGE"
+        return 0
+    fi
+    if [ "$(docker_server_arch)" = "arm64" ]; then
+        printf "%s" "${ARCH_ARM64_BASE_IMAGE:-ghcr.io/baerenbude-org/archlinuxarm-arm64v8:latest}"
+        return 0
+    fi
+    printf "%s" "archlinux/archlinux:latest"
+}
+
 docker_run_args() {
     printf "%s" "--rm -v $repodir:$dotfiles_mount"
 }
@@ -202,9 +235,19 @@ EOF
 build_image() {
     image_name=$1
     build_context=$2
+    distro=$3
 
     msg "Building %s..." "$image_name"
-    run docker build -t "$image_name" "$build_context"
+    if [ "${distro:-}" = "arch" ]; then
+        base_image=$(arch_base_image_for_host)
+        msg "  arch base image: %s" "$base_image"
+        DOCKER_BUILDKIT=0 run docker build \
+            --build-arg "BASE_IMAGE=$base_image" \
+            -t "$image_name" \
+            "$build_context"
+    else
+        run docker build -t "$image_name" "$build_context"
+    fi
 }
 
 run_container() {
@@ -240,7 +283,7 @@ run_one() {
     build_context="$scriptdir/$distro/"
 
     validate_distro "$distro"
-    build_image "$image_name" "$build_context"
+    build_image "$image_name" "$build_context" "$distro"
 
     if [ "$build_only" -eq 1 ]; then
         msg "Image %s built successfully." "$image_name"
