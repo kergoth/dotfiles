@@ -26,6 +26,10 @@ if ! getent passwd "$user" >/dev/null 2>&1; then
     elif [ -t 0 ]; then
         echo >&2 "Input password for $user"
         passwd "$user"
+    elif ! is_container; then
+        echo >&2 "Error: no password for $user and not in a container."
+        echo >&2 "Set USER_PASSWORD or run interactively."
+        exit 1
     fi
 fi
 
