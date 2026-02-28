@@ -28,7 +28,6 @@
     "source=devcontainer-bashhistory,target=/commandhistory,type=volume",
     "target=/home/vscode/.vscode-server,type=volume"
   ],
-
-  "postCreateCommand": "./script/setup",
+  "postCreateCommand": "./script/setup-full",
   "remoteUser": "vscode"
 }
