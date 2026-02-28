@@ -1,6 +1,6 @@
 {{- $vim := includeTemplate "find-tool" (dict "root" . "tool" "vim") }}
 {{- if not $vim -}}
-{{-   $vim := includeTemplate "find-tool" (dict "root" . "tool" "nvim") }}
+{{-   $vim = includeTemplate "find-tool" (dict "root" . "tool" "nvim") }}
 {{- end }}
 {{- $update := joinPath (printf "%s" .chezmoi.destDir) ".config" "vim" "script" "update" -}}
 {{- if and $vim $update -}}
