@@ -1,5 +1,3 @@
-{{ $_ := set . "osid" "linux-chimera" }}
-{{ $_ := set . "use_nix" false }}
 {{- if and .user_setup (not .use_nix) -}}
 {{-     $eget_tools := dict -}}
 {{-     if eq .osid "linux-chimera" -}}
