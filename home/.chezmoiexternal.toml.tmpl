@@ -1,15 +1,11 @@
 {{- if not (env "CHEZMOI_SKIP_EXTERNALS") -}}
-{{- if or (ne .chezmoi.os "darwin") (ne .chezmoi.username .macos_admin_user) -}}
-{{- includeTemplate "external/app-data.toml.tmpl" . -}}
-{{- includeTemplate "external/colors-syntax.toml.tmpl" . -}}
-{{- includeTemplate "external/fonts.toml.tmpl" . -}}
-{{- includeTemplate "external/scripts.toml.tmpl" . -}}
-{{- includeTemplate "external/vim.toml.tmpl" . -}}
-{{- includeTemplate "external/zsh.toml.tmpl" . -}}
-{{ if .steamdeck }}
-{{   includeTemplate "external/steamdeck.toml.tmpl" . }}
-{{ end }}
-{{/* Uncomment to test new external migrations: */}}
-{{/*- includeTemplate "external/test-migrations.toml.tmpl" . -*/}}
-{{- end -}}
+{{-   if or (ne .chezmoi.os "darwin") (ne .chezmoi.username .macos_admin_user) -}}
+{{-   includeTemplate "external/app-data.toml.tmpl" . -}}
+{{-   includeTemplate "external/colors-syntax.toml.tmpl" . -}}
+{{-   includeTemplate "external/fonts.toml.tmpl" . -}}
+{{-   includeTemplate "external/scripts.toml.tmpl" . -}}
+{{-   includeTemplate "external/vim.toml.tmpl" . -}}
+{{-   includeTemplate "external/zsh.toml.tmpl" . -}}
+{{-   includeTemplate "external/tools.toml.tmpl" . }}
+{{-   end -}}
 {{- end -}}
