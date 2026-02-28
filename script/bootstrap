@@ -162,7 +162,7 @@ darwin*)
 esac
 
 if [ "$(id -u)" != "0" ]; then
-    if [ "$DISTRO" = freebsd ]; then
+    if has doas; then
         SUDO="doas "
     else
         SUDO="sudo "
