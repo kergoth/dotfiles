@@ -157,7 +157,7 @@ darwin*)
     ;;
 *)
     if [ -e /etc/os-release ]; then
-        DISTRO="$(sed -n -e 's/^ID=//p' /etc/os-release | tr '[:upper:]' '[:lower:]')"
+        DISTRO="$(. /etc/os-release && echo "$ID" | tr '[:upper:]' '[:lower:]')"
     else
         DISTRO=
     fi
