@@ -43,7 +43,9 @@ Scripts form a progression from OS installation to dotfiles application:
 - `script/setup-system` — System-level packages, Nix, prerequisites (non-root user with sudo)
 - `script/setup` / `chezmoi apply` — Apply dotfiles and user-level packages
 - `script/setup-full` — Runs `setup-system` then `setup`
+
 - `script/update` — Update dotfiles, externals, and home-manager packages
+- `script/test` - Runs dotfiles setup in container test environments
 
 ## Repository Architecture
 
