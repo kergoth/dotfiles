@@ -12,7 +12,9 @@
 
 set -euo pipefail
 
-find "$CHEZMOI_SOURCE_DIR/dot_config/home-manager" -name \*.nix -o -name \*.nix.tmpl -o -name \*.pem -o -name \*.pem.tmpl -o -name \*.lock |
+# We set up ~/.config/nix/nix.conf prior to the home-manager configuration
+# to avoid errors due to the experimental flakes and nix-command features
+find "$CHEZMOI_SOURCE_DIR/dot_config/nix" "$CHEZMOI_SOURCE_DIR/dot_config/home-manager" -name \*.conf -o -name \*.conf.tmpl -o -name \*.nix -o -name \*.nix.tmpl -o -name \*.pem -o -name \*.pem.tmpl -o -name \*.lock |
     while read -r src; do
         file="${src#"$CHEZMOI_SOURCE_DIR/dot_config/"}"
         dest="$CHEZMOI_HOME_DIR/.config/${file%.tmpl}"
