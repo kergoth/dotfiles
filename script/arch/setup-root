@@ -3,6 +3,13 @@
 
 set -eu
 
+is_container() {
+    [ -f /.dockerenv ] ||
+    [ -f /run/.containerenv ] ||
+    [ -n "${container:-}" ] ||
+    grep -qE 'docker|lxc|containerd' /proc/1/cgroup 2>/dev/null
+}
+
 # shellcheck disable=SC2032
 pacman() {
     command pacman --noconfirm --needed "$@"
@@ -48,4 +55,9 @@ pacman -Syu --noconfirm
 pacman_install sudo
 
 # Enable sudo for the wheel group
-sed -i -e '/# %wheel.*) ALL$/s/^# *//' /etc/sudoers
+if is_container; then
+    echo "%wheel ALL=(ALL:ALL) NOPASSWD: ALL" >/etc/sudoers.d/wheel
+    chmod 0440 /etc/sudoers.d/wheel
+else
+    sed -i -e '/# %wheel.*) ALL$/s/^# *//' /etc/sudoers
+fi

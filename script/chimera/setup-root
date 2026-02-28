@@ -4,6 +4,13 @@
 
 set -eu
 
+is_container() {
+    [ -f /.dockerenv ] ||
+    [ -f /run/.containerenv ] ||
+    [ -n "${container:-}" ] ||
+    grep -qE 'docker|lxc|containerd' /proc/1/cgroup 2>/dev/null
+}
+
 user=$1
 
 if ! getent passwd "$user" >/dev/null 2>&1; then
@@ -23,6 +30,15 @@ if ! getent passwd "$user" >/dev/null 2>&1; then
 else
     echo >&2 "Adding user '$user' to the wheel group"
     usermod -a -G wheel "$user"
+fi
+
+# Configure doas for the wheel group
+if ! [ -e /etc/doas.conf ] || ! grep -q "^permit.*:wheel" /etc/doas.conf; then
+    if is_container; then
+        echo "permit nopass :wheel" >>/etc/doas.conf
+    else
+        echo "permit :wheel" >>/etc/doas.conf
+    fi
 fi
 
 # Enable the DHCP client service (skip in containers where dinit isn't running)
