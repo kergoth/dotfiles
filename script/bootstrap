@@ -1,7 +1,7 @@
 #!/bin/sh
 # Bootstrap script for initializing the dotfiles on a new system.
 #
-# - Install git, bash, curl, and unzip if not already present
+# - Install git, bash, curl, tar, and unzip if not already present
 # - Clone the dotfiles repo if not already present
 # - Run script/setup from the dotfiles repo
 
@@ -108,6 +108,9 @@ required_dependencies() {
     fi
     if ! has curl; then
         set -- "$@" curl
+    fi
+    if ! has tar; then
+        set -- "$@" tar
     fi
     if ! has unzip; then
         set -- "$@" unzip
