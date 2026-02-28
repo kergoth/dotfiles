@@ -209,13 +209,13 @@ chown -R "$user" "$dotfiles_mount"
 export DOTFILES_DIR="$dotfiles_mount"
 
 if command -v su >/dev/null 2>&1; then
-    su - "$user" -c "export DOTFILES_DIR='$dotfiles_mount'; cd '$dotfiles_mount' && './$setup_cmd'"
+    su - "$user" -c "export DOTFILES_DIR='$dotfiles_mount'; cd '$dotfiles_mount' && './$setup_cmd' </dev/null"
 elif command -v doas >/dev/null 2>&1; then
-    doas -u "$user" sh -c "export DOTFILES_DIR='$dotfiles_mount'; cd '$dotfiles_mount' && './$setup_cmd'"
+    doas -u "$user" sh -c "export DOTFILES_DIR='$dotfiles_mount'; cd '$dotfiles_mount' && './$setup_cmd' </dev/null"
 else
     echo "Error: need su or doas in container to run as user" >&2
     exit 1
-fi </dev/null
+fi
 
 if [ "\${SHELL_AFTER:-0}" -eq 1 ]; then
     echo "Setup complete. Dropping into user shell..." >&2
