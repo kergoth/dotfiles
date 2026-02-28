@@ -110,7 +110,12 @@ required_dependencies() {
         set -- "$@" curl
     fi
     if ! has tar; then
-        set -- "$@" tar
+        # Package name varies: libarchive-progs on Chimera, tar elsewhere
+        if has apk; then
+            set -- "$@" libarchive-progs
+        else
+            set -- "$@" tar
+        fi
     fi
     if ! has unzip; then
         set -- "$@" unzip
