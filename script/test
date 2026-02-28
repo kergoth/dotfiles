@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -eu
+
+scriptdir=$(cd "$(dirname "$0")" && pwd)
+testdir="$(dirname "$scriptdir")/test"
+
+if [ $# -eq 0 ]; then
+    # All container tests
+    set -- -a
+fi
+
+"$testdir/containers/run-test" "$@"
