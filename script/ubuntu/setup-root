@@ -1,0 +1,43 @@
+#!/bin/sh
+# Root-level setup for Ubuntu: create user, install base packages.
+
+set -eu
+
+user=$1
+
+if ! getent passwd "$user" >/dev/null 2>&1; then
+    echo >&2 "Adding user '$user'"
+    useradd -m -s /bin/bash "$user"
+
+    # Install zsh and set as default shell
+    apt-get update
+    apt-get install --no-install-recommends -y zsh
+    chsh -s /usr/bin/zsh "$user"
+
+    if [ -t 0 ]; then
+        echo >&2 "Input password for $user"
+        passwd "$user"
+    else
+        if read -r pass; then
+            echo "$user:$pass" | chpasswd
+        else
+            echo >&2 "WARNING: No password provided for $user"
+        fi
+    fi
+fi
+
+# Grant sudo access
+apt-get update
+apt-get install --no-install-recommends -y sudo
+echo "$user ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/"$user"
+chmod 0440 /etc/sudoers.d/"$user"
+
+# Install base prerequisites
+apt-get install --no-install-recommends -y \
+    bash \
+    ca-certificates \
+    curl \
+    git \
+    unzip
+
+rm -rf /var/lib/apt/lists/*
