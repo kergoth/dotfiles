@@ -264,16 +264,16 @@ run_container() {
     if [ "$interactive" -eq 1 ]; then
         msg "Dropping into interactive root shell..."
         msg "  Dotfiles repo is at %s" "$dotfiles_mount"
-        run docker run -it $run_args "$image_name" /bin/sh
+        run docker run --entrypoint /bin/sh -it $run_args "$image_name"
         return 0
     fi
 
     if [ "$shell_after" -eq 1 ]; then
         emit_container_script "$setup_cmd" \
-            | run docker run -it -e SHELL_AFTER=1 $run_args "$image_name" /bin/sh -s
+            | run docker run --entrypoint /bin/sh -it -e SHELL_AFTER=1 $run_args "$image_name" -s
     else
         emit_container_script "$setup_cmd" \
-            | run docker run -i $run_args "$image_name" /bin/sh -s
+            | run docker run --entrypoint /bin/sh -i $run_args "$image_name" -s
     fi
 }
 
