@@ -29,7 +29,7 @@ else
     if ! [ -e ~/.local/bin/uv ]; then
         # If the chezmoi apply failed due to a script or the like, we could end
         # up without our externals. Explicitly attempt to apply those.
-        chezmoi apply ~/.local/bin
+        chezmoi apply --keep-going "$@" ~/.local/bin
     fi
     exit 1
 fi
