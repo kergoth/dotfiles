@@ -222,7 +222,7 @@ if [ "\${SHELL_AFTER:-0}" -eq 1 ]; then
     if command -v su >/dev/null 2>&1; then
         exec su - "$user"
     elif command -v doas >/dev/null 2>&1; then
-        exec doas -u "$user" sh
+        exec doas -u "$user" zsh --login
     fi
 fi
 EOF
