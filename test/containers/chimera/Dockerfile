@@ -1,7 +1,7 @@
 FROM chimeralinux/chimera:latest
 
-RUN apk update \
-    && apk add --no-interactive \
+RUN apk add --no-cache --no-interactive \
+        ca-certificates \
         curl \
         git \
         opendoas \
