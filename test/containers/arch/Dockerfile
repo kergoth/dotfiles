@@ -6,6 +6,5 @@ RUN pacman-key --init \
     && pacman-key --populate \
     && pacman --noconfirm -Syu \
     && pacman --noconfirm --needed -S \
-        curl \
-        git \
-        sudo
+        sudo \
+    && rm -rf /var/cache/pacman/pkg/*
