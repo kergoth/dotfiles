@@ -105,6 +105,10 @@ set -eux
 # Run setup-root to create the user
 cd $dotfiles_mount
 script/$distro/setup-root $user
+
+# Docker creates the home dir as root for the bind mount target,
+# and useradd -m won't fix ownership if it already exists
+chown $user /home/$user
 chown -R $user $dotfiles_mount
 
 # Switch to the created user and run setup
