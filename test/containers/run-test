@@ -223,7 +223,7 @@ echo >&2 "$distro test complete."
 if [ "\${SHELL_AFTER:-0}" -eq 1 ]; then
     echo "Setup complete. Dropping into user shell..." >&2
     if command -v su >/dev/null 2>&1; then
-        exec su - "$user"
+        exec su - "$user" -c "exec zsh --login"
     elif command -v doas >/dev/null 2>&1; then
         exec doas -u "$user" zsh --login
     fi
