@@ -1,0 +1,60 @@
+#!/bin/sh
+# Root-level setup for Fedora: create user, install base packages.
+
+set -eu
+
+is_container() {
+    [ -f /.dockerenv ] ||
+    [ -f /run/.containerenv ] ||
+    [ -n "${container:-}" ] ||
+    grep -qE 'docker|lxc|containerd' /proc/1/cgroup 2>/dev/null
+}
+
+user=$1
+
+dnf_install() {
+    # Keep this small and non-interactive.
+    # --setopt=install_weak_deps=False is the closest analogue to --no-install-recommends.
+    dnf -y --setopt=install_weak_deps=False install "$@"
+}
+
+if ! getent passwd "$user" >/dev/null 2>&1; then
+    echo >&2 "Adding user '$user'"
+    useradd -m -s /bin/bash "$user"
+
+    # Install zsh and set as default shell
+    dnf_install zsh
+    chsh -s /usr/bin/zsh "$user"
+
+    if [ -n "${USER_PASSWORD:-}" ]; then
+        echo "$user:$USER_PASSWORD" | chpasswd
+    elif [ -t 0 ]; then
+        echo >&2 "Input password for $user"
+        passwd "$user"
+    elif ! is_container; then
+        echo >&2 "Error: no password for $user and not in a container."
+        echo >&2 "Set USER_PASSWORD or run interactively."
+        exit 1
+    fi
+fi
+
+# Grant sudo access
+dnf_install sudo
+if is_container; then
+    echo "$user ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/"$user"
+else
+    echo "$user ALL=(ALL:ALL) ALL" > /etc/sudoers.d/"$user"
+fi
+chmod 0440 /etc/sudoers.d/"$user"
+
+# Install base prerequisites
+dnf_install \
+    bash \
+    ca-certificates \
+    curl \
+    git \
+    unzip
+
+# Cleanup
+dnf -y clean all
+rm -rf /var/cache/dnf
