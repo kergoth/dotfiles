@@ -96,12 +96,10 @@ process_arguments() {
         msg "Error: distro argument required (or use -a)"
         usage 1
     fi
-    if [ $# -gt 1 ]; then
-        msg "Unexpected argument: %s" "$2"
+    if [ $# -gt 1 ] && { [ "$interactive" -eq 1 ] || [ "$shell_after" -eq 1 ]; }; then
+        msg "Multiple distros cannot be combined with -i or -s"
         usage 1
     fi
-
-    distro=$1
 }
 
 show_help() {
@@ -218,7 +216,7 @@ else
     echo "Error: need su or doas in container to run as user" >&2
     exit 1
 fi
-echo >&2 "$distro test complete."
+echo >&2 "Test completed for distro: $distro"
 
 if [ "\${SHELL_AFTER:-0}" -eq 1 ]; then
     echo "Setup complete. Dropping into user shell..." >&2
@@ -311,17 +309,25 @@ main() {
         if [ -z "$distros" ]; then
             die "no distros found under %s (expected */Dockerfile)" "$scriptdir"
         fi
-
         echo "$distros" | while IFS= read -r d; do
-            [ -n "$d" ] || continue
-            run_one "$d"
+            echo "$d"
         done
-        echo >&2 "All tests completed."
+    else
+        for distro; do
+            echo "$distro"
+        done
+    fi >"$tmpdir/distros.txt"
 
-        return 0
+    while read -r distro; do
+        [ -n "$distro" ] || continue
+        run_one "$distro"
+    done <"$tmpdir/distros.txt"
+
+    # shellcheck disable=SC2046
+    if [ $(wc -l <"$tmpdir/distros.txt") -gt 1 ]; then
+        echo >&2 "All tests completed for distros: $(cat "$tmpdir/distros.txt" | tr '\n' ' ')"
     fi
 
-    run_one "$distro"
 }
 
 if [ -z "${0##/*}" ]; then
