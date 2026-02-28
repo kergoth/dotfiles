@@ -1,140 +1,285 @@
 #!/bin/sh
+# Usage: run-test [options] [DISTRO]
+#
 # Build and run a test container to validate dotfiles setup scripts.
 #
-# Usage:
-#   ./test/containers/run-test <distro> [options]
+# Distros:
+#     ubuntu, chimera, arch, debian, fedora
 #
-# Examples:
-#   ./test/containers/run-test ubuntu
-#   ./test/containers/run-test chimera --interactive
-#   ./test/containers/run-test arch --shell
+# Options:
+#     -a          Run for all distros (auto-detected from Dockerfiles)
+#     -i          Drop into a root shell before setup
+#     -s          Drop into a user shell after setup
+#     -S          Skip setup-system, only run setup
+#     -b          Just build the image(s), don't run
+#     -n          Dry run, don't actually do anything
+#     -v          Increase verbosity, can be specified multiple times
+#     -q          Decrease verbosity, can be specified multiple times
+#     -h          Show this help message
 
 set -eu
 
 usage() {
-    cat >&2 <<'EOF'
-Usage: test/containers/run-test <distro> [options]
-
-Distros: ubuntu, chimera, arch
-
-Options:
-  -i, --interactive   Drop into a root shell before setup
-  -s, --shell         Drop into a user shell after setup
-  --no-system         Skip setup-system, only run setup
-  --build-only        Just build the image, don't run
-  -h, --help          Show this help
-EOF
+    show_help >&2
     exit "${1:-1}"
 }
 
-distro=
-interactive=false
-shell_after=false
-no_system=false
-build_only=false
-user=testuser
-dotfiles_mount=/home/testuser/.dotfiles
+process_arguments() {
+    all_distros=0
+    interactive=0
+    shell_after=0
+    no_system=0
+    build_only=0
+    dry_run=0
+    verbosity=0
 
-while [ $# -gt 0 ]; do
-    case "$1" in
-        -i|--interactive) interactive=true ;;
-        -s|--shell) shell_after=true ;;
-        --no-system) no_system=true ;;
-        --build-only) build_only=true ;;
-        -h|--help) usage 0 ;;
-        -*)
-            echo >&2 "Unknown option: $1"
-            usage 1
-            ;;
-        *)
-            if [ -z "$distro" ]; then
-                distro=$1
-            else
-                echo >&2 "Unexpected argument: $1"
+    distro=
+
+    user=testuser
+    dotfiles_mount=/home/testuser/.dotfiles
+
+    while getopts ":aisSbnvqh" opt; do
+        case "$opt" in
+            a)
+                all_distros=1
+                ;;
+            i)
+                interactive=1
+                ;;
+            s)
+                shell_after=1
+                ;;
+            S)
+                no_system=1
+                ;;
+            b)
+                build_only=1
+                ;;
+            n)
+                dry_run=1
+                ;;
+            v)
+                verbosity=$((verbosity + 1))
+                ;;
+            q)
+                verbosity=$((verbosity - 1))
+                ;;
+            h)
+                usage 0
+                ;;
+            \?)
+                msg "Unknown option: -%s" "$OPTARG"
                 usage 1
-            fi
-            ;;
-    esac
-    shift
-done
+                ;;
+        esac
+    done
+    shift $((OPTIND - 1))
 
-if [ -z "$distro" ]; then
-    echo >&2 "Error: distro argument required"
-    usage 1
-fi
+    if [ "$all_distros" -eq 1 ]; then
+        if [ $# -gt 0 ]; then
+            msg "Unexpected argument with -a: %s" "$1"
+            usage 1
+        fi
+        if [ "$interactive" -eq 1 ] || [ "$shell_after" -eq 1 ]; then
+            msg "-a cannot be combined with -i or -s"
+            usage 1
+        fi
+        return 0
+    fi
 
-scriptdir=$(cd "$(dirname "$0")" && pwd)
-repodir=$(cd "$scriptdir/../.." && pwd)
+    if [ $# -lt 1 ]; then
+        msg "Error: distro argument required (or use -a)"
+        usage 1
+    fi
+    if [ $# -gt 1 ]; then
+        msg "Unexpected argument: %s" "$2"
+        usage 1
+    fi
 
-if [ ! -d "$scriptdir/$distro" ]; then
-    echo >&2 "Error: no test container for '$distro' (expected $scriptdir/$distro/Dockerfile)"
+    distro=$1
+}
+
+show_help() {
+    sed -n '/^# Usage:/,/^# *-h /p' "$0" | sed 's/^# *//'
+}
+
+msg() {
+    fmt=$1
+    if [ $# -gt 1 ]; then
+        shift
+    fi
+    # shellcheck disable=SC2059
+    printf "$fmt\n" "$@" >&2
+}
+
+die() {
+    fmt=$1
+    shift || true
+    # shellcheck disable=SC2059
+    printf "Error: $fmt\n" "$@" >&2
+    exit 1
+}
+
+printcmd() {
+    out=
+    sep=
+    for arg in "$@"; do
+        case "$arg" in
+            *[!A-Za-z0-9_./:-]*|'')
+                arg=$(printf "%s" "$arg" | sed "s/'/'\\\\''/g")
+                arg="'$arg'"
+                ;;
+        esac
+        out="${out}${sep}${arg}"
+        sep=" "
+    done
+    printf "%s" "$out"
+}
+
+run() {
+    if [ "${dry_run:-0}" -eq 1 ] || [ "${verbosity:-0}" -gt 0 ]; then
+        printf '❯ %s\n' "$(printcmd "$@")" >&2
+    fi
+    if [ "${dry_run:-0}" -ne 1 ]; then
+        "$@"
+    fi
+}
+
+find_distros() {
+    for d in "$scriptdir"/*; do
+        [ -d "$d" ] || continue
+        [ -f "$d/Dockerfile" ] || continue
+        printf "%s\n" "${d##*/}"
+    done
+}
+
+validate_distro() {
+    if [ ! -f "$scriptdir/$1/Dockerfile" ]; then
+        die "no test container for '%s' (expected %s/%s/Dockerfile)" "$1" "$scriptdir" "$1"
+    fi
+}
+
+docker_run_args() {
+    printf "%s" "--rm -v $repodir:$dotfiles_mount"
+}
+
+emit_container_script() {
+    setup_cmd=$1
+
+    cat <<EOF
+#!/bin/sh
+set -eu
+
+cd "$dotfiles_mount"
+
+script/$distro/setup-root "$user"
+
+chown "$user" "/home/$user"
+chown -R "$user" "$dotfiles_mount"
+
+export DOTFILES_DIR="$dotfiles_mount"
+
+if command -v su >/dev/null 2>&1; then
+    su - "$user" -c "export DOTFILES_DIR='$dotfiles_mount'; cd '$dotfiles_mount' && './$setup_cmd'"
+elif command -v doas >/dev/null 2>&1; then
+    doas -u "$user" sh -c "export DOTFILES_DIR='$dotfiles_mount'; cd '$dotfiles_mount' && './$setup_cmd'"
+else
+    echo "Error: need su or doas in container to run as user" >&2
     exit 1
 fi
 
-image_name="dotfiles-test-$distro"
-
-echo "Building $image_name..."
-docker build -t "$image_name" "$scriptdir/$distro/"
-
-if $build_only; then
-    echo "Image $image_name built successfully."
-    exit 0
-fi
-
-# Determine which setup command to run
-if $no_system; then
-    setup_cmd="script/setup"
-else
-    setup_cmd="script/setup-full"
-fi
-
-# Common docker run arguments
-# Mount the repo directly so setup picks up local changes
-run_args="--rm -v $repodir:$dotfiles_mount"
-
-if $interactive; then
-    echo "Dropping into interactive root shell..."
-    echo "  Dotfiles repo is at $dotfiles_mount"
-    docker run -it $run_args "$image_name" /bin/sh
-else
-    # Build the in-container test script
-    test_script=$(cat <<INNER
-#!/bin/sh
-set -eux
-
-# Run setup-root to create the user (no password needed in containers)
-cd $dotfiles_mount
-script/$distro/setup-root $user
-
-# Docker creates the home dir as root for the bind mount target,
-# and useradd -m won't fix ownership if it already exists
-chown $user /home/$user
-chown -R $user $dotfiles_mount
-
-# Switch to the created user and run setup
-# DOTFILES_DIR tells bootstrap to use the mounted repo directly
-export DOTFILES_DIR=$dotfiles_mount
-if command -v su >/dev/null 2>&1; then
-    su - $user -c "export DOTFILES_DIR=$dotfiles_mount; cd $dotfiles_mount && ./$setup_cmd"
-elif command -v doas >/dev/null 2>&1; then
-    doas -u $user sh -c "export DOTFILES_DIR=$dotfiles_mount; cd $dotfiles_mount && ./$setup_cmd"
-fi
-INNER
-    )
-
-    if $shell_after; then
-        shell_suffix=$(cat <<INNER2
-
-echo "Setup complete. Dropping into user shell..."
-if command -v su >/dev/null 2>&1; then
-    exec su - $user
-elif command -v doas >/dev/null 2>&1; then
-    exec doas -u $user sh
-fi
-INNER2
-        )
-        echo "${test_script}${shell_suffix}" | docker run -it $run_args "$image_name" /bin/sh -s
-    else
-        echo "$test_script" | docker run -i $run_args "$image_name" /bin/sh -s
+if [ "\${SHELL_AFTER:-0}" -eq 1 ]; then
+    echo "Setup complete. Dropping into user shell..." >&2
+    if command -v su >/dev/null 2>&1; then
+        exec su - "$user"
+    elif command -v doas >/dev/null 2>&1; then
+        exec doas -u "$user" sh
     fi
 fi
+EOF
+}
+
+build_image() {
+    image_name=$1
+    build_context=$2
+
+    msg "Building %s..." "$image_name"
+    run docker build -t "$image_name" "$build_context"
+}
+
+run_container() {
+    image_name=$1
+
+    if [ "$no_system" -eq 1 ]; then
+        setup_cmd="script/setup"
+    else
+        setup_cmd="script/setup-full"
+    fi
+
+    run_args=$(docker_run_args)
+
+    if [ "$interactive" -eq 1 ]; then
+        msg "Dropping into interactive root shell..."
+        msg "  Dotfiles repo is at %s" "$dotfiles_mount"
+        run docker run -it $run_args "$image_name" /bin/sh
+        return 0
+    fi
+
+    if [ "$shell_after" -eq 1 ]; then
+        emit_container_script "$setup_cmd" \
+            | run docker run -it -e SHELL_AFTER=1 $run_args "$image_name" /bin/sh -s
+    else
+        emit_container_script "$setup_cmd" \
+            | run docker run -i $run_args "$image_name" /bin/sh -s
+    fi
+}
+
+run_one() {
+    distro=$1
+    image_name="dotfiles-test-$distro"
+    build_context="$scriptdir/$distro/"
+
+    validate_distro "$distro"
+    build_image "$image_name" "$build_context"
+
+    if [ "$build_only" -eq 1 ]; then
+        msg "Image %s built successfully." "$image_name"
+        return 0
+    fi
+
+    run_container "$image_name"
+}
+
+main() {
+    process_arguments "$@"
+
+    if [ "$all_distros" -eq 1 ]; then
+        distros=$(find_distros)
+        if [ -z "$distros" ]; then
+            die "no distros found under %s (expected */Dockerfile)" "$scriptdir"
+        fi
+
+        echo "$distros" | while IFS= read -r d; do
+            [ -n "$d" ] || continue
+            run_one "$d"
+        done
+
+        return 0
+    fi
+
+    run_one "$distro"
+}
+
+# Paths: resolved at top-level (not in a function), per style guide.
+scriptname=${0##*/}
+
+if [ -z "${0##/*}" ]; then
+    scriptdir=$(cd "$(dirname "$0")" && pwd -P)
+else
+    script=$(command -v "${0##*/}") || script="$0"
+    scriptdir=$(cd "$(dirname "$script")" && pwd -P)
+fi
+
+repodir=$(cd "$scriptdir/../.." && pwd -P)
+
+main "$@"
