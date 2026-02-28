@@ -22,13 +22,6 @@ shift
 
 # Verify user shell
 apk add --no-interactive zsh
-if [ -e /usr/bin/zsh ]; then
-    current_shell="$(getent passwd "$username" | sed -e 's#.*:##')"
-    if [ "$current_shell" != /usr/bin/zsh ]; then
-        msg "Changing current user shell to zsh"
-        chsh -s /usr/bin/zsh "$username"
-    fi
-fi
 
 {{ if .wsl2 -}}
 # Install socat for the npiperelay setup

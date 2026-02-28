@@ -29,3 +29,11 @@ if ! has tailscale; then
     curl -fsSL https://tailscale.com/install.sh | sh
 fi
 {{- end }}
+
+if [ -e /usr/bin/zsh ]; then
+    current_shell="$(getent passwd "$USER" | sed -e 's#.*:##')"
+    if [ "$current_shell" != /usr/bin/zsh ]; then
+        msg "Changing current user shell to zsh"
+        sudorun chsh -s /usr/bin/zsh "$USER"
+    fi
+fi
