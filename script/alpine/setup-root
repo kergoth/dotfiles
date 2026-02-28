@@ -1,0 +1,151 @@
+#!/bin/sh
+# Post-installation root setup script for Alpine Linux, prior to setup-system.
+# Usage: setup-root <username>
+#
+# Optional:
+#   USER_PASSWORD=<pw>  Non-interactive password set for the user.
+
+set -eu
+
+is_container() {
+    [ -f /.dockerenv ] ||
+    [ -f /run/.containerenv ] ||
+    [ -n "${container:-}" ] ||
+    grep -qE 'docker|lxc|containerd|podman' /proc/1/cgroup 2>/dev/null
+}
+
+enable_repo_if_present() {
+    # Uncomment repo lines containing the fragment (literal match)
+    # Args: repo_fragment (e.g. "/community")
+    local frag="$1"
+    local re
+
+    [ -f /etc/apk/repositories ] || return 0
+
+    # Escape regex metacharacters, including '/' used by sed address delimiters.
+    re="$(printf '%s' "$frag" | awk '
+        {
+            gsub(/[][(){}.^$*+?|\\\/]/, "\\\\&")
+            print
+        }
+    ')"
+
+    sed -i -e "/$re/ s/^[[:space:]]*#//" /etc/apk/repositories
+}
+
+apk_add() {
+    # shellcheck disable=SC2086
+    apk add --no-interactive --no-progress $*
+}
+
+configure_privilege_escalation() {
+    # Configure doas and/or sudo if installed.
+    # In containers: nopass
+    # On bare metal: password required
+
+    local nopass=""
+    if is_container; then
+        nopass="yes"
+    fi
+
+    if command -v doas >/dev/null 2>&1; then
+        if [ "$nopass" = "yes" ]; then
+            if grep -q "^permit.*:wheel" /etc/doas.conf 2>/dev/null; then
+                sed -i 's/^permit.*:wheel.*/permit nopass :wheel/' /etc/doas.conf
+            else
+                echo "permit nopass :wheel" >>/etc/doas.conf
+            fi
+        else
+            if ! [ -f /etc/doas.conf ] || ! grep -q "^permit.*:wheel" /etc/doas.conf; then
+                echo "permit :wheel" >>/etc/doas.conf
+            fi
+        fi
+    fi
+
+    if command -v sudo >/dev/null 2>&1; then
+        # Ensure wheel group exists
+        addgroup -S wheel >/dev/null 2>&1 || true
+
+        if [ "$nopass" = "yes" ]; then
+            cat >/etc/sudoers.d/wheel <<'EOF'
+%wheel ALL=(ALL) NOPASSWD: ALL
+EOF
+        else
+            cat >/etc/sudoers.d/wheel <<'EOF'
+%wheel ALL=(ALL) ALL
+EOF
+        fi
+
+        chmod 0440 /etc/sudoers.d/wheel
+
+        # Validate syntax if visudo is available
+        if command -v visudo >/dev/null 2>&1; then
+            visudo -cf /etc/sudoers.d/wheel >/dev/null
+        fi
+    fi
+}
+
+user="${1:-}"
+if [ -z "$user" ]; then
+    echo >&2 "Usage: $0 <username>"
+    exit 2
+fi
+
+# Ensure community repo is available for some packages (e.g., doas).
+enable_repo_if_present "/community"
+
+apk update --no-progress
+
+# Base tooling used by dotfiles/chezmoi flows.
+# - shadow: useradd/usermod/chpasswd (fallbacks exist, but this simplifies behavior)
+# - doas: preferred privilege escalation (can swap for sudo if desired)
+# - zsh/bash/git/unzip/curl: matches your existing root-setup expectations
+apk_add shadow doas zsh bash git unzip curl
+
+# Create user or ensure groups.
+if ! getent passwd "$user" >/dev/null 2>&1; then
+    echo >&2 "Adding user '$user'"
+
+    # Ensure wheel exists (busybox addgroup is fine even if already present).
+    addgroup -S wheel >/dev/null 2>&1 || true
+
+    # Prefer useradd from shadow (installed above). Fall back to busybox adduser.
+    if command -v useradd >/dev/null 2>&1; then
+        useradd -m -U -G wheel,kvm,plugdev "$user" 2>/dev/null || useradd -m -U -G wheel "$user"
+    else
+        # Busybox adduser prompts by default; -D is non-interactive.
+        adduser -D -s /bin/zsh "$user"
+        addgroup "$user" wheel >/dev/null 2>&1 || true
+    fi
+
+    # Set default shell to zsh when available.
+    if [ -x /bin/zsh ]; then
+        if command -v chsh >/dev/null 2>&1; then
+            chsh -s /bin/zsh "$user" >/dev/null 2>&1 || true
+        else
+            # shadow may not provide chsh in minimal installs; update /etc/passwd directly as fallback.
+            sed -i -e "s#^\\(${user}:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:\\).*#\\1/bin/zsh#" /etc/passwd || true
+        fi
+    fi
+
+    if [ -n "${USER_PASSWORD:-}" ]; then
+        echo "$user:$USER_PASSWORD" | chpasswd
+    elif [ -t 0 ]; then
+        echo >&2 "Input password for $user"
+        passwd "$user"
+    elif ! is_container; then
+        echo >&2 "Error: no password for $user and not in a container."
+        echo >&2 "Set USER_PASSWORD or run interactively."
+        exit 1
+    fi
+else
+    echo >&2 "Ensuring user '$user' is in the wheel group"
+    addgroup -S wheel >/dev/null 2>&1 || true
+    if command -v usermod >/dev/null 2>&1; then
+        usermod -a -G wheel "$user"
+    else
+        addgroup "$user" wheel >/dev/null 2>&1 || true
+    fi
+fi
+
+configure_privilege_escalation
