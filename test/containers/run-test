@@ -1,0 +1,136 @@
+#!/bin/sh
+# Build and run a test container to validate dotfiles setup scripts.
+#
+# Usage:
+#   ./test/containers/run-test <distro> [options]
+#
+# Examples:
+#   echo "test" | ./test/containers/run-test ubuntu
+#   ./test/containers/run-test chimera --interactive
+#   ./test/containers/run-test arch --shell
+
+set -eu
+
+usage() {
+    cat >&2 <<'EOF'
+Usage: test/containers/run-test <distro> [options]
+
+Distros: ubuntu, chimera, arch
+
+Options:
+  -i, --interactive   Drop into a root shell before setup
+  -s, --shell         Drop into a user shell after setup
+  --no-system         Skip setup-system, only run setup
+  --build-only        Just build the image, don't run
+  -h, --help          Show this help
+EOF
+    exit "${1:-1}"
+}
+
+distro=
+interactive=false
+shell_after=false
+no_system=false
+build_only=false
+user=testuser
+dotfiles_mount=/home/testuser/.dotfiles
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -i|--interactive) interactive=true ;;
+        -s|--shell) shell_after=true ;;
+        --no-system) no_system=true ;;
+        --build-only) build_only=true ;;
+        -h|--help) usage 0 ;;
+        -*)
+            echo >&2 "Unknown option: $1"
+            usage 1
+            ;;
+        *)
+            if [ -z "$distro" ]; then
+                distro=$1
+            else
+                echo >&2 "Unexpected argument: $1"
+                usage 1
+            fi
+            ;;
+    esac
+    shift
+done
+
+if [ -z "$distro" ]; then
+    echo >&2 "Error: distro argument required"
+    usage 1
+fi
+
+scriptdir=$(cd "$(dirname "$0")" && pwd)
+repodir=$(cd "$scriptdir/../.." && pwd)
+
+if [ ! -d "$scriptdir/$distro" ]; then
+    echo >&2 "Error: no test container for '$distro' (expected $scriptdir/$distro/Dockerfile)"
+    exit 1
+fi
+
+image_name="dotfiles-test-$distro"
+
+echo "Building $image_name..."
+docker build -t "$image_name" "$scriptdir/$distro/"
+
+if $build_only; then
+    echo "Image $image_name built successfully."
+    exit 0
+fi
+
+# Determine which setup command to run
+if $no_system; then
+    setup_cmd="script/setup"
+else
+    setup_cmd="script/setup-full"
+fi
+
+# Common docker run arguments
+# Mount the repo directly so setup picks up local changes
+run_args="--rm -v $repodir:$dotfiles_mount"
+
+if $interactive; then
+    echo "Dropping into interactive root shell..."
+    echo "  Dotfiles repo is at $dotfiles_mount"
+    docker run -it $run_args "$image_name" /bin/sh
+else
+    # Build the in-container test script
+    test_script=$(cat <<INNER
+#!/bin/sh
+set -eux
+
+# Run setup-root to create the user
+cd $dotfiles_mount
+script/$distro/setup-root $user
+chown -R $user $dotfiles_mount
+
+# Switch to the created user and run setup
+# DOTFILES_DIR tells bootstrap to use the mounted repo directly
+export DOTFILES_DIR=$dotfiles_mount
+if command -v su >/dev/null 2>&1; then
+    su - $user -c "export DOTFILES_DIR=$dotfiles_mount; cd $dotfiles_mount && ./$setup_cmd"
+elif command -v doas >/dev/null 2>&1; then
+    doas -u $user sh -c "export DOTFILES_DIR=$dotfiles_mount; cd $dotfiles_mount && ./$setup_cmd"
+fi
+INNER
+    )
+
+    if $shell_after; then
+        shell_suffix=$(cat <<INNER2
+
+echo "Setup complete. Dropping into user shell..."
+if command -v su >/dev/null 2>&1; then
+    exec su - $user
+elif command -v doas >/dev/null 2>&1; then
+    exec doas -u $user sh
+fi
+INNER2
+        )
+        echo "${test_script}${shell_suffix}" | docker run -it $run_args "$image_name" /bin/sh -s
+    else
+        echo "$test_script" | docker run -i $run_args "$image_name" /bin/sh -s
+    fi
+fi
