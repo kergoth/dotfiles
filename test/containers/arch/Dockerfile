@@ -6,6 +6,5 @@ RUN locale-gen
 RUN pacman-key --init \
     && pacman-key --populate \
     && pacman --noconfirm -Syu \
-    && pacman --noconfirm --needed -S \
-        sudo \
+    && pacman --noconfirm --needed -S sudo \
     && rm -rf /var/cache/pacman/pkg/*
