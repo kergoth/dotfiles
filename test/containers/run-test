@@ -9,7 +9,7 @@
 # Build and run a test container to validate dotfiles setup scripts.
 #
 # Distros:
-#     ubuntu, chimera, arch, debian, fedora
+#     arch, chimera, debian, fedora, ubuntu
 #
 # Options:
 #     -a          Run for all distros (auto-detected from Dockerfiles)
