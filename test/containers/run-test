@@ -324,9 +324,6 @@ main() {
     run_one "$distro"
 }
 
-# Paths: resolved at top-level (not in a function), per style guide.
-scriptname=${0##*/}
-
 if [ -z "${0##/*}" ]; then
     scriptdir=$(cd "$(dirname "$0")" && pwd -P)
 else
