@@ -1,3 +1,4 @@
+# check=skip=InvalidBaseImagePlatform
 ARG BASE_IMAGE=archlinux/archlinux:latest
 FROM ${BASE_IMAGE}
 
