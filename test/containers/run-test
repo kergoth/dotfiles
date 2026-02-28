@@ -290,6 +290,7 @@ run_one() {
     fi
 
     run_container "$image_name"
+    echo >&2 "$distro test complete."
 }
 
 main() {
@@ -305,6 +306,7 @@ main() {
             [ -n "$d" ] || continue
             run_one "$d"
         done
+        echo >&2 "All tests completed."
 
         return 0
     fi
