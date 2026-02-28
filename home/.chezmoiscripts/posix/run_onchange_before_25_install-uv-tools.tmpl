@@ -1,4 +1,3 @@
-{{/* uv tools are installed after, as uv is installed via externals on some platforms */}}
 {{- if .user_setup -}}
 {{- if not .use_nix -}}
 {{-   $uv_tools := dict "git-imerge" "git-imerge" "git-revise" "git-revise" -}}
