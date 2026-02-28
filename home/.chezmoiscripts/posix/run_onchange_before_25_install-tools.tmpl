@@ -61,9 +61,9 @@ tmpdir=$(mktemp -d)
 trap 'rm -rf "$tmpdir"' EXIT
 mkdir -p "$HOME/.local/bin"
 cd "$tmpdir"
-"{{ .chezmoi.sourceDir }}/../scripts/download-github-release" -p {{ .chezmoi.os }}_{{ .chezmoi.arch }} zyedidia/eget
-tar -zxf eget-*.tar.gz
-mv eget-*/eget "$HOME/.local/bin/"
+curl -o eget.sh -fsSL https://zyedidia.github.io/eget.sh
+sh eget.sh
+mv eget "$HOME/.local/bin/"
 {{           $eget_cmd = "$HOME/.local/bin/eget" -}}
 {{-         end }}
 {{-         range $eget_to_install }}
