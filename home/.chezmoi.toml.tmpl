@@ -31,7 +31,7 @@
 {{- $gaming_device_library := false -}}{{/* true if this device will be used to manage my gaming device library */}}
 {{- $retro_computing := false -}}{{/* true if this device will be used for retro computing emulation (i.e. 86box) */}}
 
-{{- if or (eq .chezmoi.osid "linux-chimera") (eq .chezmoi.os "freebsd") (eq .chezmoi.os "windows") }}
+{{- if or (eq $osid "linux-chimera") (eq .chezmoi.os "freebsd") (eq .chezmoi.os "windows") }}
 {{-   $use_nix = false }}
 {{- end }}
 
