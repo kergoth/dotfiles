@@ -3,7 +3,7 @@
 {{-   $vim = includeTemplate "find-tool" (dict "root" . "tool" "nvim") }}
 {{- end }}
 {{- $update := joinPath (printf "%s" .chezmoi.destDir) ".config" "vim" "script" "update" -}}
-{{- if and $vim $update -}}
+{{- if and $vim (stat $update) -}}
 #!/bin/sh
 
 {{ $update }} -b
