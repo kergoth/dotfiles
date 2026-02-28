@@ -201,7 +201,7 @@ set -eu
 
 cd "$dotfiles_mount"
 
-script/$distro/setup-root "$user"
+script/$distro/setup-root "$user" </dev/null
 
 chown "$user" "/home/$user"
 chown -R "$user" "$dotfiles_mount"
@@ -215,7 +215,7 @@ elif command -v doas >/dev/null 2>&1; then
 else
     echo "Error: need su or doas in container to run as user" >&2
     exit 1
-fi
+fi </dev/null
 
 if [ "\${SHELL_AFTER:-0}" -eq 1 ]; then
     echo "Setup complete. Dropping into user shell..." >&2
