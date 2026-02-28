@@ -26,15 +26,11 @@ if ! getent passwd "$user" >/dev/null 2>&1; then
         chsh -s /bin/zsh "$user"
     fi
 
-    if [ -t 0 ]; then
+    if [ -n "${USER_PASSWORD:-}" ]; then
+        echo "$user:$USER_PASSWORD" | chpasswd
+    elif [ -t 0 ]; then
         echo >&2 "Input password for $user"
         passwd "$user"
-    else
-        if read -r pass; then
-            echo "$user:$pass" | chpasswd
-        else
-            echo >&2 "WARNING: No password provided for $user"
-        fi
     fi
 else
     echo >&2 "Adding user '$user' to the wheel group"

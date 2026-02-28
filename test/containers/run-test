@@ -5,7 +5,7 @@
 #   ./test/containers/run-test <distro> [options]
 #
 # Examples:
-#   echo "test" | ./test/containers/run-test ubuntu
+#   ./test/containers/run-test ubuntu
 #   ./test/containers/run-test chimera --interactive
 #   ./test/containers/run-test arch --shell
 
@@ -102,7 +102,7 @@ else
 #!/bin/sh
 set -eux
 
-# Run setup-root to create the user
+# Run setup-root to create the user (no password needed in containers)
 cd $dotfiles_mount
 script/$distro/setup-root $user
 
