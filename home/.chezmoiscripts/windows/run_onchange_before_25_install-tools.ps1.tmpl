@@ -1,0 +1,113 @@
+{{- if .user_setup -}}
+# Install Scoop and language/tool package managers, then install tools.
+
+. $env:CHEZMOI_COMMAND_DIR\scripts\common.ps1
+
+{{   $scoop := includeTemplate "find-tool" (dict "root" . "tool" "scoop") -}}
+{{   if not $scoop -}}
+Write-Host "Installing Scoop..."
+$env:SCOOP = "{{ joinPath (printf "%s" .chezmoi.destDir) "scoop" }}"
+Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+RefreshEnvPath
+{{-   end }}
+
+{{   $installed_git := false -}}
+{{   $scoop := includeTemplate "find-tool" (dict "root" . "tool" "scoop") -}}
+{{   if not $scoop -}}
+{{ $scoop }} install git
+
+$gitdir = scoop prefix git
+Add-EnvironmentVariableItem "PATH" "$gitdir\bin" -User
+
+if (-not (Test-Path "$env:SCOOP/buckets/extras")) {
+  scoop bucket add extras
+}
+if (-not (Test-Path "$env:SCOOP/buckets/kergoth")) {
+  scoop bucket add kergoth https://github.com/kergoth/scoop-bucket
+}
+{{-   end }}
+
+{{/* Note: tmux and zsh are unavailable on Windows */}}
+{{/* Starship is used for the PS prompt. While it isn't Windows specific, I only use it there */}}
+{{-   $scoop_tools := dict
+        "atuin" "atuin"
+        "bat" "bat"
+        "batman" "bat-extras"
+        "cargo" "rust"
+        "claude" "claude-code"
+        "curl" "curl"
+        "delta" "delta"
+        "difft" "difftastic"
+        "direnv" "direnv"
+        "dua" "dua"
+        "duf" "duf"
+        "fclones" "fclones"
+        "fd" "fd"
+        "fzf" "fzf"
+        "gh" "gh"
+        "ghq" "ghq"
+        "git-absorb" "git-absorb"
+        "git-lfs" "git-lfs"
+        "jira" "jira-cli"
+        "jj" "jj"
+        "jq" "jq"
+        "less" "less"
+        "npiperelay" "npiperelay"
+        "nvim" "neovim"
+        "python" "python"
+        "recycle" "recycle-bin"
+        "restic" "restic"
+        "rg" "ripgrep"
+        "sad" "sad"
+        "sd" "sd"
+        "shellcheck" "shellcheck"
+        "shfmt" "shfmt"
+        "starship" "starship"
+        "tail" "gow"
+        "tldr" "tealdeer"
+        "unar" "unar"
+        "uv" "uv"
+        "wget" "wget"
+        "zoxide" "zoxide"
+        "zstd" "zstd"
+-}}
+{{-   $scoop_to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $scoop_tools) | fromJson -}}
+{{-   if $scoop_to_install -}}
+{{-     range $scoop_to_install -}}
+scoop install {{ . }}
+{{-       if eq . "python" -}}
+
+{{-       $scoop_python := joinPath (printf "%s" .chezmoi.destDir) "scoop" "apps" "python" "current" -}}
+reg import "{{ $scoop_python }}\install-pep-514.reg"
+{{-       end -}}
+{{-     end -}}
+{{-   end -}}
+
+{{-   $cargo_git_tools := dict "choose" "--git https://github.com/theryangeary/choose" -}}
+{{-   $cargo_to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $cargo_git_tools) | fromJson -}}
+{{-   if $cargo_to_install -}}
+{{-     $cargo_path := includeTemplate "find-tool" (dict "root" . "tool" "cargo") -}}
+{{-     if $cargo_path }}
+{{-       range $cargo_to_install }}
+Write-Host "Installing cargo tool: {{ . }}"
+& "{{ $cargo_path }}" install {{ . }}
+{{-       end }}
+{{-     end }}
+{{-   end }}
+
+{{-   $uv_tools := dict "git-imerge" "git-imerge" "git-revise" "git-revise" -}}
+{{-   $uv_to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $uv_tools) | fromJson -}}
+{{-   $unar := includeTemplate "find-tool" (dict "root" . "tool" "unar") -}}
+{{-   $dtrx := includeTemplate "find-tool" (dict "root" . "tool" "dtrx") -}}
+{{-   if and (not $unar) (not $dtrx) -}}
+{{-     $uv_to_install = append $uv_to_install "dtrx" -}}
+{{-   end -}}
+{{-   if $uv_to_install -}}
+{{-     $uv_path := includeTemplate "find-tool" (dict "root" . "tool" "uv") -}}
+{{-     if $uv_path }}
+{{-       range $uv_to_install }}
+& "{{ $uv_path }}" tool install {{ . }}
+{{-       end }}
+{{-     end }}
+{{-   end }}
+{{- end }}

@@ -1,0 +1,90 @@
+{{ $_ := set . "osid" "linux-chimera" }}
+{{ $_ := set . "use_nix" false }}
+{{- if and .user_setup (not .use_nix) -}}
+{{-     $eget_tools := dict -}}
+{{-     if eq .osid "linux-chimera" -}}
+{{-       $_ := set $eget_tools "choose" "theryangeary/choose" -}}
+{{-       $_ := set $eget_tools "dua" "Byron/dua-cli" -}}
+{{-       $_ := set $eget_tools "ghq" "x-motemen/ghq" -}}
+{{-       $_ := set $eget_tools "sd" "chmln/sd" -}}
+{{-       $_ := set $eget_tools "shellcheck" "-a xz koalaman/shellcheck" -}}
+{{-       $_ := set $eget_tools "duf" "-a tar muesli/duf" -}}
+{{-       if eq .chezmoi.arch "amd64" -}}
+{{-         $_ := set $eget_tools "fclones" "pkolaczk/fclones" -}}
+{{-       end -}}
+{{-       if .work -}}
+{{-         $_ := set $eget_tools "jira" "ankitpokhrel/jira-cli" -}}
+{{-       end -}}
+{{-     end -}}
+{{-     if .steamdeck -}}
+{{-       $_ := set $eget_tools "rclone" "rclone/rclone" -}}
+{{-     end -}}
+{{-     $eget_to_install := list -}}
+{{-     if $eget_tools -}}
+{{-       $eget_to_install = includeTemplate "packagesForMissingTools" (dict "root" . "packages" $eget_tools) | fromJson -}}
+{{-     end -}}
+
+{{-     $cargo_tools := dict -}}
+{{-     if and (eq .osid "linux-chimera") (ne .chezmoi.arch "amd64") -}}
+{{-       $_ := set $cargo_tools "fclones" "fclones" -}}
+{{-     end -}}
+{{-     $cargo_to_install := list -}}
+{{-     if $cargo_tools -}}
+{{-       $cargo_to_install = includeTemplate "packagesForMissingTools" (dict "root" . "packages" $cargo_tools) | fromJson -}}
+{{-     end -}}
+{{-     $cargo := "" -}}
+{{-     if $cargo_to_install -}}
+{{-       $cargo = includeTemplate "find-tool" (dict "root" . "tool" "cargo") -}}
+{{-     end -}}
+{{-     $install_cargo_tools := and $cargo $cargo_to_install -}}
+
+{{-     $uv_tools := dict "git-imerge" "git-imerge" "git-revise" "git-revise" -}}
+{{-     $uv_to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $uv_tools) | fromJson -}}
+{{-     $unar := includeTemplate "find-tool" (dict "root" . "tool" "unar") -}}
+{{-     $dtrx := includeTemplate "find-tool" (dict "root" . "tool" "dtrx") -}}
+{{-     if and (not $unar) (not $dtrx) -}}
+{{-       $uv_to_install = append $uv_to_install "dtrx" -}}
+{{-     end -}}
+{{-     $uv := "" -}}
+{{-     if $uv_to_install -}}
+{{-       $uv = includeTemplate "find-tool" (dict "root" . "tool" "uv") -}}
+{{-     end -}}
+{{-     $install_uv_tools := and $uv $uv_to_install -}}
+
+{{-     if or $eget_to_install $install_cargo_tools $install_uv_tools -}}
+#!/usr/bin/env bash
+set -euo pipefail
+
+{{-       if $eget_to_install }}
+{{-         $eget_cmd := includeTemplate "find-tool" (dict "root" . "tool" "eget") -}}
+{{-         if not $eget_cmd }}
+echo >&2 "Installing eget"
+tmpdir=$(mktemp -d)
+trap 'rm -rf "$tmpdir"' EXIT
+mkdir -p "$HOME/.local/bin"
+cd "$tmpdir"
+"{{ .chezmoi.sourceDir }}/../scripts/download-github-release" -p {{ .chezmoi.os }}_{{ .chezmoi.arch }} zyedidia/eget
+tar -zxf eget-*.tar.gz
+mv eget-*/eget "$HOME/.local/bin/"
+{{           $eget_cmd = "$HOME/.local/bin/eget" -}}
+{{-         end }}
+{{-         range $eget_to_install }}
+echo >&2 "Installing {{ . }}"
+"{{ $eget_cmd }}" --to="$HOME/.local/bin" {{ . }}
+{{-         end }}
+{{-       end }}
+
+{{-       if $install_cargo_tools }}
+{{-         range $cargo_to_install }}
+echo >&2 "Installing {{ . }}"
+"{{ $cargo }}" install --locked {{ . }}
+{{-         end }}
+{{-       end }}
+
+{{-       if $install_uv_tools }}
+{{-         range $uv_to_install }}
+"{{ $uv }}" tool install {{ . }}
+{{-         end }}
+{{-       end }}
+{{-     end -}}
+{{- end -}}
