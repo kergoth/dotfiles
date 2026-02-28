@@ -5,7 +5,6 @@ if [[ -z $DOTFILES_NO_UPDATE ]]; then
         echo >&2 "Checking for dotfiles updates (once daily)"
         _dotfiles_updated=0
         pushd -q ~/.local/share/chezmoi
-        # Fetch quietly, skip if offline (fetch failure)
         if git fetch --quiet 2>/dev/null; then
             if [[ "$(git rev-list --count HEAD..@{u} 2>/dev/null)" -gt 0 ]]; then
                 echo >&2 "Dotfiles have updates, pulling..."
@@ -32,6 +31,14 @@ if [[ -e "$XDG_CONFIG_HOME/vim" ]] && [[ -z $VIM_NO_UPDATE ]]; then
     old_stamps=( $VIM_STAMP(N.mh+160) )
     if [[ -e "$XDG_CONFIG_HOME/vim/.git" ]] && { (( ${#old_stamps} )) || [[ ! -f $VIM_STAMP ]]; }; then
         echo >&2 "Checking for vim updates (once weekly)"
+        pushd -q "$XDG_CONFIG_HOME/vim"
+        if git fetch --quiet 2>/dev/null; then
+            if [[ "$(git rev-list --count HEAD..@{u} 2>/dev/null)" -gt 0 ]]; then
+                echo >&2 "Vim repository has updates, pulling..."
+                git pull --quiet
+            fi
+        fi
+        popd -q
         if [ -e "$XDG_CONFIG_HOME/vim/script/bootstrap" ]; then
             "$XDG_CONFIG_HOME/vim/script/bootstrap" && touch "$VIM_STAMP"
         fi
