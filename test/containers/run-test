@@ -192,10 +192,6 @@ arch_base_image_for_host() {
     printf "%s" "archlinux/archlinux:latest"
 }
 
-docker_run_args() {
-    printf "%s" "--rm -v $repodir:$dotfiles_mount"
-}
-
 emit_container_script() {
     setup_cmd=$1
 
@@ -259,21 +255,24 @@ run_container() {
         setup_cmd="script/setup-full"
     fi
 
-    run_args=$(docker_run_args)
+    set -- \
+        --rm \
+        -v "$repodir:$dotfiles_mount" \
+        ${GITHUB_TOKEN:+-e GITHUB_TOKEN='$GITHUB_TOKEN'}
 
     if [ "$interactive" -eq 1 ]; then
         msg "Dropping into interactive root shell..."
         msg "  Dotfiles repo is at %s" "$dotfiles_mount"
-        run docker run --entrypoint /bin/sh -it $run_args "$image_name"
+        run docker run --entrypoint /bin/sh -it "$@" "$image_name"
         return 0
     fi
 
     if [ "$shell_after" -eq 1 ]; then
         emit_container_script "$setup_cmd" \
-            | run docker run --entrypoint /bin/sh -it -e SHELL_AFTER=1 $run_args "$image_name" -s
+            | run docker run --entrypoint /bin/sh -it -e SHELL_AFTER=1 "$@" "$image_name" -s
     else
         emit_container_script "$setup_cmd" \
-            | run docker run --entrypoint /bin/sh -i $run_args "$image_name" -s
+            | run docker run --entrypoint /bin/sh -i "$@" "$image_name" -s
     fi
 }
 
