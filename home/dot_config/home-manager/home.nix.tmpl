@@ -116,6 +116,9 @@ in {
     fclones
     restic
     rsync
+  {{- if .steamdeck }}
+    rclone
+  {{- end }}
 
     # Linting and formatting
     shfmt
