@@ -7,9 +7,7 @@ if [[ -z $DOTFILES_NO_UPDATE ]]; then
         pushd -q ~/.local/share/chezmoi
         # Fetch quietly, skip if offline (fetch failure)
         if git fetch --quiet 2>/dev/null; then
-            _local_head=$(git rev-parse HEAD)
-            _remote_head=$(git rev-parse @{u} 2>/dev/null)
-            if [[ -n "$_remote_head" && "$_local_head" != "$_remote_head" ]]; then
+            if [[ "$(git rev-list --count HEAD..@{u} 2>/dev/null)" -gt 0 ]]; then
                 echo >&2 "Dotfiles have updates, pulling..."
                 if git pull --quiet && chezmoi apply; then
                     _dotfiles_updated=1
