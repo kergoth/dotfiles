@@ -11,7 +11,7 @@ HOMEBREW_PREFIX="${HOMEBREW_PREFIX:-$HOME/.brew}"
 
 "$scriptdir/bootstrap"
 
-if ! [ -t 1 ]; then
+if ! [ -t 1 ] || ! [ -t 0 ] || ! [ -r /dev/tty ]; then
     set -- --no-tty --no-pager "$@"
 fi
 

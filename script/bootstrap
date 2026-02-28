@@ -224,7 +224,7 @@ if ! [ -e ~/.config/chezmoi/chezmoi.toml ] || echo "$@" | grep -Eq '\--prompt|--
     chmod 0600 "$HOME/.config/chezmoi/chezmoi.toml"
 fi
 
-if [ -t 1 ]; then
+if [ -t 1 ] && [ -t 0 ] && [ -r /dev/tty ]; then
     noninteractive=
     reopen=-o
 else
