@@ -137,7 +137,7 @@ required_dependencies() {
         elif has apt-get; then
             need_sudo
             sudorun apt-get update
-            sudorun apt-get -y install "$@"
+            sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y install "$@"
         elif has pacman; then
             need_sudo
             sudorun pacman -Syu --noconfirm

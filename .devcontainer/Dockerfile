@@ -11,7 +11,7 @@ RUN SNIPPET="export PROMPT_COMMAND='history -a' && export HISTFILE=/commandhisto
     && chown -R $USERNAME /commandhistory \
     && echo "$SNIPPET" >> "/home/$USERNAME/.bashrc"
 
-RUN apt-get update && apt-get install --no-install-recommends -y \
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
     curl \
     git-lfs \
     sudo \
@@ -33,7 +33,7 @@ USER root
 
 # Install gosu for privilege dropping
 RUN apt-get update && \
-    apt-get install -y gosu && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y gosu && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy the PUID/PGID entrypoint script from the repo

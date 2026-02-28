@@ -18,7 +18,7 @@ if ! getent passwd "$user" >/dev/null 2>&1; then
 
     # Install zsh and set as default shell
     apt-get update
-    apt-get install --no-install-recommends -y zsh
+    DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y zsh
     chsh -s /usr/bin/zsh "$user"
 
     if [ -n "${NO_USER_PASSWORD:-}" ]; then
@@ -37,7 +37,7 @@ fi
 
 # Grant sudo access
 apt-get update
-apt-get install --no-install-recommends -y sudo
+DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y sudo
 if is_container; then
     echo "$user ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/"$user"
 else
@@ -46,7 +46,7 @@ fi
 chmod 0440 /etc/sudoers.d/"$user"
 
 # Install base prerequisites
-apt-get install --no-install-recommends -y \
+DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
     bash \
     ca-certificates \
     curl \

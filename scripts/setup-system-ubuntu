@@ -16,9 +16,9 @@ fi
 
 # Install xz for nix
 if ! has xz; then
-    sudorun apt-get -y install xz-utils
+    sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y install xz-utils
 fi
 
 if ! has zsh; then
-    sudorun apt-get -y install zsh
+    sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y install zsh
 fi
