@@ -37,12 +37,15 @@ else
 fi
 
 # Configure doas for the wheel group
-if ! [ -e /etc/doas.conf ] || ! grep -q "^permit.*:wheel" /etc/doas.conf; then
-    if is_container; then
-        echo "permit nopass :wheel" >>/etc/doas.conf
+if is_container; then
+    # Replace any password-requiring wheel rule with nopass
+    if grep -q "^permit.*:wheel" /etc/doas.conf 2>/dev/null; then
+        sed -i 's/^permit.*:wheel.*/permit nopass :wheel/' /etc/doas.conf
     else
-        echo "permit :wheel" >>/etc/doas.conf
+        echo "permit nopass :wheel" >>/etc/doas.conf
     fi
+elif ! [ -e /etc/doas.conf ] || ! grep -q "^permit.*:wheel" /etc/doas.conf; then
+    echo "permit :wheel" >>/etc/doas.conf
 fi
 
 # Enable the DHCP client service (skip in containers where dinit isn't running)
