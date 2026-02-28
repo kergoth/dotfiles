@@ -40,7 +40,8 @@ fi
 if is_container; then
     # Replace any password-requiring wheel rule with nopass
     if grep -q "^permit.*:wheel" /etc/doas.conf 2>/dev/null; then
-        sed -i 's/^permit.*:wheel.*/permit nopass :wheel/' /etc/doas.conf
+        sed 's/^permit.*:wheel.*/permit nopass :wheel/' /etc/doas.conf >/etc/doas.conf.tmp
+        mv /etc/doas.conf.tmp /etc/doas.conf
     else
         echo "permit nopass :wheel" >>/etc/doas.conf
     fi
