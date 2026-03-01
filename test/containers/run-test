@@ -301,6 +301,8 @@ run_one() {
 
 main() {
     process_arguments "$@"
+    shift $((OPTIND - 1))
+
     tmpdir=$(mktemp -d "$HOME/.tmp.run-test.XXXXXX")
     trap 'rm -rf "$tmpdir"' EXIT INT TERM
 
