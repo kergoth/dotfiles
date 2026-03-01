@@ -207,6 +207,27 @@ doas dinitctl enable dhcpcd
 ~/.dotfiles/script/setup-full
 ```
 
+### Testing
+
+Container-based tests verify that `setup-root` and `setup-full` work end to end on
+supported Linux distributions. Docker is required.
+
+```console
+# Run all distros
+./script/test
+
+# Run a specific distro
+./script/test arch
+
+# Drop into a user shell after setup (useful for debugging)
+./script/test -s debian
+```
+
+Supported distros: `arch`, `chimera`, `debian`, `fedora`, `ubuntu`.
+
+Pass `GITHUB_TOKEN` in the environment to authenticate private dependency downloads
+during setup.
+
 ### Edit dotfiles
 
 ```console

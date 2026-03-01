@@ -33,6 +33,16 @@ chezmoi diff
 chezmoi doctor
 ```
 
+```bash
+# Test dotfiles setup in containers (requires Docker)
+./script/test           # all supported distros
+./script/test arch      # specific distro only
+./script/test -s arch   # drop into user shell after setup (debug)
+./script/test -i arch   # drop into root shell before setup (debug)
+./script/test -S arch   # skip setup-system, only run setup
+./script/test -b        # build container images only, don't run
+```
+
 ## Setup Entry Points
 
 Scripts form a progression from OS installation to dotfiles application:
@@ -45,7 +55,8 @@ Scripts form a progression from OS installation to dotfiles application:
 - `script/setup-full` — Runs `setup-system` then `setup`
 
 - `script/update` — Update dotfiles, externals, and home-manager packages
-- `script/test` - Runs dotfiles setup in container test environments
+- `script/test` — Run dotfiles setup in container test environments (Arch, Debian,
+  Fedora, Ubuntu, Chimera). Tests `setup-root` + `setup-full` end to end.
 
 ## Repository Architecture
 
@@ -61,6 +72,8 @@ This is a **chezmoi-managed dotfiles** repository supporting macOS, Linux (Arch,
   - `chezmoi-*` - Helper scripts for chezmoi operations
   - `macos/Brewfile*.tmpl` - Homebrew package definitions
 - **`settings/`** - Shared settings files (GnuPG, PowerShell, etc.)
+- **`test/`** - Test infrastructure
+  - `containers/` - Per-distro Dockerfiles and the `run-test` driver script
 
 ### Chezmoi Source Structure (`home/`)
 
