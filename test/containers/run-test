@@ -212,11 +212,11 @@ chown -R "$user" "/home/$user"
 
 export DOTFILES_DIR="$dotfiles_mount"
 
-cmd="if ! [ -w /nix/store ] || ! [ -w /nix/var ]; then chown -R $user /nix; fi; export DOTFILES_DIR='$dotfiles_mount' GITHUB_TOKEN='$GITHUB_TOKEN'; cd '$dotfiles_mount' && './$setup_cmd' </dev/null"
-if command -v su >/dev/null 2>&1; then
-    su - "$user" -c "\$cmd"
-elif command -v doas >/dev/null 2>&1; then
-    doas -u "$user" sh -c "\$cmd"
+cmd="export DOTFILES_DIR='$dotfiles_mount' GITHUB_TOKEN='$GITHUB_TOKEN'; cd '$dotfiles_mount' && './$setup_cmd' </dev/null"
+if command -v doas >/dev/null 2>&1; then
+    doas -u "$user" sh -c "if ! [ -w /nix/store ] || ! [ -w /nix/var ]; then doas chown -R $user /nix; fi; \$cmd"
+elif command -v su >/dev/null 2>&1; then
+    su - "$user" -c "if ! [ -w /nix/store ] || ! [ -w /nix/var ]; then sudo chown -R $user /nix; fi; \$cmd"
 else
     echo "Error: need su or doas in container to run as user" >&2
     exit 1
