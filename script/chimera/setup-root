@@ -16,6 +16,8 @@ uid="${2:-}"
 
 if ! getent passwd "$user" >/dev/null 2>&1; then
     echo >&2 "Adding user '$user'"
+    # Ensure supplemental groups exist (absent in minimal container images)
+    for g in kvm plugdev; do groupadd -f "$g" 2>/dev/null || true; done
     useradd_args="-m -g users -G wheel,kvm,plugdev"
     if [ -n "$uid" ]; then
         useradd_args="$useradd_args -u $uid"
