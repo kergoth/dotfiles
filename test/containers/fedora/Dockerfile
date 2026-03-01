@@ -5,9 +5,8 @@ RUN dnf -y upgrade \
         ca-certificates \
         curl \
         git \
-        glibc-langpack-en \
         sudo \
     && dnf -y clean all \
     && rm -rf /var/cache/dnf
 
-ENV LANG=en_US.UTF-8
+ENV LANG=C.UTF-8
