@@ -17,15 +17,17 @@ Is this a GUI application?
     ├── Requires root/system-level installation?
     │   └── Yes → Platform system-setup script (scripts/setup-system-*.tmpl)
     ├── macOS → Homebrew formula (scripts/macos/Brewfile.tmpl)
-    ├── Windows → Scoop (run_onchange_before_25_install-scoop-tools.ps1.tmpl)
-    ├── Linux: Available in Nix? (check: https://search.nixos.org/packages)
+    ├── Windows → Scoop (run_onchange_before_25_install-tools.ps1.tmpl)
+    ├── Available in Nix? (check: https://search.nixos.org/packages)
     │   └── Yes → Add to home.nix.tmpl
-    ├── Linux (non-Nix): Available as GitHub release binary?
-    │   └── Yes → Chezmoi externals (home/.chezmoitemplates/external/)
-    └── Available via language package manager?
-        ├── Rust (cargo) → run_onchange_before_25_install-cargo-tools.tmpl
-        ├── Go → run_onchange_before_25_install-go-tools.tmpl
-        └── Python → run_onchange_after_10_install-uv-tools.tmpl
+    ├── Available via language package manager?
+    │   ├── Rust (cargo) → install-tools (limited)
+    │   └── Python (uv) → install-tools
+    ├── Chimera (non-Nix): Available in apk repos?
+    │   ├── Yes → system packages (scripts/setup-system-chimera.tmpl)
+    │   └── No → eget via install-tools
+    └── FreeBSD: Available in pkg/ports?
+        └── Yes → system packages (scripts/setup-system-freebsd.tmpl)
 ```
 
 ## Preference Hierarchy
@@ -35,9 +37,9 @@ When multiple installation methods are available, prefer them in this order:
 1. **User installation over system installation** - Avoid requiring sudo/admin when possible
 2. **Package managers over manual downloads** - Easier updates and dependency management
 3. **Nix over Homebrew for CLI tools** - But use Homebrew casks for GUI apps on macOS
-4. **Chezmoi externals over language package managers** - Pre-built binaries are faster (Linux fallback when Nix unavailable)
-5. **Language package managers (cargo/go/uv) as fallback** - When no binary available
-6. **System packages only when necessary** - For core OS utilities
+4. **Language package managers (cargo/uv) over system packages** - Except on Chimera where apk is preferred since Nix is unavailable
+5. **System packages when Nix is unavailable** - Chimera (apk), FreeBSD (pkg/ports)
+6. **eget for Chimera gaps** - Tools not available in apk repos and not installable via cargo/uv
 
 ## Platform Support Matrix
 
@@ -48,13 +50,13 @@ When multiple installation methods are available, prefer them in this order:
 
 | Platform | GUI Apps | CLI (Primary) | CLI (Fallback) | System-Level (admin/root) |
 |----------|----------|---------------|----------------|---------------------------|
-| macOS | Homebrew cask | Nix OR Homebrew formula | Cargo/Go | Brewfile-admin (mas + casks), system config |
-| Windows | Scoop | Scoop | Cargo/Go/UV | winget, system config (Sophia Script) |
-| Linux (Arch) | Flatpak | Nix | Externals → Cargo/Go | pacman, system services |
-| Linux (Debian/Ubuntu) | Flatpak | Nix | Externals → Cargo/Go | apt, system services |
-| Linux (Chimera) | Flatpak | apk (system) | Cargo/Go | apk, doas, system services |
-| Linux (SteamOS) | N/A | N/A | N/A | Minimal (symlinks only) |
-| FreeBSD | pkg/ports | pkg/ports | Cargo/Go | pkg, ports, doas, system services |
+| macOS | Homebrew cask | Nix OR Homebrew formula | cargo/uv | Brewfile-admin (mas + casks), system config |
+| Windows | Scoop | Scoop | cargo/uv | winget, system config (Sophia Script) |
+| Linux (Arch) | Flatpak | Nix | cargo/uv | pacman, system services |
+| Linux (Debian/Ubuntu) | Flatpak | Nix | cargo/uv | apt, system services |
+| Linux (Chimera) | Flatpak | apk (system) | eget → cargo/uv | apk, doas, system services |
+| Linux (SteamOS) | N/A | Nix | cargo/uv | Minimal |
+| FreeBSD | pkg/ports | pkg/ports | cargo/uv | pkg, ports, doas, system services |
 
 ## File Reference
 
@@ -66,13 +68,10 @@ When multiple installation methods are available, prefer them in this order:
 | macOS Homebrew (admin) | `scripts/macos/Brewfile-admin.tmpl` |
 | macOS App Store | `scripts/macos/Brewfile-admin.tmpl` (mas entries) |
 | Windows GUI apps (user) | `home/.chezmoiscripts/windows/run_onchange_after_10_install-scoop-packages.ps1.tmpl` |
-| Windows CLI tools (user) | `home/.chezmoiscripts/windows/run_onchange_before_25_install-scoop-tools.ps1.tmpl` |
+| Windows CLI tools (user) | `home/.chezmoiscripts/windows/run_onchange_before_25_install-tools.ps1.tmpl` |
 | Linux GUI/CLI apps | `home/.chezmoiscripts/linux/run_onchange_after_10_install-apps.tmpl` |
 | Nix packages | `home/dot_config/home-manager/home.nix.tmpl` |
-| Chezmoi externals | `home/.chezmoitemplates/external/*.toml.tmpl` |
-| Cargo tools | `home/.chezmoiscripts/*/run_onchange_before_25_install-cargo-tools.tmpl` |
-| Go tools | `home/.chezmoiscripts/*/run_onchange_before_25_install-go-tools.tmpl` |
-| Python/UV tools | `home/.chezmoiscripts/posix/run_onchange_after_10_install-uv-tools.tmpl` |
+| CLI tools (eget/cargo/uv) | `home/.chezmoiscripts/posix/run_onchange_before_25_install-tools.tmpl` |
 
 ### System-Level Installation Files
 
@@ -108,7 +107,7 @@ Available flags from `.chezmoi.toml.tmpl` for conditional installation:
 | `.ebook_library` | Manage ebook library | Calibre |
 | `.gaming_device_library` | Manage gaming device library | ScummVM, ROM tools |
 | `.retro_computing` | Retro computing emulation | 86Box |
-| `.use_nix` | Nix is available | Skip externals when true |
+| `.use_nix` | Nix is available | Use Nix/home-manager for package management |
 | `.user_setup` | Full user setup (not just dotfiles) | Skip package installation |
 | `.secrets` | Has access to secrets | Encryption, 1Password |
 | `.steamdeck` | Running on Steam Deck | SteamOS-specific setup |
@@ -242,135 +241,7 @@ This script self-elevates to administrator. Use for:
 
 **Note:** For macOS, prefer Homebrew casks for GUI apps. Only add CLI tools to the main packages list that should be shared across platforms.
 
-### 6. Chezmoi Externals (GitHub Release Binaries)
-
-**File:** `home/.chezmoitemplates/external/<category>.toml.tmpl`
-
-#### Key Considerations
-
-1. **Check platform availability first** - Not all tools have binaries for all platforms
-2. **Handle different naming conventions** - Release files use varied naming schemes
-3. **Consider archive structure** - Binary may be at root or nested in directories
-4. **Handle version prefixes** - Some use `v1.0.0`, others use `1.0.0`
-
-#### Standard Boilerplate
-
-```go
-{{- $os := .chezmoi.os -}}
-{{- $arch := .chezmoi.arch -}}
-{{- $binarch := $arch -}}
-{{- if eq .chezmoi.arch "amd64" -}}
-{{-   $binarch = "x86_64" -}}
-{{- else if eq .chezmoi.arch "arm64" -}}
-{{-   $binarch = "aarch64" -}}
-{{- end -}}
-{{- $binpath := ".local/bin" -}}
-{{- $binsuffix := "" -}}
-{{- if eq $os "windows" -}}
-{{-   $binpath = "AppData/Local/Programs/bin" -}}
-{{-   $binsuffix = ".exe" -}}
-{{- end -}}
-```
-
-#### Pattern: Platform-Specific Target Strings
-
-Use empty string for unsupported platforms, then check `(ne $target "")`:
-
-```go
-{{- $tool_version := (gitHubLatestRelease "owner/repo").TagName -}}
-{{- $tool_target := "" -}}
-{{- $tool_ext := "tar.gz" -}}
-{{- if eq $os "darwin" -}}
-{{-   if eq $arch "amd64" -}}
-{{-     $tool_target = "x86_64-apple-darwin" -}}
-{{-   else if eq $arch "arm64" -}}
-{{-     $tool_target = "aarch64-apple-darwin" -}}
-{{-   end -}}
-{{- else if eq $os "linux" -}}
-{{-   if eq $arch "amd64" -}}
-{{-     $tool_target = "x86_64-unknown-linux-musl" -}}
-{{-   else if eq $arch "arm64" -}}
-{{-     $tool_target = "aarch64-unknown-linux-gnu" -}}
-{{-   end -}}
-{{- else if eq $os "windows" -}}
-{{-   $tool_ext = "zip" -}}
-{{-   if eq $arch "amd64" -}}
-{{-     $tool_target = "x86_64-pc-windows-msvc" -}}
-{{-   end -}}
-{{- end -}}
-
-{{/* Only install if target exists and not using Nix/FreeBSD/Chimera */}}
-{{ if and (ne $tool_target "") (not (or .use_nix (eq .chezmoi.os "freebsd") (eq .osid "linux-chimera"))) }}
-...
-{{ end }}
-```
-
-#### Pattern: Simple Direct Binary Download
-
-For tools with simple naming like `tool-os-arch`:
-
-```go
-["{{ $binpath }}/jq{{ $binsuffix }}"]
-  type = "file"
-  url = "https://github.com/jqlang/jq/releases/download/{{ $jq_version }}/jq-{{ $jq_os }}-{{ $arch }}{{ $binsuffix }}"
-  executable = true
-```
-
-#### Pattern: Archive with Binary at Root
-
-When archive contains binary directly (no subdirectory):
-
-```go
-["{{ $binpath }}/sad{{ $binsuffix }}"]
-  type = "archive-file"
-  url = "https://github.com/ms-jpq/sad/releases/download/{{ $sad_version }}/{{ $sad_target }}.zip"
-  path = "sad{{ $binsuffix }}"
-  executable = true
-  {{/* No stripComponents - binary is at archive root */}}
-```
-
-#### Pattern: Archive with Nested Binary
-
-When archive contains a directory with the binary inside:
-
-```go
-["{{ $binpath }}/bat{{ $binsuffix }}"]
-  type = "archive-file"
-  url = "https://github.com/sharkdp/bat/releases/download/{{ $bat_version }}/bat-{{ $bat_version }}-{{ $bat_target }}.{{ $bat_ext }}"
-  path = "bat{{ $binsuffix }}"
-  executable = true
-  stripComponents = 1  {{/* Skip the outer directory */}}
-```
-
-#### Pattern: Version Prefix Handling
-
-Some releases use `v1.0.0`, others use `1.0.0`:
-
-```go
-{{/* Keep the v prefix */}}
-{{- $version := (gitHubLatestRelease "owner/repo").TagName -}}
-
-{{/* Remove the v prefix */}}
-{{- $version := (gitHubLatestRelease "owner/repo").TagName | trimPrefix "v" -}}
-```
-
-#### Common Naming Conventions
-
-| Style | Example | Typical Use |
-|-------|---------|-------------|
-| Simple | `tool-linux-amd64` | Go tools |
-| Rust triple | `tool-x86_64-unknown-linux-musl` | Rust tools |
-| Platform name | `tool-macos-arm64` | Various |
-| Version in name | `tool-v1.0.0-linux-amd64.tar.gz` | Common |
-
-#### Troubleshooting Externals
-
-1. **Download the release manually** to inspect the archive structure
-2. **Check if `stripComponents` is needed** - look for nested directories
-3. **Verify the exact filename pattern** - case sensitivity matters
-4. **Test on each platform** you want to support
-
-### 7. Linux Flatpak (GUI Apps)
+### 6. Linux Flatpak (GUI Apps)
 
 **File:** `home/.chezmoiscripts/linux/run_onchange_after_10_install-apps.tmpl`
 
@@ -385,7 +256,7 @@ flatpak install -y --user flathub org.example.AppName || true
 {{-   end }}
 ```
 
-### 8. Linux curl Installer (CLI)
+### 7. Linux curl Installer (CLI)
 
 **File:** `home/.chezmoiscripts/linux/run_onchange_after_10_install-apps.tmpl`
 
@@ -402,47 +273,45 @@ rm -f /tmp/tool
 {{-   end }}
 ```
 
-### 9. Cargo Tools (Rust)
+### 8. CLI Tools via install-tools (eget/cargo/uv)
 
-**File:** `home/.chezmoiscripts/linux/run_onchange_before_25_install-cargo-tools.tmpl`
+**File (POSIX):** `home/.chezmoiscripts/posix/run_onchange_before_25_install-tools.tmpl`
+**File (Windows):** `home/.chezmoiscripts/windows/run_onchange_before_25_install-tools.ps1.tmpl`
 
-```go
-{{- if and .user_setup (not .use_nix) (eq .osid "linux-chimera") -}}
-{{-   $cargo_tools := dict "toolcmd" "crate-name" -}}
-{{-   $to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $cargo_tools) | fromJson -}}
-{{-   if $to_install -}}
-{{-     $cargo := includeTemplate "find-tool" (dict "root" . "tool" "cargo") -}}
-{{-     if $cargo -}}
-#!/bin/sh
-set -eu
-{{-       range $to_install }}
-echo >&2 "Installing {{ . }}"
-"{{ $cargo }}" install --locked {{ . }}
-{{-       end }}
-{{-     end }}
-{{-   end }}
-{{- end }}
-```
+This unified script handles all non-package-manager CLI tool installation. It only runs when `.user_setup` is true and `.use_nix` is false (i.e., platforms without Nix). Tools are organized into three categories:
 
-### 10. Go Tools
-
-**File:** `home/.chezmoiscripts/linux/run_onchange_before_25_install-go-tools.tmpl`
+**eget tools** — GitHub release binaries for Chimera gaps (tools not in apk repos):
 
 ```go
-{{-   $go_tools := dict "cmdname" "github.com/owner/repo/...@latest" -}}
-{{-   $to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $go_tools) | fromJson -}}
+{{- $eget_tools := dict -}}
+{{- if eq .osid "linux-chimera" -}}
+{{-   $_ := set $eget_tools "choose" "theryangeary/choose" -}}
+{{-   $_ := set $eget_tools "sd" "chmln/sd" -}}
+{{-   $_ := set $eget_tools "shellcheck" "-a xz koalaman/shellcheck" -}}
+{{-   {{/* ... */}} -}}
+{{- end -}}
 ```
 
-### 11. Python/UV Tools
-
-**File:** `home/.chezmoiscripts/posix/run_onchange_after_10_install-uv-tools.tmpl`
+**cargo tools** — very limited (currently only fclones on non-amd64 Chimera):
 
 ```go
-{{-   $uv_tools := dict "cmdname" "package-name" -}}
-{{-   $to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $uv_tools) | fromJson -}}
+{{- $cargo_tools := dict -}}
+{{- if and (eq .osid "linux-chimera") (ne .chezmoi.arch "amd64") -}}
+{{-   $_ := set $cargo_tools "fclones" "fclones" -}}
+{{- end -}}
 ```
 
-### 12. Chimera Linux (apk + Flatpak)
+**uv tools** — Python tools installed via `uv tool install`:
+
+```go
+{{- $uv_tools := dict "git-imerge" "git-imerge" "git-revise" "git-revise" -}}
+```
+
+All three use the `packagesForMissingTools` helper to skip already-installed tools. If eget isn't already present, the script bootstraps it automatically before installing eget tools.
+
+The Windows version follows the same pattern but installs Scoop packages as its primary tool source, with cargo and uv as secondary sources.
+
+### 9. Chimera Linux (apk + Flatpak)
 
 **File:** `scripts/setup-system-chimera.tmpl`
 
@@ -525,12 +394,9 @@ Format: `run_[onchange_][before|after]_NN_description[.ps1].tmpl`
 - GUI apps are often large and slow to install
 - Delaying dotfiles for GUI installation is unnecessary
 
-**Exception: UV tools use `after_`** because UV itself is installed via chezmoi externals on some platforms. Since externals are processed during dotfiles application, UV tools must wait until after.
-
 **Examples:**
-- `run_onchange_before_25_install-cargo-tools.tmpl` - CLI tools via cargo
-- `run_onchange_before_25_install-go-tools.tmpl` - CLI tools via go
-- `run_onchange_after_10_install-uv-tools.tmpl` - Python tools (UV installed via externals)
+- `run_onchange_before_25_install-tools.tmpl` - CLI tools via eget/cargo/uv (POSIX)
+- `run_onchange_before_25_install-tools.ps1.tmpl` - CLI tools via Scoop/cargo/uv (Windows)
 - `run_onchange_after_10_install-apps.tmpl` - GUI apps (Zed, DevPod)
 - `run_onchange_after_10_install-scoop-packages.ps1.tmpl` - GUI apps on Windows
 
@@ -539,7 +405,7 @@ Format: `run_[onchange_][before|after]_NN_description[.ps1].tmpl`
 | `00_` | Bootstrap (1Password, age key) |
 | `10_` | Early setup (homebrew install), GUI apps |
 | `20_` | Package managers (home-manager) |
-| `25_` | Language tools (cargo, go) - CLI |
+| `25_` | CLI tools (eget, cargo, uv) |
 | `30_` | Configuration |
 | `40_` | Updates |
 | `50_` | Final setup (shell, SSH) |

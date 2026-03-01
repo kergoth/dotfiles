@@ -112,12 +112,12 @@ Chezmoi run scripts follow this pattern:
 
 ### External Dependencies
 
-External tools are downloaded via chezmoi externals when Nix is unavailable. Templates in `.chezmoitemplates/external/` define:
+Chezmoi externals download non-package-manager resources. Templates in `.chezmoitemplates/external/` define:
 
-- CLI tools (bat, ripgrep, fd, fzf, jq, etc.)
 - Zsh plugins and themes
 - Fonts (iA Writer, MesloLGS NF)
 - Vim plugins
+- Color schemes and app data
 
 ### Secrets Management
 
@@ -139,8 +139,6 @@ pacman_install <pkg>       # Install via pacman
 brewfile_install <file>    # Install from Brewfile
 uv_check <pkg>             # Install Python tool via uv
 cargo_check <pkg>          # Install Rust tool via cargo
-go_check <pkg>             # Install Go tool
-eget_install <repo>        # Install from GitHub release
 ```
 
 ## Adding Software to This Repository
@@ -149,7 +147,7 @@ eget_install <repo>        # Install from GitHub release
 
 Quick reference:
 - **GUI apps**: macOS (Homebrew cask), Windows (Scoop/winget), Linux (Flatpak or Nix)
-- **CLI tools**: Prefer Nix > Homebrew (macOS) / Scoop (Windows) > Chezmoi externals (Linux) > Language package managers (cargo/go/uv)
+- **CLI tools**: Prefer Nix > Homebrew (macOS) / Scoop (Windows) > system packages > install-tools (eget/cargo/uv)
 - **Use `before_` scripts for CLI tools** (dotfiles may detect them)
 - **Use `after_` scripts for GUI apps** (don't delay dotfiles for large installs)
 - **Always check conditional flags**: `.coding`, `.containers`, `.ephemeral`, `.headless`, `.personal`, `.work`, etc.
@@ -158,7 +156,7 @@ Quick reference:
 
 See `docs/contributing-software.md` for platform-specific file paths to check.
 
-1. Remove from all applicable installation files (Brewfile, home.nix, externals, cargo/go/uv scripts, scoop, system-setup)
+1. Remove from all applicable installation files (Brewfile, home.nix, install-tools, scoop, system-setup)
 2. Move README entry from "Installed" to "Formerly-Used" section (drop conditional/install notes, add replacement note)
 3. Verify no remaining references that would break without the tool
 
@@ -166,9 +164,9 @@ See `docs/contributing-software.md` for platform-specific file paths to check.
 
 - **macOS**: Uses Homebrew (prefix: `$HOME/.brew`), optional split admin user setup
 - **macOS admin Homebrew**: Separate `Brewfile-admin.tmpl` for shared `/Users/Shared/homebrew` prefix (Mac App Store apps, admin-requiring casks)
-- **Linux**: Nix/home-manager for packages when available, cargo/go/uv for tools otherwise
+- **Linux**: Nix/home-manager for packages when available; eget for Chimera gaps (no Nix); cargo/uv very limited
 - **Windows**: Uses Scoop and winget, PowerShell scripts (`.ps1.tmpl`)
-- **FreeBSD**: Cargo and Go for tool installation
+- **FreeBSD**: pkg/ports for tool installation
 
 ## README Documentation Patterns
 
