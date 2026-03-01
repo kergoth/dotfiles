@@ -322,7 +322,7 @@ main() {
 
     while read -r distro; do
         [ -n "$distro" ] || continue
-        run_one "$distro"
+        run_one "$distro" </dev/tty
     done <"$tmpdir/distros.txt"
 
     # shellcheck disable=SC2046
