@@ -8,7 +8,7 @@ export NCURSES_NO_UTF8_ACS=1
 
 # Set LANG if not already set. Prefer en_US.UTF-8 if available, fall back to C.UTF-8.
 if [[ -z "$LANG" ]]; then
-    if locale -a 2>/dev/null | grep -qi '^en_US\.UTF-\?8$'; then
+    if (( $+commands[locale] )) && locale -a 2>/dev/null | grep -qi '^en_US\.UTF-\?8$'; then
         export LANG=en_US.UTF-8
     else
         export LANG=C.UTF-8
