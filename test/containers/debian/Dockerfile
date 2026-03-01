@@ -14,5 +14,4 @@ RUN apt-get update \
     && update-locale LANG=en_US.UTF-8 \
     && rm -rf /var/lib/apt/lists/*
 
-ENV LANG=en_US.UTF-8 \
-    LC_ALL=en_US.UTF-8
+ENV LANG=en_US.UTF-8
