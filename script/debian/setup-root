@@ -1,5 +1,5 @@
 #!/bin/sh
-# Root-level setup for Ubuntu: create user, install base packages.
+# Root-level setup for Debian: create user, install base packages.
 
 set -eu
 

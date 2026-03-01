@@ -5,6 +5,7 @@ set -euo pipefail
 scriptdir=$(cd "$(dirname "$0")" && pwd -P)
 PATH="$scriptdir:$PATH"
 
+# Run both even if setup-system fails; exit non-zero if either failed.
 ret=0
 setup-system || ret=$?
 setup || ret=$?

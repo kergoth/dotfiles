@@ -74,14 +74,5 @@ if command -v dinitctl >/dev/null 2>&1 && dinitctl list >/dev/null 2>&1; then
     fi
 fi
 
-# Install bash for my dotfiles and other scripts
-apk add --no-interactive bash
-
-# Install git for my dotfiles
-apk add --no-interactive git
-
-# Install unzip for chezmoi 1password-cli usage
-apk add --no-interactive unzip
-
-# Install curl for chezmoi installation
-apk add --no-interactive curl
+# Install prerequisites for dotfiles bootstrap
+apk add --no-interactive bash git unzip curl
