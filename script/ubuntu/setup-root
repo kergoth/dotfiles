@@ -37,7 +37,7 @@ fi
 
 # Grant sudo access
 apt-get update
-aDEBIAN_FRONTEND=noninteractive pt-get install --no-install-recommends -y sudo
+DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y sudo
 if is_container; then
     echo "$user ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/"$user"
 else
