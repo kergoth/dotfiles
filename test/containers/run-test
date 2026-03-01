@@ -197,9 +197,11 @@ arch_base_image_for_host() {
 
 emit_container_script() {
     setup_cmd=$1
-    GITHUB_TOKEN=${GITHUB_TOKEN:-}
 
-    # shellcheck disable=SC2016
+    # Variables prefixed with \ are intentionally escaped so they expand at
+    # container runtime (from the container's environment), not at generation
+    # time here on the host. This keeps secrets off disk and ensures DOTFILES_DIR
+    # survives the su/doas privilege-drop boundary.
     cat <<EOF
 #!/bin/sh
 set -eu
@@ -210,9 +212,7 @@ script/$distro/setup-root "$user" 10000 </dev/null
 
 chown -R "$user" "/home/$user"
 
-export DOTFILES_DIR="$dotfiles_mount"
-
-cmd="export DOTFILES_DIR='$dotfiles_mount' GITHUB_TOKEN='$GITHUB_TOKEN'; cd '$dotfiles_mount' && './$setup_cmd' </dev/null"
+cmd="export DOTFILES_DIR='\$DOTFILES_DIR' GITHUB_TOKEN='\$GITHUB_TOKEN'; cd '\$DOTFILES_DIR' && './$setup_cmd' </dev/null"
 if command -v doas >/dev/null 2>&1; then
     doas -u "$user" sh -c "if ! [ -w /nix/store ] || ! [ -w /nix/var ]; then doas chown -R $user /nix; fi; \$cmd"
 elif command -v su >/dev/null 2>&1; then
@@ -225,10 +225,13 @@ echo >&2 "Test completed for distro: $distro"
 
 if [ "\${SHELL_AFTER:-0}" -eq 1 ]; then
     echo "Setup complete. Dropping into user shell..." >&2
-    if command -v su >/dev/null 2>&1; then
-        exec su - "$user" -c "exec zsh --login"
-    elif command -v doas >/dev/null 2>&1; then
+    if command -v doas >/dev/null 2>&1; then
         exec doas -u "$user" zsh --login
+    elif command -v su >/dev/null 2>&1; then
+        exec su - "$user" -c "exec zsh --login"
+    else
+        echo "Error: need su or doas to drop into user shell" >&2
+        exit 1
     fi
 fi
 EOF
@@ -243,6 +246,8 @@ build_image() {
     if [ "${distro:-}" = "arch" ]; then
         base_image=$(arch_base_image_for_host)
         msg "  arch base image: %s" "$base_image"
+        # BuildKit mishandles ARG-before-FROM with the
+        # check=skip=InvalidBaseImagePlatform directive; disable it for arch.
         DOCKER_BUILDKIT=0 run docker build \
             --build-arg "BASE_IMAGE=$base_image" \
             -t "$image_name" \
@@ -265,6 +270,7 @@ run_container() {
         --rm \
         -v "$repodir:$dotfiles_mount" \
         -e NO_USER_PASSWORD=1 \
+        -e DOTFILES_DIR="$dotfiles_mount" \
         ${GITHUB_TOKEN:+-e GITHUB_TOKEN="$GITHUB_TOKEN"}
 
     if [ "$skip_nix_cache" != "1" ]; then
@@ -315,6 +321,8 @@ main() {
     process_arguments "$@"
     shift $((OPTIND - 1))
 
+    # Use $HOME rather than $TMPDIR: Colima (macOS Docker VM) doesn't mount
+    # all host paths, but $HOME is reliably available inside the VM context.
     tmpdir=$(mktemp -d "$HOME/.tmp.run-test.XXXXXX")
     trap 'rm -rf "$tmpdir"' EXIT INT TERM
 
@@ -334,7 +342,15 @@ main() {
 
     while read -r distro; do
         [ -n "$distro" ] || continue
-        run_one "$distro" </dev/tty
+        # The while loop redirects stdin from the distros file, so we must
+        # explicitly restore /dev/tty for interactive modes (-s, -i) so that
+        # docker can attach to the real terminal. Non-interactive runs use
+        # /dev/null to avoid failing in CI where /dev/tty is unavailable.
+        if [ "$shell_after" -eq 1 ] || [ "$interactive" -eq 1 ]; then
+            run_one "$distro" </dev/tty
+        else
+            run_one "$distro" </dev/null
+        fi
     done <"$tmpdir/distros.txt"
 
     # shellcheck disable=SC2046
