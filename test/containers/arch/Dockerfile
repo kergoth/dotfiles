@@ -2,7 +2,7 @@
 ARG BASE_IMAGE=archlinux/archlinux:latest
 FROM ${BASE_IMAGE}
 
-RUN locale-gen
+RUN sed -i 's/^#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen && locale-gen
 
 ENV LANG=en_US.UTF-8
 
