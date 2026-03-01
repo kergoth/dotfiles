@@ -17,6 +17,7 @@
 #     -s          Drop into a user shell after setup
 #     -S          Skip setup-system, only run setup
 #     -b          Just build the image(s), don't run
+#     -C          Skip shared nix cache
 #     -n          Dry run, don't actually do anything
 #     -v          Increase verbosity, can be specified multiple times
 #     -q          Decrease verbosity, can be specified multiple times
@@ -35,6 +36,7 @@ process_arguments() {
     shell_after=0
     no_system=0
     build_only=0
+    skip_nix_cache=${DOTFILES_SKIP_CACHE:-0}
     dry_run=0
     verbosity=0
 
@@ -43,7 +45,7 @@ process_arguments() {
     user=testuser
     dotfiles_mount=/home/testuser/.dotfiles
 
-    while getopts ":aisSbnvqh" opt; do
+    while getopts ":aisSbCnvqh" opt; do
         case "$opt" in
             a)
                 all_distros=1
@@ -59,6 +61,9 @@ process_arguments() {
                 ;;
             b)
                 build_only=1
+                ;;
+            C)
+                skip_nix_cache=1
                 ;;
             n)
                 dry_run=1
@@ -203,8 +208,10 @@ cd "$dotfiles_mount"
 
 script/$distro/setup-root "$user" </dev/null
 
-chown "$user" "/home/$user"
-chown -R "$user" "$dotfiles_mount"
+chown -R "$user" "/home/$user"
+if ! [ -w /nix/store ] || ! [ -w /nix/var ]; then
+    chown -R "$user" /nix
+fi
 
 export DOTFILES_DIR="$dotfiles_mount"
 
@@ -261,6 +268,13 @@ run_container() {
         -v "$repodir:$dotfiles_mount" \
         -e NO_USER_PASSWORD=1 \
         ${GITHUB_TOKEN:+-e GITHUB_TOKEN="$GITHUB_TOKEN"}
+
+    if [ "$skip_nix_cache" != "1" ]; then
+        set -- "$@" \
+          --mount type=volume,src=dotfiles-nix-store,dst=/nix \
+          --mount "type=volume,src=dotfiles-nix-cache,dst=/home/$user/.cache/nix" \
+          --mount "type=volume,src=dotfiles-nix-state,dst=/home/$user/.local/state/nix"
+    fi
 
     if [ "$interactive" -eq 1 ]; then
         msg "Dropping into interactive root shell..."
@@ -329,7 +343,6 @@ main() {
     if [ $(wc -l <"$tmpdir/distros.txt") -gt 1 ]; then
         echo >&2 "All tests completed for distros: $(cat "$tmpdir/distros.txt" | tr '\n' ' ')"
     fi
-
 }
 
 if [ -z "${0##/*}" ]; then
