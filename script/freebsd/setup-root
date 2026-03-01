@@ -7,6 +7,23 @@ pkg() {
 }
 
 user=$1
+uid="${2:-}"
+
+if ! pw usershow "$user" >/dev/null 2>&1; then
+    pw_args="-n $user -m -s /bin/sh"
+    if [ -n "$uid" ]; then
+        pw_args="$pw_args -u $uid"
+    fi
+    # shellcheck disable=SC2086
+    pw useradd $pw_args
+elif [ -n "$uid" ] && [ "$(id -u "$user")" != "$uid" ]; then
+    pw usermod "$user" -u "$uid"
+    home=$(pw usershow "$user" | awk -F: '{print $9}')
+    group=$(id -gn "$user")
+    if [ -n "$home" ] && [ -d "$home" ]; then
+        chown -R "$user:$group" "$home"
+    fi
+fi
 
 pw groupmod wheel -m "$user"
 

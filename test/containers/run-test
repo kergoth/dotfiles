@@ -206,7 +206,7 @@ set -eu
 
 cd "$dotfiles_mount"
 
-script/$distro/setup-root "$user" </dev/null
+script/$distro/setup-root "$user" 10000 </dev/null
 
 chown -R "$user" "/home/$user"
 
