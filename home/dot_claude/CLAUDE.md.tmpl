@@ -42,6 +42,12 @@
 - Always use explicit `git add` with specific file paths — never `git add -A`, `git add .`, or `git add -u` without listing files
 - Verify edits actually succeeded before committing; check `git diff` if uncertain
 
+## Markdown Conventions
+- In documentation files (READMEs, docs/, Obsidian notes): always use proper markdown links — `[descriptive text](url)` or reference-style `[text][ref]` with definitions at the bottom
+- Never use bare autolinks (`<http://...>`) or plain unlinked URLs in these contexts — these are the antipattern to avoid
+- Plan files, design documents, and conversational responses may use autolinks or bare URLs
+- Use descriptive link text that explains the destination; avoid generic text like `[here]`, `[this]`, or `[link]`
+
 ## Personal Tooling
 - Dotfiles: `~/.dotfiles/` (chezmoi + Nix Home Manager, multi-platform) — has its own CLAUDE.md with full architecture docs
 - Scripts: `~/bin/` has 300+ personal utilities — check there before writing new ones
@@ -57,6 +63,7 @@
 
 ## Obsidian Integration
 - When asked to save learnings or session notes, write to the active Obsidian vault
+- Use the `obsidian` CLI (see obsidian-cli skill) for vault operations (create, search, daily notes, metadata); use Read/Edit tools for surgical in-file edits; avoid shell file manipulation (echo, sed, etc.)
 - Use vault's PARA structure for placement; use Obsidian-compatible formatting (YAML frontmatter, wikilinks, Dataview metadata)
 - General technical learnings go in `02_Areas/Technical Skills/Shared/` (synced to work machines — only generic knowledge or references to published open-source work; no private/unpublished personal project code or details)
 
