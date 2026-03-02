@@ -1,0 +1,37 @@
+#!/usr/bin/env chezmoi-exec
+{{- $codename := .chezmoi.osRelease.versionCodename -}}
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+scriptdir=$(cd "$(dirname "$0")" && pwd -P)
+PATH="$scriptdir/debian:$scriptdir/linux:$scriptdir:$PATH"
+
+# shellcheck source=./common.sh
+. "$scriptdir/common.sh" || exit 1
+
+need_sudo
+
+if ! has xz || ! has zsh; then
+    sudorun apt-get update
+fi
+
+# Install xz for nix
+if ! has xz; then
+    sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y install xz-utils
+fi
+
+if ! has zsh; then
+    sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y install zsh
+fi
+
+{{ if and (not .ephemeral) (not .headless) -}}
+# Install, enable, and start Tailscale
+sudo mkdir -p --mode=0755 /usr/share/keyrings
+curl -fsSL "https://pkgs.tailscale.com/stable/debian/{{ $codename }}.noarmor.gpg" | sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
+curl -fsSL "https://pkgs.tailscale.com/stable/debian/{{ $codename }}.tailscale-keyring.list" | sudo tee /etc/apt/sources.list.d/tailscale.list
+sudorun apt-get update
+sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y install tailscale
+sudorun systemctl enable --now tailscaled
+sudo tailscale up
+{{- end }}

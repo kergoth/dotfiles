@@ -1,3 +1,9 @@
+#!/usr/bin/env chezmoi-exec
+{{- $ver := .chezmoi.osRelease.versionID | atoi -}}
+{{- $tailscaleURL := "https://pkgs.tailscale.com/stable/fedora/tailscale.repo" -}}
+{{- if le $ver 39 -}}
+{{-   $tailscaleURL = printf "https://pkgs.tailscale.com/stable/fedora/%s/tailscale.repo" .chezmoi.osRelease.versionID -}}
+{{- end -}}
 #!/usr/bin/env bash
 
 set -euo pipefail
@@ -20,3 +26,16 @@ fi
 
 # Install neovim
 sudorun dnf -y --setopt=install_weak_deps=False install neovim
+
+# Install, enable, and start Tailscale
+{{ if and (not .ephemeral) (not .headless) -}}
+{{ if ge $ver 41 }}
+{{/* DNF 5 */}}
+sudo dnf config-manager addrepo --from-repofile={{ $tailscaleURL }}
+{{ else }}
+sudo dnf config-manager --add-repo {{ $tailscaleURL }}
+{{- end }}
+sudo dnf -y --setopt=install_weak_deps=False install tailscale
+sudo systemctl enable --now tailscaled
+sudo tailscale up
+{{- end }}
