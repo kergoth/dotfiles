@@ -1,31 +1,9 @@
 {{- if .user_setup -}}
-# Install Scoop and language/tool package managers, then install tools.
+# Install tools via Scoop (Scoop bootstrapped by before_00).
 
 . $env:CHEZMOI_COMMAND_DIR\scripts\common.ps1
 
-{{   $scoop := includeTemplate "find-tool" (dict "root" . "tool" "scoop") -}}
-{{   if not $scoop -}}
-Write-Host "Installing Scoop..."
-$env:SCOOP = "{{ joinPath (printf "%s" .chezmoi.destDir) "scoop" }}"
-Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
 RefreshEnvPath
-{{-   end }}
-
-{{   $installed_git := false -}}
-{{   $scoop := includeTemplate "find-tool" (dict "root" . "tool" "scoop") -}}
-{{   if not $scoop -}}
-{{ $scoop }} install git
-
-$gitdir = scoop prefix git
-Add-EnvironmentVariableItem "PATH" "$gitdir\bin" -User
-
-if (-not (Test-Path "$env:SCOOP/buckets/extras")) {
-  scoop bucket add extras
-}
-if (-not (Test-Path "$env:SCOOP/buckets/kergoth")) {
-  scoop bucket add kergoth https://github.com/kergoth/scoop-bucket
-}
-{{-   end }}
 
 {{/* Note: tmux and zsh are unavailable on Windows */}}
 {{/* Starship is used for the PS prompt. While it isn't Windows specific, I only use it there */}}

@@ -1,0 +1,24 @@
+{{- if or .user_setup .secrets -}}
+{{- $scoop := includeTemplate "find-tool" (dict "root" . "tool" "scoop") -}}
+{{- if not $scoop -}}
+# Install Scoop and set up core development requirements
+
+. $env:CHEZMOI_COMMAND_DIR\scripts\common.ps1
+
+Write-Host "Installing Scoop..."
+$env:SCOOP = "{{ joinPath (printf "%s" .chezmoi.destDir) "scoop" }}"
+Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+RefreshEnvPath
+
+scoop install git
+$gitdir = scoop prefix git
+Add-EnvironmentVariableItem "PATH" "$gitdir\bin" -User
+
+if (-not (Test-Path "$env:SCOOP/buckets/extras")) {
+    scoop bucket add extras
+}
+if (-not (Test-Path "$env:SCOOP/buckets/kergoth")) {
+    scoop bucket add kergoth https://github.com/kergoth/scoop-bucket
+}
+{{- end -}}
+{{- end -}}

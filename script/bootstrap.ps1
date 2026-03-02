@@ -23,14 +23,8 @@ if ($IsWindows) {
 
 # Install chezmoi if necessary
 if (-not (Get-Command chezmoi -ErrorAction SilentlyContinue)) {
-  if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
-    Write-Host "Installing scoop"
-    Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
-  }
-
-  RefreshEnvPath
-
-  scoop install chezmoi
+  Write-Host "Installing chezmoi"
+  Invoke-Expression "&{$(Invoke-RestMethod 'https://get.chezmoi.io/ps1')}"
 }
 
 # Set path to this dotfiles repo

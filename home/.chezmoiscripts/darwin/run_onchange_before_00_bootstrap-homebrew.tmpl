@@ -1,11 +1,10 @@
-{{- if .user_setup -}}
-{{- $brew_prefix := env "HOMEBREW_PREFSIX" | joinPath (printf "%s" .chezmoi.destDir) ".brew" -}}
-{{- $brew_bin := joinPath $brew_prefix "bin" "brew" -}}
-{{- if not $brew_bin -}}
+{{- if or .user_setup .secrets -}}
+{{- $brew_prefix := joinPath (printf "%s" .chezmoi.destDir) ".brew" -}}
+{{- if not (stat (joinPath $brew_prefix "bin" "brew")) -}}
 #!/bin/sh
 
 HOMEBREW_PREFIX="${HOMEBREW_PREFIX:-$HOME/.brew}"
-PATH="$HOMEBREW_PREFIX/bin:$HOME/.local/bin:$PATH"
+PATH="$HOMEBREW_PREFIX/bin:$PATH"
 
 echo >&2 "Installing homebrew"
 "$CHEZMOI_WORKING_TREE/scripts/macos/install-brew" -s "$HOMEBREW_PREFIX" || {
