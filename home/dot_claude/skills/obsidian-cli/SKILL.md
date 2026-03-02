@@ -5,7 +5,7 @@ description: Use when running the `obsidian` CLI command, interacting with an Ob
 
 # Obsidian CLI
 
-**Built-in CLI in Obsidian 1.12+** — the binary is named `obsidian`, not `obsidian-cli`. Do NOT use third-party tools or shell file manipulation; use this CLI directly.
+**Built-in CLI in Obsidian 1.12+** — the binary is named `obsidian`, not `obsidian-cli`. Do NOT use shell file manipulation (`echo`, `sed`, `cat`). Use this CLI for standard vault operations; use Read/Edit tools for surgical in-file edits the CLI doesn't support (no search-replace or line-specific insertion).
 
 ## Quick Setup
 
@@ -60,7 +60,7 @@ obsidian prepend file="Sprint Planning" content="## Goals\n"
 | `--path="..."` | `path="..."` | Parameters have NO dashes |
 | `daily append` | `daily:append` | Subcommand uses colon separator |
 | `grep -r "..." vault/` | `obsidian search query="..."` | Use CLI search; don't fall back to grep |
-| `echo "..." >> file` | `obsidian append content="..."` | Use CLI; don't manipulate files directly |
+| `echo "..." >> file` | `obsidian append content="..."` | Use CLI for append/prepend; Read/Edit tools for surgical edits |
 | `... \| pbcopy` | `... --copy` | Use built-in clipboard flag |
 
 ## Command Categories
