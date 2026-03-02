@@ -162,7 +162,8 @@ in {
   };
 
 {{- if and .work .containers (not .ephemeral) (eq .chezmoi.os "darwin") }}
-  services.colima.enable = true;
+  # The colima service isn't yet available in the 25.11 home-manager
+  #services.colima.enable = true;
 {{- end }}
 {{- if not .devpod }}
   # Enable gpg-agent with pinentry
