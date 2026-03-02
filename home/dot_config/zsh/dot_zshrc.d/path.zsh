@@ -12,6 +12,10 @@ path=(
   $HOME/stl/prefix
 )
 
+if [[ -e ~/Applications/Obsidian.app/Contents/MacOS/obsidian ]]; then
+    path=($path $HOME/Applications/Obsidian.app/Contents/MacOS)
+fi
+
 if [[ $OSTYPE = WSL ]]; then
     path=(${0:h:A}/scripts-wsl $path)
 
