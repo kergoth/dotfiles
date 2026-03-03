@@ -111,6 +111,16 @@
 {{-   end -}}
 {{- end -}}
 
+{{/* override via env vars (explicit) */}}
+{{- $dotfiles_ephemeral := (env "DOTFILES_EPHEMERAL") -}}
+{{- if ne $dotfiles_ephemeral "" -}}
+{{-   $ephemeral = has (lower $dotfiles_ephemeral) (list "1" "true" "yes" "on") -}}
+{{- end -}}
+{{- $dotfiles_headless := (env "DOTFILES_HEADLESS") -}}
+{{- if ne $dotfiles_headless "" -}}
+{{-   $headless = has (lower $dotfiles_headless) (list "1" "true" "yes" "on") -}}
+{{- end -}}
+
 {{- $secrets := false -}}
 
 {{/* prompt for overrides */}}
