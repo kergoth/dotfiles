@@ -20,8 +20,9 @@
 {{-   if not $devpod -}}{{- $need_install = true -}}{{- end -}}
 {{- end -}}
 {{- if $need_install -}}
-#!/bin/sh
-set -eu
+#!/usr/bin/env bash
+
+set -euo pipefail
 
 scriptsdir="$CHEZMOI_WORKING_TREE/scripts"
 PATH="$scriptsdir:$PATH"
