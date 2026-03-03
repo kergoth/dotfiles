@@ -50,6 +50,16 @@
 {{-   $headless = true -}}
 {{- end -}}
 
+{{/* use prior chezmoi data if present */}}
+{{- $prior_ephemeral := (dig "ephemeral" nil .) -}}
+{{- $prior_headless := (dig "headless" nil .) -}}
+{{- if ne $prior_ephemeral nil -}}
+{{-   $ephemeral = $prior_ephemeral -}}
+{{- end -}}
+{{- if ne $prior_headless nil -}}
+{{-   $headless = $prior_headless -}}
+{{- end -}}
+
 {{- $devpod := env "DEVPOD" | not | not -}}
 {{- $has_devpod_gpg := stat (joinPath (printf "%s" .chezmoi.destDir) ".gnupg/S.gpg-agent") -}}
 {{- $skip_gpg := and $devpod $has_devpod_gpg | not | not -}}
