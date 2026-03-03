@@ -468,6 +468,7 @@ chezmoi update -R
 
 - [gow](https://github.com/bmatzelle/gow): Unix command line utilities installer for Windows.
 - [gsudo](https://github.com/gerardog/gsudo): Sudo for Windows.
+- [PowerShell](https://learn.microsoft.com/en-us/powershell/) ([Open-Source](https://github.com/PowerShell/PowerShell))
 - [recycle-bin](https://github.com/sindresorhus/recycle-bin): Move files and folders to the Windows recycle bin within command line.
 - [scoop](https://scoop.sh): A command-line installer for Windows.
 - [starship](https://starship.rs): A cross-shell prompt.
@@ -616,7 +617,6 @@ chezmoi update -R
 - [Ditto](https://ditto-cp.sourceforge.io) ([Open-Source](https://github.com/sabrogden/Ditto))
 - [Gpg4win](https://www.gpg4win.org) ([Open-Source](https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gpg4win.git;a=summary)): Secure email and file encryption with GnuPG for Windows.
 - [Notepad++](https://notepad-plus-plus.org/) ([Open-Source](https://github.com/notepad-plus-plus/notepad-plus-plus))
-- [PowerShell](https://learn.microsoft.com/en-us/powershell/) ([Open-Source](https://github.com/PowerShell/PowerShell))
 - [PowerToys](https://learn.microsoft.com/en-us/windows/powertoys/) ([Open-Source](https://github.com/microsoft/PowerToys))
 - [PuTTY](https://www.chiark.greenend.org.uk/~sgtatham/putty/) ([Open-Source](https://git.tartarus.org/?p=simon/putty.git)). _Conditional: work._
 - [Rufus](https://rufus.ie/) ([Open-Source](https://github.com/pbatard/rufus)): Create bootable USB flash drives. _Conditional: work, non-ephemeral._
