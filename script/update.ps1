@@ -21,6 +21,104 @@ if ($use_jj -eq 1) {
     chezmoi update -R
 }
 
+function Update-OpCliVersions {
+    $url = "https://app-updates.agilebits.com/product_history/CLI2"
+    try {
+        $response = Invoke-WebRequest -Uri $url -UseBasicParsing
+    } catch {
+        Write-Warning "Warning: unable to fetch op CLI version from $url"
+        return
+    }
+
+    $file = Join-Path $repodir "home/.chezmoidata/versions.yml"
+    if (-not (Test-Path $file)) {
+        Write-Warning "Warning: $file not found; skipping op CLI version update"
+        return
+    }
+
+    $regex = [regex]'https://cache\.agilebits\.com/dist/1P/op2/pkg/v([^/]+)/op_(linux|freebsd)_([a-z0-9]+)_v\1\.zip'
+    $matches = $regex.Matches($response.Content)
+    if ($matches.Count -eq 0) {
+        Write-Warning "Warning: unable to find op CLI links in $url"
+        return
+    }
+
+    $latest = @{}
+    foreach ($m in $matches) {
+        if ($m.Groups[1].Value -match "beta") {
+            continue
+        }
+        $platform = $m.Groups[2].Value
+        $arch = $m.Groups[3].Value
+        $key = "$platform/$arch"
+        if (-not $latest.ContainsKey($key)) {
+            $latest[$key] = @{
+                Version = $m.Groups[1].Value
+                Link = $m.Groups[0].Value
+            }
+        }
+    }
+
+    $platformVersion = @{}
+    foreach ($key in $latest.Keys) {
+        $platform = $key.Split('/')[0]
+        if (-not $platformVersion.ContainsKey($platform)) {
+            $platformVersion[$platform] = $latest[$key].Version
+        }
+    }
+
+    function Get-Sha256 {
+        param([Parameter(Mandatory=$true)][string]$Path)
+        $sha = [System.Security.Cryptography.SHA256]::Create()
+        $stream = [System.IO.File]::OpenRead($Path)
+        try {
+            $hash = $sha.ComputeHash($stream)
+        } finally {
+            $stream.Dispose()
+            $sha.Dispose()
+        }
+        ($hash | ForEach-Object { $_.ToString("x2") }) -join ""
+    }
+
+    $checksums = @{
+        linux = @{}
+        freebsd = @{}
+    }
+
+    foreach ($key in $latest.Keys) {
+        $platform, $arch = $key.Split('/')
+        $link = $latest[$key].Link
+        $tmp = [System.IO.Path]::GetTempFileName()
+        try {
+            Invoke-WebRequest -Uri $link -OutFile $tmp -UseBasicParsing
+            $checksums[$platform][$arch] = Get-Sha256 -Path $tmp
+        } finally {
+            Remove-Item $tmp -Force -ErrorAction SilentlyContinue
+        }
+    }
+
+    $lines = @()
+    $lines += "versions:"
+    $lines += "  op_cli:"
+    foreach ($platform in @("linux", "freebsd")) {
+        if (-not $platformVersion.ContainsKey($platform)) {
+            continue
+        }
+        $lines += "    $platform:"
+        $lines += "      version: `"$($platformVersion[$platform])`""
+        $lines += "      sha256:"
+        foreach ($arch in ($checksums[$platform].Keys | Sort-Object)) {
+            $lines += "        $arch: `"$($checksums[$platform][$arch])`""
+        }
+    }
+
+    $lines -join "`n" | Out-File -FilePath $file -Encoding utf8
+
+    Write-Host "Updated op CLI versions and checksums"
+}
+
+Update-OpCliVersions
+
 # Exit if we don't have the nix command
 if (-not (Get-Command nix -ErrorAction SilentlyContinue)) {
     Write-Warning "Warning: nix must be installed to update Home Manager packages"

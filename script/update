@@ -63,6 +63,26 @@ else
     fi
 fi
 
+update_op_cli_versions() {
+    local file="$sourcedir/home/.chezmoidata/versions.yml"
+
+    if [ ! -f "$file" ]; then
+        echo >&2 "Warning: $file not found; skipping op CLI version update"
+        return 0
+    fi
+
+    if ! command -v python3 >/dev/null 2>&1; then
+        echo >&2 "Warning: python3 not available; skipping op CLI version update"
+        return 0
+    fi
+
+    python3 "$sourcedir/scripts/update-op-cli-versions.py" "$file"
+
+    echo >&2 "Updated op CLI versions and checksums"
+}
+
+update_op_cli_versions
+
 if ! command -v nix >/dev/null 2>&1; then
     echo >&2 "Error: nix must be installed to update Home Manager packages"
     exit 1
