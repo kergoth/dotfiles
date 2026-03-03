@@ -31,11 +31,13 @@ sudorun dnf -y --setopt=install_weak_deps=False install neovim
 {{ if and (not .work) (not .ephemeral) -}}
 {{ if ge $ver 41 }}
 {{/* DNF 5 */}}
-sudo dnf config-manager addrepo --from-repofile={{ $tailscaleURL }}
+sudorun dnf config-manager addrepo --from-repofile={{ $tailscaleURL }}
 {{ else }}
-sudo dnf config-manager --add-repo {{ $tailscaleURL }}
+sudorun dnf config-manager --add-repo {{ $tailscaleURL }}
 {{- end }}
-sudo dnf -y --setopt=install_weak_deps=False install tailscale
-sudo systemctl enable --now tailscaled
-sudo tailscale up
+sudorun dnf -y --setopt=install_weak_deps=False install tailscale
+{{   if lookPath "systemctl" -}}
+sudorun systemctl enable --now tailscaled
+sudorun tailscale up
+{{-   end }}
 {{- end }}

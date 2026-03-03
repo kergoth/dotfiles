@@ -32,6 +32,8 @@ curl -fsSL "https://pkgs.tailscale.com/stable/debian/{{ $codename }}.noarmor.gpg
 curl -fsSL "https://pkgs.tailscale.com/stable/debian/{{ $codename }}.tailscale-keyring.list" | sudo tee /etc/apt/sources.list.d/tailscale.list
 sudorun apt-get update
 sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y install tailscale
+{{   if lookPath "systemctl" -}}
 sudorun systemctl enable --now tailscaled
-sudo tailscale up
+sudorun tailscale up
+{{-   end }}
 {{- end }}

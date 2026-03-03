@@ -87,11 +87,13 @@ fi
 
 sudorun systemctl enable --now avahi-daemon.service || true
 
-{{ if not .work -}}
+{{   if not .work -}}
 # Install, enable, and start Tailscale
 pacman_install tailscale
+{{     if lookPath "systemctl" -}}
 sudorun systemctl enable --now tailscaled
 sudorun tailscale up
-{{- end }}
+{{-     end }}
+{{-   end }}
 {{- end }}
 {{- end }}
