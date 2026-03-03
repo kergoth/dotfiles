@@ -212,7 +212,7 @@ script/$distro/setup-root "$user" 10000 </dev/null
 
 chown -R "$user" "/home/$user"
 
-cmd="export DOTFILES_DIR='\$DOTFILES_DIR' GITHUB_TOKEN='\$GITHUB_TOKEN'; cd '\$DOTFILES_DIR' && './$setup_cmd' </dev/null"
+cmd="export DOTFILES_DIR='\$DOTFILES_DIR' GITHUB_TOKEN='\$GITHUB_TOKEN' DOTFILES_EPHEMERAL='\$DOTFILES_EPHEMERAL' DOTFILES_HEADLESS='\$DOTFILES_HEADLESS'; cd '\$DOTFILES_DIR' && './$setup_cmd' </dev/null"
 if command -v doas >/dev/null 2>&1; then
     doas -u "$user" sh -c "if ! [ -w /nix/store ] || ! [ -w /nix/var ]; then doas chown -R $user /nix; fi; \$cmd"
 elif command -v su >/dev/null 2>&1; then
@@ -271,7 +271,9 @@ run_container() {
         -v "$repodir:$dotfiles_mount" \
         -e NO_USER_PASSWORD=1 \
         -e DOTFILES_DIR="$dotfiles_mount" \
-        ${GITHUB_TOKEN:+-e GITHUB_TOKEN="$GITHUB_TOKEN"}
+        ${GITHUB_TOKEN:+-e GITHUB_TOKEN="$GITHUB_TOKEN"} \
+        ${DOTFILES_EPHEMERAL:+-e DOTFILES_EPHEMERAL="$DOTFILES_EPHEMERAL"} \
+        ${DOTFILES_HEADLESS:+-e DOTFILES_HEADLESS="$DOTFILES_HEADLESS"}
 
     if [ "$skip_nix_cache" != "1" ]; then
         set -- "$@" \
