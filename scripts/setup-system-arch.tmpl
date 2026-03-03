@@ -69,11 +69,13 @@ if command pacman -Q nano >/dev/null 2>&1; then
 fi
 
 {{ if and (not .ephemeral) (not .wsl2) -}}
+{{   if not .headless -}}
 if ! pacman -Q terminus-font >/dev/null 2>&1; then
     # Console font for bare-metal installations
     pacman_install terminus-font
     echo "FONT=ter-220n" | sudorun tee /etc/vconsole.conf
 fi
+{{- end }}
 
 sudorun systemctl enable --now sshd
 
