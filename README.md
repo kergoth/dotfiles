@@ -18,7 +18,7 @@ The setup scripts form a progression from OS installation to day-to-day dotfiles
 
 - **OS installation** (distro-specific, self-contained):
   - **`os-install`**: Installs the OS from a live environment. Available for Arch and Chimera Linux.
-  - **`setup-root`**: Runs as root to create users, install base packages, and prepare for user-level setup. Available for Arch, Chimera Linux, and FreeBSD.
+  - **`setup-root`**: Runs as root to create users, install base packages, and prepare for user-level setup. Available for a subset of platforms.
 - **`bootstrap`**: Installs prerequisites, clones the repository, and initializes chezmoi. Run automatically by the setup scripts below.
 - **`setup-system`**: Installs system-level packages, Nix, and other prerequisites. Run by a non-root user with sudo/doas access.
 - **`setup`** / `chezmoi apply`: Applies dotfiles and runs chezmoi scripts for user-level package installation, application configuration, and shell setup.
