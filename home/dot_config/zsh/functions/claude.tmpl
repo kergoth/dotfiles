@@ -1,8 +1,24 @@
 {{- $claude := includeTemplate "find-tool" (dict "root" . "tool" "claude") -}}
-{{- if and $claude (eq .chezmoi.os "darwin") -}}
+{{- if $claude -}}
+{{- $home := printf "%s" .chezmoi.destDir -}}
+{{- $os := .chezmoi.os -}}
+
+{{- $localPrefix := joinPath $home ".local" -}}
+{{- $localClaudeBin := joinPath $localPrefix "bin" "claude" -}}
+{{- $localClaudePkg := joinPath $localPrefix "lib" "node_modules" "@anthropic-ai" "claude-code" "package.json" -}}
+{{- $linuxNpmClaudeInstalled := and (eq $os "linux") (stat $localClaudeBin) (stat $localClaudePkg) -}}
+
+{{- if eq $os "darwin" -}}
 if [[ ${commands[claude]} = "$HOMEBREW_PREFIX/bin/claude" ]]; then
     echo >&2 "Checking for Claude Code updates..."
     HOMEBREW_AUTO_UPDATE=1 brew upgrade --quiet claude-code
 fi
+{{- else if $linuxNpmClaudeInstalled -}}
+if [[ ${commands[claude]} = "{{ $localClaudeBin }}" ]]; then
+    echo >&2 "Checking for Claude Code updates..."
+    npm update -g --silent @anthropic-ai/claude-code || true
+fi
+{{- end }}
+
 command claude "$@"
 {{ end -}}
