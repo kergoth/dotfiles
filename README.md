@@ -10,7 +10,7 @@ Personal dotfiles and system setup, managed with [chezmoi] and [Nix Home Manager
 
 ### Core Tooling
 
-[Chezmoi][chezmoi] manages dotfiles: it templates configuration files, applies them to `$HOME`, handles encrypted secrets via [age], and runs setup scripts as part of the apply process. [Nix Home Manager][home-manager] provides the primary method of declarative, reproducible package management at the user level on platforms that support Nix (Linux and macOS), supplemented by [Homebrew] on macOS, [Scoop] on Windows, chezmoi externals, and language-specific package managers as needed. On platforms without Nix support (Chimera Linux, FreeBSD), system package managers are used instead.
+[Chezmoi][chezmoi] manages dotfiles: it templates configuration files, applies them to `$HOME`, handles encrypted secrets via [age], and runs setup scripts as part of the apply process. [Nix Home Manager][home-manager] provides the primary method of declarative, reproducible package management at the user level on platforms that support Nix (Linux and macOS), supplemented by [Homebrew] on macOS, [Scoop] on Windows, and language-specific package managers as needed. On platforms without Nix support (Chimera Linux, FreeBSD), system package managers are used instead.
 
 ### Setup Entry Points
 
