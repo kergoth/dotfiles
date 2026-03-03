@@ -35,7 +35,7 @@ The repository manages CLI tools, GUI applications, shell plugins and configurat
 ## Supported Platforms
 
 - **macOS**: Full support (Homebrew, Nix, GUI apps)
-- **Linux**: Tested on Arch, Ubuntu, Debian, Chimera Linux, and SteamOS
+- **Linux**: Tested on Arch, Ubuntu, Debian, Fedora, Chimera Linux, and SteamOS
 - **FreeBSD**: Basic support (system packages, no Nix)
 - **Windows**: PowerShell-based setup and WSL
 
