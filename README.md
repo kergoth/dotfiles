@@ -34,10 +34,10 @@ The repository manages CLI tools, GUI applications, shell plugins and configurat
 
 ## Supported Platforms
 
-- **macOS**: Full support (Homebrew, Nix, GUI apps)
-- **Linux**: Tested on Arch, Ubuntu, Debian, Fedora, Chimera Linux, and SteamOS
-- **FreeBSD**: Basic support (system packages, no Nix)
-- **Windows**: PowerShell-based setup and WSL
+- **macOS**: Full CLI + GUI coverage (Nix, Homebrew)
+- **Windows**: Full CLI + GUI coverage (Scoop, winget, WSL)
+- **Linux**: Full CLI coverage. GUI apps vary by distro. Tested on Arch, Ubuntu, Debian, Fedora, Chimera Linux, and SteamOS. All but Chimera Linux use Nix.
+- **FreeBSD**: Full CLI coverage. Less testing. No Nix; gaps filled via language package managers
 
 ## Prerequisites
 
