@@ -1,0 +1,4 @@
+prefix=${HOME}/.local
+cache=${HOME}/.cache/npm
+fund=false
+audit=false

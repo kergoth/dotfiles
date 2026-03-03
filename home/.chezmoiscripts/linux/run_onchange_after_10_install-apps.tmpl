@@ -1,5 +1,4 @@
 {{- $zed := "" -}}
-{{- $claude := "" -}}
 {{- $vivaldi := "" -}}
 {{- $devpod := "" -}}
 {{- $flatpak := "" -}}
@@ -9,10 +8,8 @@
 {{- end -}}
 {{- if and .user_setup (not .headless) (not .steamdeck) (not (env "CONTAINER_ID")) -}}
 {{-   $zed = includeTemplate "find-tool" (dict "root" . "tool" "zed") -}}
-{{-   $claude = includeTemplate "find-tool" (dict "root" . "tool" "claude") -}}
 {{-   $vivaldi = includeTemplate "find-tool" (dict "root" . "tool" "vivaldi") -}}
 {{-   if not $zed -}}{{- $need_install = true -}}{{- end -}}
-{{-   if not $claude -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and (not $vivaldi) $flatpak -}}{{- $need_install = true -}}{{- end -}}
 {{- end -}}
 {{- if and .coding .containers -}}
@@ -38,11 +35,6 @@ flatpak install -y --user flathub dev.zed.Zed || true
 msg "Installing Zed"
 curl -f https://zed.dev/install.sh | sh
 {{-     end }}
-{{-   end }}
-
-{{-   if not $claude }}
-msg "Installing Claude Code"
-curl -fsSL https://claude.ai/install.sh | bash
 {{-   end }}
 
 {{-   if and (not $vivaldi) $flatpak }}

@@ -204,7 +204,8 @@ emit_container_script() {
     # survives the su/doas privilege-drop boundary.
     cat <<EOF
 #!/bin/sh
-set -eu
+
+set -e
 
 cd "$dotfiles_mount"
 

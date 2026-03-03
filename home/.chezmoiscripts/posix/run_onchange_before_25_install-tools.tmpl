@@ -1,4 +1,4 @@
-{{- if and .user_setup (not .use_nix) -}}
+{{- if and .user_setup -}}
 {{-     $eget_tools := dict -}}
 {{-     if eq .osid "linux-chimera" -}}
 {{-       $_ := set $eget_tools "choose" "theryangeary/choose" -}}
@@ -49,7 +49,18 @@
 {{-     end -}}
 {{-     $install_uv_tools := and $uv $uv_to_install -}}
 
-{{-     if or $eget_to_install $install_cargo_tools $install_uv_tools -}}
+{{-     $npm_tools := dict -}}
+{{-     if eq .chezmoi.os "linux" -}}
+{{-       $_ := set $npm_tools "claude" "@anthropic-ai/claude-code" -}}
+{{-     end -}}
+{{-     $npm_to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $npm_tools) | fromJson -}}
+{{-     $npm := "" -}}
+{{-     if $npm_to_install -}}
+{{-       $npm = includeTemplate "find-tool" (dict "root" . "tool" "npm") -}}
+{{-     end -}}
+{{-     $install_npm_tools := and $npm $npm_to_install -}}
+
+{{-     if or $eget_to_install $install_cargo_tools $install_uv_tools $install_npm_tools -}}
 #!/usr/bin/env bash
 set -euo pipefail
 
@@ -82,6 +93,18 @@ echo >&2 "Installing {{ . }}"
 {{-       if $install_uv_tools }}
 {{-         range $uv_to_install }}
 "{{ $uv }}" tool install {{ . }}
+{{-         end }}
+{{-       end }}
+
+{{-       if $install_npm_tools }}
+# TODO: this duplicates what's already in npmrc, either move this to after_,
+# or force early application like we do with the home-manager files.
+export NPM_CONFIG_PREFIX="$HOME/.local"
+export NPM_CONFIG_CACHE="$HOME/.cache/npm"
+export NPM_CONFIG_FUND=false
+export NPM_CONFIG_AUDIT=false
+{{-         range $npm_to_install }}
+"{{ $npm }}" install -g {{ . }}
 {{-         end }}
 {{-       end }}
 {{-     end -}}
