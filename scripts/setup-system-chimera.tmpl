@@ -32,6 +32,7 @@ apk add --no-interactive gnupg
 {{- end }}
 
 {{ if and (not .ephemeral) (not .wsl2) (not (env "CONTAINER_ID")) -}}
+{{ if .has_init -}}
 # Enable System logging
 if ! dinitctl status syslog-ng | grep STARTED >/dev/null; then
     dinitctl enable syslog-ng
@@ -51,6 +52,7 @@ if ! dinitctl status bluetoothd | grep STARTED >/dev/null; then
     dinitctl enable bluetoothd
 fi
 {{- end }}
+{{- end }}
 
 # Install neovim
 apk add --no-interactive neovim
@@ -60,10 +62,12 @@ apk add --no-interactive neovim
 apk add --no-interactive gnome
 
 {{ if and (not .ephemeral) (not .wsl2) (not (env "CONTAINER_ID")) -}}
+{{ if .has_init -}}
 # Enable gdm
 if ! dinitctl status gdm | grep STARTED >/dev/null; then
     dinitctl enable gdm
 fi
+{{- end }}
 {{- end }}
 
 # Install and configure flatpak

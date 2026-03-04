@@ -12,6 +12,7 @@
 {{/* boolean feature flags */}}
 {{- $ephemeral := false -}}{{/* true if this machine is ephemeral, e.g. a cloud or VM instance */}}
 {{- $headless := false -}}{{/* true if this machine does not have a screen and keyboard */}}
+{{- $has_init := false -}}{{/* true if this machine has a usable init system */}}
 {{- $personal := false -}}{{/* true if this machine should have personal secrets */}}
 {{- $work := false -}}{{/* true if this machine is used for work */}}
 {{- $work_email := false -}}{{/* true if this machine should use a work email (implicitly set by $work) */}}
@@ -119,6 +120,21 @@
 {{- $dotfiles_headless := (env "DOTFILES_HEADLESS") -}}
 {{- if ne $dotfiles_headless "" -}}
 {{-   $headless = has (lower $dotfiles_headless) (list "1" "true" "yes" "on") -}}
+{{- end -}}
+
+{{/* override init detection via env var (explicit) */}}
+{{- $dotfiles_has_init := (env "DOTFILES_HAS_INIT") -}}
+{{- if ne $dotfiles_has_init "" -}}
+{{-   $has_init = has (lower $dotfiles_has_init) (list "1" "true" "yes" "on") -}}
+{{- else -}}
+{{-   if ne .chezmoi.os "linux" -}}
+{{-     $has_init = true -}}
+{{-   else -}}
+{{-     $has_systemd := and (lookPath "systemctl") (stat "/run/systemd/system") -}}
+{{-     if any $has_systemd (lookPath "dinitctl") (lookPath "rc-service") (lookPath "service") -}}
+{{-       $has_init = true -}}
+{{-     end -}}
+{{-   end -}}
 {{- end -}}
 
 {{- $secrets := false -}}
@@ -229,6 +245,7 @@ encryption = "age"
 
     ephemeral = {{ $ephemeral }}
     headless = {{ $headless }}
+    has_init = {{ $has_init }}
     containers = {{ $containers }}
     containers_crossarch = {{ $containers_crossarch }}
     personal = {{ $personal }}

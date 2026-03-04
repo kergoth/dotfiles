@@ -77,7 +77,9 @@ if ! pacman -Q terminus-font >/dev/null 2>&1; then
 fi
 {{- end }}
 
+{{ if .has_init -}}
 sudorun systemctl enable --now sshd
+{{- end }}
 
 pacman_install nss-mdns avahi
 sudorun sed -i -e '/hosts:/{ s/mdns_minimal //g; s/dns/mdns_minimal dns/; }' /etc/nsswitch.conf
@@ -85,12 +87,14 @@ if ! grep -q 'hosts:.*mdns_minimal' /etc/nsswitch.conf; then
     echo >&2 "Warning: failed to add mdns_minimal to hosts resolution in /etc/nsswitch.conf"
 fi
 
+{{ if .has_init -}}
 sudorun systemctl enable --now avahi-daemon.service || true
+{{- end }}
 
 {{   if not .work -}}
 # Install, enable, and start Tailscale
 pacman_install tailscale
-{{     if lookPath "systemctl" -}}
+{{     if .has_init -}}
 sudorun systemctl enable --now tailscaled
 sudorun tailscale up
 {{-     end }}
