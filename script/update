@@ -81,7 +81,7 @@ update_op_cli_versions() {
     echo >&2 "Updated op CLI versions and checksums"
 }
 
-update_op_cli_versions
+update_op_cli_versions || :
 
 if ! command -v nix >/dev/null 2>&1; then
     echo >&2 "Error: nix must be installed to update Home Manager packages"

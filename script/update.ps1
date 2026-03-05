@@ -36,7 +36,7 @@ function Update-OpCliVersions {
         return
     }
 
-    $regex = [regex]'https://cache\.agilebits\.com/dist/1P/op2/pkg/v([^/]+)/op_(linux|freebsd)_([a-z0-9]+)_v\1\.zip'
+    $regex = [regex]'https://cache\.agilebits\.com/dist/1P/op2/pkg/v([^/]+)/op_(linux|freebsd)_(amd64|arm64)_v\1\.zip'
     $matches = $regex.Matches($response.Content)
     if ($matches.Count -eq 0) {
         Write-Warning "Warning: unable to find op CLI links in $url"

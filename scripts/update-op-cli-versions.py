@@ -15,7 +15,7 @@ def main() -> int:
     html = urllib.request.urlopen(url, timeout=20).read().decode("utf-8", "ignore")
 
     pattern = re.compile(
-        r"https://cache\.agilebits\.com/dist/1P/op2/pkg/v([^/]+)/op_(linux|freebsd)_([a-z0-9]+)_v\\1\\.zip"
+        r"https://cache\.agilebits\.com/dist/1P/op2/pkg/v([^/]+)/op_(linux|freebsd)_(amd64|arm64)_v\1\.zip"
     )
     found = []
     for m in pattern.finditer(html):
