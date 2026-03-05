@@ -1,7 +1,6 @@
-{{- $host := .chezmoi.hostname -}}
 {{- $profiles := .vmProfiles -}}
 {{- $default := .vmDefaultProfile -}}
-{{- $cfg := index $profiles $host | default $default -}}
+{{- $cfg := index $profiles .hostname | default $default -}}
 
 # Global Lima defaults for this host.
 # Per-VM lima.yaml and CLI flags still override these.

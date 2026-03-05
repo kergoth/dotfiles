@@ -1,7 +1,6 @@
-{{- $host := .chezmoi.hostname -}}
 {{- $profiles := .vmProfiles -}}
 {{- $default := .vmDefaultProfile -}}
-{{- $cfg := index $profiles $host | default $default -}}
+{{- $cfg := index $profiles .hostname | default $default -}}
 {{- $memory := $cfg.colima_mem_gib -}}
 {{- $rosetta_enabled := and .containers_crossarch (eq .chezmoi.os "darwin") (eq .chezmoi.arch "arm64") (not (not (stat "/Library/Apple/usr/share/rosetta/rosetta"))) -}}
 # Number of CPUs to be allocated to the virtual machine.

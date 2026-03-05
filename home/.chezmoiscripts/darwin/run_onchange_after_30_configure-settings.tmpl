@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
-{{- $host := .chezmoi.hostname }}
 {{- $default_tilesize := dig "ui" "global" "macos" "dock_tilesize" 48 . }}
-{{- $dock_tilesize := dig "ui" $host "macos" "dock_tilesize" $default_tilesize . }}
+{{- $dock_tilesize := dig "ui" .hostname "macos" "dock_tilesize" $default_tilesize . }}
 
 scriptdir="$(cd "$(dirname "$0")" && pwd -P)"
 tmpdir="$(mktemp -d -t "${0##*/}.XXXXXX")" || exit 1
