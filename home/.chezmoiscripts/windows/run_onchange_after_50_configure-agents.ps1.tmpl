@@ -1,5 +1,6 @@
 {{- $claude := includeTemplate "find-tool" (dict "root" . "tool" "claude") -}}
 {{- if $claude -}}
+{{-   $github_token := or (env "GITHUB_PERSONAL_ACCESS_TOKEN") (env "GITHUB_TOKEN") -}}
 #requires -Version 7.0
 
 Set-StrictMode -Version Latest
@@ -68,6 +69,39 @@ function Add-McpServer {
         & claude mcp add @Args $Name
         if ($LASTEXITCODE -ne 0) {
             throw "claude mcp add failed with exit code $LASTEXITCODE"
+        }
+    } catch {
+        Write-Error "Failed to add MCP server: $Name. $($_.Exception.Message)"
+        exit 1
+    }
+}
+
+function Add-McpJson {
+    param(
+        [Parameter(Mandatory)]
+        [string]$Name,
+
+        [Parameter(Mandatory)]
+        [string]$Json,
+
+        [Parameter()]
+        [string]$Scope
+    )
+
+{{- if stat (joinPath (printf "%s" .chezmoi.destDir) ".claude.json") }}
+    if (Test-HasMcpServer -Name $Name) {
+        return
+    }
+{{- end }}
+
+    try {
+        if ([string]::IsNullOrWhiteSpace($Scope)) {
+            & claude mcp add-json $Name $Json
+        } else {
+            & claude mcp add-json --scope $Scope $Name $Json
+        }
+        if ($LASTEXITCODE -ne 0) {
+            throw "claude mcp add-json failed with exit code $LASTEXITCODE"
         }
     } catch {
         Write-Error "Failed to add MCP server: $Name. $($_.Exception.Message)"
@@ -169,12 +203,16 @@ function Add-Marketplace {
     }
 }
 
-Add-McpServer github --scope user --transport http https://api.githubcopilot.com/mcp/
+{{ if $github_token -}}
+$githubMcpJson = '{"type":"http","url":"https://api.githubcopilot.com/mcp","headers":{"Authorization":"Bearer {{ $github_token }}"}}'
+Add-McpJson -Name github -Json $githubMcpJson -Scope user
+{{- end }}
 
-Add-Marketplace astral-sh/claude-code-plugins
-
-Install-Plugin superpowers@claude-plugins-official --scope user
+Add-Marketplace anthropics/claude-plugins-official
 Install-Plugin claude-md-management@claude-plugins-official --scope user
 Install-Plugin learning-output-style@claude-plugins-official --scope user
+Install-Plugin superpowers@claude-plugins-official --scope user
+
+Add-Marketplace astral-sh/claude-code-plugins
 Install-Plugin astral@astral-sh --scope user
 {{- end }}
