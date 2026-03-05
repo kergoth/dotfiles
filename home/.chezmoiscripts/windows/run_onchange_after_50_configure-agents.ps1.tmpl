@@ -55,8 +55,14 @@ function Add-McpServer {
         [Parameter(Mandatory)]
         [string]$Name,
 
-        [Parameter(ValueFromRemainingArguments)]
-        [string[]]$Args
+        [Parameter(Mandatory)]
+        [string]$Url,
+
+        [Parameter()]
+        [string]$Transport,
+
+        [Parameter()]
+        [string]$Scope
     )
 
 {{- if stat (joinPath (printf "%s" .chezmoi.destDir) ".claude.json") }}
@@ -66,7 +72,14 @@ function Add-McpServer {
 {{- end }}
 
     try {
-        & claude mcp add @Args $Name
+        $args = @()
+        if (-not [string]::IsNullOrWhiteSpace($Scope)) {
+            $args += @('--scope', $Scope)
+        }
+        if (-not [string]::IsNullOrWhiteSpace($Transport)) {
+            $args += @('--transport', $Transport)
+        }
+        & claude mcp add @args $Url $Name
         if ($LASTEXITCODE -ne 0) {
             throw "claude mcp add failed with exit code $LASTEXITCODE"
         }
@@ -136,8 +149,8 @@ function Install-Plugin {
         [Parameter(Mandatory)]
         [string]$Name,
 
-        [Parameter(ValueFromRemainingArguments)]
-        [string[]]$Args
+        [Parameter()]
+        [string]$Scope
     )
 
 {{- if stat (joinPath (printf "%s" .chezmoi.destDir) ".claude" "settings.json") }}
@@ -147,7 +160,11 @@ function Install-Plugin {
 {{- end }}
 
     try {
-        & claude plugin install $Name @Args
+        if ([string]::IsNullOrWhiteSpace($Scope)) {
+            & claude plugin install $Name
+        } else {
+            & claude plugin install $Name --scope $Scope
+        }
         if ($LASTEXITCODE -ne 0) {
             throw "claude plugin install failed with exit code $LASTEXITCODE"
         }
@@ -180,10 +197,7 @@ function Test-HasMarketplace {
 function Add-Marketplace {
     param(
         [Parameter(Mandatory)]
-        [string]$Repo,
-
-        [Parameter(ValueFromRemainingArguments)]
-        [string[]]$Args
+        [string]$Repo
     )
 
 {{- if stat (joinPath (printf "%s" .chezmoi.destDir) ".claude" "plugins" "known_marketplaces.json") }}
@@ -193,7 +207,7 @@ function Add-Marketplace {
 {{- end }}
 
     try {
-        & claude plugin marketplace add $Repo @Args
+        & claude plugin marketplace add $Repo
         if ($LASTEXITCODE -ne 0) {
             throw "claude plugin marketplace add failed with exit code $LASTEXITCODE"
         }
@@ -209,10 +223,10 @@ Add-McpJson -Name github -Json $githubMcpJson -Scope user
 {{- end }}
 
 Add-Marketplace anthropics/claude-plugins-official
-Install-Plugin claude-md-management@claude-plugins-official --scope user
-Install-Plugin learning-output-style@claude-plugins-official --scope user
-Install-Plugin superpowers@claude-plugins-official --scope user
+Install-Plugin -Name claude-md-management@claude-plugins-official -Scope user
+Install-Plugin -Name learning-output-style@claude-plugins-official -Scope user
+Install-Plugin -Name superpowers@claude-plugins-official -Scope user
 
 Add-Marketplace astral-sh/claude-code-plugins
-Install-Plugin astral@astral-sh --scope user
+Install-Plugin -Name astral@astral-sh -Scope user
 {{- end }}
