@@ -1,6 +1,5 @@
-{{- if .user_setup -}}
+{{- if and .user_setup (not .headless) -}}
 # GUI Applications
-{{ if not .headless -}}
 . $env:CHEZMOI_COMMAND_DIR\scripts\common.ps1
 
 if (Install-Scoop-IfNotPresent 7zip 7zip.7zip) {
@@ -36,9 +35,13 @@ Install-Scoop-IfNotPresent putty PuTTY.PuTTY | Out-Null
 Install-Scoop-IfNotPresent rufus Rufus.Rufus | Out-Null
 {{      end -}}
 {{    else }}
+{{/* not .work */}}
 Install-Scoop-IfNotPresent sumatrapdf SumatraPDF.SumatraPDF | Out-Null
 {{      if .gaming -}}
 Install-Scoop-IfNotPresent steam Valve.Steam | Out-Null
+{{-     end }}
+{{      if .retro_computing -}}
+scoop install 86box 86box-roms
 {{-     end }}
 {{      if .video -}}
 Install-Scoop-IfNotPresent vlc VideoLAN.VLC | Out-Null
@@ -47,7 +50,6 @@ Install-Scoop-IfNotPresent vlc VideoLAN.VLC | Out-Null
 {{    if and .coding .containers (not .ephemeral) -}}
 Install-Scoop-IfNotPresent devpod LoftLabs.DevPod | Out-Null
 {{    end -}}
-{{- end }}
 
 RefreshEnvPath
 {{- end }}

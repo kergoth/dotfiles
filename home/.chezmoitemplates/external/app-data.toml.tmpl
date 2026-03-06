@@ -2,7 +2,7 @@
 {{- if eq .chezmoi.os "darwin" -}}
 {{-   $installed_apps := includeTemplate "installedMacApps" (dict "root" . "apps" ( list "86Box.app" )) | fromJson -}}
 {{-   $86box = index $installed_apps "86Box.app" -}}
-{{- else -}}
+{{- else if not .chezmoi.os "windows" -}}
 {{-   $86box = includeTemplate "find-tool" (dict "root" . "tool" "86box") -}}
 {{- end -}}
 {{- if or .retro_computing $86box -}}
@@ -14,8 +14,6 @@
 {{-   $86box_data := "" -}}
 {{-   if eq .chezmoi.os "darwin" -}}
 {{-     $86box_data = joinPath "Library" "Application Support" "86Box" }}
-{{-   else if eq .chezmoi.os "windows" -}}
-{{-     $86box_data = joinPath "AppData" "Local" "86Box" }}
 {{-   else -}}
 {{-     $86box_data = joinPath ".config" "86Box" }}
 {{-   end -}}

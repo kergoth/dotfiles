@@ -503,6 +503,7 @@ chezmoi update -R
 #### GUI Software on Windows and macOS
 
 - [1Password](https://1password.com): A password manager developed by AgileBits.
+- [86Box](https://www.86box.net/): Emulator of x86-based machines. _Conditional: retro_computing, not work._
 - [Discord](https://discord.com): A VoIP and instant messaging social platform.
 - [Obsidian](https://obsidian.md): A powerful knowledge base that works on top of a local folder of plain text Markdown files. Available on Linux, macOS, and Windows via brew, scoop, flatpak, or [download](https://obsidian.md/download).
 - [VLC](https://www.videolan.org/vlc/download-macosx.html) ([Open-Source](https://code.videolan.org/videolan/vlc)): A free and open source cross-platform multimedia player.
@@ -577,8 +578,6 @@ chezmoi update -R
   - [MusicBrainz Picard](https://picard.musicbrainz.org/): Music tagger and metadata editor.
 - If the video flag is enabled:
   - [Play](https://apps.apple.com/us/app/play-save-videos-watch-later/id1596506190): Bookmark and organize videos to watch later.
-- If the retro_computing flag is enabled:
-  - [86Box](https://www.86box.net/): Emulator of x86-based machines.
 - If the work flag is enabled:
   - [noTunes](https://github.com/tombonez/noTunes) (Open-Source): Prevents Apple Music from launching. _Conditional: music flag not enabled._
   - [Slack](https://slack.com/): Team communication and collaboration platform.
