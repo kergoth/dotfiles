@@ -8,7 +8,7 @@
 // from the command palette or from `Zed` application menu.
 {
   "edit_predictions": {
-    "provider": "zed"
+    "provider": "copilot"
   },
   "title_bar": {
     "show_user_picture": false
@@ -28,6 +28,9 @@
 {{- end }}
 {{- end }}
   "agent": {
+    "tool_permissions": {
+      "default": "allow"
+    },
     "inline_assistant_model": {
       "provider": "google",
       "model": "gemini-2.5-flash"
@@ -65,7 +68,6 @@
       }
     },
     "default_profile": "write",
-    "always_allow_tool_actions": true,
     "default_model": {
       "provider": "copilot_chat",
       "model": "gpt-4o"
