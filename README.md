@@ -520,7 +520,6 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 - **git-rebase-chain** ([source](https://github.com/beanbaginc/dev-goodies)): Rebase a stack of branches from one base to another.
 - **ifne** ([source](https://github.com/fumiyas/home-commands)): Run a command only if standard input is not empty. This is a third-party script reimplementation of a tool from [moreutils by Joey Hess](https://joeyh.name/code/moreutils/).
 - **linux-bundle-clone** ([source](https://git.kernel.org/pub/scm/linux/kernel/git/mricon/korg-helpers.git)): Clone Linux kernel repositories using CDN-hosted bundles.
-- **tmux-resize-adaptable** ([source](https://github.com/tony/tmux-config)): Resize tmux pane layouts by percentage.
 - **vipe** ([source](https://github.com/madx/moreutils)): Edit pipe content in your text editor mid-pipeline. This is a third-party script reimplementation of a tool from [moreutils by Joey Hess](https://joeyh.name/code/moreutils/).
 - **[wsl-open](https://github.com/4U6U57/wsl-open)**: Open files and URLs from WSL in Windows default applications.
 
