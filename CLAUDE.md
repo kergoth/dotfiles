@@ -41,6 +41,7 @@ chezmoi doctor
 ./script/test -i arch   # drop into root shell before setup (debug)
 ./script/test -S arch   # skip setup-system, only run setup
 ./script/test -b        # build container images only, don't run
+./script/test debian ubuntu  # test multiple distros in one run (space-separated)
 ```
 
 ## Setup Entry Points
