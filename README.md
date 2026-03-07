@@ -352,6 +352,7 @@ chezmoi update -R
 - **Desktop environment**: KDE Plasma on Linux and FreeBSD. _Conditional: non-headless._
 - **Display manager**: SDDM on Linux and FreeBSD. _Conditional: non-headless. init present to enable/start._
 - **Terminal emulator**: kitty on all platforms. _Conditional: non-headless._
+- **App distribution (Flatpak)**: Flatpak + Flathub on all supported Linux distros. Primary mechanism for GUI app installs where native packages are absent or stale. _Conditional: non-headless._
 - **Core services**: mDNS/Avahi, SSH, Bluetooth, and audio stack. PipeWire where applicable. Varies by distro.
 - **Optional system services**: Tailscale, container runtime. _Conditional: personal, non-ephemeral for Tailscale. containers flag for container runtime._
 - **OS exceptions/notes**: Service enablement is skipped for WSL2/containers/ephemeral systems.
@@ -371,7 +372,7 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 - **SSH server**: Arch only. Installs openssh. _Conditional: init present, not ephemeral, not wsl2 to enable sshd._
 - **Bluetooth**: Chimera only. Installs bluez. _Conditional: init present, not ephemeral, not wsl2 to enable bluetoothd._
 - **Audio stack**: Chimera only. Installs pipewire. _Conditional: init present, not ephemeral, not wsl2 to enable services._
-- **Flatpak + Flathub**: Chimera only. _Conditional: non-headless._
+- **Flatpak + Flathub**: All supported Linux distros. _Conditional: non-headless._
 - **Tailscale**: All supported Linux distros. Uses system packages when available, upstream installer otherwise. _Conditional: personal, non-ephemeral._
 - **Container runtime**: Chimera only. Installs podman and podman-compose. _Conditional: containers flag._
 

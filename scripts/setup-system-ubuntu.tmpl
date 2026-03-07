@@ -36,6 +36,10 @@ sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y install kde-plasma-desktop
 sudorun systemctl enable --now sddm.service
 {{-   end }}
 {{- end }}
+
+# Flatpak
+sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y install flatpak
+sudorun flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 {{- end }}
 
 {{ if and (not .work) (not .ephemeral) -}}

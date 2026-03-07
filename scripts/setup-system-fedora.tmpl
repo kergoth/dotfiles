@@ -40,6 +40,10 @@ sudorun systemctl enable --force --now sddm.service
 
 # Terminal emulator
 sudorun dnf -y --setopt=install_weak_deps=False install kitty
+
+# Flatpak
+sudorun dnf -y --setopt=install_weak_deps=False install flatpak
+sudorun flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 {{- end }}
 
 # Install, enable, and start Tailscale

@@ -71,6 +71,10 @@ sudorun systemctl enable --now sddm.service
 
 # Terminal emulator
 pacman_install kitty
+
+# Flatpak
+pacman_install flatpak
+sudorun flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 {{- end }}
 
 # Clean up

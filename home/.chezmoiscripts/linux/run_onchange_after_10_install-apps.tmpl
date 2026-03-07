@@ -32,6 +32,10 @@ PATH="$scriptsdir:$PATH"
 # shellcheck source=./common.sh
 . "$scriptsdir/common.sh" || exit 1
 
+{{-   if $flatpak }}
+flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo || true
+{{-   end }}
+
 {{-   if not $zed }}
 {{-     if $flatpak }}
 msg "Installing Zed from Flathub"
