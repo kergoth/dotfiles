@@ -1,5 +1,7 @@
 #!/usr/bin/env chezmoi-exec
 {{- $codename := .chezmoi.osRelease.versionCodename -}}
+{{- $add_tailscale := and (not .work) (not .ephemeral) -}}
+{{- $add_onepassword := and (not .headless) (not .work) (not .ephemeral) -}}
 #!/usr/bin/env bash
 
 set -euo pipefail
@@ -42,27 +44,31 @@ sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y install flatpak
 sudorun flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 {{- end }}
 
-{{ if and (not .work) (not .ephemeral) -}}
-# Install, enable, and start Tailscale
+{{ if or $add_tailscale $add_onepassword -}}
+# Add external repositories
 sudo mkdir -p --mode=0755 /usr/share/keyrings
+
+{{ if $add_tailscale -}}
 curl -fsSL "https://pkgs.tailscale.com/stable/debian/{{ $codename }}.noarmor.gpg" | sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
 curl -fsSL "https://pkgs.tailscale.com/stable/debian/{{ $codename }}.tailscale-keyring.list" | sudo tee /etc/apt/sources.list.d/tailscale.list
-sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y update
-sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y install tailscale
-{{   if .has_init -}}
-sudorun systemctl enable --now tailscaled
-sudorun tailscale up
-{{-   end }}
-{{- end }}
-
-{{ if and (not .headless) (not .work) (not .ephemeral) -}}
-# Install 1Password
-sudo mkdir -p --mode=0755 /usr/share/keyrings
+{{ end -}}
+{{ if $add_onepassword -}}
 curl -sS https://downloads.1password.com/linux/keys/1password.asc | \
     sudo gpg --dearmor --output /usr/share/keyrings/1password-archive-keyring.gpg
 op_arch="$(dpkg --print-architecture)"
 echo "deb [arch=$op_arch signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/$op_arch stable main" | \
     sudo tee /etc/apt/sources.list.d/1password.list
+{{ end -}}
 sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y update
+
+{{ if $add_tailscale -}}
+sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y install tailscale
+{{   if .has_init -}}
+sudorun systemctl enable --now tailscaled
+sudorun tailscale up
+{{-   end }}
+{{ end -}}
+{{ if $add_onepassword -}}
 sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y install 1password
+{{ end -}}
 {{- end }}
