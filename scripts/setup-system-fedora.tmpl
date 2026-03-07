@@ -37,6 +37,9 @@ sudorun dnf -y --setopt=install_weak_deps=False install @kde-desktop-environment
 sudorun systemctl enable --force --now sddm.service
 {{-   end }}
 {{- end }}
+
+# Terminal emulator
+sudorun dnf -y --setopt=install_weak_deps=False install kitty
 {{- end }}
 
 # Install, enable, and start Tailscale

@@ -1,5 +1,6 @@
 {{- $zed := "" -}}
 {{- $vivaldi := "" -}}
+{{- $kitty := "" -}}
 {{- $devpod := "" -}}
 {{- $flatpak := "" -}}
 {{- $need_install := false -}}
@@ -9,8 +10,12 @@
 {{- if and .user_setup (not .headless) (not .steamdeck) (not (env "CONTAINER_ID")) -}}
 {{-   $zed = includeTemplate "find-tool" (dict "root" . "tool" "zed") -}}
 {{-   $vivaldi = includeTemplate "find-tool" (dict "root" . "tool" "vivaldi") -}}
+{{-   if or (eq .osid "linux-debian") (eq .osid "linux-ubuntu") -}}
+{{-     $kitty = includeTemplate "find-tool" (dict "root" . "tool" "kitty") -}}
+{{-   end -}}
 {{-   if not $zed -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and (not $vivaldi) $flatpak -}}{{- $need_install = true -}}{{- end -}}
+{{-   if and (or (eq .osid "linux-debian") (eq .osid "linux-ubuntu")) (not $kitty) -}}{{- $need_install = true -}}{{- end -}}
 {{- end -}}
 {{- if and .coding .containers -}}
 {{-   $devpod = includeTemplate "find-tool" (dict "root" . "tool" "devpod") -}}
@@ -40,6 +45,17 @@ curl -f https://zed.dev/install.sh | sh
 {{-   if and (not $vivaldi) $flatpak }}
 msg "Installing Vivaldi from Flathub"
 flatpak install -y --user flathub com.vivaldi.Vivaldi || true
+{{-   end }}
+
+{{-   if and (or (eq .osid "linux-debian") (eq .osid "linux-ubuntu")) (not $kitty) }}
+msg "Installing kitty"
+curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin launch=n
+mkdir -p ~/.local/bin ~/.local/share/applications
+cp ~/.local/kitty.app/share/applications/kitty.desktop ~/.local/share/applications/ 2>/dev/null || true
+cp ~/.local/kitty.app/share/applications/kitty-open.desktop ~/.local/share/applications/ 2>/dev/null || true
+sed -i "s|Icon=kitty|Icon=$HOME/.local/kitty.app/share/icons/hicolor/256x256/apps/kitty.png|g" ~/.local/share/applications/kitty*.desktop 2>/dev/null || true
+sed -i "s|Exec=kitty|Exec=$HOME/.local/kitty.app/bin/kitty|g" ~/.local/share/applications/kitty*.desktop 2>/dev/null || true
+ln -sf ~/.local/kitty.app/bin/kitty ~/.local/kitty.app/bin/kitten ~/.local/bin/
 {{-   end }}
 
 {{-   if and .coding .containers (not $devpod) }}

@@ -349,8 +349,9 @@ chezmoi update -R
 
 ### System & Desktop Baseline
 
-- **Desktop environment**: KDE Plasma on Linux. _Conditional: non-headless._
-- **Display manager**: SDDM on Linux. _Conditional: non-headless. init present to enable/start._
+- **Desktop environment**: KDE Plasma on Linux and FreeBSD. _Conditional: non-headless._
+- **Display manager**: SDDM on Linux and FreeBSD. _Conditional: non-headless. init present to enable/start._
+- **Terminal emulator**: kitty on all platforms. _Conditional: non-headless._
 - **Core services**: mDNS/Avahi, SSH, Bluetooth, and audio stack. PipeWire where applicable. Varies by distro.
 - **Optional system services**: Tailscale, container runtime. _Conditional: personal, non-ephemeral for Tailscale. containers flag for container runtime._
 - **OS exceptions/notes**: Service enablement is skipped for WSL2/containers/ephemeral systems.
@@ -363,8 +364,9 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 - **Bootloader**: Arch installs GRUB by default. Syslinux is optional. Chimera installs GRUB.
 - **Root bootstrap (user + privilege)**: All setup-root scripts create a user. Arch configures sudo for wheel (NOPASSWD in containers). Chimera and FreeBSD use doas. Debian/Ubuntu/Fedora use sudo.
 - **Root bootstrap (base prereqs)**: Debian/Ubuntu/Fedora install bash, ca-certificates, curl, git, unzip. Chimera installs bash, git, unzip, curl. Arch relies on base packages from install media.
-- **KDE Plasma**: All supported Linux distros. _Conditional: non-headless._
-- **SDDM**: All supported Linux distros. _Conditional: init present, not ephemeral, not wsl2._
+- **KDE Plasma**: All supported Linux distros and FreeBSD. _Conditional: non-headless._
+- **SDDM**: All supported Linux distros and FreeBSD. _Conditional: init present, not ephemeral, not wsl2._
+- **kitty**: Arch, Chimera, Fedora, FreeBSD via native package manager. Debian/Ubuntu via upstream binary installer (`~/.local/kitty.app/`). macOS via Homebrew. _Conditional: non-headless._
 - **mDNS/Avahi**: Arch only. Installs avahi + nss-mdns. _Conditional: init present to enable avahi-daemon._
 - **SSH server**: Arch only. Installs openssh. _Conditional: init present, not ephemeral, not wsl2 to enable sshd._
 - **Bluetooth**: Chimera only. Installs bluez. _Conditional: init present, not ephemeral, not wsl2 to enable bluetoothd._

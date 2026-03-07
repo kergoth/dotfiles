@@ -68,6 +68,9 @@ pacman_install plasma-desktop sddm
 sudorun systemctl enable --now sddm.service
 {{-   end }}
 {{- end }}
+
+# Terminal emulator
+pacman_install kitty
 {{- end }}
 
 # Clean up
