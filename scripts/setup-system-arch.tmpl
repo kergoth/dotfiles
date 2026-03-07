@@ -53,11 +53,6 @@ if ! grep -q '^MAKEFLAGS=.*-j' /etc/makepkg.conf; then
     fi
 fi
 
-{{ if .wsl2 -}}
-# Required for npiperelay (SSH agent forwarding from Windows)
-pacman_install socat
-{{- end }}
-
 pacman_install vi zsh which xz
 
 # Wget, unzip for installation of password manager cli
