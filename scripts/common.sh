@@ -326,32 +326,6 @@ eget_install() {
     fi
 }
 
-install_nix() {
-    if has nix; then
-        return
-    fi
-
-    if [ "$DISTRO" = arch ] && ! [ "$OSTYPE" = "WSL" ]; then
-        pacman -S nix
-
-        if ! grep -q "^nix-users:.*$USER" /etc/group; then
-            sudorun sed -i -e "/^nix-users:/s/\$/ $USER/; /^nix-users:/s/: /:/;" /etc/group
-            if ! grep -q "^nix-users:.*$USER" /etc/group; then
-                echo >&2 "Failed to add user to the nix-users group, please do so manually, then re-login"
-            else
-                echo >&2 "User has been added to the nix-users group, please re-login"
-            fi
-        fi
-
-        sudorun systemctl enable nix-daemon
-        sudorun systemctl start nix-daemon
-    elif uname -n | grep -qF lima; then
-        set -- -- --init none
-    fi
-
-    curl -fsSL https://install.determinate.systems/nix | sh -s -- install --determinate --no-confirm --no-modify-profile "$@"
-}
-
 devpod_configure() {
     local dotfiles_url="${1:?dotfiles_url required}"
     local dotfiles_script="${2:?dotfiles_script required}"
