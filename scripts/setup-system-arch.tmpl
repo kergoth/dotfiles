@@ -75,6 +75,11 @@ pacman_install kitty
 # Flatpak
 pacman_install flatpak
 sudorun flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+{{ if and (not .work) (not .ephemeral) -}}
+# Install 1Password from AUR
+"$scriptdir/extras/install-aur" 1password
+{{- end }}
 {{- end }}
 
 # Clean up

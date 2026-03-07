@@ -54,3 +54,15 @@ sudorun systemctl enable --now tailscaled
 sudorun tailscale up
 {{-   end }}
 {{- end }}
+
+{{ if and (not .headless) (not .work) (not .ephemeral) -}}
+# Install 1Password
+sudo mkdir -p --mode=0755 /usr/share/keyrings
+curl -sS https://downloads.1password.com/linux/keys/1password.asc | \
+    sudo gpg --dearmor --output /usr/share/keyrings/1password-archive-keyring.gpg
+op_arch="$(dpkg --print-architecture)"
+echo "deb [arch=$op_arch signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/$op_arch stable main" | \
+    sudo tee /etc/apt/sources.list.d/1password.list
+sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y update
+sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y install 1password
+{{- end }}
