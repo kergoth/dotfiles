@@ -13,7 +13,7 @@ PATH="$scriptdir/ubuntu:$scriptdir/linux:$scriptdir:$PATH"
 need_sudo
 
 if ! has xz || ! has zsh; then
-    sudorun apt-get update
+    sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y update
 fi
 
 # Install xz for nix
@@ -25,12 +25,25 @@ if ! has zsh; then
     sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y install zsh
 fi
 
+{{ if not .headless -}}
+# Install KDE Plasma and display manager
+sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y update
+sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y install kde-plasma-desktop sddm
+
+{{ if and (not .ephemeral) (not .wsl2) (not (env "CONTAINER_ID")) -}}
+{{   if .has_init -}}
+# Enable sddm
+sudorun systemctl enable --now sddm.service
+{{-   end }}
+{{- end }}
+{{- end }}
+
 {{ if and (not .work) (not .ephemeral) -}}
 # Install, enable, and start Tailscale
 sudo mkdir -p --mode=0755 /usr/share/keyrings
 curl -fsSL "https://pkgs.tailscale.com/stable/ubuntu/{{ $codename }}.noarmor.gpg" | sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
 curl -fsSL "https://pkgs.tailscale.com/stable/ubuntu/{{ $codename }}.tailscale-keyring.list" | sudo tee /etc/apt/sources.list.d/tailscale.list
-sudorun apt-get update
+sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y update
 sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y install tailscale
 {{   if .has_init -}}
 sudorun systemctl enable --now tailscaled

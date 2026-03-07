@@ -63,6 +63,18 @@ pacman_install vi zsh which xz
 # Wget, unzip for installation of password manager cli
 pacman_install wget unzip
 
+{{ if not .headless -}}
+# Install KDE Plasma and display manager
+pacman_install plasma-desktop sddm
+
+{{ if and (not .ephemeral) (not .wsl2) (not (env "CONTAINER_ID")) -}}
+{{   if .has_init -}}
+# Enable sddm
+sudorun systemctl enable --now sddm.service
+{{-   end }}
+{{- end }}
+{{- end }}
+
 # Clean up
 if command pacman -Q nano >/dev/null 2>&1; then
     sudorun pacman --noconfirm -R nano || :

@@ -27,6 +27,18 @@ fi
 # Install neovim
 sudorun dnf -y --setopt=install_weak_deps=False install neovim
 
+{{ if not .headless -}}
+# Install KDE Plasma and display manager
+sudorun dnf -y --setopt=install_weak_deps=False install @kde-desktop-environment sddm
+
+{{ if and (not .ephemeral) (not .wsl2) (not (env "CONTAINER_ID")) -}}
+{{   if .has_init -}}
+# Enable sddm
+sudorun systemctl enable --force --now sddm.service
+{{-   end }}
+{{- end }}
+{{- end }}
+
 # Install, enable, and start Tailscale
 {{ if and (not .work) (not .ephemeral) -}}
 {{ if ge $ver 41 }}
