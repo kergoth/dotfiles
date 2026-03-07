@@ -58,16 +58,17 @@ fi
 apk add --no-interactive neovim
 
 {{ if not .headless -}}
-# Install Gnome
-apk add --no-interactive gnome
+# Install KDE Plasma
+apk add --no-interactive plasma-desktop
 
 {{ if and (not .ephemeral) (not .wsl2) (not (env "CONTAINER_ID")) -}}
-{{ if .has_init -}}
-# Enable gdm
-if ! dinitctl status gdm | grep STARTED >/dev/null; then
-    dinitctl enable gdm
+{{   if .has_init -}}
+# Enable sddm
+if ! dinitctl status sddm | grep STARTED >/dev/null; then
+    dinitctl enable sddm
+    dinitctl start sddm
 fi
-{{- end }}
+{{-   end }}
 {{- end }}
 
 # Install and configure flatpak
