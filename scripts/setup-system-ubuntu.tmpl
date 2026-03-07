@@ -53,11 +53,25 @@ curl -fsSL "https://pkgs.tailscale.com/stable/ubuntu/{{ $codename }}.noarmor.gpg
 curl -fsSL "https://pkgs.tailscale.com/stable/ubuntu/{{ $codename }}.tailscale-keyring.list" | sudo tee /etc/apt/sources.list.d/tailscale.list
 {{ end -}}
 {{ if $add_onepassword -}}
-curl -sS https://downloads.1password.com/linux/keys/1password.asc | \
-    sudo gpg --dearmor --output /usr/share/keyrings/1password-archive-keyring.gpg
 op_arch="$(dpkg --print-architecture)"
-echo "deb [arch=$op_arch signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/$op_arch stable main" | \
-    sudo tee /etc/apt/sources.list.d/1password.list
+case "$op_arch" in
+    amd64)
+        curl -sS https://downloads.1password.com/linux/keys/1password.asc | \
+            sudo gpg --dearmor --output /usr/share/keyrings/1password-archive-keyring.gpg
+        echo "deb [arch=amd64 signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/amd64 stable main" | \
+            sudo tee /etc/apt/sources.list.d/1password.list
+        onepassword_install="apt"
+        msg "1Password install mode: apt (amd64 repo)"
+        ;;
+    arm64)
+        onepassword_install="tar"
+        msg "1Password install mode: tarball (arm64)"
+        ;;
+    *)
+        msg "Skipping 1Password: unsupported architecture: $op_arch"
+        onepassword_install="skip"
+        ;;
+esac
 {{ end -}}
 sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y update
 
@@ -69,6 +83,17 @@ sudorun tailscale up
 {{-   end }}
 {{ end -}}
 {{ if $add_onepassword -}}
-sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y install 1password
+if [ "${onepassword_install:-}" = "apt" ]; then
+    sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y install 1password
+elif [ "${onepassword_install:-}" = "tar" ]; then
+    tmpdir=$(mktemp -d)
+    curl -fsSLo "$tmpdir/1password-latest.tar.gz" \
+        https://downloads.1password.com/linux/tar/stable/aarch64/1password-latest.tar.gz
+    sudorun tar -xf "$tmpdir/1password-latest.tar.gz" -C "$tmpdir"
+    sudorun mkdir -p /opt/1Password
+    sudorun mv "$tmpdir"/1password-*/* /opt/1Password
+    sudorun /opt/1Password/after-install.sh
+    rm -rf "$tmpdir"
+fi
 {{ end -}}
 {{- end }}
