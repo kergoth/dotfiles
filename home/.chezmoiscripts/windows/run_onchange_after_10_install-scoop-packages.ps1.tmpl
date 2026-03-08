@@ -41,9 +41,6 @@ scoop install zed
 {{      if not $rpi_imager -}}
 scoop install raspberry-pi-imager
 {{-     end }}
-{{      if not .ephemeral -}}
-Install-Scoop-IfNotPresent rufus Rufus.Rufus | Out-Null
-{{      end -}}
 {{    else }}
 {{/* not .work */}}
 Install-Scoop-IfNotPresent sumatrapdf SumatraPDF.SumatraPDF | Out-Null
