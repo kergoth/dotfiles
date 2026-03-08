@@ -62,8 +62,30 @@ sudorun tailscale up
 {{- end }}
 
 {{ if and (not .headless) (not .work) (not .ephemeral) -}}
-# Install 1Password
-sudo rpm --import https://downloads.1password.com/linux/keys/1password.asc
-sudo sh -c 'echo -e "[1password]\nname=1Password Stable Channel\nbaseurl=https://downloads.1password.com/linux/rpm/stable/\$basearch\nenabled=1\ngpgcheck=1\nrepo_gpgcheck=1\ngpgkey=\"https://downloads.1password.com/linux/keys/1password.asc\"" > /etc/yum.repos.d/1password.repo'
-sudorun dnf -y --setopt=install_weak_deps=False install 1password
+op_arch="$(uname -m)"
+case "$op_arch" in
+    x86_64)
+        onepassword_install="rpm"
+        msg "1Password install mode: rpm repo (x86_64)"
+        ;;
+    aarch64|arm64)
+        onepassword_install="tar"
+        msg "1Password install mode: tarball (arm64)"
+        ;;
+    *)
+        onepassword_install="skip"
+        msg "Skipping 1Password: unsupported architecture: $op_arch"
+        ;;
+esac
+
+if [ "${onepassword_install:-}" = "rpm" ]; then
+    # Install 1Password
+    sudo rpm --import https://downloads.1password.com/linux/keys/1password.asc
+    sudo sh -c 'echo -e "[1password]\nname=1Password Stable Channel\nbaseurl=https://downloads.1password.com/linux/rpm/stable/\$basearch\nenabled=1\ngpgcheck=1\nrepo_gpgcheck=1\ngpgkey=\"https://downloads.1password.com/linux/keys/1password.asc\"" > /etc/yum.repos.d/1password.repo'
+    sudorun dnf -y --setopt=install_weak_deps=False install 1password
+elif [ "${onepassword_install:-}" = "tar" ]; then
+    tmpdir=$(mktemp -d)
+    trap 'rm -rf "$tmpdir"' EXIT INT TERM
+    onepassword_install_tarball "$tmpdir"
+fi
 {{- end }}

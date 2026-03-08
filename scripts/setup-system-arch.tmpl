@@ -95,8 +95,30 @@ pacman_install flatpak
 sudorun flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
 {{ if and (not .work) (not .ephemeral) -}}
-# Install 1Password from AUR
-"$scriptdir/extras/install-aur" 1password
+op_arch="$(uname -m)"
+case "$op_arch" in
+    x86_64)
+        onepassword_install="aur"
+        msg "1Password install mode: AUR (x86_64)"
+        ;;
+    aarch64|arm64)
+        onepassword_install="tar"
+        msg "1Password install mode: tarball (arm64)"
+        ;;
+    *)
+        onepassword_install="skip"
+        msg "Skipping 1Password: unsupported architecture: $op_arch"
+        ;;
+esac
+
+if [ "${onepassword_install:-}" = "aur" ]; then
+    # Install 1Password from AUR
+    "$scriptdir/extras/install-aur" 1password
+elif [ "${onepassword_install:-}" = "tar" ]; then
+    tmpdir=$(mktemp -d)
+    trap 'rm -rf "$tmpdir"' EXIT INT TERM
+    onepassword_install_tarball "$tmpdir"
+fi
 {{- end }}
 {{- end }}
 

@@ -223,6 +223,29 @@ sudorun() {
     command $SUDO "$@"
 }
 
+onepassword_install_tarball() {
+    local tmpdir="$1"
+    local url="${2:-https://downloads.1password.com/linux/tar/stable/aarch64/1password-latest.tar.gz}"
+
+    if [ -z "$tmpdir" ]; then
+        die "Error: onepassword_install_tarball requires a tmpdir argument"
+    fi
+    if [ ! -d "$tmpdir" ]; then
+        die "Error: tmpdir does not exist: $tmpdir"
+    fi
+    if has curl; then
+        curl -fsSLo "$tmpdir/1password-latest.tar.gz" "$url"
+    elif has wget; then
+        wget -qO "$tmpdir/1password-latest.tar.gz" "$url"
+    else
+        die "Error: curl or wget required to download 1Password"
+    fi
+    sudorun tar -xf "$tmpdir/1password-latest.tar.gz" -C "$tmpdir"
+    sudorun mkdir -p /opt/1Password
+    sudorun mv "$tmpdir"/1password-*/* /opt/1Password
+    sudorun /opt/1Password/after-install.sh
+}
+
 pacman() {
     sudorun pacman --noconfirm --needed "$@"
 }
