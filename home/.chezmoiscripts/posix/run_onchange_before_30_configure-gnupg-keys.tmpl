@@ -28,7 +28,10 @@ import_key() {
     fi
 
     echo >&2 "Importing secret key $fp ..."
-    chezmoi decrypt "$enc" | gpg --import -
+    chezmoi decrypt "$enc" | gpg --import - || {
+        echo >&2 "Warning: GPG secret key import failed (pinentry unavailable — no GUI/TTY session?)."
+        echo >&2 "Re-run 'chezmoi apply' from your desktop session to complete GPG setup."
+    }
 }
 
 import_pub() {
