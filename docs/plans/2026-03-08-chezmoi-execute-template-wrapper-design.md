@@ -5,10 +5,10 @@
 
 ## Problem
 
-Validation commands in docs and guidance often use:
+Validation commands in docs and guidance should use:
 
 ```
-chezmoi execute-template < path/to/template.tmpl
+scripts/chezmoi-execute-template path/to/template.tmpl
 ```
 
 In agent workflows, redirection prompts add friction and slow down routine checks.
