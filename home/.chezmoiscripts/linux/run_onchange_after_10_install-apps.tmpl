@@ -5,6 +5,7 @@
 {{- $onepassword := "" -}}
 {{- $86box := "" -}}
 {{- $calibre := "" -}}
+{{- $obsidian := "" -}}
 {{- $flatpak := "" -}}
 {{- $need_install := false -}}
 {{- if not .headless -}}
@@ -13,6 +14,7 @@
 {{- if and .user_setup (not .headless) (not .steamdeck) (not (env "CONTAINER_ID")) -}}
 {{-   $zed = includeTemplate "find-tool" (dict "root" . "tool" "zed") -}}
 {{-   $vivaldi = includeTemplate "find-tool" (dict "root" . "tool" "vivaldi") -}}
+{{-   $obsidian = includeTemplate "find-tool" (dict "root" . "tool" "obsidian") -}}
 {{-   if or (eq .osid "linux-debian") (eq .osid "linux-ubuntu") -}}
 {{-     $kitty = includeTemplate "find-tool" (dict "root" . "tool" "kitty") -}}
 {{-   end -}}
@@ -24,6 +26,7 @@
 {{-   end -}}
 {{-   if not $zed -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and (not $vivaldi) $flatpak -}}{{- $need_install = true -}}{{- end -}}
+{{-   if and (not $obsidian) $flatpak -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and (or (eq .osid "linux-debian") (eq .osid "linux-ubuntu")) (not $kitty) -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and .retro_computing (not $86box) $flatpak -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and .ebook_library (not $calibre) $flatpak -}}{{- $need_install = true -}}{{- end -}}
@@ -64,6 +67,11 @@ curl -f https://zed.dev/install.sh | sh
 {{-   if and (not $vivaldi) $flatpak }}
 msg "Installing Vivaldi from Flathub"
 flatpak install -y --user flathub com.vivaldi.Vivaldi || true
+{{-   end }}
+
+{{-   if and (not $obsidian) $flatpak }}
+msg "Installing Obsidian from Flathub"
+flatpak install -y --user flathub md.obsidian.Obsidian || true
 {{-   end }}
 
 {{-   if and .retro_computing (not $86box) $flatpak }}
