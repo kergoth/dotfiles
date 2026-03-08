@@ -78,6 +78,10 @@ Install-WinGetPackageIfNotInstalled -Mode Silent -Id AgileBits.1Password | Out-N
 if (-not (Test-InWindowsSandbox)) {
     # WiFi Analyzer
     Install-WinGetPackageIfNotInstalled -Mode Silent -Source msstore -Id 9NBLGGH33N0N
+{{  if not .headless }}
+    # ChatGPT
+    Install-WinGetPackageIfNotInstalled -Mode Silent -Source msstore -Id 9NT1R1C2HH7J | Out-Null
+{{  end }}
 }
 
 # Dependency of SquirrelDisk

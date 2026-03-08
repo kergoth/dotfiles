@@ -531,10 +531,11 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 
 #### GUI Software on Windows and macOS
 
+- [ChatGPT](https://openai.com/chatgpt/desktop/): OpenAI's AI assistant desktop app.
 - [Discord](https://discord.com): A VoIP and instant messaging social platform.
 - [Obsidian](https://obsidian.md): A powerful knowledge base that works on top of a local folder of plain text Markdown files. Available on Linux, macOS, and Windows via brew, scoop, flatpak, or [download](https://obsidian.md/download).
-- [VLC](https://www.videolan.org/vlc/download-macosx.html) ([Open-Source](https://code.videolan.org/videolan/vlc)): A free and open source cross-platform multimedia player.
 - [Tailscale](https://tailscale.com) ([Open-Source](https://github.com/tailscale/tailscale)): WireGuard-based mesh VPN for secure device connectivity. _Conditional: personal, non-ephemeral._
+- [VLC](https://www.videolan.org/vlc/download-macosx.html) ([Open-Source](https://code.videolan.org/videolan/vlc)): A free and open source cross-platform multimedia player.
 - If the gaming flag is enabled:
   - [Steam](https://store.steampowered.com): A digital distribution platform for purchasing and playing video games.
 
@@ -567,7 +568,6 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 
 - [BlockBlock](https://objective-see.org/products/blockblock.html): Monitors common persistence locations and alerts whenever a persistent component is added.
 - [Brooklyn](https://github.com/pedrommcarrasco/Brooklyn) (Open-Source): Screen saver based on animations presented during Apple Special Event Brooklyn.
-- [ChatGPT](https://openai.com/chatgpt/desktop/): OpenAI's AI assistant desktop app.
 - [Carbon Copy Cloner](https://bombich.com): Backups and disk cloning for macOS.
 - [DaisyDisk](https://daisydiskapp.com): Disk space visualizer. Get a visual breakdown of your disk space in form of an interactive map, reveal the biggest space wasters, and remove them with a simple drag and drop.
 - [Deliveries](https://apps.apple.com/us/app/deliveries-a-package-tracker/id290986013): Track your packages with support for dozens of services. Syncs via iCloud.
