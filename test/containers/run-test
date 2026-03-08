@@ -43,6 +43,7 @@ process_arguments() {
     distro=
 
     user=testuser
+    user_uid=10000
     dotfiles_mount=/home/testuser/.dotfiles
 
     while getopts ":aisSbCnvqh" opt; do
@@ -195,49 +196,6 @@ arch_base_image_for_host() {
     printf "%s" "archlinux/archlinux:latest"
 }
 
-emit_container_script() {
-    setup_cmd=$1
-
-    # Variables prefixed with \ are intentionally escaped so they expand at
-    # container runtime (from the container's environment), not at generation
-    # time here on the host. This keeps secrets off disk and ensures DOTFILES_DIR
-    # survives the su/doas privilege-drop boundary.
-    cat <<EOF
-#!/bin/sh
-
-set -e
-
-cd "$dotfiles_mount"
-
-script/$distro/setup-root "$user" 10000 </dev/null
-
-chown -R "$user" "/home/$user"
-
-cmd="export DOTFILES_DIR='\$DOTFILES_DIR' GITHUB_TOKEN='\$GITHUB_TOKEN' DOTFILES_EPHEMERAL='\$DOTFILES_EPHEMERAL' DOTFILES_HEADLESS='\$DOTFILES_HEADLESS'; cd '\$DOTFILES_DIR' && './$setup_cmd' </dev/null"
-if command -v doas >/dev/null 2>&1; then
-    doas -u "$user" sh -c "if ! [ -w /nix/store ] || ! [ -w /nix/var ]; then doas chown -R $user /nix; fi; \$cmd"
-elif command -v su >/dev/null 2>&1; then
-    su - "$user" -c "if ! [ -w /nix/store ] || ! [ -w /nix/var ]; then sudo chown -R $user /nix; fi; \$cmd"
-else
-    echo "Error: need su or doas in container to run as user" >&2
-    exit 1
-fi
-echo >&2 "Test completed for distro: $distro"
-
-if [ "\${SHELL_AFTER:-0}" -eq 1 ]; then
-    echo "Setup complete. Dropping into user shell..." >&2
-    if command -v doas >/dev/null 2>&1; then
-        exec doas -u "$user" zsh --login
-    elif command -v su >/dev/null 2>&1; then
-        exec su - "$user" -c "exec zsh --login"
-    else
-        echo "Error: need su or doas to drop into user shell" >&2
-        exit 1
-    fi
-fi
-EOF
-}
-
 build_image() {
     image_name=$1
     build_context=$2
@@ -267,14 +225,22 @@ run_container() {
         setup_cmd="script/setup-full"
     fi
 
+    container_script="$dotfiles_mount/test/containers/run-test-container.sh"
+
     set -- \
         --rm \
         -v "$repodir:$dotfiles_mount" \
         -e NO_USER_PASSWORD=1 \
         -e DOTFILES_DIR="$dotfiles_mount" \
+        -e TEST_DOTFILES_DIR="$dotfiles_mount" \
+        -e TEST_DISTRO="$distro" \
+        -e TEST_SETUP_CMD="$setup_cmd" \
+        -e TEST_USER="$user" \
+        -e TEST_UID="$user_uid" \
         ${GITHUB_TOKEN:+-e GITHUB_TOKEN="$GITHUB_TOKEN"} \
         ${DOTFILES_EPHEMERAL:+-e DOTFILES_EPHEMERAL="$DOTFILES_EPHEMERAL"} \
-        ${DOTFILES_HEADLESS:+-e DOTFILES_HEADLESS="$DOTFILES_HEADLESS"}
+        ${DOTFILES_HEADLESS:+-e DOTFILES_HEADLESS="$DOTFILES_HEADLESS"} \
+        ${RUN_TEST_TRACE:+-e RUN_TEST_TRACE="$RUN_TEST_TRACE"}
 
     if [ "$skip_nix_cache" != "1" ]; then
         set -- "$@" \
@@ -290,17 +256,12 @@ run_container() {
         return 0
     fi
 
-    emit_container_script "$setup_cmd" >"$tmpdir/run-test"
-    chmod +x "$tmpdir/run-test"
-
     if [ "$shell_after" -eq 1 ]; then
         run docker run --entrypoint /bin/sh -it -e SHELL_AFTER=1 \
-            -v "$tmpdir/run-test:/tmp/run-test:ro" \
-            "$@" "$image_name" /tmp/run-test
+            "$@" "$image_name" "$container_script"
     else
         run docker run --entrypoint /bin/sh -i \
-            -v "$tmpdir/run-test:/tmp/run-test:ro" \
-            "$@" "$image_name" /tmp/run-test
+            "$@" "$image_name" "$container_script"
     fi
 }
 
