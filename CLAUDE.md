@@ -148,6 +148,13 @@ Chezmoi externals download non-package-manager resources. Templates in `.chezmoi
 
 Two-phase: template header computes `$need_install` via `find-tool` checks (renders script empty if nothing to do); body emits install commands only when needed. New GUI apps need entries in **both** the header (tool detection + `$need_install` trigger) and the body (flatpak install command).
 
+### Template Helpers: `find-tool` / `availableTools` / `packagesForMissingTools`
+
+- All three accept `home_paths` (bool, default true) and `system_paths` (bool, default true) to control which path sets are searched. Either is appropriate for user or system package detection.
+- None use `lookPath` — search is path-list-only (from `paths.yml` data) for consistent behavior independent of shell `$PATH`.
+- `packagesForMissingTools` wraps `availableTools`: takes a dict of `cmd→install-spec` (bare pkg name, or full arg string like `--git https://...` for cargo), returns only the specs whose commands are missing.
+- Individual `find-tool` calls scale fine for 1–3 tools; prefer `packagesForMissingTools` for larger sets. Multi-package install scripts will likely migrate to this pattern.
+
 ## Common Script Functions (from `scripts/common.sh`)
 
 ```bash

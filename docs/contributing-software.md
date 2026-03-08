@@ -324,23 +324,41 @@ flatpak install -y flathub org.example.AppName || true
 
 ## Helper Templates
 
+All three helpers search path lists defined in `paths.yml` data — they do **not** use `lookPath`, so results are consistent regardless of the invoking shell's `$PATH`.
+
 ### find-tool
 
-Locates executables across standard paths:
+Locates a single executable. Accepts optional `home_paths` (bool, default true) and `system_paths` (bool, default true) to control which path sets are searched:
 
 ```go
 {{- $tool := includeTemplate "find-tool" (dict "root" . "tool" "toolname") -}}
 {{- if not $tool }}
 # Tool not found, install it
 {{- end }}
+
+{{/* System-paths only (e.g. checking a system-installed binary) */}}
+{{- $tool := includeTemplate "find-tool" (dict "root" . "tool" "toolname" "home_paths" false) -}}
+```
+
+### availableTools
+
+Checks multiple tools at once. Same `home_paths`/`system_paths` arguments. Returns a dict of `cmd→path` (empty string if not found):
+
+```go
+{{- $results := includeTemplate "availableTools" (dict "root" . "tools" (list "zoxide" "atuin" "fzf")) | fromJson -}}
 ```
 
 ### packagesForMissingTools
 
-Returns list of packages needed for missing tools:
+Wraps `availableTools`. Takes a dict of `cmd→install-spec`, returns only the install specs whose commands are missing. The install spec is whatever string the caller needs — a bare package name, or a full argument string like `--git https://github.com/owner/repo` for cargo. Same `home_paths`/`system_paths` arguments. Prefer this over multiple `find-tool` calls when checking more than 2–3 tools:
 
 ```go
+{{/* Package names */}}
 {{- $tools := dict "cmd1" "pkg1" "cmd2" "pkg2" -}}
+
+{{/* Cargo: install spec includes flags */}}
+{{- $cargo_tools := dict "choose" "--git https://github.com/theryangeary/choose" -}}
+
 {{- $to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $tools) | fromJson -}}
 {{- range $to_install }}
 # Install {{ . }}

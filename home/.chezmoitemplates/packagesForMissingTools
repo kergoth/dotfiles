@@ -1,15 +1,16 @@
 {{- /* Template: packagesForMissingTools
-     Description: Given a mapping of tool binary names to package names, returns list of packages to install for missing tools.
+     Description: Given a mapping of tool binary names to install specs, returns the specs for missing tools.
      Arguments (dict):
        - root: context (required) - Root context (pass as "root" .)
-       - packages: dict (required) - Mapping of binary name to package name
+       - packages: dict (required) - Mapping of binary name to install spec (package name, or full arg string e.g. "--git https://...")
        - system_paths: bool (optional, default: true) - Include system paths
        - home_paths: bool (optional, default: true) - Include home paths
-     Returns: list (as JSON) - Package names that need to be installed for missing binaries
+     Returns: list (as JSON) - Install specs for binaries not found in search paths
 
      Example usage:
-       {{ $cargo_tools := dict "sd" "sd" "dua" "dua-cli" "choose" "choose" }}
-       {{ $to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $cargo_tools) | fromJson }}
+       {{ $scoop_tools := dict "sd" "sd" "dua" "dua-cli" "choose" "choose" }}
+       {{ $cargo_tools := dict "choose" "--git https://github.com/theryangeary/choose" }}
+       {{ $to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $scoop_tools) | fromJson }}
 */ -}}
 {{- $root := .root -}}
 {{- $packages := .packages -}}
