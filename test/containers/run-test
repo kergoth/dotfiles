@@ -17,6 +17,7 @@
 #     -s          Drop into a user shell after setup
 #     -S          Skip setup-system, only run setup
 #     -b          Just build the image(s), don't run
+#     -w          Workstation mode (DOTFILES_HEADLESS=0, DOTFILES_EPHEMERAL=0)
 #     -C          Skip shared nix cache
 #     -n          Dry run, don't actually do anything
 #     -v          Increase verbosity, can be specified multiple times
@@ -46,7 +47,7 @@ process_arguments() {
     user_uid=10000
     dotfiles_mount=/home/testuser/.dotfiles
 
-    while getopts ":aisSbCnvqh" opt; do
+    while getopts ":aisSbwCnvqh" opt; do
         case "$opt" in
             a)
                 all_distros=1
@@ -62,6 +63,10 @@ process_arguments() {
                 ;;
             b)
                 build_only=1
+                ;;
+            w)
+                DOTFILES_HEADLESS=0
+                DOTFILES_EPHEMERAL=0
                 ;;
             C)
                 skip_nix_cache=1
