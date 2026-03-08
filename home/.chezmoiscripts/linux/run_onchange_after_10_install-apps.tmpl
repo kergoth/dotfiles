@@ -4,6 +4,7 @@
 {{- $devpod := "" -}}
 {{- $onepassword := "" -}}
 {{- $86box := "" -}}
+{{- $calibre := "" -}}
 {{- $flatpak := "" -}}
 {{- $need_install := false -}}
 {{- if not .headless -}}
@@ -18,10 +19,14 @@
 {{-   if .retro_computing -}}
 {{-     $86box = includeTemplate "find-tool" (dict "root" . "tool" "86box") -}}
 {{-   end -}}
+{{-   if .ebook_library -}}
+{{-     $calibre = includeTemplate "find-tool" (dict "root" . "tool" "calibre") -}}
+{{-   end -}}
 {{-   if not $zed -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and (not $vivaldi) $flatpak -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and (or (eq .osid "linux-debian") (eq .osid "linux-ubuntu")) (not $kitty) -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and .retro_computing (not $86box) $flatpak -}}{{- $need_install = true -}}{{- end -}}
+{{-   if and .ebook_library (not $calibre) $flatpak -}}{{- $need_install = true -}}{{- end -}}
 {{- end -}}
 {{- if and .coding .containers -}}
 {{-   $devpod = includeTemplate "find-tool" (dict "root" . "tool" "devpod") -}}
@@ -64,6 +69,11 @@ flatpak install -y --user flathub com.vivaldi.Vivaldi || true
 {{-   if and .retro_computing (not $86box) $flatpak }}
 msg "Installing 86Box from Flathub"
 flatpak install -y --user flathub net._86box._86Box || true
+{{-   end }}
+
+{{-   if and .ebook_library (not $calibre) $flatpak }}
+msg "Installing Calibre from Flathub"
+flatpak install -y --user flathub com.calibre_ebook.calibre || true
 {{-   end }}
 
 {{-   if and (or (eq .osid "linux-debian") (eq .osid "linux-ubuntu")) (not $kitty) }}

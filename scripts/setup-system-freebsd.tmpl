@@ -133,6 +133,9 @@ freebsd_check sysutils/lsblk lsblk
 {{ if not .headless -}}
 freebsd_check www/librewolf librewolf
 freebsd_check x11/kitty kitty
+{{ if .ebook_library -}}
+freebsd_check deskutils/calibre calibre
+{{- end }}
 
 eget_install() {
     local repo="$1"

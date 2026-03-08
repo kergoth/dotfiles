@@ -1,3 +1,7 @@
+{{- $calibre := "" -}}
+{{- if and .user_setup (not .headless) .ebook_library (not .work) -}}
+{{-   $calibre = includeTemplate "find-tool" (dict "root" . "tool" "calibre") -}}
+{{- end -}}
 {{- if and .user_setup (not .headless) -}}
 # GUI Applications
 . $env:CHEZMOI_COMMAND_DIR\scripts\common.ps1
@@ -45,6 +49,9 @@ scoop install 86box 86box-roms
 {{-     end }}
 {{      if .video -}}
 Install-Scoop-IfNotPresent vlc VideoLAN.VLC | Out-Null
+{{-     end }}
+{{      if and .ebook_library (not $calibre) -}}
+scoop install calibre
 {{-     end }}
 {{-   end }}
 {{    if and .coding .containers (not .ephemeral) -}}

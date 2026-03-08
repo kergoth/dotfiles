@@ -526,6 +526,7 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 ### Installed GUI Software
 
 - [Zed](https://zed.dev): A cross-platform text editor. Available via brew, installer script, scoop, or [download](https://zed.dev/download).
+- [Calibre](https://calibre-ebook.com) ([Open-Source](https://github.com/kovidgoyal/calibre)): E-books management software. _Conditional: ebook_library._
 - [DevPod](https://devpod.sh) ([Open-Source](https://github.com/loft-sh/devpod)): Codespaces but open-source, client-only and unopinionated. Works with any IDE and cloud. _Conditional: This is installed when both coding and container runtime flags are enabled._
 
 #### GUI Software on Windows and macOS
@@ -567,7 +568,6 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 - [BlockBlock](https://objective-see.org/products/blockblock.html): Monitors common persistence locations and alerts whenever a persistent component is added.
 - [Brooklyn](https://github.com/pedrommcarrasco/Brooklyn) (Open-Source): Screen saver based on animations presented during Apple Special Event Brooklyn.
 - [ChatGPT](https://openai.com/chatgpt/desktop/): OpenAI's AI assistant desktop app.
-- [Calibre](https://calibre-ebook.com) ([Open-Source](https://github.com/kovidgoyal/calibre)): E-books management software.
 - [Carbon Copy Cloner](https://bombich.com): Backups and disk cloning for macOS.
 - [DaisyDisk](https://daisydiskapp.com): Disk space visualizer. Get a visual breakdown of your disk space in form of an interactive map, reveal the biggest space wasters, and remove them with a simple drag and drop.
 - [Deliveries](https://apps.apple.com/us/app/deliveries-a-package-tracker/id290986013): Track your packages with support for dozens of services. Syncs via iCloud.
