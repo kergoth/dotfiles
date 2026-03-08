@@ -41,7 +41,11 @@ chezmoi doctor
 ./script/test -i arch   # drop into root shell before setup (debug)
 ./script/test -S arch   # skip setup-system, only run setup
 ./script/test -b        # build container images only, don't run
+./script/test -w arch   # workstation mode: DOTFILES_HEADLESS=0, DOTFILES_EPHEMERAL=0 (enables GUI app installs)
 ./script/test debian ubuntu  # test multiple distros in one run (space-separated)
+
+# Validate template rendering without applying
+chezmoi execute-template < home/.chezmoiscripts/linux/run_onchange_after_10_install-apps.tmpl
 ```
 
 ## Setup Entry Points
@@ -140,6 +144,10 @@ Chezmoi externals download non-package-manager resources. Templates in `.chezmoi
 - `chezmoi-edit-encrypted` script for editing encrypted files
 - Bootstrap scripts retrieve age key from 1Password during setup
 
+### Linux GUI App Install Pattern (`run_onchange_after_10_install-apps.tmpl`)
+
+Two-phase: template header computes `$need_install` via `find-tool` checks (renders script empty if nothing to do); body emits install commands only when needed. New GUI apps need entries in **both** the header (tool detection + `$need_install` trigger) and the body (flatpak install command).
+
 ## Common Script Functions (from `scripts/common.sh`)
 
 ```bash
@@ -179,7 +187,7 @@ See `docs/contributing-software.md` for platform-specific file paths to check.
 - **macOS**: Uses Homebrew (prefix: `$HOME/.brew`), optional split admin user setup
 - **macOS admin Homebrew**: Separate `Brewfile-admin.tmpl` for shared `/Users/Shared/homebrew` prefix (Mac App Store apps, admin-requiring casks)
 - **Linux**: Nix/home-manager for packages when available; eget for Chimera gaps (no Nix); cargo/uv very limited
-- **Windows**: Uses Scoop and winget, PowerShell scripts (`.ps1.tmpl`)
+- **Windows**: Uses Scoop and winget, PowerShell scripts (`.ps1.tmpl`). `Install-Scoop-IfNotPresent` is a legacy winget-compat shim being phased out — new GUI app installs use `find-tool` in the template header + bare `scoop install` in the body (see `run_onchange_before_25_install-tools.ps1.tmpl` for the pattern).
 - **FreeBSD**: pkg/ports for tool installation
 
 ## README Documentation Patterns
