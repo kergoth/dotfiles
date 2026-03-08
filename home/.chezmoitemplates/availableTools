@@ -5,6 +5,7 @@
        - tools: list (required) - List of tool names to check
        - platform_paths: string (optional) - Key for platform-specific paths in paths.yml
        - system_paths: bool (optional, default: true) - Include system paths
+       - home_paths: bool (optional, default: true) - Include home paths
      Returns: dict - Mapping from tool name to path (or empty string if not found)
 
      Example usage:
@@ -14,15 +15,18 @@
 {{- $candidates := .tools -}}
 {{- $results := dict -}}
 {{- $destDir := printf "%s" $root.chezmoi.destDir -}}
+{{- $filter_paths := or (and (hasKey . "home_paths") (not .home_paths)) (and (hasKey . "system_paths") (not .system_paths)) -}}
 
 {{- /* Build search paths once (same logic as find-tool) */ -}}
 {{- $search_paths := list -}}
-{{- range $root.paths.home_bins -}}
-{{-   $search_paths = append $search_paths (joinPath $destDir .) -}}
-{{- end -}}
-{{- if eq $root.chezmoi.os "windows" -}}
-{{-   range ($root.paths.home_bins_windows | default list) -}}
+{{- if not (and (hasKey . "home_paths") (not .home_paths)) -}}
+{{-   range $root.paths.home_bins -}}
 {{-     $search_paths = append $search_paths (joinPath $destDir .) -}}
+{{-   end -}}
+{{-   if eq $root.chezmoi.os "windows" -}}
+{{-     range ($root.paths.home_bins_windows | default list) -}}
+{{-       $search_paths = append $search_paths (joinPath $destDir .) -}}
+{{-     end -}}
 {{-   end -}}
 {{- end -}}
 
@@ -48,7 +52,10 @@
 
 {{- /* Check each tool */ -}}
 {{- range $_, $tool := $candidates -}}
-{{-   $result := lookPath $tool -}}
+{{-   $result := "" -}}
+{{-   if not $filter_paths -}}
+{{-     $result = lookPath $tool -}}
+{{-   end -}}
 {{-   if not $result -}}
 {{-     $result = findExecutable $tool $search_paths -}}
 {{-   end -}}

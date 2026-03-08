@@ -3,6 +3,8 @@
      Arguments (dict):
        - root: context (required) - Root context (pass as "root" .)
        - packages: dict (required) - Mapping of binary name to package name
+       - system_paths: bool (optional, default: true) - Include system paths
+       - home_paths: bool (optional, default: true) - Include home paths
      Returns: list (as JSON) - Package names that need to be installed for missing binaries
 
      Example usage:
@@ -11,7 +13,14 @@
 */ -}}
 {{- $root := .root -}}
 {{- $packages := .packages -}}
-{{- $tools := includeTemplate "availableTools" (dict "root" $root "tools" (keys $packages)) | fromJson -}}
+{{- $avail_args := dict "root" $root "tools" (keys $packages) -}}
+{{- if hasKey . "home_paths" -}}
+{{-   $_ := set $avail_args "home_paths" .home_paths -}}
+{{- end -}}
+{{- if hasKey . "system_paths" -}}
+{{-   $_ := set $avail_args "system_paths" .system_paths -}}
+{{- end -}}
+{{- $tools := includeTemplate "availableTools" $avail_args | fromJson -}}
 {{- $to_install := list -}}
 {{- range $binary, $path := $tools -}}
 {{-   if not $path -}}

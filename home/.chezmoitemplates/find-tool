@@ -4,6 +4,7 @@
        - tool: string (required) - Tool name to find
        - platform_paths: string (optional) - Key for platform-specific paths in paths.yml
        - system_paths: bool (optional, default: true) - Include system paths
+       - home_paths: bool (optional, default: true) - Include home paths
        - fallback: string (optional) - Default if not found
      Returns: string - Path to executable or empty string
 
@@ -17,17 +18,23 @@
 {{- $tool := .tool -}}
 
 {{- $destDir := printf "%s" $root.chezmoi.destDir -}}
-{{- $result := lookPath $tool -}}
+{{- $filter_paths := or (and (hasKey . "home_paths") (not .home_paths)) (and (hasKey . "system_paths") (not .system_paths)) -}}
+{{- $result := "" -}}
+{{- if not $filter_paths -}}
+{{-   $result = lookPath $tool -}}
+{{- end -}}
 {{- if not $result -}}
 {{-   $search_paths := list -}}
-{{-   range $root.paths.home_bins -}}
-{{-     $search_paths = append $search_paths (joinPath $destDir .) -}}
+{{-   if not (and (hasKey . "home_paths") (not .home_paths)) -}}
+{{-     range $root.paths.home_bins -}}
+{{-       $search_paths = append $search_paths (joinPath $destDir .) -}}
+{{-     end -}}
+{{-     if eq $root.chezmoi.os "windows" -}}
+{{-       range ($root.paths.home_bins_windows | default list) -}}
+{{-         $search_paths = append $search_paths (joinPath $destDir .) -}}
+{{-       end -}}
+{{-     end -}}
 {{-   end -}}
-{{-    if eq $root.chezmoi.os "windows" -}}
-{{-      range ($root.paths.home_bins_windows | default list) -}}
-{{-        $search_paths = append $search_paths (joinPath $destDir .) -}}
-{{-      end -}}
-{{-    end -}}
 
 {{-   if hasKey . "platform_paths" -}}
 {{-     $platform_key := printf "%s_%s" .platform_paths $root.chezmoi.os -}}
