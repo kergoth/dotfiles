@@ -1,4 +1,4 @@
-{{- if and (not .ephemeral) .use_nix .has_init -}}
+{{- if and (eq .chezmoi.os "linux") (not .ephemeral) .use_nix (lookPath "systemctl") (stat "/run/systemd/system") -}}
 #!/usr/bin/env bash
 # Auto-install nix-clean systemd service and timer
 #
