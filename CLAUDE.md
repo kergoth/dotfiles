@@ -45,7 +45,8 @@ chezmoi doctor
 ./script/test debian ubuntu  # test multiple distros in one run (space-separated)
 
 # Validate template rendering without applying
-chezmoi execute-template < home/.chezmoiscripts/linux/run_onchange_after_10_install-apps.tmpl
+scripts/chezmoi-execute-template home/.chezmoiscripts/linux/run_onchange_after_10_install-apps.tmpl
+# Optional for managed files: chezmoi cat --source-path home/.chezmoiscripts/linux/run_onchange_after_10_install-apps.tmpl
 ```
 
 ## Setup Entry Points
