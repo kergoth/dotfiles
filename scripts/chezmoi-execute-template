@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+for tmpl in "$@"; do
+  cat "$tmpl" | chezmoi execute-template
+done
