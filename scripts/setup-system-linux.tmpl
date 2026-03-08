@@ -1,7 +1,6 @@
 #!/usr/bin/env chezmoi-exec
 #!/usr/bin/env bash
 
-{{ if .use_nix -}}
 set -euo pipefail
 
 scriptdir=$(cd "$(dirname "$0")" && pwd -P)
@@ -10,9 +9,9 @@ PATH="$scriptdir/linux:$scriptdir:$PATH"
 # shellcheck source=./common.sh
 . "$scriptdir/common.sh" || exit 1
 
-need_sudo
-
+{{ if .use_nix -}}
 if ! has nix; then
+    need_sudo
 {{   if .has_init -}}
     curl -fsSL https://install.determinate.systems/nix |
         sh -s -- install --determinate --no-confirm --no-modify-profile
@@ -26,6 +25,7 @@ fi
 {{ if and (not .work) (not .ephemeral) -}}
 # Install Tailscale VPN on personal systems
 if ! has tailscale; then
+    need_sudo
     msg "Installing Tailscale"
     curl -fsSL https://tailscale.com/install.sh | sh
 fi
@@ -34,6 +34,7 @@ fi
 if [ -e /usr/bin/zsh ]; then
     current_shell="$(getent passwd "$USER" | sed -e 's#.*:##')"
     if [ "$current_shell" != /usr/bin/zsh ]; then
+        need_sudo
         msg "Changing current user shell to zsh"
         sudorun chsh -s /usr/bin/zsh "$USER"
     fi
