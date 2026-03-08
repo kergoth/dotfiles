@@ -5,6 +5,8 @@
 
 RefreshEnvPath
 
+{{-   $rusage := includeTemplate "find-tool" (dict "root" . "tool" "rusage") -}}
+
 {{/* Note: tmux and zsh are unavailable on Windows */}}
 {{/* Starship is used for the PS prompt. While it isn't Windows specific, I only use it there */}}
 {{-   $scoop_tools := dict
@@ -87,5 +89,13 @@ Write-Host "Installing cargo tool: {{ . }}"
 & "{{ $uv_path }}" tool install {{ . }}
 {{-       end }}
 {{-     end }}
+{{-   end }}
+{{-   if not $rusage -}}
+
+Write-Host "Installing rusage"
+$rusageUrl = "https://justine.lol/rusage/rusage.com"
+$rusageDest = Join-Path $env:XDG_BIN_HOME "rusage.com"
+New-Item -ItemType Directory -Path $env:XDG_BIN_HOME -Force | Out-Null
+Invoke-WebRequest -Uri $rusageUrl -OutFile $rusageDest
 {{-   end }}
 {{- end }}

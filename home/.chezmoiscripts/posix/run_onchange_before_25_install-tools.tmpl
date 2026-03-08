@@ -1,4 +1,13 @@
 {{- if and .user_setup -}}
+{{-     $rusage := includeTemplate "find-tool" (dict "root" . "tool" "rusage") -}}
+{{-     $install_rusage := not $rusage -}}
+{{-     $install_distrobox := false -}}
+{{-     if eq .chezmoi.os "linux" -}}
+{{-       $distrobox := includeTemplate "find-tool" (dict "root" . "tool" "distrobox") -}}
+{{-       if not $distrobox -}}
+{{-         $install_distrobox = true -}}
+{{-       end -}}
+{{-     end -}}
 {{-     $eget_tools := dict -}}
 {{-     if eq .osid "linux-chimera" -}}
 {{-       $_ := set $eget_tools "choose" "theryangeary/choose" -}}
@@ -60,9 +69,41 @@
 {{-     end -}}
 {{-     $install_npm_tools := and $npm $npm_to_install -}}
 
-{{-     if or $eget_to_install $install_cargo_tools $install_uv_tools $install_npm_tools -}}
+{{-     if or $eget_to_install $install_cargo_tools $install_uv_tools $install_npm_tools $install_rusage $install_distrobox -}}
 #!/usr/bin/env bash
 set -euo pipefail
+
+{{-       if $install_rusage }}
+echo >&2 "Installing rusage"
+mkdir -p "$HOME/.local/bin"
+curl -fsSL --connect-timeout 60 --retry 3 --retry-delay 5 \
+    -o "$HOME/.local/bin/rusage" \
+    "https://justine.lol/rusage/rusage.com"
+chmod +x "$HOME/.local/bin/rusage"
+{{-       end }}
+
+{{-       if $install_distrobox }}
+echo >&2 "Installing distrobox"
+tmpdir_distrobox=$(mktemp -d)
+# download-github-release requires jq; jq is guaranteed via Nix/Home Manager or setup-system on Chimera/FreeBSD.
+"$CHEZMOI_SOURCE_DIR/scripts/download-github-release" -s -o "$tmpdir_distrobox" 89luca89/distrobox
+tar -xf "$tmpdir_distrobox"/distrobox-*-source.tar.gz -C "$tmpdir_distrobox"
+src_dir=$(find "$tmpdir_distrobox" -maxdepth 1 -type d -name '89luca89-distrobox-*' | head -n1)
+if [ -z "$src_dir" ]; then
+    echo >&2 "Failed to locate distrobox source directory"
+    exit 1
+fi
+mkdir -p "$HOME/.local/bin"
+for tool in distrobox distrobox-assemble distrobox-create distrobox-enter distrobox-ephemeral distrobox-export distrobox-generate-entry distrobox-host-exec distrobox-init distrobox-list distrobox-rm distrobox-stop distrobox-upgrade; do
+    if [ ! -f "$src_dir/$tool" ]; then
+        echo >&2 "Missing distrobox tool: $tool"
+        exit 1
+    fi
+    cp "$src_dir/$tool" "$HOME/.local/bin/$tool"
+    chmod +x "$HOME/.local/bin/$tool"
+done
+rm -rf "$tmpdir_distrobox"
+{{-       end }}
 
 {{-       if $eget_to_install }}
 {{-         $eget_cmd := includeTemplate "find-tool" (dict "root" . "tool" "eget") -}}
