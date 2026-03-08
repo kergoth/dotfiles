@@ -78,6 +78,9 @@ freebsd_check sysutils/chezmoi chezmoi
 freebsd_check security/tailscale tailscale
 {{- end }}
 
+# GnuPG
+freebsd_check security/gnupg gpg
+
 freebsd_check sysutils/duf duf
 freebsd_check sysutils/fd fd
 freebsd_check textproc/ripgrep rg
@@ -108,9 +111,6 @@ freebsd_check sysutils/fclones fclones
 freebsd_check net/rsync rsync
 freebsd_check sysutils/restic restic
 
-# GnuPG
-freebsd_check security/gnupg gpg
-
 # Linting and formatting
 freebsd_check devel/hs-ShellCheck shellcheck
 freebsd_check devel/shfmt shfmt
@@ -137,7 +137,7 @@ freebsd_check sysutils/lsblk lsblk
 freebsd_check www/librewolf librewolf
 freebsd_check x11/kitty kitty
 freebsd_check graphics/okular okular
-freebsd_check security/pinentry-qt5 pinentry-qt5
+freebsd_check security/pinentry-qt6 pinentry-qt6
 {{ if .ebook_library -}}
 freebsd_check deskutils/calibre calibre
 {{- end }}
