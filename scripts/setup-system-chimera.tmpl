@@ -59,7 +59,7 @@ apk add --no-interactive neovim
 
 {{ if not .headless -}}
 # Install KDE Plasma
-apk add --no-interactive plasma-desktop
+apk add --no-interactive plasma-desktop okular
 
 {{ if and (not .ephemeral) (not .wsl2) (not (env "CONTAINER_ID")) -}}
 {{   if .has_init -}}

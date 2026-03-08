@@ -352,6 +352,7 @@ chezmoi update -R
 - **Desktop environment**: KDE Plasma on Linux and FreeBSD. _Conditional: non-headless._
 - **Display manager**: SDDM on Linux and FreeBSD. _Conditional: non-headless. init present to enable/start._
 - **Terminal emulator**: kitty on all platforms. _Conditional: non-headless._
+- **PDF viewer**: Okular on Linux and FreeBSD. _Conditional: non-headless._
 - **App distribution (Flatpak)**: Flatpak + Flathub on all supported Linux distros. Primary mechanism for GUI app installs where native packages are absent or stale. _Conditional: non-headless._
 - **Core services**: mDNS/Avahi, SSH, Bluetooth, and audio stack. PipeWire where applicable. Varies by distro.
 - **Optional system services**: Tailscale, container runtime. _Conditional: personal, non-ephemeral for Tailscale. containers flag for container runtime._
@@ -368,6 +369,7 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 - **KDE Plasma**: All supported Linux distros and FreeBSD. _Conditional: non-headless._
 - **SDDM**: All supported Linux distros and FreeBSD. _Conditional: init present, not ephemeral, not wsl2._
 - **kitty**: Arch, Chimera, Fedora, FreeBSD via native package manager. Debian/Ubuntu via upstream binary installer (`~/.local/kitty.app/`). macOS via Homebrew. _Conditional: non-headless._
+- **Okular**: All supported Linux distros and FreeBSD via native package managers. _Conditional: non-headless._
 - **mDNS/Avahi**: Arch only. Installs avahi + nss-mdns. _Conditional: init present to enable avahi-daemon._
 - **SSH server**: Arch only. Installs openssh. _Conditional: init present, not ephemeral, not wsl2 to enable sshd._
 - **Bluetooth**: Chimera only. Installs bluez. _Conditional: init present, not ephemeral, not wsl2 to enable bluetoothd._
