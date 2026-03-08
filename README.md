@@ -647,7 +647,6 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 - [Gpg4win](https://www.gpg4win.org) ([Open-Source](https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gpg4win.git;a=summary)): Secure email and file encryption with GnuPG for Windows.
 - [Notepad++](https://notepad-plus-plus.org/) ([Open-Source](https://github.com/notepad-plus-plus/notepad-plus-plus))
 - [PowerToys](https://learn.microsoft.com/en-us/windows/powertoys/) ([Open-Source](https://github.com/microsoft/PowerToys))
-- [PuTTY](https://www.chiark.greenend.org.uk/~sgtatham/putty/) ([Open-Source](https://git.tartarus.org/?p=simon/putty.git)). _Conditional: work._
 - [Rufus](https://rufus.ie/) ([Open-Source](https://github.com/pbatard/rufus)): Create bootable USB flash drives. _Conditional: work, non-ephemeral._
 - [SnipDo](https://snipdo-app.com): Select a text in any application and SnipDo pops up to help you.
 - [SyncTrayzor](https://github.com/canton7/SyncTrayzor) (Open-Source)
@@ -941,6 +940,7 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 
 ### Formerly-Used Windows Software
 
+- [PuTTY](https://www.chiark.greenend.org.uk/~sgtatham/putty/) ([Open-Source](https://git.tartarus.org/?p=simon/putty.git)): SSH and Telnet client. Replaced by Windows Terminal's built-in SSH.
 - [ACDSee](https://en.wikipedia.org/wiki/ACDSee). Loved this as an ultralight image viewer in the past, but it grew bloated over time, so was replaced by Irfan View or XnView, as needed.
 - [Winamp](https://en.wikipedia.org/wiki/Winamp): This was the way before I switched to foobar2000 long ago.
 - [ConEMU](https://conemu.github.io): Terminal emulator.
