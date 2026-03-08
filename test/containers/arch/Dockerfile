@@ -9,5 +9,5 @@ ENV LANG=en_US.UTF-8
 RUN pacman-key --init \
     && pacman-key --populate \
     && pacman --noconfirm -Syu \
-    && pacman --noconfirm --needed -S sudo \
+    && pacman --noconfirm --needed -S sudo dbus \
     && rm -rf /var/cache/pacman/pkg/*

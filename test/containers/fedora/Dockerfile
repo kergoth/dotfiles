@@ -4,6 +4,7 @@ RUN dnf -y upgrade \
     && dnf -y install \
         ca-certificates \
         curl \
+        dbus \
         git \
         sudo \
     && dnf -y clean all \
