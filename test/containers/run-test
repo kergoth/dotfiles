@@ -316,9 +316,15 @@ main() {
         # docker can attach to the real terminal. Non-interactive runs use
         # /dev/null to avoid failing in CI where /dev/tty is unavailable.
         if [ "$shell_after" -eq 1 ] || [ "$interactive" -eq 1 ]; then
-            run_one "$distro" </dev/tty
+            if ! run_one "$distro" </dev/tty; then
+                msg "Test failed for distro: %s" "$distro"
+                exit 1
+            fi
         else
-            run_one "$distro" </dev/null
+            if ! run_one "$distro" </dev/null; then
+                msg "Test failed for distro: %s" "$distro"
+                exit 1
+            fi
         fi
     done <"$tmpdir/distros.txt"
 
