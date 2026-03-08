@@ -1,3 +1,10 @@
-{{- if and .wsl2 (not .use_nix) -}}
+{{- if not .use_nix -}}
+{{-   if .wsl2 -}}
 pinentry-program /mnt/c/Program Files (x86)/Gpg4win/bin/pinentry.exe
+{{-   else if and (not .headless) (ne .chezmoi.os "darwin") -}}
+{{-     $pinentry_qt := or (includeTemplate "find-tool" (dict "root" . "tool" "pinentry-qt")) (includeTemplate "find-tool" (dict "root" . "tool" "pinentry-qt6")) -}}
+{{-     if $pinentry_qt }}
+pinentry-program {{ $pinentry_qt }}
+{{-     end -}}
+{{-   end -}}
 {{- end }}
