@@ -16,7 +16,9 @@ mkdir -p "$USER_UNIT_DIR"
 echo "Installing nix-clean systemd service and timer..." >&2
 
 # Reload systemd user daemon to pick up any changes
-systemctl --user daemon-reload
+if pgrep systemd &>/dev/null; then
+    systemctl --user daemon-reload
+fi
 
 # Enable the timer
 systemctl --user enable nix-clean.timer
