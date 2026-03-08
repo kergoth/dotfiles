@@ -11,8 +11,7 @@ Is this a GUI application?
 │   ├── macOS (admin) → Homebrew cask + mas (scripts/macos/Brewfile-admin.tmpl)
 │   ├── Windows (user) → Scoop (home/.chezmoiscripts/windows/run_onchange_after_10_install-scoop-packages.ps1.tmpl)
 │   ├── Windows (admin) → winget (scripts/setup-system-windows.ps1.tmpl)
-│   ├── Linux (non-headless with Flatpak) → Flatpak
-│   └── Linux (non-headless without Flatpak) → curl/AppImage installer
+│   └── Linux (non-headless) → Flatpak (universal on all supported distros)
 └── No (CLI tool)
     ├── Requires root/system-level installation?
     │   └── Yes → Platform system-setup script (scripts/setup-system-*.tmpl)
@@ -80,8 +79,8 @@ When multiple installation methods are available, prefer them in this order:
 | macOS | `scripts/setup-system-macos.tmpl` |
 | Linux (shared) | `scripts/setup-system-linux.tmpl` |
 | Arch Linux | `scripts/setup-system-arch.tmpl` |
-| Debian | `scripts/setup-system-debian` |
-| Ubuntu | `scripts/setup-system-ubuntu` |
+| Debian | `scripts/setup-system-debian.tmpl` |
+| Ubuntu | `scripts/setup-system-ubuntu.tmpl` |
 | Fedora | `scripts/setup-system-fedora.tmpl` |
 | Chimera Linux | `scripts/setup-system-chimera.tmpl` |
 | SteamOS | `scripts/setup-system-steamos.tmpl` |
@@ -165,30 +164,22 @@ mas "MusicHarbor", id: 1440405750
 
 **File:** `home/.chezmoiscripts/windows/run_onchange_after_10_install-scoop-packages.ps1.tmpl`
 
+New additions use `find-tool` in the template header + bare `scoop install` in the body:
+
 ```powershell
-# Inside the {{ if not .headless }} block:
+{{/* HEADER — before the main {{ if and .user_setup (not .headless) }} guard */}}
+{{- $appname := "" -}}
+{{- if and .user_setup (not .headless) .feature_flag (not .work) -}}
+{{-   $appname = includeTemplate "find-tool" (dict "root" . "tool" "appname") -}}
+{{- end -}}
 
-# App available in both Scoop and winget - use helper
-Install-Scoop-IfNotPresent obsidian Obsidian.Obsidian | Out-Null
-
-# App only available in Scoop - install directly
-scoop install zed
-
-# Conditional
-{{    if and .coding .containers (not .ephemeral) -}}
-Install-Scoop-IfNotPresent devpod LoftLabs.DevPod | Out-Null
-{{    end -}}
+{{/* BODY — inside the conditional block for the feature flag */}}
+{{      if and .feature_flag (not $appname) -}}
+scoop install appname
+{{-     end }}
 ```
 
-**Two installation patterns:**
-
-1. **`Install-Scoop-IfNotPresent <scoop-name> <winget-id>`** - For apps in both registries
-   - Installs via Scoop (user-level, no admin required)
-   - Skips if already present via winget
-
-2. **`scoop install <scoop-name>`** - For Scoop-only apps
-   - Use when the app is not available in winget
-   - Example: Zed editor
+**Legacy pattern** (`Install-Scoop-IfNotPresent <scoop-name> <winget-id>`): a winget-compatibility shim present in existing code. It checks if the app is already installed via winget before installing via Scoop. Not used for new additions — use `find-tool` + `scoop install` instead.
 
 ### 4b. Windows winget (GUI Apps - Admin Level)
 
@@ -245,12 +236,17 @@ This script self-elevates to administrator. Use for:
 
 **File:** `home/.chezmoiscripts/linux/run_onchange_after_10_install-apps.tmpl`
 
-```go
-{{/* Check if flatpak is available */}}
-{{-   $flatpak = includeTemplate "find-tool" (dict "root" . "tool" "flatpak") -}}
+> **Critical: two-phase template.** The header computes `$need_install`; the script body only emits if `$need_install` is true. New apps must be added to **both** the header (tool detection + `$need_install` trigger) and the body (flatpak install command). Adding only to the body means the script won't run when only that app is missing.
 
-{{/* Install via flatpak when available and not headless */}}
-{{-   if and (not .headless) $flatpak }}
+```go
+{{/* HEADER — add tool detection and $need_install trigger (inside the user_setup guard) */}}
+{{-   if .feature_flag -}}
+{{-     $appname = includeTemplate "find-tool" (dict "root" . "tool" "appname") -}}
+{{-   end -}}
+{{-   if and .feature_flag (not $appname) $flatpak -}}{{- $need_install = true -}}{{- end -}}
+
+{{/* BODY — add install command (inside the $need_install block) */}}
+{{-   if and .feature_flag (not $appname) $flatpak }}
 msg "Installing AppName from Flathub"
 flatpak install -y --user flathub org.example.AppName || true
 {{-   end }}
@@ -414,6 +410,25 @@ Format: `run_[onchange_][before|after]_NN_description[.ps1].tmpl`
 
 When adding software, update `README.md` in the appropriate section:
 
+### Section Selection
+
+Use the **most specific section whose platform list matches where the software is actually installed**. When a platform is added, move the entry up to the broader section rather than duplicating it. No entry should appear in more than one section.
+
+**CLI Software** (`### Installed CLI Software` and subsections):
+- Main section — all supported platforms
+- `#### CLI Software on Linux, macOS, and FreeBSD` — excludes Windows
+- `#### CLI Software on Linux and macOS` — excludes FreeBSD and Windows
+- `#### CLI Software on Linux (non-Chimera), macOS, FreeBSD, and Windows` — excludes Chimera
+- Narrower subsections — single platform or distro (FreeBSD, macOS, Windows, Linux, Arch, WSL2, Chimera)
+
+**GUI Software** (`### Installed GUI Software` and subsections):
+- Main section — all supported platforms including FreeBSD
+- `#### GUI Software on Windows, macOS, and Linux` — excludes FreeBSD
+- `#### GUI Software on Windows and macOS` — excludes Linux and FreeBSD
+- Platform-specific subsections — single platform, or macOS version-gated
+
+**As-Needed Software** (`### As needed CLI Software`): not auto-installed. Include `Available via brew, nix, scoop, ...` install guidance instead of conditional notes.
+
 ### For Always-Installed Software
 
 ```markdown
@@ -445,6 +460,7 @@ After adding software, verify on each applicable platform:
 - [ ] **Linux (Nix)**: `which <cmd>` shows Nix store path
 - [ ] **Linux (non-Nix)**: `~/.local/bin/<cmd> --version`
 - [ ] **Linux (Flatpak)**: `flatpak list | grep <app>`
+- [ ] **Linux container test**: `./script/test -w <distro>` (workstation mode: enables GUI app installs; omit `-w` for headless/CLI-only changes)
 - [ ] **Chimera**: `apk info <package>` or `flatpak list`
 - [ ] **FreeBSD**: `pkg info <package>`
 
