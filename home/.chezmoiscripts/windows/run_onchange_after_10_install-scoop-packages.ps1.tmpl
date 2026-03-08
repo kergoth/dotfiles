@@ -2,6 +2,10 @@
 {{- if and .user_setup (not .headless) .ebook_library (not .work) -}}
 {{-   $calibre = includeTemplate "find-tool" (dict "root" . "tool" "calibre") -}}
 {{- end -}}
+{{- $rpi_imager := "" -}}
+{{- if and .user_setup (not .headless) .work -}}
+{{-   $rpi_imager = includeTemplate "find-tool" (dict "root" . "tool" "rpi-imager") -}}
+{{- end -}}
 {{- if and .user_setup (not .headless) -}}
 # GUI Applications
 . $env:CHEZMOI_COMMAND_DIR\scripts\common.ps1
@@ -34,6 +38,9 @@ Install-Scoop-IfNotPresent vivaldi Vivaldi.Vivaldi | Out-Null
 scoop install zed
 
 {{    if .work -}}
+{{      if not $rpi_imager -}}
+scoop install raspberry-pi-imager
+{{-     end }}
 {{      if not .ephemeral -}}
 Install-Scoop-IfNotPresent rufus Rufus.Rufus | Out-Null
 {{      end -}}

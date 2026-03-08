@@ -535,6 +535,7 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 
 - [ChatGPT](https://openai.com/chatgpt/desktop/): OpenAI's AI assistant desktop app.
 - [Discord](https://discord.com): A VoIP and instant messaging social platform.
+- [Raspberry Pi Imager](https://www.raspberrypi.org/downloads/): Imaging utility to install operating systems to a microSD card. _Conditional: work._
 - [Tailscale](https://tailscale.com) ([Open-Source](https://github.com/tailscale/tailscale)): WireGuard-based mesh VPN for secure device connectivity. _Conditional: personal, non-ephemeral._
 - [VLC](https://www.videolan.org/vlc/download-macosx.html) ([Open-Source](https://code.videolan.org/videolan/vlc)): A free and open source cross-platform multimedia player.
 - If the gaming flag is enabled:
@@ -750,7 +751,6 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 ### As Needed GUI Software
 
 - [86Box](https://86box.net/): Emulator for vintage IBM PC and compatibles. Available via brew as `86box` and direct download.
-- [Raspberry Pi Imager](https://www.raspberrypi.org/downloads/): Imaging utility to install operating systems to a microSD card. Available via brew as `raspberry-pi-imager`, winget as `RaspberryPiFoundation.RaspberryPiImager`, and scoop as `extras/raspberry-pi-imager`.
 - [Battle.net](https://us.shop.battle.net/en-us?from=root): Blizzard games client. Available via brew as `battle-net`.
 - [CPDT (Cross Platform Disk Test)](https://www.magesw.com/cpdt/): A disk benchmarking tool for Windows, macOS, and Linux. Available via direct download.
 - [czkawka](https://github.com/qarmin/czkawka): Multi functional app to find duplicates, empty folders, similar images etc.
