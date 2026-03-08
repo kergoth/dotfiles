@@ -47,7 +47,7 @@ if ! dinitctl status dhcpcd | grep STARTED >/dev/null; then
 fi
 
 # Enable bluetooth
-apk add bluez
+apk add --no-interactive bluez
 if ! dinitctl status bluetoothd | grep STARTED >/dev/null; then
     dinitctl enable bluetoothd
 fi
