@@ -18,47 +18,40 @@
 {{- $tool := .tool -}}
 
 {{- $destDir := printf "%s" $root.chezmoi.destDir -}}
-{{- $filter_paths := or (and (hasKey . "home_paths") (not .home_paths)) (and (hasKey . "system_paths") (not .system_paths)) -}}
-{{- $result := "" -}}
-{{- if not $filter_paths -}}
-{{-   $result = lookPath $tool -}}
-{{- end -}}
-{{- if not $result -}}
-{{-   $search_paths := list -}}
-{{-   if not (and (hasKey . "home_paths") (not .home_paths)) -}}
-{{-     range $root.paths.home_bins -}}
+{{- $search_paths := list -}}
+{{- if not (and (hasKey . "home_paths") (not .home_paths)) -}}
+{{-   range $root.paths.home_bins -}}
+{{-     $search_paths = append $search_paths (joinPath $destDir .) -}}
+{{-   end -}}
+{{-   if eq $root.chezmoi.os "windows" -}}
+{{-     range ($root.paths.home_bins_windows | default list) -}}
 {{-       $search_paths = append $search_paths (joinPath $destDir .) -}}
 {{-     end -}}
-{{-     if eq $root.chezmoi.os "windows" -}}
-{{-       range ($root.paths.home_bins_windows | default list) -}}
-{{-         $search_paths = append $search_paths (joinPath $destDir .) -}}
-{{-       end -}}
-{{-     end -}}
 {{-   end -}}
+{{- end -}}
 
-{{-   if hasKey . "platform_paths" -}}
-{{-     $platform_key := printf "%s_%s" .platform_paths $root.chezmoi.os -}}
-{{-     $platform_paths := index $root.paths $platform_key | default list -}}
-{{-       range $platform_paths -}}
-{{-     $search_paths = append $search_paths . -}}
-{{-     end -}}
+{{- if hasKey . "platform_paths" -}}
+{{-   $platform_key := printf "%s_%s" .platform_paths $root.chezmoi.os -}}
+{{-   $platform_paths := index $root.paths $platform_key | default list -}}
+{{-     range $platform_paths -}}
+{{-   $search_paths = append $search_paths . -}}
 {{-   end -}}
+{{- end -}}
 
-{{-   if not (and (hasKey . "system_paths") (not .system_paths)) -}}
-{{-     if eq $root.chezmoi.os "darwin" -}}
-{{-       $search_paths = concat $search_paths ($root.paths.system_bins_darwin | default list) -}}
-{{-     else if eq $root.chezmoi.os "linux" -}}
-{{-       $search_paths = concat $search_paths ($root.paths.system_bins_linux | default list) -}}
-{{-     else if eq $root.chezmoi.os "freebsd" -}}
-{{-       $search_paths = concat $search_paths ($root.paths.system_bins_freebsd | default list) -}}
-{{-     else if eq $root.chezmoi.os "windows" -}}
-{{-       $search_paths = concat $search_paths ($root.paths.system_bins_windows | default list) -}}
-{{-     end -}}
+{{- if not (and (hasKey . "system_paths") (not .system_paths)) -}}
+{{-   if eq $root.chezmoi.os "darwin" -}}
+{{-     $search_paths = concat $search_paths ($root.paths.system_bins_darwin | default list) -}}
+{{-   else if eq $root.chezmoi.os "linux" -}}
+{{-     $search_paths = concat $search_paths ($root.paths.system_bins_linux | default list) -}}
+{{-   else if eq $root.chezmoi.os "freebsd" -}}
+{{-     $search_paths = concat $search_paths ($root.paths.system_bins_freebsd | default list) -}}
+{{-   else if eq $root.chezmoi.os "windows" -}}
+{{-     $search_paths = concat $search_paths ($root.paths.system_bins_windows | default list) -}}
 {{-   end -}}
+{{- end -}}
 
-{{-   $result = findExecutable $tool $search_paths -}}
-{{-   if and (not $result) (hasKey . "fallback") -}}
-{{-     $result = .fallback -}}
-{{-   end -}}
+{{- $result := findExecutable $tool $search_paths -}}
+{{- if and (not $result) (hasKey . "fallback") -}}
+{{-   $result = .fallback -}}
 {{- end -}}
 {{- $result -}}

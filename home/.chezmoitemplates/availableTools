@@ -15,7 +15,6 @@
 {{- $candidates := .tools -}}
 {{- $results := dict -}}
 {{- $destDir := printf "%s" $root.chezmoi.destDir -}}
-{{- $filter_paths := or (and (hasKey . "home_paths") (not .home_paths)) (and (hasKey . "system_paths") (not .system_paths)) -}}
 
 {{- /* Build search paths once (same logic as find-tool) */ -}}
 {{- $search_paths := list -}}
@@ -52,13 +51,7 @@
 
 {{- /* Check each tool */ -}}
 {{- range $_, $tool := $candidates -}}
-{{-   $result := "" -}}
-{{-   if not $filter_paths -}}
-{{-     $result = lookPath $tool -}}
-{{-   end -}}
-{{-   if not $result -}}
-{{-     $result = findExecutable $tool $search_paths -}}
-{{-   end -}}
+{{-   $result := findExecutable $tool $search_paths -}}
 {{-   $_ := set $results $tool $result -}}
 {{- end -}}
 {{- $results | toJson -}}
