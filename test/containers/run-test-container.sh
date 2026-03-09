@@ -24,9 +24,9 @@ cd "$dotfiles_dir"
 script/$test_distro/setup-root "$test_user" "$test_uid" </dev/null
 age_key_path="/home/$test_user/.config/chezmoi/age.key"
 if [ -e "$age_key_path" ]; then
-    find "/home/$test_user" -path "$age_key_path" -prune -o -exec chown "$test_user" {} +
+    find "/home/$test_user" -path "$age_key_path" -prune -o -exec chown -h "$test_user" {} +
 else
-    chown -R "$test_user" "/home/$test_user"
+    chown -hR "$test_user" "/home/$test_user"
 fi
 
 xdg_runtime_dir="/tmp/xdg-$test_user"
@@ -43,8 +43,8 @@ fi
 if [ "${DOTFILES_TEST_GNUPG:-0}" -eq 1 ] || [ -n "${HOST_GNUPG_DIR:-}" ]; then
     if [ -d "$host_gnupg_dir" ]; then
         rm -rf "/home/$test_user/.gnupg"
-        cp -a "$host_gnupg_dir" "/home/$test_user/.gnupg"
-        chown -R "$test_user" "/home/$test_user/.gnupg"
+        cp -a "$host_gnupg_dir" "/home/$test_user/.gnupg" 2>/dev/null || :
+        chown -hR "$test_user" "/home/$test_user/.gnupg"
         user_gnupg="/home/$test_user/.gnupg"
     else
         echo "Error: host GNUPGHOME not found at $host_gnupg_dir" >&2
