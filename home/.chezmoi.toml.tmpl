@@ -64,6 +64,7 @@
 {{- $devpod := env "DEVPOD" | not | not -}}
 {{- $has_devpod_gpg := stat (joinPath (printf "%s" .chezmoi.destDir) ".gnupg/S.gpg-agent") -}}
 {{- $skip_gpg := and $devpod $has_devpod_gpg | not | not -}}
+{{- $skip_gpg_secret_import := false -}}
 
 {{/* work around unreliable hostname on darwin */}}
 {{- $hostname := .chezmoi.hostname -}}
@@ -120,6 +121,10 @@
 {{- $dotfiles_headless := (env "DOTFILES_HEADLESS") -}}
 {{- if ne $dotfiles_headless "" -}}
 {{-   $headless = has (lower $dotfiles_headless) (list "1" "true" "yes" "on") -}}
+{{- end -}}
+{{- $dotfiles_skip_gpg_secret_import := (env "DOTFILES_SKIP_GPG_SECRET_IMPORT") -}}
+{{- if ne $dotfiles_skip_gpg_secret_import "" -}}
+{{-   $skip_gpg_secret_import = has (lower $dotfiles_skip_gpg_secret_import) (list "1" "true" "yes" "on") -}}
 {{- end -}}
 
 {{/* override init detection via env var (explicit) */}}
@@ -291,6 +296,7 @@ encryption = "age"
 
     devpod = {{ $devpod }}
     skip_gpg = {{ $skip_gpg }}
+    skip_gpg_secret_import = {{ $skip_gpg_secret_import }}
 
 {{- if eq .chezmoi.os "darwin" }}
     macos_major_version = {{ $macos_major_version }}
