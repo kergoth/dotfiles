@@ -41,9 +41,10 @@ fi
 # Enable sound
 apk add pipewire
 
-# Enable DHCP Client
-if ! dinitctl status dhcpcd | grep STARTED >/dev/null; then
-    dinitctl enable dhcpcd
+# Enable NetworkManager
+apk add --no-interactive networkmanager
+if ! dinitctl status networkmanager | grep STARTED >/dev/null; then
+    dinitctl enable networkmanager
 fi
 
 # Enable bluetooth

@@ -202,7 +202,7 @@ doas ./.dotfiles/script/chimera/os-install
   - Log in as the new user and:
 
 ```console
-doas dinitctl enable dhcpcd
+doas dinitctl enable networkmanager
 # Wait a second for the DHCP client to get an IP address
 ~/.dotfiles/script/setup-full
 ```

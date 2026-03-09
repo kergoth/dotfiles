@@ -67,12 +67,5 @@ elif ! [ -e /etc/doas.conf ] || ! grep -q "^permit.*:wheel" /etc/doas.conf; then
     echo "permit :wheel" >>/etc/doas.conf
 fi
 
-# Enable the DHCP client service (skip in containers where dinit isn't running)
-if command -v dinitctl >/dev/null 2>&1 && dinitctl list >/dev/null 2>&1; then
-    if dinitctl list | grep -q dhcpcd && ! dinitctl status dhcpcd | grep -q STARTED; then
-        dinitctl enable dhcpcd
-    fi
-fi
-
 # Install prerequisites for dotfiles bootstrap
 apk add --no-interactive bash git unzip curl
