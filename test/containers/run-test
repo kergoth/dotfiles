@@ -192,14 +192,14 @@ resolve_host_profile() {
 }
 
 init_secrets_overrides() {
-    resolve_host_profile
-
     secrets_enabled=0
     if [ -n "${DOTFILES_SECRETS:-}" ] && is_truthy "$DOTFILES_SECRETS"; then
         secrets_enabled=1
     fi
 
     if [ "$secrets_enabled" -eq 1 ]; then
+        resolve_host_profile
+
         if [ -z "${DOTFILES_PERSONAL:-}" ] && [ -z "${DOTFILES_WORK:-}" ]; then
             die "DOTFILES_SECRETS=1 but host profile unknown; set DOTFILES_PERSONAL=1 or DOTFILES_WORK=1"
         fi
