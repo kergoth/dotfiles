@@ -11,7 +11,8 @@ Is this a GUI application?
 │   ├── macOS (admin) → Homebrew cask + mas (scripts/macos/Brewfile-admin.tmpl)
 │   ├── Windows (user) → Scoop (home/.chezmoiscripts/windows/run_onchange_after_10_install-scoop-packages.ps1.tmpl)
 │   ├── Windows (admin) → winget (scripts/setup-system-windows.ps1.tmpl)
-│   └── Linux (non-headless) → Flatpak (universal on all supported distros)
+│   ├── Linux (non-headless) → Flatpak (universal on all supported distros)
+│   └── Linux (Chimera, glibc GUI app unavailable on Flathub or Flatpak sandbox inadequate) → distrobox container (Ubuntu 22.04)
 └── No (CLI tool)
     ├── Requires root/system-level installation?
     │   └── Yes → Platform system-setup script (scripts/setup-system-*.tmpl)
@@ -53,7 +54,7 @@ When multiple installation methods are available, prefer them in this order:
 | Windows | Scoop | Scoop | cargo/uv | winget, system config (Sophia Script) |
 | Linux (Arch) | Flatpak | Nix | cargo/uv | pacman, system services |
 | Linux (Debian/Ubuntu) | Flatpak | Nix | cargo/uv | apt, system services |
-| Linux (Chimera) | Flatpak | apk (system) | eget → cargo/uv | apk, doas, system services |
+| Linux (Chimera) | Flatpak → distrobox (Ubuntu 22.04) | apk (system) | eget → cargo/uv | apk, doas, system services |
 | Linux (SteamOS) | N/A | Nix | cargo/uv | Minimal |
 | FreeBSD | pkg/ports | pkg/ports | cargo/uv | pkg, ports, doas, system services |
 
@@ -69,6 +70,8 @@ When multiple installation methods are available, prefer them in this order:
 | Windows GUI apps (user) | `home/.chezmoiscripts/windows/run_onchange_after_10_install-scoop-packages.ps1.tmpl` |
 | Windows CLI tools (user) | `home/.chezmoiscripts/windows/run_onchange_before_25_install-tools.ps1.tmpl` |
 | Linux GUI/CLI apps | `home/.chezmoiscripts/linux/run_onchange_after_10_install-apps.tmpl` |
+| Chimera distrobox (host) | `home/.chezmoiscripts/linux/run_onchange_after_20_setup-distrobox.tmpl` |
+| Chimera distrobox (container) | `scripts/setup-distrobox-chimera.sh` |
 | Nix packages | `home/dot_config/home-manager/home.nix.tmpl` |
 | CLI tools (eget/cargo/uv) | `home/.chezmoiscripts/posix/run_onchange_before_25_install-tools.tmpl` |
 
@@ -307,7 +310,39 @@ All three use the `packagesForMissingTools` helper to skip already-installed too
 
 The Windows version follows the same pattern but installs Scoop packages as its primary tool source, with cargo and uv as secondary sources.
 
-### 9. Chimera Linux (apk + Flatpak)
+### 9. Chimera Linux Distrobox (glibc GUI Apps)
+
+For glibc-linked GUI apps on Chimera that are either unavailable on Flathub or where Flatpak sandboxing is inappropriate (e.g., cross-app IPC, DE biometric integration, unrestricted filesystem access), use the Ubuntu 22.04 distrobox. The distrobox shares `$HOME` with the host and exports `.desktop` files so apps appear in the launcher.
+
+Add apps to `scripts/setup-distrobox-chimera.sh` — the host script (`run_onchange_after_20_setup-distrobox.tmpl`) re-runs automatically when `setup-distrobox-chimera.sh` changes via sha256sum in the template header, so no changes to the host script are needed.
+
+**Install block** (before the `distrobox-export` section):
+
+```bash
+if ! command -v appname >/dev/null 2>&1; then
+    # Add apt repo keyring and source, then install
+    curl -fsSL https://example.com/signing-key.asc \
+        | gpg --dearmor \
+        | sudo dd of=/usr/share/keyrings/appname.gpg status=none
+    echo "deb [signed-by=/usr/share/keyrings/appname.gpg] https://example.com/deb stable main" \
+        | sudo tee /etc/apt/sources.list.d/appname.list >/dev/null
+    sudo apt-get update -qq
+    sudo apt-get install -y appname
+fi
+```
+
+**Export block** (in the distrobox-export section):
+
+```bash
+if ! distrobox-export --app appname; then
+    echo >&2 "Error: failed to export AppName"
+    exit 1
+fi
+```
+
+Conditions: host script runs only when `eq .osid "linux-chimera"` and `.containers` (Podman/distrobox) and `not .headless` and `not .ephemeral` and not already inside a container (`not (env "CONTAINER_ID")`).
+
+### 10. Chimera Linux (apk + Flatpak)
 
 **File:** `scripts/setup-system-chimera.tmpl`
 

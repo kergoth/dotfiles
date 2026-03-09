@@ -171,6 +171,10 @@ Chezmoi externals download non-package-manager resources. Templates in `.chezmoi
 
 Two-phase: template header computes `$need_install` via `find-tool` checks (renders script empty if nothing to do); body emits install commands only when needed. New GUI apps need entries in **both** the header (tool detection + `$need_install` trigger) and the body (flatpak install command).
 
+### Chimera Linux Distrobox Pattern (`run_onchange_after_20_setup-distrobox.tmpl`)
+
+Chimera uses musl libc — glibc-linked binaries (1Password, Vivaldi, Zed) can't run natively. The solution is an Ubuntu 22.04 distrobox: `run_onchange_after_20_setup-distrobox.tmpl` creates/updates the container from the host; `scripts/setup-distrobox-chimera.sh` runs inside to install apps and export `.desktop` files via `distrobox-export`. Only runs when `.containers`, `not .headless`, `not .ephemeral`, and not already inside a container. Use this for glibc GUI apps on Chimera that are unavailable on Flathub or where Flatpak sandboxing is inappropriate (cross-app IPC, DE biometric integration, unrestricted filesystem access).
+
 ### Template Helpers: `find-tool` / `availableTools` / `packagesForMissingTools`
 
 - All three accept `home_paths` (bool, default true) and `system_paths` (bool, default true) to control which path sets are searched. Either is appropriate for user or system package detection.
