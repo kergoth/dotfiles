@@ -113,6 +113,10 @@
 {{-   end -}}
 {{- end -}}
 
+{{- if and (eq $osid "linux-chimera") (not $headless) (not $ephemeral) -}}
+{{-   $containers = true -}}
+{{- end -}}
+
 {{/* override via env vars (explicit) */}}
 {{- $dotfiles_ephemeral := (env "DOTFILES_EPHEMERAL") -}}
 {{- if ne $dotfiles_ephemeral "" -}}
