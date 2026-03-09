@@ -104,7 +104,7 @@ setup_os() {
 
     pacman_install vi dhcpcd
 
-    systemctl enable dhcpcd
+    systemctl enable networkmanager
 
     if [ "$OSTYPE" != WSL ]; then
         echo >&2 "Input password for root"
