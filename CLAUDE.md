@@ -153,6 +153,20 @@ Chezmoi externals download non-package-manager resources. Templates in `.chezmoi
 - `chezmoi-edit-encrypted` script for editing encrypted files
 - Bootstrap scripts retrieve age key from 1Password during setup
 
+### Ensuring Directories Exist
+
+- Create the directory under `home/` with chezmoi naming (e.g., `home/dot_local/share/wget/`) — chezmoi will create it on apply
+- Add a `.keep` file inside so git tracks the empty directory (git cannot track empty directories)
+- If the directory holds unmanaged runtime files (state, caches, tool-generated data), whitelist the directory in `.chezmoiignore.tmpl` with `!path` and ignore contents with `path/*` — this prevents chezmoi from trying to manage files created by the tool at runtime
+- See `.local/state/zsh` and `.local/share/wget` for examples
+- Do NOT use `mkdir -p` in run scripts for directories chezmoi should manage
+
+### File Removal and Cleanup
+
+- `.chezmoiremove.tmpl` triggers **interactive confirmation prompts** — avoid for files that may reappear (e.g., tool-generated state files)
+- Prefer `rm -f` in `run_onchange_after_00_migrate-xdg-paths` for cleaning up old XDG paths — runs non-interactively
+- Reserve `.chezmoiremove` for one-time removal of obsolete managed files that won't be recreated
+
 ### Linux GUI App Install Pattern (`run_onchange_after_10_install-apps.tmpl`)
 
 Two-phase: template header computes `$need_install` via `find-tool` checks (renders script empty if nothing to do); body emits install commands only when needed. New GUI apps need entries in **both** the header (tool detection + `$need_install` trigger) and the body (flatpak install command).
