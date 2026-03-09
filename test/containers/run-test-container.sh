@@ -20,7 +20,12 @@ test_setup_cmd="$TEST_SETUP_CMD"
 cd "$dotfiles_dir"
 
 script/$test_distro/setup-root "$test_user" "$test_uid" </dev/null
-chown -R "$test_user" "/home/$test_user"
+age_key_path="/home/$test_user/.config/chezmoi/age.key"
+if [ -e "$age_key_path" ]; then
+    find "/home/$test_user" -path "$age_key_path" -prune -o -exec chown "$test_user" {} +
+else
+    chown -R "$test_user" "/home/$test_user"
+fi
 
 xdg_runtime_dir="/tmp/xdg-$test_user"
 mkdir -p "$xdg_runtime_dir"
