@@ -16,6 +16,8 @@ test_distro="$TEST_DISTRO"
 test_user="$TEST_USER"
 test_uid="$TEST_UID"
 test_setup_cmd="$TEST_SETUP_CMD"
+host_gnupg_dir="${HOST_GNUPG_DIR:-/run/host-gnupg}"
+user_gnupg=""
 
 cd "$dotfiles_dir"
 
@@ -38,6 +40,22 @@ if [ -d /nix ]; then
     fi
 fi
 
+if [ "${DOTFILES_TEST_GNUPG:-0}" -eq 1 ] || [ -n "${HOST_GNUPG_DIR:-}" ]; then
+    if [ -d "$host_gnupg_dir" ]; then
+        rm -rf "/home/$test_user/.gnupg"
+        cp -a "$host_gnupg_dir" "/home/$test_user/.gnupg"
+        chown -R "$test_user" "/home/$test_user/.gnupg"
+        user_gnupg="/home/$test_user/.gnupg"
+    else
+        echo "Error: host GNUPGHOME not found at $host_gnupg_dir" >&2
+        exit 1
+    fi
+fi
+
+if [ -n "$user_gnupg" ]; then
+    GNUPGHOME="$user_gnupg"
+fi
+
 if [ -S /run/dbus/system_bus_socket ]; then
     :
 elif command -v dbus-daemon >/dev/null 2>&1; then
@@ -58,9 +76,11 @@ export GITHUB_TOKEN="${GITHUB_TOKEN:-}"
 export DOTFILES_EPHEMERAL="${DOTFILES_EPHEMERAL:-}"
 export DOTFILES_HEADLESS="${DOTFILES_HEADLESS:-}"
 export DOTFILES_SECRETS="${DOTFILES_SECRETS:-}"
+export DOTFILES_SKIP_GPG_SECRET_IMPORT="${DOTFILES_SKIP_GPG_SECRET_IMPORT:-}"
 export DOTFILES_PERSONAL="${DOTFILES_PERSONAL:-}"
 export DOTFILES_WORK="${DOTFILES_WORK:-}"
 export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-}"
+export GNUPGHOME="${GNUPGHOME:-}"
 
 cd "$DOTFILES_DIR"
 
@@ -90,9 +110,11 @@ env_cmd="$env_cmd GITHUB_TOKEN=$(sh_quote "${GITHUB_TOKEN:-}")"
 env_cmd="$env_cmd DOTFILES_EPHEMERAL=$(sh_quote "${DOTFILES_EPHEMERAL:-}")"
 env_cmd="$env_cmd DOTFILES_HEADLESS=$(sh_quote "${DOTFILES_HEADLESS:-}")"
 env_cmd="$env_cmd DOTFILES_SECRETS=$(sh_quote "${DOTFILES_SECRETS:-}")"
+env_cmd="$env_cmd DOTFILES_SKIP_GPG_SECRET_IMPORT=$(sh_quote "${DOTFILES_SKIP_GPG_SECRET_IMPORT:-}")"
 env_cmd="$env_cmd DOTFILES_PERSONAL=$(sh_quote "${DOTFILES_PERSONAL:-}")"
 env_cmd="$env_cmd DOTFILES_WORK=$(sh_quote "${DOTFILES_WORK:-}")"
 env_cmd="$env_cmd XDG_RUNTIME_DIR=$(sh_quote "$xdg_runtime_dir")"
+env_cmd="$env_cmd GNUPGHOME=$(sh_quote "${GNUPGHOME:-}")"
 env_cmd="$env_cmd sh $(sh_quote "$user_script")"
 
 if command -v doas >/dev/null 2>&1; then

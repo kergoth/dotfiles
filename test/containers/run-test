@@ -21,6 +21,7 @@
 #     -S          Skip setup-system, only run setup
 #     -b          Just build the image(s), don't run
 #     -w          Workstation mode (DOTFILES_HEADLESS=0, DOTFILES_EPHEMERAL=0)
+#     -G          Seed GNUPGHOME from host (~/.gnupg) for test user
 #     -C          Skip shared nix cache
 #     -n          Dry run, don't actually do anything
 #     -v          Increase verbosity, can be specified multiple times
@@ -40,6 +41,7 @@ process_arguments() {
     shell_after=0
     no_system=0
     build_only=0
+    with_gnupg=0
     skip_nix_cache=${DOTFILES_SKIP_CACHE:-0}
     dry_run=0
     verbosity=0
@@ -50,7 +52,7 @@ process_arguments() {
     user_uid=10000
     dotfiles_mount=/home/testuser/.dotfiles
 
-    while getopts ":aisSbwCnvqh" opt; do
+    while getopts ":aisSbwCnvqhG" opt; do
         case "$opt" in
             a)
                 all_distros=1
@@ -70,6 +72,9 @@ process_arguments() {
             w)
                 DOTFILES_HEADLESS=0
                 DOTFILES_EPHEMERAL=0
+                ;;
+            G)
+                with_gnupg=1
                 ;;
             C)
                 skip_nix_cache=1
@@ -205,6 +210,15 @@ init_secrets_overrides() {
     fi
 }
 
+init_gnupg_overrides() {
+    if [ "${with_gnupg:-0}" -eq 1 ]; then
+        host_gnupg_dir="${HOME}/.gnupg"
+        if [ ! -d "$host_gnupg_dir" ]; then
+            die "GNUPGHOME seed requested but host path missing: %s" "$host_gnupg_dir"
+        fi
+    fi
+}
+
 find_distros() {
     for d in "$scriptdir"/*; do
         [ -d "$d" ] || continue
@@ -294,6 +308,7 @@ run_container() {
         ${DOTFILES_SECRETS:+-e DOTFILES_SECRETS="$DOTFILES_SECRETS"} \
         ${DOTFILES_PERSONAL:+-e DOTFILES_PERSONAL="$DOTFILES_PERSONAL"} \
         ${DOTFILES_WORK:+-e DOTFILES_WORK="$DOTFILES_WORK"} \
+        ${DOTFILES_SKIP_GPG_SECRET_IMPORT:+-e DOTFILES_SKIP_GPG_SECRET_IMPORT="$DOTFILES_SKIP_GPG_SECRET_IMPORT"} \
         ${RUN_TEST_TRACE:+-e RUN_TEST_TRACE="$RUN_TEST_TRACE"}
 
     if [ "$skip_nix_cache" != "1" ]; then
@@ -301,6 +316,11 @@ run_container() {
           --mount type=volume,src=dotfiles-nix-store,dst=/nix \
           --mount "type=volume,src=dotfiles-nix-cache,dst=/home/$user/.cache/nix" \
           --mount "type=volume,src=dotfiles-nix-state,dst=/home/$user/.local/state/nix"
+    fi
+
+    if [ "${with_gnupg:-0}" -eq 1 ]; then
+        set -- "$@" -e DOTFILES_TEST_GNUPG=1 -e HOST_GNUPG_DIR="/run/host-gnupg"
+        set -- "$@" -v "$host_gnupg_dir:/run/host-gnupg:ro"
     fi
 
     if [ "${secrets_enabled:-0}" -eq 1 ]; then
@@ -344,6 +364,7 @@ main() {
     shift $((OPTIND - 1))
 
     init_secrets_overrides
+    init_gnupg_overrides
 
     # Use $HOME rather than $TMPDIR: Colima (macOS Docker VM) doesn't mount
     # all host paths, but $HOME is reliably available inside the VM context.
