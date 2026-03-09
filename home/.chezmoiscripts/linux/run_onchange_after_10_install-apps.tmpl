@@ -2,7 +2,6 @@
 {{- $vivaldi := "" -}}
 {{- $kitty := "" -}}
 {{- $devpod := "" -}}
-{{- $onepassword := "" -}}
 {{- $86box := "" -}}
 {{- $calibre := "" -}}
 {{- $obsidian := "" -}}
@@ -12,8 +11,10 @@
 {{-   $flatpak = includeTemplate "find-tool" (dict "root" . "tool" "flatpak") -}}
 {{- end -}}
 {{- if and .user_setup (not .headless) (not .steamdeck) (not (env "CONTAINER_ID")) -}}
-{{-   $zed = includeTemplate "find-tool" (dict "root" . "tool" "zed") -}}
-{{-   $vivaldi = includeTemplate "find-tool" (dict "root" . "tool" "vivaldi") -}}
+{{-   if not (eq .osid "linux-chimera") -}}
+{{-     $zed = includeTemplate "find-tool" (dict "root" . "tool" "zed") -}}
+{{-     $vivaldi = includeTemplate "find-tool" (dict "root" . "tool" "vivaldi") -}}
+{{-   end -}}
 {{-   $obsidian = includeTemplate "find-tool" (dict "root" . "tool" "obsidian") -}}
 {{-   if or (eq .osid "linux-debian") (eq .osid "linux-ubuntu") -}}
 {{-     $kitty = includeTemplate "find-tool" (dict "root" . "tool" "kitty") -}}
@@ -25,7 +26,7 @@
 {{-     $calibre = includeTemplate "find-tool" (dict "root" . "tool" "calibre") -}}
 {{-   end -}}
 {{-   if and (not $zed) (not (eq .osid "linux-chimera")) -}}{{- $need_install = true -}}{{- end -}}
-{{-   if and (not $vivaldi) $flatpak -}}{{- $need_install = true -}}{{- end -}}
+{{-   if and (not $vivaldi) $flatpak (not (eq .osid "linux-chimera")) -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and (not $obsidian) $flatpak -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and (or (eq .osid "linux-debian") (eq .osid "linux-ubuntu")) (not $kitty) -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and .retro_computing (not $86box) $flatpak -}}{{- $need_install = true -}}{{- end -}}
@@ -34,10 +35,6 @@
 {{- if and .coding .containers -}}
 {{-   $devpod = includeTemplate "find-tool" (dict "root" . "tool" "devpod") -}}
 {{-   if not $devpod -}}{{- $need_install = true -}}{{- end -}}
-{{- end -}}
-{{- if and (eq .osid "linux-chimera") (not .work) (not .ephemeral) $flatpak -}}
-{{-   $onepassword = includeTemplate "find-tool" (dict "root" . "tool" "1password") -}}
-{{-   if not $onepassword -}}{{- $need_install = true -}}{{- end -}}
 {{- end -}}
 {{- if $need_install -}}
 #!/usr/bin/env bash
@@ -88,11 +85,6 @@ cp ~/.local/kitty.app/share/applications/kitty-open.desktop ~/.local/share/appli
 sed -i "s|Icon=kitty|Icon=$HOME/.local/kitty.app/share/icons/hicolor/256x256/apps/kitty.png|g" ~/.local/share/applications/kitty*.desktop 2>/dev/null || true
 sed -i "s|Exec=kitty|Exec=$HOME/.local/kitty.app/bin/kitty|g" ~/.local/share/applications/kitty*.desktop 2>/dev/null || true
 ln -sf ~/.local/kitty.app/bin/kitty ~/.local/kitty.app/bin/kitten ~/.local/bin/
-{{-   end }}
-
-{{-   if and (eq .osid "linux-chimera") (not .work) (not .ephemeral) (not $onepassword) }}
-msg "Installing 1Password from Flathub"
-flatpak install -y --user flathub com.onepassword.OnePassword || true
 {{-   end }}
 
 {{-   if and .coding .containers (not $devpod) }}
