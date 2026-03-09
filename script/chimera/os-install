@@ -16,7 +16,6 @@ usage() {
     echo >&2 "Options:"
     echo >&2
     echo >&2 "  -d DEVICE       Device on which to install Chimera Linux. Default: $device."
-    echo >&2 "  -b BOOTLOADER   Bootloader to install (grub or syslinux). Default: $bootloader."
     echo >&2 "  -u USERNAME     Username to create. Default: $username."
     exit 2
 }
@@ -79,7 +78,7 @@ setup_os() {
 
     # GRUB
     echo >&2 "Installing GRUB"
-    grub-install --target=x86_64-efi --efi-directory=/boot
+    grub-install --target="$grub_target" --efi-directory=/boot
     update-grub
 
     # Post-installation
@@ -128,16 +127,13 @@ create_user() {
 }
 
 in_chroot=0
-while getopts cd:b:u:h opt; do
+while getopts cd:u:h opt; do
     case "$opt" in
     c)
         in_chroot=1
         ;;
     d)
         device="$OPTARG"
-        ;;
-    b)
-        bootloader="$OPTARG"
         ;;
     u)
         username="$OPTARG"
@@ -149,15 +145,14 @@ while getopts cd:b:u:h opt; do
 done
 shift $((OPTIND - 1))
 
-case "$bootloader" in
-grub)
-    bootloader_package=grub-x86_64-efi
-    ;;
-*)
-    echo >&2 "Error: -b $bootloader is unsupported. Only grub is supported by this script at this time."
-    exit 1
-    ;;
+grub_arch=$(uname -m)
+case "$grub_arch" in
+    aarch64)
+        grub_arch=arm64
+        ;;
 esac
+grub_target="$grub_arch-efi"
+bootloader_package="grub-$grub_arch-efi"
 
 if [ $# -gt 1 ]; then
     usage
