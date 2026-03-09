@@ -27,6 +27,10 @@ if ! has zsh; then
     sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y install zsh
 fi
 
+if ! has file; then
+    sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y install file
+fi
+
 {{ if not .headless -}}
 # Install KDE Plasma and display manager
 sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y update
