@@ -1,4 +1,7 @@
-{{- $signingKey := .git.signing_key -}}
+{{- $signingKey := "" -}}
+{{- if and .git.signing_key (not .skip_gpg_secret_import) -}}
+{{-   $signingKey = .git.signing_key -}}
+{{- end -}}
 
 {{/* Set merge.conflictStyle to zdiff3 for git version 2.51 or newer */}}
 {{- $git := includeTemplate "find-tool" (dict "root" . "tool" "git") -}}
