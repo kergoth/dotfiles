@@ -42,7 +42,15 @@ chezmoi doctor
 ./script/test -S arch   # skip setup-system, only run setup
 ./script/test -b        # build container images only, don't run
 ./script/test -w arch   # workstation mode: DOTFILES_HEADLESS=0, DOTFILES_EPHEMERAL=0 (enables GUI app installs)
+./script/test -G arch   # seed container GNUPGHOME from host ~/.gnupg (avoids interactive GPG passphrase)
+./script/test -C arch   # skip shared nix store/cache volumes
 ./script/test debian ubuntu  # test multiple distros in one run (space-separated)
+
+# Env vars for secrets-enabled testing:
+#   DOTFILES_SECRETS=1          Mount host age key; enables chezmoi secret decryption
+#   DOTFILES_PERSONAL=1         Force personal profile (auto-detected from host if unset)
+#   DOTFILES_WORK=1             Force work profile
+#   DOTFILES_SKIP_GPG_SECRET_IMPORT=1  Skip interactive GPG secret key import step
 
 # Validate template rendering without applying
 scripts/chezmoi-execute-template home/.chezmoiscripts/linux/run_onchange_after_10_install-apps.tmpl
