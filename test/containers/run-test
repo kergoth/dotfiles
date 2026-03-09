@@ -5,6 +5,9 @@
 #     ARCH_BASE_IMAGE         Override base image for arch container (all arches).
 #     ARCH_ARM64_BASE_IMAGE   Override base image for arch container on arm64 only.
 #                             Default: ghcr.io/baerenbude-org/archlinuxarm-arm64v8:latest
+#     DOTFILES_SECRETS        Force secrets on/off (1/0).
+#     DOTFILES_PERSONAL       Force personal profile (always passed through).
+#     DOTFILES_WORK           Force work profile (always passed through).
 #
 # Build and run a test container to validate dotfiles setup scripts.
 #
@@ -159,6 +162,49 @@ run() {
     fi
 }
 
+is_truthy() {
+    case "$(printf "%s" "${1:-}" | tr '[:upper:]' '[:lower:]')" in
+        1|true|yes|on) return 0 ;;
+    esac
+    return 1
+}
+
+resolve_host_profile() {
+    if [ -n "${DOTFILES_PERSONAL:-}" ] || [ -n "${DOTFILES_WORK:-}" ]; then
+        return 0
+    fi
+    if ! command -v chezmoi >/dev/null 2>&1; then
+        return 0
+    fi
+
+    host_profile=$(chezmoi execute-template --no-tty --stdinisatty=false \
+        '{{ if .personal }}personal{{ else if .work }}work{{ else }}none{{ end }}')
+    case "$host_profile" in
+        personal) DOTFILES_PERSONAL=1 ;;
+        work) DOTFILES_WORK=1 ;;
+    esac
+}
+
+init_secrets_overrides() {
+    resolve_host_profile
+
+    secrets_enabled=0
+    if [ -n "${DOTFILES_SECRETS:-}" ] && is_truthy "$DOTFILES_SECRETS"; then
+        secrets_enabled=1
+    fi
+
+    if [ "$secrets_enabled" -eq 1 ]; then
+        if [ -z "${DOTFILES_PERSONAL:-}" ] && [ -z "${DOTFILES_WORK:-}" ]; then
+            die "DOTFILES_SECRETS=1 but host profile unknown; set DOTFILES_PERSONAL=1 or DOTFILES_WORK=1"
+        fi
+
+        age_key_path="$HOME/.config/chezmoi/age.key"
+        if [ ! -f "$age_key_path" ]; then
+            die "DOTFILES_SECRETS=1 requires host age key at %s" "$age_key_path"
+        fi
+    fi
+}
+
 find_distros() {
     for d in "$scriptdir"/*; do
         [ -d "$d" ] || continue
@@ -245,6 +291,9 @@ run_container() {
         ${GITHUB_TOKEN:+-e GITHUB_TOKEN="$GITHUB_TOKEN"} \
         ${DOTFILES_EPHEMERAL:+-e DOTFILES_EPHEMERAL="$DOTFILES_EPHEMERAL"} \
         ${DOTFILES_HEADLESS:+-e DOTFILES_HEADLESS="$DOTFILES_HEADLESS"} \
+        ${DOTFILES_SECRETS:+-e DOTFILES_SECRETS="$DOTFILES_SECRETS"} \
+        ${DOTFILES_PERSONAL:+-e DOTFILES_PERSONAL="$DOTFILES_PERSONAL"} \
+        ${DOTFILES_WORK:+-e DOTFILES_WORK="$DOTFILES_WORK"} \
         ${RUN_TEST_TRACE:+-e RUN_TEST_TRACE="$RUN_TEST_TRACE"}
 
     if [ "$skip_nix_cache" != "1" ]; then
@@ -252,6 +301,10 @@ run_container() {
           --mount type=volume,src=dotfiles-nix-store,dst=/nix \
           --mount "type=volume,src=dotfiles-nix-cache,dst=/home/$user/.cache/nix" \
           --mount "type=volume,src=dotfiles-nix-state,dst=/home/$user/.local/state/nix"
+    fi
+
+    if [ "${secrets_enabled:-0}" -eq 1 ]; then
+        set -- "$@" -v "$age_key_path:/home/$user/.config/chezmoi/age.key:ro"
     fi
 
     if [ "$interactive" -eq 1 ]; then
@@ -289,6 +342,8 @@ run_one() {
 main() {
     process_arguments "$@"
     shift $((OPTIND - 1))
+
+    init_secrets_overrides
 
     # Use $HOME rather than $TMPDIR: Colima (macOS Docker VM) doesn't mount
     # all host paths, but $HOME is reliably available inside the VM context.
