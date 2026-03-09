@@ -83,7 +83,10 @@ pacman_install plasma-desktop sddm okular
 {{ if and (not .ephemeral) (not .wsl2) (not (env "CONTAINER_ID")) -}}
 {{   if .has_init -}}
 # Enable sddm
-sudorun systemctl enable --now sddm.service
+sudorun systemctl enable sddm.service
+if pgrep systemd &>/dev/null; then
+    sudorun systemctl start sddm.service
+fi
 {{-   end }}
 {{- end }}
 
@@ -137,7 +140,10 @@ fi
 {{- end }}
 
 {{ if .has_init -}}
-sudorun systemctl enable --now sshd
+sudorun systemctl enable sshd
+if pgrep systemd &>/dev/null; then
+    sudorun systemctl start sshd
+fi
 {{- end }}
 
 pacman_install nss-mdns avahi
@@ -147,15 +153,21 @@ if ! grep -q 'hosts:.*mdns_minimal' /etc/nsswitch.conf; then
 fi
 
 {{ if .has_init -}}
-sudorun systemctl enable --now avahi-daemon.service || true
+sudorun systemctl enable avahi-daemon.service || true
+if pgrep systemd &>/dev/null; then
+    sudorun systemctl start avahi-daemon.service || true
+fi
 {{- end }}
 
 {{   if not .work -}}
 # Install, enable, and start Tailscale
 pacman_install tailscale
 {{     if .has_init -}}
-sudorun systemctl enable --now tailscaled
-sudorun tailscale up
+sudorun systemctl enable tailscaled
+if pgrep systemd &>/dev/null; then
+    sudorun systemctl start tailscaled
+    sudorun tailscale up
+fi
 {{-     end }}
 {{-   end }}
 {{- end }}

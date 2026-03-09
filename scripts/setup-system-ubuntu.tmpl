@@ -39,7 +39,10 @@ sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y install kde-plasma-desktop
 {{ if and (not .ephemeral) (not .wsl2) (not (env "CONTAINER_ID")) -}}
 {{   if .has_init -}}
 # Enable sddm
-sudorun systemctl enable --now sddm.service
+sudorun systemctl enable sddm.service
+if pgrep systemd &>/dev/null; then
+    sudorun systemctl start sddm
+fi
 {{-   end }}
 {{- end }}
 
@@ -82,8 +85,11 @@ sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y update
 {{ if $add_tailscale -}}
 sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y install tailscale
 {{   if .has_init -}}
-sudorun systemctl enable --now tailscaled
-sudorun tailscale up
+sudorun systemctl enable tailscaled
+if pgrep systemd &>/dev/null; then
+    sudorun systemctl start tailscaled
+    sudorun tailscale up
+fi
 {{-   end }}
 {{ end -}}
 {{ if $add_onepassword -}}

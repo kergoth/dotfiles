@@ -56,8 +56,11 @@ sudorun dnf config-manager --add-repo {{ $tailscaleURL }}
 {{- end }}
 sudorun dnf -y --setopt=install_weak_deps=False install tailscale
 {{   if .has_init -}}
-sudorun systemctl enable --now tailscaled
-sudorun tailscale up
+sudorun systemctl enable tailscaled
+if pgrep systemd &>/dev/null; then
+    sudorun systemctl start tailscaled
+    sudorun tailscale up
+fi
 {{-   end }}
 {{- end }}
 
