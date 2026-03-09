@@ -117,25 +117,37 @@ env_cmd="$env_cmd XDG_RUNTIME_DIR=$(sh_quote "$xdg_runtime_dir")"
 env_cmd="$env_cmd GNUPGHOME=$(sh_quote "${GNUPGHOME:-}")"
 env_cmd="$env_cmd sh $(sh_quote "$user_script")"
 
+ret=0
+
 if command -v doas >/dev/null 2>&1; then
-    doas -u "$test_user" sh -c "$env_cmd"
+    doas -u "$test_user" sh -c "$env_cmd" || ret=$?
 elif command -v su >/dev/null 2>&1; then
-    su - "$test_user" -c "$env_cmd"
+    su - "$test_user" -c "$env_cmd" || ret=$?
 else
     echo "Error: need su or doas in container to run as user" >&2
     exit 1
 fi
 
-echo >&2 "Test completed for distro: $test_distro"
+if [ "$ret" -eq 0 ]; then
+    echo >&2 "Test completed for distro: $test_distro"
+else
+    echo >&2 "Setup failed for distro: $test_distro (status $ret)"
+fi
 
 if [ "${SHELL_AFTER:-0}" -eq 1 ]; then
-    echo "Setup complete. Dropping into user shell..." >&2
+    if [ "$ret" -eq 0 ]; then
+        echo "Dropping into user shell..." >&2
+    else
+        echo "Dropping into user shell for debugging..." >&2
+    fi
     if command -v doas >/dev/null 2>&1; then
-        exec doas -u "$test_user" zsh --login
+        doas -u "$test_user" zsh --login || ret=$?
     elif command -v su >/dev/null 2>&1; then
-        exec su - "$test_user" -c "exec zsh --login"
+        su - "$test_user" -c "exec zsh --login" || ret=$?
     else
         echo "Error: need su or doas to drop into user shell" >&2
         exit 1
     fi
 fi
+
+exit "$ret"
