@@ -1,0 +1,26 @@
+{{- if and (eq .osid "linux-chimera") .containers (not .headless) (not .ephemeral) (not (env "CONTAINER_ID")) -}}
+#!/usr/bin/env bash
+# Set up the ubuntu:22.04 distrobox on Chimera Linux.
+# Re-runs when this script or the inside-container setup script changes.
+#
+# Re-run when setup script changes:
+#   setup script hash: {{ include (joinPath .chezmoi.workingTree "scripts/setup-distrobox-chimera.sh") | sha256sum }}
+
+set -euo pipefail
+
+scriptsdir="$CHEZMOI_WORKING_TREE/scripts"
+PATH="$scriptsdir:$PATH"
+
+# shellcheck source=./common.sh
+. "$scriptsdir/common.sh" || exit 1
+
+# Create the container if it doesn't already exist
+if ! distrobox list 2>/dev/null | grep -q "^ubuntu[[:space:]]"; then
+    msg "Creating ubuntu:22.04 distrobox"
+    distrobox create --name ubuntu --image ubuntu:22.04 --no-entry
+fi
+
+# Run inside-container setup
+msg "Running distrobox setup"
+distrobox enter ubuntu -- bash "$CHEZMOI_WORKING_TREE/scripts/setup-distrobox-chimera.sh"
+{{- end }}
