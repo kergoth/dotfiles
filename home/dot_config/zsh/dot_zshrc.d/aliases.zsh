@@ -21,7 +21,6 @@ alias mr='mr -d "$(find_up .mrconfig || echo .)"'
 alias sshnew='ssh -o "ControlPath none"'
 alias diff='diff -urNd'
 alias bc='bc -ql'
-alias wget='wget --hsts-file="$XDG_CACHE_HOME/wget-hsts"'
 alias wfp=wait-for-process
 alias ncdu='ncdu -e -x --color dark --exclude .git --exclude .repo'
 if (( $+commands[direnv] )); then

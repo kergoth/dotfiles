@@ -20,6 +20,8 @@ case "${OSTYPE:-}" in
         ;;
 esac
 
+rm -f ~/.wget-hsts "$XDG_DATA_HOME/wget-hsts" "$XDG_CACHE_HOME/wget-hsts"
+
 if ! [ -e "$XDG_DATA_HOME/cargo" ]; then
     if [ -e ~/.cargo ]; then
         mkdir -p "$XDG_DATA_HOME"
