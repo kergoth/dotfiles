@@ -5,6 +5,7 @@
 #     ARCH_BASE_IMAGE         Override base image for arch container (all arches).
 #     ARCH_ARM64_BASE_IMAGE   Override base image for arch container on arm64 only.
 #                             Default: ghcr.io/baerenbude-org/archlinuxarm-arm64v8:latest
+#     DOTFILES_SKIP_GPG_SECRET_IMPORT  Skip secret key import in GPG setup (1/0).
 #     DOTFILES_SECRETS        Force secrets on/off (1/0).
 #     DOTFILES_PERSONAL       Force personal profile (always passed through).
 #     DOTFILES_WORK           Force work profile (always passed through).
