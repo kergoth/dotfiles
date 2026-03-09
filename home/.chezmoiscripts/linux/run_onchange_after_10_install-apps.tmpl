@@ -96,10 +96,6 @@ flatpak install -y --user flathub com.onepassword.OnePassword || true
 {{-   end }}
 
 {{-   if and .coding .containers (not $devpod) }}
-{{-     if and (not .headless) $flatpak }}
-msg "Installing DevPod from Flathub"
-flatpak install -y --user flathub sh.loft.devpod || true
-{{-     else }}
 msg "Installing DevPod CLI"
 devpod_arch="amd64"
 case "$(uname -m)" in
@@ -108,6 +104,5 @@ esac
 curl -L -o /tmp/devpod "https://github.com/loft-sh/devpod/releases/latest/download/devpod-linux-$devpod_arch"
 install -c -m 0755 /tmp/devpod "$HOME/.local/bin/devpod"
 rm -f /tmp/devpod
-{{-     end }}
 {{-   end }}
 {{- end }}
