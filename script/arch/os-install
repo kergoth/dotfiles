@@ -159,6 +159,7 @@ fi
 hostname=$1
 shift
 
+OSTYPE="${OSTYPE:-}"
 if [ "$OSTYPE" = "linux-gnu" ]; then
     case "$(uname -r)" in
     *Microsoft | *microsoft*)
