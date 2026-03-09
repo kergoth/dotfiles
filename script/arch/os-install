@@ -115,8 +115,13 @@ setup_os() {
             syslinux-install_update -i -a -m
             ;;
         grub)
-            # grub-install --target=i386-pc "$(echo "$root_dev" | sed 's,[0-9]*$,,')"
-            grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+            grub_arch=$(uname -m)
+            case "$grub_arch" in
+                aarch64)
+                    grub_arch=arm64
+                    ;;
+            esac
+            grub-install --target="$grub_arch-efi" --efi-directory=/boot --bootloader-id=GRUB
             grub-mkconfig -o /boot/grub/grub.cfg
             ;;
         esac
