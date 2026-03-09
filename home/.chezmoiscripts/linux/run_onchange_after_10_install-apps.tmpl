@@ -12,7 +12,9 @@
 {{-   $flatpak = includeTemplate "find-tool" (dict "root" . "tool" "flatpak") -}}
 {{- end -}}
 {{- if and .user_setup (not .headless) (not .steamdeck) (not (env "CONTAINER_ID")) -}}
-{{-   $zed = includeTemplate "find-tool" (dict "root" . "tool" "zed") -}}
+{{-   if not (eq .osid "linux-chimera") -}}
+{{-     $zed = includeTemplate "find-tool" (dict "root" . "tool" "zed") -}}
+{{-   end -}}
 {{-   $vivaldi = includeTemplate "find-tool" (dict "root" . "tool" "vivaldi") -}}
 {{-   $obsidian = includeTemplate "find-tool" (dict "root" . "tool" "obsidian") -}}
 {{-   if or (eq .osid "linux-debian") (eq .osid "linux-ubuntu") -}}
