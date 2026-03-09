@@ -168,6 +168,21 @@
 {{-   end -}}
 {{- end -}}
 
+{{- $dotfiles_personal := (env "DOTFILES_PERSONAL") -}}
+{{- if ne $dotfiles_personal "" -}}
+{{-   $personal = has (lower $dotfiles_personal) (list "1" "true" "yes" "on") -}}
+{{-   if $personal -}}
+{{-     $work = false -}}
+{{-   end -}}
+{{- end -}}
+{{- $dotfiles_work := (env "DOTFILES_WORK") -}}
+{{- if ne $dotfiles_work "" -}}
+{{-   $work = has (lower $dotfiles_work) (list "1" "true" "yes" "on") -}}
+{{-   if $work -}}
+{{-     $personal = false -}}
+{{-   end -}}
+{{- end -}}
+
 {{- $email := "kergoth@gmail.com" -}}
 {{- if $work -}}
 {{-   $email = "chris.larson@pano.ai" -}}
@@ -175,8 +190,13 @@
 {{-   $macos_split_user = false -}}
 {{- end -}}
 
-{{- if and (or $personal $work) (not $ephemeral) -}}
-{{-   $secrets = true -}}
+{{- $dotfiles_secrets := (env "DOTFILES_SECRETS") -}}
+{{- if ne $dotfiles_secrets "" -}}
+{{-   $secrets = has (lower $dotfiles_secrets) (list "1" "true" "yes" "on") -}}
+{{- else -}}
+{{-   if and (or $personal $work) (not $ephemeral) -}}
+{{-     $secrets = true -}}
+{{-   end -}}
 {{- end -}}
 
 {{- $personal_key := "934796281287D8BD66EF26F4BCC304A4E9BFE3CF" }}
