@@ -84,7 +84,7 @@ if (Test-Path $workPubkey) {
     Write-Error "Warning: Work public key file not found: $workPubkey"
 }
 
-{{- if .secrets -}}
+{{- if and .secrets (not .skip_gpg_secret_import) -}}
 # Import the secret key only for the active context
 Write-Error "Handling GnuPG secret key '{{ $key_name }}' ({{ $signing_key }})"
 Import-Key "{{ $signing_key }}" "{{ .chezmoi.workingTree }}/settings/gnupg/{{ $key_name }}/secret.asc.age"
