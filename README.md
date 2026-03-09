@@ -186,7 +186,7 @@ systemd=true
 - Attach the Chimera Linux Live CD ISO to a VM or USB drive and boot from it.
 - If not using a `base` ISO, wait for the graphical environment to load. It will take a few seconds.
 - If using a `base` ISO, log in as `anon`.
-- Run the `Console` app.
+- Run the `Konsole` app.
 - Note that the default password, when prompted, is `chimera`.
 - Clone the dotfiles repository and run the os-install script:
 
