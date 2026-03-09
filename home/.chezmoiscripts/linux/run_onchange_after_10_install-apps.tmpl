@@ -55,13 +55,8 @@ flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flath
 {{-   end }}
 
 {{-   if not $zed }}
-{{-     if $flatpak }}
-msg "Installing Zed from Flathub"
-flatpak install -y --user flathub dev.zed.Zed || true
-{{-     else }}
 msg "Installing Zed"
 curl -f https://zed.dev/install.sh | sh
-{{-     end }}
 {{-   end }}
 
 {{-   if and (not $vivaldi) $flatpak }}
