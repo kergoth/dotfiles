@@ -12,9 +12,7 @@
 {{-   $flatpak = includeTemplate "find-tool" (dict "root" . "tool" "flatpak") -}}
 {{- end -}}
 {{- if and .user_setup (not .headless) (not .steamdeck) (not (env "CONTAINER_ID")) -}}
-{{-   if not (eq .osid "linux-chimera") -}}
-{{-     $zed = includeTemplate "find-tool" (dict "root" . "tool" "zed") -}}
-{{-   end -}}
+{{-   $zed = includeTemplate "find-tool" (dict "root" . "tool" "zed") -}}
 {{-   $vivaldi = includeTemplate "find-tool" (dict "root" . "tool" "vivaldi") -}}
 {{-   $obsidian = includeTemplate "find-tool" (dict "root" . "tool" "obsidian") -}}
 {{-   if or (eq .osid "linux-debian") (eq .osid "linux-ubuntu") -}}
@@ -26,7 +24,7 @@
 {{-   if .ebook_library -}}
 {{-     $calibre = includeTemplate "find-tool" (dict "root" . "tool" "calibre") -}}
 {{-   end -}}
-{{-   if not $zed -}}{{- $need_install = true -}}{{- end -}}
+{{-   if and (not $zed) (not (eq .osid "linux-chimera")) -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and (not $vivaldi) $flatpak -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and (not $obsidian) $flatpak -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and (or (eq .osid "linux-debian") (eq .osid "linux-ubuntu")) (not $kitty) -}}{{- $need_install = true -}}{{- end -}}
@@ -56,7 +54,7 @@ PATH="$scriptsdir:$PATH"
 flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo || true
 {{-   end }}
 
-{{-   if not $zed }}
+{{-   if and (not $zed) (not (eq .osid "linux-chimera")) }}
 msg "Installing Zed"
 curl -f https://zed.dev/install.sh | sh
 {{-   end }}
