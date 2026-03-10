@@ -94,7 +94,11 @@ if [ "${1:-}" != "--in-session" ] && [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ]; the
     fi
 fi
 
-exec "./$TEST_SETUP_CMD" </dev/null
+if [ "${RUN_TEST_TRACE:-0}" -eq 1 ]; then
+    exec bash -x "./$TEST_SETUP_CMD" </dev/null
+else
+    exec "./$TEST_SETUP_CMD" </dev/null
+fi
 EOF
 chmod +x "$user_script"
 
