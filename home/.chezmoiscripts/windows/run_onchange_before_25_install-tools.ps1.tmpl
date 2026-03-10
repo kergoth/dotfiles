@@ -93,8 +93,8 @@ Write-Host "Installing cargo tool: {{ . }}"
 {{-   if not $rusage -}}
 
 Write-Host "Installing rusage"
-$rusageUrl = "https://justine.lol/rusage/rusage.com"
-$rusageDest = Join-Path $env:XDG_BIN_HOME "rusage.com"
+$rusageUrl = "https://cosmo.zip/pub/cosmos/bin/rusage"
+$rusageDest = Join-Path $env:XDG_BIN_HOME "rusage"
 New-Item -ItemType Directory -Path $env:XDG_BIN_HOME -Force | Out-Null
 Invoke-WebRequest -Uri $rusageUrl -OutFile $rusageDest
 {{-   end }}
