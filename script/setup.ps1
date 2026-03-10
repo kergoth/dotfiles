@@ -18,4 +18,4 @@ if ((Test-Path $tokenPath) -and ((Get-Item $tokenPath).Length -gt 0)) {
 
 # Apply my dotfiles
 Write-Output "Applying dotfiles"
-chezmoi apply --keep-going
+chezmoi apply
