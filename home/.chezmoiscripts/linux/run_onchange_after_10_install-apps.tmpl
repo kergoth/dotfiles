@@ -4,6 +4,7 @@
 {{- $devpod := "" -}}
 {{- $86box := "" -}}
 {{- $calibre := "" -}}
+{{- $vlc := "" -}}
 {{- $obsidian := "" -}}
 {{- $discord := "" -}}
 {{- $flatpak := "" -}}
@@ -27,6 +28,9 @@
 {{-   if .ebook_library -}}
 {{-     $calibre = includeTemplate "find-tool" (dict "root" . "tool" "calibre") -}}
 {{-   end -}}
+{{-   if .video -}}
+{{-     $vlc = includeTemplate "find-tool" (dict "root" . "tool" "vlc") -}}
+{{-   end -}}
 {{-   if and (not $zed) (not (eq .osid "linux-chimera")) -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and (not $vivaldi) $flatpak (not (eq .osid "linux-chimera")) -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and (not $obsidian) $flatpak -}}{{- $need_install = true -}}{{- end -}}
@@ -34,6 +38,7 @@
 {{-   if and (or (eq .osid "linux-debian") (eq .osid "linux-ubuntu")) (not $kitty) -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and .retro_computing (not $86box) $flatpak -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and .ebook_library (not $calibre) $flatpak -}}{{- $need_install = true -}}{{- end -}}
+{{-   if and .video (not $vlc) $flatpak -}}{{- $need_install = true -}}{{- end -}}
 {{- end -}}
 {{- if and .coding .containers -}}
 {{-   $devpod = includeTemplate "find-tool" (dict "root" . "tool" "devpod") -}}
@@ -82,6 +87,11 @@ flatpak install -y --user flathub net._86box._86Box || true
 {{-   if and .ebook_library (not $calibre) $flatpak }}
 msg "Installing Calibre from Flathub"
 flatpak install -y --user flathub com.calibre_ebook.calibre || true
+{{-   end }}
+
+{{-   if and .video (not $vlc) $flatpak }}
+msg "Installing VLC from Flathub"
+flatpak install -y --user flathub org.videolan.VLC || true
 {{-   end }}
 
 {{-   if and (or (eq .osid "linux-debian") (eq .osid "linux-ubuntu")) (not $kitty) }}

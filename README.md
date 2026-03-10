@@ -527,16 +527,16 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 
 ### Installed GUI Software
 
-- [Zed](https://zed.dev): A cross-platform text editor. Available via brew, installer script, scoop, or [download](https://zed.dev/download).
 - [Calibre](https://calibre-ebook.com) ([Open-Source](https://github.com/kovidgoyal/calibre)): E-books management software. _Conditional: ebook_library._
 - [DevPod](https://devpod.sh) ([Open-Source](https://github.com/loft-sh/devpod)): Codespaces but open-source, client-only and unopinionated. Works with any IDE and cloud. _Conditional: This is installed when both coding and container runtime flags are enabled._
+- [VLC](https://www.videolan.org/vlc/download-macosx.html) ([Open-Source](https://code.videolan.org/videolan/vlc)): A free and open source cross-platform multimedia player. _Conditional: video._
+- [Zed](https://zed.dev): A cross-platform text editor. Available via brew, installer script, scoop, or [download](https://zed.dev/download).
 
 #### GUI Software on Windows and macOS
 
 - [ChatGPT](https://openai.com/chatgpt/desktop/): OpenAI's AI assistant desktop app.
 - [Raspberry Pi Imager](https://www.raspberrypi.org/downloads/): Imaging utility to install operating systems to a microSD card. _Conditional: work._
 - [Tailscale](https://tailscale.com) ([Open-Source](https://github.com/tailscale/tailscale)): WireGuard-based mesh VPN for secure device connectivity. _Conditional: personal, non-ephemeral._
-- [VLC](https://www.videolan.org/vlc/download-macosx.html) ([Open-Source](https://code.videolan.org/videolan/vlc)): A free and open source cross-platform multimedia player.
 - If the gaming flag is enabled:
   - [Steam](https://store.steampowered.com): A digital distribution platform for purchasing and playing video games.
 
