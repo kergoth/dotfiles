@@ -44,6 +44,7 @@ scoop install raspberry-pi-imager
 {{    else }}
 {{/* not .work */}}
 Install-Scoop-IfNotPresent sumatrapdf SumatraPDF.SumatraPDF | Out-Null
+{{-     end }}
 {{      if .gaming -}}
 Install-Scoop-IfNotPresent steam Valve.Steam | Out-Null
 {{-     end }}

@@ -9,7 +9,7 @@ Is this a GUI application?
 ├── Yes
 │   ├── macOS (user) → Homebrew cask (scripts/macos/Brewfile.tmpl)
 │   ├── macOS (admin) → Homebrew cask + mas (scripts/macos/Brewfile-admin.tmpl)
-│   ├── Windows (user) → Scoop (home/.chezmoiscripts/windows/run_onchange_after_10_install-scoop-packages.ps1.tmpl)
+│   ├── Windows (user) → Scoop (home/.chezmoiscripts/windows/run_onchange_after_10_install-apps.ps1.tmpl)
 │   ├── Windows (admin) → winget (scripts/setup-system-windows.ps1.tmpl)
 │   ├── Linux (non-headless) → Flatpak (universal on all supported distros)
 │   └── Linux (Chimera, glibc GUI app unavailable on Flathub or Flatpak sandbox inadequate) → distrobox container (Ubuntu 22.04)
@@ -67,7 +67,7 @@ When multiple installation methods are available, prefer them in this order:
 | macOS Homebrew (user) | `scripts/macos/Brewfile.tmpl` |
 | macOS Homebrew (admin) | `scripts/macos/Brewfile-admin.tmpl` |
 | macOS App Store | `scripts/macos/Brewfile-admin.tmpl` (mas entries) |
-| Windows GUI apps (user) | `home/.chezmoiscripts/windows/run_onchange_after_10_install-scoop-packages.ps1.tmpl` |
+| Windows GUI apps (user) | `home/.chezmoiscripts/windows/run_onchange_after_10_install-apps.ps1.tmpl` |
 | Windows CLI tools (user) | `home/.chezmoiscripts/windows/run_onchange_before_25_install-tools.ps1.tmpl` |
 | Linux GUI/CLI apps | `home/.chezmoiscripts/linux/run_onchange_after_10_install-apps.tmpl` |
 | Chimera distrobox (host) | `home/.chezmoiscripts/linux/run_onchange_after_20_setup-distrobox.tmpl` |
@@ -163,11 +163,14 @@ mas "MusicHarbor", id: 1440405750
 {{-   end }}
 ```
 
-### 4. Windows Scoop (GUI Apps - User Level)
+### 4. Windows GUI apps (User Level)
 
-**File:** `home/.chezmoiscripts/windows/run_onchange_after_10_install-scoop-packages.ps1.tmpl`
+**File:** `home/.chezmoiscripts/windows/run_onchange_after_10_install-apps.ps1.tmpl`
 
-New additions use `find-tool` in the template header + bare `scoop install` in the body:
+New additions use `find-tool` in the template header + bare `scoop install` in the body. For apps unavailable on
+Scoop: download directly (GitHub releases API or vendor URL) and install silently in the body; use `Test-Path`
+on the known install location for idempotency instead of `find-tool`. Add `find-tool` check in the header only
+for Scoop-installed apps (they land in PATH); skip it for direct-download apps
 
 ```powershell
 {{/* HEADER — before the main {{ if and .user_setup (not .headless) }} guard */}}
@@ -447,7 +450,7 @@ Format: `run_[onchange_][before|after]_NN_description[.ps1].tmpl`
 - `run_onchange_before_25_install-tools.tmpl` - CLI tools via eget/cargo/uv (POSIX)
 - `run_onchange_before_25_install-tools.ps1.tmpl` - CLI tools via Scoop/cargo/uv (Windows)
 - `run_onchange_after_10_install-apps.tmpl` - GUI apps (Zed, DevPod)
-- `run_onchange_after_10_install-scoop-packages.ps1.tmpl` - GUI apps on Windows
+- `run_onchange_after_10_install-apps.ps1.tmpl` - GUI apps on Windows
 
 | Number | Purpose |
 |--------|---------|
