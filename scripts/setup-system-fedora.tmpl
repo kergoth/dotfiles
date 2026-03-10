@@ -41,6 +41,13 @@ sudorun systemctl enable --force --now sddm.service
 # Terminal emulator
 sudorun dnf -y --setopt=install_weak_deps=False install kitty
 
+{{ if not .ephemeral -}}
+# Vivaldi browser ($basearch covers both x86_64 and aarch64)
+sudo rpm --import https://repo.vivaldi.com/archive/linux_signing_key.pub
+sudo sh -c 'echo -e "[vivaldi-stable]\nname=vivaldi-stable\nbaseurl=https://repo.vivaldi.com/archive/rpm/\$basearch\nenabled=1\ngpgcheck=1\ngpgkey=https://repo.vivaldi.com/archive/linux_signing_key.pub" > /etc/yum.repos.d/vivaldi.repo'
+sudorun dnf -y --setopt=install_weak_deps=False install vivaldi-stable
+{{- end }}
+
 # Flatpak
 sudorun dnf -y --setopt=install_weak_deps=False install flatpak
 sudorun flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo

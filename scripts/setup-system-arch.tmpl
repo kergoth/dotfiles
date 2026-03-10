@@ -93,6 +93,11 @@ fi
 # Terminal emulator
 pacman_install kitty
 
+{{   if and (not .ephemeral) (eq .chezmoi.arch "amd64") -}}
+# Vivaldi browser (amd64/x86_64 only — no arm64 package in official repos)
+pacman_install vivaldi
+{{-   end }}
+
 # Flatpak
 pacman_install flatpak
 sudorun flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
