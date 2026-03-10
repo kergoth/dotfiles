@@ -58,6 +58,43 @@ apply_file() {
     chmod 0600 "$dest"
 }
 
+ensure_known_host_entry() {
+    local known_hosts
+    local entry
+
+    known_hosts="$1"
+    entry="$2"
+
+    if ! grep -Fqx -- "${entry}" "${known_hosts}"; then
+        echo >&2 "Bootstrapping SSH known hosts entry: ${entry}"
+        printf '%s\n' "${entry}" >> "${known_hosts}"
+    fi
+}
+
+ensure_known_hosts() {
+    local ssh_dir="${CHEZMOI_DEST_DIR}/.ssh"
+    local known_hosts="${ssh_dir}/known_hosts"
+
+    mkdir -p "${ssh_dir}"
+    chmod 700 "${ssh_dir}"
+
+    touch "${known_hosts}"
+    chmod 600 "${known_hosts}"
+
+    while IFS= read -r entry; do
+        [ -n "${entry}" ] || continue
+        ensure_known_host_entry "${known_hosts}" "${entry}"
+    done <<'EOF'
+{{- with .ssh.known_hosts -}}
+{{- range $host, $entries := . -}}
+{{- range $entries }}
+{{ . }}
+{{- end -}}
+{{ end -}}
+{{- end }}
+EOF
+}
+
 if ! [ -s "$SSH_KEY" ]; then
     echo >&2 "Bootstrapping SSH keys for chezmoi private repository access"
 
@@ -73,4 +110,7 @@ if ! [ -s "$SSH_KEY" ]; then
 
     echo >&2 "SSH keys bootstrap complete"
 fi
+
+ensure_known_hosts
+
 {{- end }}

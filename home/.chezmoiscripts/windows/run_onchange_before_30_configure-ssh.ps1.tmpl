@@ -80,6 +80,56 @@ function Apply-File {
     }
 }
 
+function Ensure-KnownHostEntry {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string] $KnownHosts,
+
+        [Parameter(Mandatory = $true)]
+        [string] $Entry
+    )
+
+    if (-not [string]::IsNullOrWhiteSpace($Entry)) {
+        $found = $false
+
+        if (Test-Path -LiteralPath $KnownHosts) {
+            $found = Select-String -LiteralPath $KnownHosts -SimpleMatch -Quiet -Pattern $Entry
+        }
+
+        if (-not $found) {
+            Write-Host "Bootstrapping SSH known hosts entry: $Entry" -ErrorAction Continue
+            Add-Content -LiteralPath $KnownHosts -Value $Entry
+        }
+    }
+}
+
+function Ensure-KnownHosts {
+    $sshDir = Join-Path $env:CHEZMOI_DEST_DIR '.ssh'
+    $knownHosts = Join-Path $sshDir 'known_hosts'
+
+    New-Item -ItemType Directory -Force -Path $sshDir | Out-Null
+
+    if (-not (Test-Path -LiteralPath $knownHosts)) {
+        New-Item -ItemType File -Force -Path $knownHosts | Out-Null
+    }
+
+    @'
+{{- with .ssh.known_hosts -}}
+{{- range $host, $entries := . -}}
+{{- range $entries }}
+{{ . }}
+{{- end -}}
+{{ end -}}
+{{- end }}
+'@ -split "`r?`n" | ForEach-Object {
+        $entry = $_.Trim()
+
+        if ($entry) {
+            Ensure-KnownHostEntry -KnownHosts $knownHosts -Entry $entry
+        }
+    }
+}
+
 # Check if SSH key exists
 if (-not (Test-Path $SSH_KEY) -or (Get-Item $SSH_KEY).Length -eq 0) {
     Write-Host "Bootstrapping SSH keys for chezmoi private repository access"
@@ -130,4 +180,6 @@ if (-not (Test-Path $SSH_KEY) -or (Get-Item $SSH_KEY).Length -eq 0) {
 
     Write-Host "SSH keys bootstrap complete"
 }
+
+Ensure-KnownHosts
 {{- end }}
