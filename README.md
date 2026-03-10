@@ -539,7 +539,6 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 - [ChatGPT](https://openai.com/chatgpt/desktop/): OpenAI's AI assistant desktop app.
 - [Raspberry Pi Imager](https://www.raspberrypi.org/downloads/): Imaging utility to install operating systems to a microSD card. _Conditional: work._
 - [Tailscale](https://tailscale.com) ([Open-Source](https://github.com/tailscale/tailscale)): WireGuard-based mesh VPN for secure device connectivity. _Conditional: personal, non-ephemeral._
-- [Transmission Remote GUI](https://github.com/transmission-remote-gui/transgui) ([Open-Source](https://github.com/transmission-remote-gui/transgui)): Remote GUI for Transmission. _Conditional: not work._
 - If the gaming flag is enabled:
   - [Steam](https://store.steampowered.com): A digital distribution platform for purchasing and playing video games.
 
@@ -551,6 +550,10 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 - [Obsidian](https://obsidian.md): A powerful knowledge base that works on top of a local folder of plain text Markdown files. Available via brew, scoop, flatpak, or [download](https://obsidian.md/download).
 - [Steam Link](https://store.steampowered.com/steamlink/about): Stream your Steam games. _Conditional: gaming._
 - [Vivaldi](https://vivaldi.com/): Web browser with built-in email client focusing on customization and control. Available via brew, scoop, or flatpak.
+
+#### GUI Software on Windows, macOS, and FreeBSD
+
+- [Transmission Remote GUI](https://github.com/transmission-remote-gui/transgui) ([Open-Source](https://github.com/transmission-remote-gui/transgui)): Remote GUI for Transmission. _Conditional: not work._
 
 #### GUI Software on Linux and FreeBSD
 

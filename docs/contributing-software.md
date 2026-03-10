@@ -480,6 +480,7 @@ Use the **most specific section whose platform list matches where the software i
 **GUI Software** (`### Installed GUI Software` and subsections):
 - Main section — all supported platforms including FreeBSD
 - `#### GUI Software on Windows, macOS, and Linux` — excludes FreeBSD
+- `#### GUI Software on Windows, macOS, and FreeBSD` — excludes Linux
 - `#### GUI Software on Windows and macOS` — excludes Linux and FreeBSD
 - Platform-specific subsections — single platform, or macOS version-gated
 

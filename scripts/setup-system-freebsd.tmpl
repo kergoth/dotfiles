@@ -139,6 +139,9 @@ freebsd_check x11/kitty kitty
 freebsd_check graphics/okular okular
 freebsd_check sysutils/filelight filelight
 freebsd_check security/pinentry-qt6 pinentry-qt6
+{{ if not .work -}}
+freebsd_check transmission-remote-gui-qt6 transgui
+{{- end }}
 {{ if .ebook_library -}}
 freebsd_check deskutils/calibre calibre
 {{- end }}
