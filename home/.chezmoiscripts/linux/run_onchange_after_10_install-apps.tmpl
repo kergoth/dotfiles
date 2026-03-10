@@ -5,6 +5,7 @@
 {{- $86box := "" -}}
 {{- $calibre := "" -}}
 {{- $obsidian := "" -}}
+{{- $discord := "" -}}
 {{- $flatpak := "" -}}
 {{- $need_install := false -}}
 {{- if not .headless -}}
@@ -16,6 +17,7 @@
 {{-     $vivaldi = includeTemplate "find-tool" (dict "root" . "tool" "vivaldi") -}}
 {{-   end -}}
 {{-   $obsidian = includeTemplate "find-tool" (dict "root" . "tool" "obsidian") -}}
+{{-   $discord = includeTemplate "find-tool" (dict "root" . "tool" "discord") -}}
 {{-   if or (eq .osid "linux-debian") (eq .osid "linux-ubuntu") -}}
 {{-     $kitty = includeTemplate "find-tool" (dict "root" . "tool" "kitty") -}}
 {{-   end -}}
@@ -28,6 +30,7 @@
 {{-   if and (not $zed) (not (eq .osid "linux-chimera")) -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and (not $vivaldi) $flatpak (not (eq .osid "linux-chimera")) -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and (not $obsidian) $flatpak -}}{{- $need_install = true -}}{{- end -}}
+{{-   if and (not $discord) $flatpak -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and (or (eq .osid "linux-debian") (eq .osid "linux-ubuntu")) (not $kitty) -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and .retro_computing (not $86box) $flatpak -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and .ebook_library (not $calibre) $flatpak -}}{{- $need_install = true -}}{{- end -}}
@@ -64,6 +67,11 @@ flatpak install -y --user flathub com.vivaldi.Vivaldi || true
 {{-   if and (not $obsidian) $flatpak }}
 msg "Installing Obsidian from Flathub"
 flatpak install -y --user flathub md.obsidian.Obsidian || true
+{{-   end }}
+
+{{-   if and (not $discord) $flatpak }}
+msg "Installing Discord from Flathub"
+flatpak install -y --user flathub com.discordapp.Discord || true
 {{-   end }}
 
 {{-   if and .retro_computing (not $86box) $flatpak }}

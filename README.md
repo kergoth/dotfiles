@@ -534,7 +534,6 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 #### GUI Software on Windows and macOS
 
 - [ChatGPT](https://openai.com/chatgpt/desktop/): OpenAI's AI assistant desktop app.
-- [Discord](https://discord.com): A VoIP and instant messaging social platform.
 - [Raspberry Pi Imager](https://www.raspberrypi.org/downloads/): Imaging utility to install operating systems to a microSD card. _Conditional: work._
 - [Tailscale](https://tailscale.com) ([Open-Source](https://github.com/tailscale/tailscale)): WireGuard-based mesh VPN for secure device connectivity. _Conditional: personal, non-ephemeral._
 - [VLC](https://www.videolan.org/vlc/download-macosx.html) ([Open-Source](https://code.videolan.org/videolan/vlc)): A free and open source cross-platform multimedia player.
@@ -545,6 +544,7 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 
 - [1Password](https://1password.com): A password manager developed by AgileBits.
 - [86Box](https://www.86box.net/): Emulator of x86-based machines. _Conditional: retro_computing, not work._
+- [Discord](https://discord.com): A VoIP and instant messaging social platform.
 - [Obsidian](https://obsidian.md): A powerful knowledge base that works on top of a local folder of plain text Markdown files. Available via brew, scoop, flatpak, or [download](https://obsidian.md/download).
 - [Vivaldi](https://vivaldi.com/): Web browser with built-in email client focusing on customization and control. Available via brew, scoop, or flatpak.
 
