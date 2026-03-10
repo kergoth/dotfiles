@@ -2,6 +2,10 @@
 {{- if and .user_setup (not .headless) .ebook_library (not .work) -}}
 {{-   $calibre = includeTemplate "find-tool" (dict "root" . "tool" "calibre") -}}
 {{- end -}}
+{{- $picard := "" -}}
+{{- if and .user_setup (not .headless) .music_library -}}
+{{-   $picard = includeTemplate "find-tool" (dict "root" . "tool" "picard") -}}
+{{- end -}}
 {{- $scummvm := "" -}}
 {{- if and .user_setup (not .headless) .gaming_device_library -}}
 {{-   $scummvm = includeTemplate "find-tool" (dict "root" . "tool" "scummvm") -}}
@@ -46,6 +50,10 @@ if (-not (scoop bucket list | Select-String -Pattern '^games\\s' -Quiet)) {
     scoop bucket add games
 }
 scoop install games/scummvm
+{{-   end }}
+
+{{    if and .music_library (not $picard) -}}
+scoop install picard
 {{-   end }}
 
 {{    if .work -}}

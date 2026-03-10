@@ -93,7 +93,7 @@ cask "steam"
 cask "scummvm-app"
 {{-   end }}
 
-{{   if .music_library -}}
+{{   if and .music_library (not .headless) -}}
 cask "musicbrainz-picard"
 {{-   end }}
 

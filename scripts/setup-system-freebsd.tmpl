@@ -144,6 +144,9 @@ freebsd_check deskutils/calibre calibre
 {{ if .gaming_device_library -}}
 freebsd_check games/scummvm scummvm
 {{- end }}
+{{ if .music_library -}}
+freebsd_check audio/picard picard
+{{- end }}
 {{ if .video -}}
 freebsd_check multimedia/vlc vlc
 {{- end }}
