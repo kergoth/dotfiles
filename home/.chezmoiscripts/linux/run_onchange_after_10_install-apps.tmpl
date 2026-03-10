@@ -3,6 +3,7 @@
 {{- $kitty := "" -}}
 {{- $devpod := "" -}}
 {{- $86box := "" -}}
+{{- $scummvm := "" -}}
 {{- $calibre := "" -}}
 {{- $vlc := "" -}}
 {{- $obsidian := "" -}}
@@ -25,6 +26,9 @@
 {{-   if .retro_computing -}}
 {{-     $86box = includeTemplate "find-tool" (dict "root" . "tool" "86box") -}}
 {{-   end -}}
+{{-   if .gaming_device_library -}}
+{{-     $scummvm = includeTemplate "find-tool" (dict "root" . "tool" "scummvm") -}}
+{{-   end -}}
 {{-   if .ebook_library -}}
 {{-     $calibre = includeTemplate "find-tool" (dict "root" . "tool" "calibre") -}}
 {{-   end -}}
@@ -37,6 +41,7 @@
 {{-   if and (not $discord) $flatpak -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and (or (eq .osid "linux-debian") (eq .osid "linux-ubuntu")) (not $kitty) -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and .retro_computing (not $86box) $flatpak -}}{{- $need_install = true -}}{{- end -}}
+{{-   if and .gaming_device_library (not $scummvm) $flatpak -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and .ebook_library (not $calibre) $flatpak -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and .video (not $vlc) $flatpak -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and .gaming $flatpak (eq .chezmoi.arch "amd64") -}}{{- $need_install = true -}}{{- end -}}
@@ -83,6 +88,11 @@ flatpak install -y --user flathub com.discordapp.Discord || true
 {{-   if and .retro_computing (not $86box) $flatpak }}
 msg "Installing 86Box from Flathub"
 flatpak install -y --user flathub net._86box._86Box || true
+{{-   end }}
+
+{{-   if and .gaming_device_library (not $scummvm) $flatpak }}
+msg "Installing ScummVM from Flathub"
+flatpak install -y --user flathub org.scummvm.ScummVM || true
 {{-   end }}
 
 {{-   if and .ebook_library (not $calibre) $flatpak }}

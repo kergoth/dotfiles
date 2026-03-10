@@ -141,6 +141,9 @@ freebsd_check security/pinentry-qt6 pinentry-qt6
 {{ if .ebook_library -}}
 freebsd_check deskutils/calibre calibre
 {{- end }}
+{{ if .gaming_device_library -}}
+freebsd_check games/scummvm scummvm
+{{- end }}
 {{ if .video -}}
 freebsd_check multimedia/vlc vlc
 {{- end }}

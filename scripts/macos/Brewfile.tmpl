@@ -87,7 +87,7 @@ cask "calibre"
 cask "steam"
 {{-   end }}
 
-{{   if .gaming_device_library -}}
+{{   if and .gaming_device_library (not .headless) -}}
 # ScummVM is needed to determine scummvm ids for deployment to gaming
 # devices, such as the Steam Deck.
 cask "scummvm-app"

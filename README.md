@@ -529,6 +529,7 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 
 - [Calibre](https://calibre-ebook.com) ([Open-Source](https://github.com/kovidgoyal/calibre)): E-books management software. _Conditional: ebook_library._
 - [DevPod](https://devpod.sh) ([Open-Source](https://github.com/loft-sh/devpod)): Codespaces but open-source, client-only and unopinionated. Works with any IDE and cloud. _Conditional: This is installed when both coding and container runtime flags are enabled._
+- [ScummVM](https://www.scummvm.org/): Graphic adventure game interpreter. _Conditional: gaming_device_library, not headless._
 - [VLC](https://www.videolan.org/vlc/download-macosx.html) ([Open-Source](https://code.videolan.org/videolan/vlc)): A free and open source cross-platform multimedia player. _Conditional: video._
 - [Zed](https://zed.dev): A cross-platform text editor. Available via brew, installer script, scoop, or [download](https://zed.dev/download).
 
@@ -603,8 +604,6 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 
 ##### Conditional GUI Software on macOS
 
-- If the gaming_device_library flag is enabled:
-  - [ScummVM](https://www.scummvm.org/): Graphic adventure game interpreter.
 - If the music flag is enabled:
   - [MusicHarbor](https://apps.apple.com/us/app/musicharbor-track-new-music/id1440405750?uo=4&at=10l4tL): Track new music releases from your favorite artists.
 - If the music_library flag is enabled:
