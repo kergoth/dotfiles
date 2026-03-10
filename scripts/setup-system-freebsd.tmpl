@@ -138,6 +138,9 @@ freebsd_check www/librewolf librewolf
 freebsd_check x11/kitty kitty
 freebsd_check graphics/okular okular
 freebsd_check sysutils/filelight filelight
+{{ if and .user_setup (not .ephemeral) -}}
+freebsd_check deskutils/syncthingtray syncthingtray
+{{- end }}
 freebsd_check security/pinentry-qt6 pinentry-qt6
 {{ if not .work -}}
 freebsd_check transmission-remote-gui-qt6 transgui

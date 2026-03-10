@@ -559,6 +559,7 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 
 - [Command Output](https://store.kde.org/p/1166510/) ([Open-Source](https://github.com/Zren/plasma-applet-commandoutput)): KDE Plasma widget for command output in panels.
 - [Filelight](https://apps.kde.org/filelight/) ([Open-Source](https://invent.kde.org/utilities/filelight)): KDE disk usage analyzer.
+- [Syncthing Tray](https://martchus.github.io/syncthingtray/) ([Open-Source](https://github.com/Martchus/syncthingtray)): System tray application for Syncthing. _Conditional: user_setup, not ephemeral, not headless._
 
 #### GUI Software on Linux
 
@@ -610,7 +611,7 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 - [ReiKey](https://objective-see.org/products/reikey.html): Scans, detects, and monitors for software that installs keyboard event taps.
 - [Shifty](https://shifty.natethompson.io/): Menu bar app that provides more control over Night Shift.
 - [SwiftBar](https://swiftbar.app/)]: Powerful macOS menu bar customization tool. _Conditional: This is installed when a container runtime is enabled, as I use this to start/stop colima._
-- [SyncThing](https://syncthing.net/) ([Open-Source](https://github.com/syncthing/)): A continuous file synchronization program.
+- [SyncThing](https://syncthing.net/) ([Open-Source](https://github.com/syncthing/)): A continuous file synchronization program. _Conditional: user_setup, not ephemeral, not headless._
 - [Under My Roof](https://apps.apple.com/us/app/under-my-roof-home-inventory/id1524335878): Home inventory app for organizing and tracking your home and belongings.
 - [WiFi Explorer](https://apps.apple.com/us/app/wifi-explorer/id494803304?mt=12&uo=4&at=10l4tL): Best Wi-Fi Analyzer & Monitor.
 - [WiFi Signal](https://apps.apple.com/us/app/wifi-signal-status-monitor/id525912054?mt=12&uo=4&at=10l4tL): WiFi Connection Status Monitor.
@@ -661,7 +662,7 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 - [Notepad++](https://notepad-plus-plus.org/) ([Open-Source](https://github.com/notepad-plus-plus/notepad-plus-plus))
 - [PowerToys](https://learn.microsoft.com/en-us/windows/powertoys/) ([Open-Source](https://github.com/microsoft/PowerToys))
 - [SnipDo](https://snipdo-app.com): Select a text in any application and SnipDo pops up to help you.
-- [SyncTrayzor](https://github.com/canton7/SyncTrayzor) (Open-Source)
+- [SyncTrayzor](https://github.com/canton7/SyncTrayzor) (Open-Source): Windows system tray app for Syncthing. _Conditional: user_setup, not ephemeral, not headless._
 - [WiFi Analyzer](https://apps.microsoft.com/detail/9NBLGGH33N0N?hl=en-US&gl=US): Identify Wi-Fi problems or find the best channel.
 - [Windows Firewall Control](https://www.binisoft.org/wfc): Managing Windows Firewall is now easier than ever.
 - [Windows Terminal](https://apps.microsoft.com/store/detail/9N0DX20HK701?hl=en-us&gl=US) ([Open-Source](https://github.com/microsoft/terminal))

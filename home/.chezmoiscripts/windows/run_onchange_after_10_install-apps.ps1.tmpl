@@ -45,7 +45,9 @@ if (Install-Scoop-IfNotPresent notepadplusplus Notepad++.Notepad++) {
 }
 Install-Scoop-IfNotPresent obsidian Obsidian.Obsidian | Out-Null
 Install-Scoop-IfNotPresent squirreldisk squirreldisk.SquirrelDisk | Out-Null
+{{- if not .ephemeral }}
 Install-Scoop-IfNotPresent synctrayzor SyncTrayzor.SyncTrayzor | Out-Null
+{{- end }}
 Install-Scoop-IfNotPresent vivaldi Vivaldi.Vivaldi | Out-Null
 scoop install zed
 

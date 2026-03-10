@@ -1,4 +1,4 @@
-{{- if and .user_setup (not .ephemeral) (not (env "CONTAINER_ID")) -}}
+{{- if and .user_setup (not .ephemeral) (not .headless) (not (env "CONTAINER_ID")) -}}
 #!/usr/bin/env powershell
 $ErrorActionPreference = "Stop"
 

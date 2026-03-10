@@ -14,7 +14,9 @@ cask "raspberry-pi-imager"
 cask "raycast"
 cask "rectangle"
 {{- end }}
+{{ if and .user_setup (not .ephemeral) (not .headless) -}}
 cask "syncthing-app"
+{{- end }}
 cask "zed"
 
 {{ if or (not .use_nix) (eq (includeTemplate "find-tool" (dict "root" . "tool" "fclones")) "") -}}

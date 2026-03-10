@@ -10,6 +10,7 @@
 {{- $obsidian := "" -}}
 {{- $discord := "" -}}
 {{- $trguing := "" -}}
+{{- $syncthingtray := "" -}}
 {{- $flatpak := "" -}}
 {{- $kpackagetool6 := "" -}}
 {{- $kpackagetool5 := "" -}}
@@ -24,6 +25,7 @@
 {{-   end -}}
 {{-   $obsidian = includeTemplate "find-tool" (dict "root" . "tool" "obsidian") -}}
 {{-   $discord = includeTemplate "find-tool" (dict "root" . "tool" "discord") -}}
+{{-   $syncthingtray = includeTemplate "find-tool" (dict "root" . "tool" "syncthingtray") -}}
 {{-   if not .work -}}
 {{-     $trguing = includeTemplate "find-tool" (dict "root" . "tool" "trguing") -}}
 {{-   end -}}
@@ -53,6 +55,7 @@
 {{-   if and (not $vivaldi) $flatpak (not (eq .osid "linux-chimera")) -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and (not $obsidian) $flatpak -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and (not $discord) $flatpak -}}{{- $need_install = true -}}{{- end -}}
+{{-   if and (not $syncthingtray) $flatpak (not .ephemeral) -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and (not .work) (not $trguing) $flatpak -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and (or (eq .osid "linux-debian") (eq .osid "linux-ubuntu")) (not $kitty) -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and .retro_computing (not $86box) $flatpak -}}{{- $need_install = true -}}{{- end -}}
@@ -100,6 +103,11 @@ flatpak install -y --user flathub md.obsidian.Obsidian || true
 {{-   if and (not $discord) $flatpak }}
 msg "Installing Discord from Flathub"
 flatpak install -y --user flathub com.discordapp.Discord || true
+{{-   end }}
+
+{{-   if and (not $syncthingtray) $flatpak (not .ephemeral) }}
+msg "Installing Syncthing Tray from Flathub"
+flatpak install -y --user flathub io.github.martchus.syncthingtray || true
 {{-   end }}
 
 {{-   if and (not .work) (not $trguing) $flatpak }}
