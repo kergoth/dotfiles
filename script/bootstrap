@@ -128,7 +128,7 @@ required_dependencies() {
                 sudorun pkg bootstrap
             fi
             sudorun env ASSUME_ALWAYS_YES=YES pkg install "$@"
-        elif has nix-shell; then
+        elif has nix-shell && { pgrep -f nixd >/dev/null 2>&1 || [ -w /nix/var/nix/db/big-lock ]; }; then
             exec nix-shell -p "$@" --run "$0"
         elif has apk; then
             need_sudo
