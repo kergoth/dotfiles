@@ -10,6 +10,10 @@
 {{- if and .user_setup (not .headless) .gaming_device_library -}}
 {{-   $scummvm = includeTemplate "find-tool" (dict "root" . "tool" "scummvm") -}}
 {{- end -}}
+{{- $transgui := "" -}}
+{{- if and .user_setup (not .headless) (not .work) -}}
+{{-   $transgui = includeTemplate "find-tool" (dict "root" . "tool" "transgui") -}}
+{{- end -}}
 {{- $rpi_imager := "" -}}
 {{- if and .user_setup (not .headless) .work -}}
 {{-   $rpi_imager = includeTemplate "find-tool" (dict "root" . "tool" "rpi-imager") -}}
@@ -63,6 +67,10 @@ scoop install raspberry-pi-imager
 {{    else }}
 {{/* not .work */}}
 Install-Scoop-IfNotPresent sumatrapdf SumatraPDF.SumatraPDF | Out-Null
+
+{{      if not $transgui -}}
+scoop install transgui
+{{-     end }}
 
 {{      if not .ephemeral }}
 if (-not (Test-Path "$env:LOCALAPPDATA\Programs\Reader\readwise-reader.exe")) {

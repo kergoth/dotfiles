@@ -539,6 +539,7 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 - [ChatGPT](https://openai.com/chatgpt/desktop/): OpenAI's AI assistant desktop app.
 - [Raspberry Pi Imager](https://www.raspberrypi.org/downloads/): Imaging utility to install operating systems to a microSD card. _Conditional: work._
 - [Tailscale](https://tailscale.com) ([Open-Source](https://github.com/tailscale/tailscale)): WireGuard-based mesh VPN for secure device connectivity. _Conditional: personal, non-ephemeral._
+- [Transmission Remote GUI](https://github.com/transmission-remote-gui/transgui) ([Open-Source](https://github.com/transmission-remote-gui/transgui)): Remote GUI for Transmission. _Conditional: not work._
 - If the gaming flag is enabled:
   - [Steam](https://store.steampowered.com): A digital distribution platform for purchasing and playing video games.
 
@@ -554,6 +555,10 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 #### GUI Software on Linux and FreeBSD
 
 - [Filelight](https://apps.kde.org/filelight/) ([Open-Source](https://invent.kde.org/utilities/filelight)): KDE disk usage analyzer.
+
+#### GUI Software on Linux
+
+- [TrguiNG](https://github.com/openscopeproject/TrguiNG) ([Open-Source](https://github.com/openscopeproject/TrguiNG)): A modern Transmission remote GUI. _Conditional: not work._
 
 #### GUI Software on Windows and macOS
 
@@ -602,7 +607,6 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 - [Shifty](https://shifty.natethompson.io/): Menu bar app that provides more control over Night Shift.
 - [SwiftBar](https://swiftbar.app/)]: Powerful macOS menu bar customization tool. _Conditional: This is installed when a container runtime is enabled, as I use this to start/stop colima._
 - [SyncThing](https://syncthing.net/) ([Open-Source](https://github.com/syncthing/)): A continuous file synchronization program.
-- [Transmission Remote GUI](https://github.com/transmission-remote-gui/transgui) (Open-Source): A feature rich cross platform Transmission BitTorrent client. Faster and has more functionality than the built-in web GUI.
 - [Under My Roof](https://apps.apple.com/us/app/under-my-roof-home-inventory/id1524335878): Home inventory app for organizing and tracking your home and belongings.
 - [WiFi Explorer](https://apps.apple.com/us/app/wifi-explorer/id494803304?mt=12&uo=4&at=10l4tL): Best Wi-Fi Analyzer & Monitor.
 - [WiFi Signal](https://apps.apple.com/us/app/wifi-signal-status-monitor/id525912054?mt=12&uo=4&at=10l4tL): WiFi Connection Status Monitor.
