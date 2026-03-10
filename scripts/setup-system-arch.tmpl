@@ -58,18 +58,22 @@ pacman_install vi zsh which xz
 {{ if and .use_nix (not .wsl2) .has_init -}}
 if ! has nix; then
     pacman_install nix
+fi
 
+if ! grep -q "^nix-users:.*$USER" /etc/group; then
+    sudorun sed -i -e "/^nix-users:/s/\$/ $USER/; /^nix-users:/s/: /:/;" /etc/group
     if ! grep -q "^nix-users:.*$USER" /etc/group; then
-        sudorun sed -i -e "/^nix-users:/s/\$/ $USER/; /^nix-users:/s/: /:/;" /etc/group
-        if ! grep -q "^nix-users:.*$USER" /etc/group; then
-            echo >&2 "Failed to add user to the nix-users group, please do so manually, then re-login"
-        else
-            echo >&2 "User has been added to the nix-users group, please re-login"
-        fi
+        echo >&2 "Failed to add user to the nix-users group, please do so manually, then re-login"
+    else
+        echo >&2 "User has been added to the nix-users group, please re-login"
     fi
+fi
 
+if pgrep systemd >/dev/null 2>&1; then
     sudorun systemctl enable nix-daemon
     sudorun systemctl start nix-daemon
+else
+    echo >&2 "Warning: no systemd running, unable to start nix daemon"
 fi
 {{- end }}
 
