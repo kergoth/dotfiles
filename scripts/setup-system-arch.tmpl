@@ -78,7 +78,7 @@ pacman_install wget unzip
 
 {{ if not .headless -}}
 # Install KDE Plasma and display manager
-pacman_install plasma-desktop sddm okular
+pacman_install plasma-desktop sddm okular filelight
 
 {{ if and (not .ephemeral) (not .wsl2) (not (env "CONTAINER_ID")) -}}
 {{   if .has_init -}}

@@ -551,6 +551,10 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 - [Steam Link](https://store.steampowered.com/steamlink/about): Stream your Steam games. _Conditional: gaming._
 - [Vivaldi](https://vivaldi.com/): Web browser with built-in email client focusing on customization and control. Available via brew, scoop, or flatpak.
 
+#### GUI Software on Linux and FreeBSD
+
+- [Filelight](https://apps.kde.org/filelight/) ([Open-Source](https://invent.kde.org/utilities/filelight)): KDE disk usage analyzer.
+
 #### GUI Software on Windows and macOS
 
 - [Readwise Reader](https://readwise.io/read): Save everything to one place, highlight like a pro, and replace several apps with Reader. _Conditional: not work, not ephemeral._

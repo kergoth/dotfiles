@@ -29,7 +29,7 @@ sudorun dnf -y --setopt=install_weak_deps=False install neovim
 
 {{ if not .headless -}}
 # Install KDE Plasma and display manager
-sudorun dnf -y --setopt=install_weak_deps=False install @kde-desktop-environment sddm okular
+sudorun dnf -y --setopt=install_weak_deps=False install @kde-desktop-environment sddm okular filelight
 
 {{ if and (not .ephemeral) (not .wsl2) (not (env "CONTAINER_ID")) -}}
 {{   if .has_init -}}
