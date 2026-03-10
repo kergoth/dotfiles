@@ -44,6 +44,17 @@ scoop install raspberry-pi-imager
 {{    else }}
 {{/* not .work */}}
 Install-Scoop-IfNotPresent sumatrapdf SumatraPDF.SumatraPDF | Out-Null
+
+{{      if not .ephemeral }}
+if (-not (Test-Path "$env:LOCALAPPDATA\Programs\Reader\readwise-reader.exe")) {
+    Write-Host "Installing Readwise Reader"
+    $readerRelease = Invoke-RestMethod "https://api.github.com/repos/readwiseio/reader-desktop-releases/releases/latest"
+    $readerExeUrl = ($readerRelease.assets | Where-Object { $_.name -match "x64-setup\.exe$" } | Select-Object -First 1).browser_download_url
+    $readerSetupPath = Join-Path $env:TEMP "reader-setup.exe"
+    Invoke-WebRequest -Uri $readerExeUrl -OutFile $readerSetupPath
+    & $readerSetupPath /S "/D=$env:LOCALAPPDATA\Programs\Reader"
+    Remove-Item $readerSetupPath -ErrorAction SilentlyContinue
+}
 {{-     end }}
 {{      if .gaming -}}
 Install-Scoop-IfNotPresent steam Valve.Steam | Out-Null

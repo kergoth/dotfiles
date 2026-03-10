@@ -548,6 +548,10 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 - [Obsidian](https://obsidian.md): A powerful knowledge base that works on top of a local folder of plain text Markdown files. Available via brew, scoop, flatpak, or [download](https://obsidian.md/download).
 - [Vivaldi](https://vivaldi.com/): Web browser with built-in email client focusing on customization and control. Available via brew, scoop, or flatpak.
 
+#### GUI Software on Windows and macOS
+
+- [Readwise Reader](https://readwise.io/read): Save everything to one place, highlight like a pro, and replace several apps with Reader. _Conditional: not work, not ephemeral._
+
 #### GUI Software on FreeBSD
 
 - [LibreWolf](https://librewolf.net/) ([Open-Source](https://codeberg.org/librewolf)): A custom version of Firefox, focused on privacy, security, and freedom. Available via FreeBSD ports (`www/librewolf`).
@@ -587,7 +591,6 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 - [OverSight](https://objective-see.org/products/oversight.html): Monitors a Mac's microphone and webcam, alerting the user when the internal mic is activated, or whenever a process accesses the webcam.
 - [Parallels Desktop](https://www.parallels.com/products/desktop/): Run Windows, Linux, and other operating systems on Mac.
 - [PopClip](https://apps.apple.com/us/app/popclip/id445189367?mt=12&uo=4&at=10l4tL): Instant text actions.
-- [Readwise Reader](https://readwise.io/read): Save everything to one place, highlight like a pro, and replace several apps with Reader.
 - [ReiKey](https://objective-see.org/products/reikey.html): Scans, detects, and monitors for software that installs keyboard event taps.
 - [Shifty](https://shifty.natethompson.io/): Menu bar app that provides more control over Night Shift.
 - [SwiftBar](https://swiftbar.app/)]: Powerful macOS menu bar customization tool. _Conditional: This is installed when a container runtime is enabled, as I use this to start/stop colima._
