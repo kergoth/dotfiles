@@ -86,7 +86,7 @@ chmod +x "$HOME/.local/bin/rusage"
 echo >&2 "Installing distrobox"
 tmpdir_distrobox=$(mktemp -d)
 # download-github-release requires jq; jq is guaranteed via Nix/Home Manager or setup-system on Chimera/FreeBSD.
-"$CHEZMOI_WORKING_TREE/scripts/download-github-release" -s -o "$tmpdir_distrobox" 89luca89/distrobox
+PATH="$HOME/.nix-profile/bin:$PATH" "$CHEZMOI_WORKING_TREE/scripts/download-github-release" -s -o "$tmpdir_distrobox" 89luca89/distrobox
 tar -xf "$tmpdir_distrobox"/distrobox-*-source.tar.gz -C "$tmpdir_distrobox"
 src_dir=$(find "$tmpdir_distrobox" -maxdepth 1 -type d -name '89luca89-distrobox-*' | head -n1)
 if [ -z "$src_dir" ]; then
