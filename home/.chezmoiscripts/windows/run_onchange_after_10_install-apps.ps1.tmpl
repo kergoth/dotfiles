@@ -58,6 +58,34 @@ if (-not (Test-Path "$env:LOCALAPPDATA\Programs\Reader\readwise-reader.exe")) {
 {{-     end }}
 {{      if .gaming -}}
 Install-Scoop-IfNotPresent steam Valve.Steam | Out-Null
+
+$steamLinkExe = Join-Path $env:LOCALAPPDATA "Programs\\Steam Link\\SteamLink.exe"
+if (-not (Test-Path $steamLinkExe)) {
+    Write-Host "Installing Steam Link"
+    $steamLinkZipUrl = "https://media.steampowered.com/steamlink/windows/latest/SteamLink.zip"
+    $steamLinkZipPath = Join-Path $env:TEMP "steamlink.zip"
+    $steamLinkExtractPath = Join-Path $env:TEMP "steamlink"
+    $steamLinkMsiPath = Join-Path $steamLinkExtractPath "SteamLink.msi"
+    Invoke-WebRequest -Uri $steamLinkZipUrl -OutFile $steamLinkZipPath
+    if (Test-Path $steamLinkExtractPath) {
+        Remove-Item $steamLinkExtractPath -Recurse -Force
+    }
+    Expand-Archive -Path $steamLinkZipPath -DestinationPath $steamLinkExtractPath -Force
+    if (Test-Path $steamLinkMsiPath) {
+        Start-Process msiexec.exe -ArgumentList @(
+            "/i", $steamLinkMsiPath,
+            "/qn",
+            "/norestart",
+            "MSIINSTALLPERUSER=1",
+            "ALLUSERS=2",
+            "/l*v", (Join-Path $env:TEMP "steamlink-msi.log")
+        ) -NoNewWindow -Wait
+    } else {
+        Write-Host "Steam Link MSI not found after extracting zip"
+    }
+    Remove-Item $steamLinkZipPath -ErrorAction SilentlyContinue
+    Remove-Item $steamLinkExtractPath -Recurse -Force -ErrorAction SilentlyContinue
+}
 {{-     end }}
 {{      if .retro_computing -}}
 scoop install 86box 86box-roms

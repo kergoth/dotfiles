@@ -39,6 +39,7 @@
 {{-   if and .retro_computing (not $86box) $flatpak -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and .ebook_library (not $calibre) $flatpak -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and .video (not $vlc) $flatpak -}}{{- $need_install = true -}}{{- end -}}
+{{-   if and .gaming $flatpak (eq .chezmoi.arch "amd64") -}}{{- $need_install = true -}}{{- end -}}
 {{- end -}}
 {{- if and .coding .containers -}}
 {{-   $devpod = includeTemplate "find-tool" (dict "root" . "tool" "devpod") -}}
@@ -92,6 +93,13 @@ flatpak install -y --user flathub com.calibre_ebook.calibre || true
 {{-   if and .video (not $vlc) $flatpak }}
 msg "Installing VLC from Flathub"
 flatpak install -y --user flathub org.videolan.VLC || true
+{{-   end }}
+
+{{-   if and .gaming $flatpak (eq .chezmoi.arch "amd64") }}
+if ! flatpak info --user com.valvesoftware.SteamLink >/dev/null 2>&1 && ! flatpak info com.valvesoftware.SteamLink >/dev/null 2>&1; then
+    msg "Installing Steam Link from Flathub"
+    flatpak install -y --user flathub com.valvesoftware.SteamLink || true
+fi
 {{-   end }}
 
 {{-   if and (or (eq .osid "linux-debian") (eq .osid "linux-ubuntu")) (not $kitty) }}

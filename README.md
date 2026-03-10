@@ -546,6 +546,7 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 - [86Box](https://www.86box.net/): Emulator of x86-based machines. _Conditional: retro_computing, not work._
 - [Discord](https://discord.com): A VoIP and instant messaging social platform.
 - [Obsidian](https://obsidian.md): A powerful knowledge base that works on top of a local folder of plain text Markdown files. Available via brew, scoop, flatpak, or [download](https://obsidian.md/download).
+- [Steam Link](https://store.steampowered.com/steamlink/about): Stream your Steam games. _Conditional: gaming._
 - [Vivaldi](https://vivaldi.com/): Web browser with built-in email client focusing on customization and control. Available via brew, scoop, or flatpak.
 
 #### GUI Software on Windows and macOS
@@ -602,8 +603,6 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 
 ##### Conditional GUI Software on macOS
 
-- If the gaming flag is enabled:
-  - [Steam Link](https://store.steampowered.com/steamlink/about): Stream your Steam games.
 - If the gaming_device_library flag is enabled:
   - [ScummVM](https://www.scummvm.org/): Graphic adventure game interpreter.
 - If the music flag is enabled:
