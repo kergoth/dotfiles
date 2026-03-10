@@ -557,6 +557,7 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 
 #### GUI Software on Linux and FreeBSD
 
+- [Command Output](https://store.kde.org/p/1166510/) ([Open-Source](https://github.com/Zren/plasma-applet-commandoutput)): KDE Plasma widget for command output in panels.
 - [Filelight](https://apps.kde.org/filelight/) ([Open-Source](https://invent.kde.org/utilities/filelight)): KDE disk usage analyzer.
 
 #### GUI Software on Linux

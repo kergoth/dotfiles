@@ -11,6 +11,8 @@
 {{- $discord := "" -}}
 {{- $trguing := "" -}}
 {{- $flatpak := "" -}}
+{{- $kpackagetool6 := "" -}}
+{{- $kpackagetool5 := "" -}}
 {{- $need_install := false -}}
 {{- if not .headless -}}
 {{-   $flatpak = includeTemplate "find-tool" (dict "root" . "tool" "flatpak") -}}
@@ -43,6 +45,10 @@
 {{-   if .video -}}
 {{-     $vlc = includeTemplate "find-tool" (dict "root" . "tool" "vlc") -}}
 {{-   end -}}
+{{-   $kpackagetool6 = includeTemplate "find-tool" (dict "root" . "tool" "kpackagetool6") -}}
+{{-   if not $kpackagetool6 -}}
+{{-     $kpackagetool5 = includeTemplate "find-tool" (dict "root" . "tool" "kpackagetool5") -}}
+{{-   end -}}
 {{-   if and (not $zed) (not (eq .osid "linux-chimera")) -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and (not $vivaldi) $flatpak (not (eq .osid "linux-chimera")) -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and (not $obsidian) $flatpak -}}{{- $need_install = true -}}{{- end -}}
@@ -55,6 +61,7 @@
 {{-   if and .ebook_library (not $calibre) $flatpak -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and .video (not $vlc) $flatpak -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and .gaming $flatpak (eq .chezmoi.arch "amd64") -}}{{- $need_install = true -}}{{- end -}}
+{{-   if or $kpackagetool6 $kpackagetool5 -}}{{- $need_install = true -}}{{- end -}}
 {{- end -}}
 {{- if and .coding .containers -}}
 {{-   $devpod = includeTemplate "find-tool" (dict "root" . "tool" "devpod") -}}
@@ -141,6 +148,32 @@ cp ~/.local/kitty.app/share/applications/kitty-open.desktop ~/.local/share/appli
 sed -i "s|Icon=kitty|Icon=$HOME/.local/kitty.app/share/icons/hicolor/256x256/apps/kitty.png|g" ~/.local/share/applications/kitty*.desktop 2>/dev/null || true
 sed -i "s|Exec=kitty|Exec=$HOME/.local/kitty.app/bin/kitty|g" ~/.local/share/applications/kitty*.desktop 2>/dev/null || true
 ln -sf ~/.local/kitty.app/bin/kitty ~/.local/kitty.app/bin/kitten ~/.local/bin/
+{{-   end }}
+
+{{-   if or $kpackagetool6 $kpackagetool5 }}
+kpackagetool=""
+if command -v kpackagetool6 >/dev/null 2>&1; then
+    kpackagetool="kpackagetool6"
+elif command -v kpackagetool5 >/dev/null 2>&1; then
+    kpackagetool="kpackagetool5"
+fi
+
+if [ -n "$kpackagetool" ]; then
+    plasmoid_id="com.github.zren.commandoutput"
+    action="install"
+    if "$kpackagetool" --type Plasma/Applet --show "$plasmoid_id" >/dev/null 2>&1; then
+        action="upgrade"
+    fi
+
+    msg "Installing Command Output plasmoid ($kpackagetool, $action)"
+    tmpdir=$(mktemp -d)
+    curl -fL -o "$tmpdir/commandoutput.tar.gz" \
+        https://github.com/Zren/plasma-applet-commandoutput/archive/refs/heads/master.tar.gz
+    tar -xzf "$tmpdir/commandoutput.tar.gz" -C "$tmpdir"
+    "$kpackagetool" --type Plasma/Applet --"$action" \
+        "$tmpdir/plasma-applet-commandoutput-master/package"
+    rm -rf "$tmpdir"
+fi
 {{-   end }}
 
 {{-   if and .coding .containers (not $devpod) }}

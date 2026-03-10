@@ -155,6 +155,36 @@ freebsd_check audio/picard picard
 freebsd_check multimedia/vlc vlc
 {{- end }}
 
+if pkg search --exact plasma-applet-commandoutput >/dev/null 2>&1; then
+    pkg_install_freebsd plasma-applet-commandoutput
+else
+    kpackagetool=""
+    if command -v kpackagetool6 >/dev/null 2>&1; then
+        kpackagetool="kpackagetool6"
+    elif command -v kpackagetool5 >/dev/null 2>&1; then
+        kpackagetool="kpackagetool5"
+    fi
+
+    if [ -n "$kpackagetool" ]; then
+        plasmoid_id="com.github.zren.commandoutput"
+        action="install"
+        if "$kpackagetool" --type Plasma/Applet --show "$plasmoid_id" >/dev/null 2>&1; then
+            action="upgrade"
+        fi
+
+        msg "Installing Command Output plasmoid ($kpackagetool, $action)"
+        plasmoid_tmpdir="$tmpdir/commandoutput"
+        rm -rf "$plasmoid_tmpdir"
+        mkdir -p "$plasmoid_tmpdir"
+        curl -fL -o "$plasmoid_tmpdir/commandoutput.tar.gz" \
+            https://github.com/Zren/plasma-applet-commandoutput/archive/refs/heads/master.tar.gz
+        tar -xzf "$plasmoid_tmpdir/commandoutput.tar.gz" -C "$plasmoid_tmpdir"
+        "$kpackagetool" --type Plasma/Applet --"$action" \
+            "$plasmoid_tmpdir/plasma-applet-commandoutput-master/package"
+        rm -rf "$plasmoid_tmpdir"
+    fi
+fi
+
 eget_install() {
     local repo="$1"
     shift
