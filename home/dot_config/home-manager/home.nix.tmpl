@@ -26,14 +26,14 @@ let
   # Choose the right pinentry program depending on platform.
   pinentry =
 {{- if .wsl2 }}
-    null  # WSL uses Windows Gpg4win pinentry via extraConfig
+    null;  # WSL uses Windows Gpg4win pinentry via extraConfig
 {{- else if .headless }}
-    pkgs.pinentry-curses
+    pkgs.pinentry-curses;
 {{- else if eq .chezmoi.os "darwin" }}
-    pkgs.pinentry_mac
+    pkgs.pinentry_mac;
 {{- else }}
-    pkgs.pinentry-qt  # KDE desktop (Linux and FreeBSD)
-{{- end }};
+    pkgs.pinentry-qt;  # KDE desktop (Linux and FreeBSD)
+{{- end }}
 in {
   # The home-manager manual is at:
   #
