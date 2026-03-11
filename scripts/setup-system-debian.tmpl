@@ -32,6 +32,17 @@ if ! has file; then
     sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y install file
 fi
 
+# SSH
+if ! has ssh; then
+    sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y install openssh-client
+fi
+
+{{ if and (not .ephemeral) .has_init -}}
+if ! has sshd; then
+    sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y install openssh-server
+fi
+{{- end }}
+
 {{ if not .headless -}}
 # Install KDE Plasma and display manager
 sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y update

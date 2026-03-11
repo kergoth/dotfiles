@@ -24,6 +24,23 @@ if ! has zsh; then
     sudorun dnf -y --setopt=install_weak_deps=False install zsh
 fi
 
+# SSH
+if ! has ssh; then
+    sudorun dnf -y --setopt=install_weak_deps=False install openssh-clients
+fi
+
+{{ if and (not .ephemeral) .has_init -}}
+if ! has sshd; then
+    sudorun dnf -y --setopt=install_weak_deps=False install openssh-server
+fi
+
+# Enable sshd (systemd only)
+if pgrep systemd &>/dev/null; then
+    sudorun systemctl enable sshd
+    sudorun systemctl start sshd
+fi
+{{- end }}
+
 # Install neovim
 sudorun dnf -y --setopt=install_weak_deps=False install neovim
 

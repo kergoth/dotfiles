@@ -234,6 +234,14 @@ if [ -n "$(echo "$ports" | sed -e 's/^ *//; s/ *$//')" ]; then
     done
 fi
 
+{{ if not .ephemeral -}}
+# SSH
+if ! service sshd onestatus >/dev/null 2>&1; then
+    doas sysrc sshd_enable=YES
+    doas service sshd start
+fi
+{{- end }}
+
 if [ -e /usr/local/bin/zsh ]; then
     current_shell="$(getent passwd "$USER" | sed -e 's#.*:##')"
     if [ "$current_shell" != /usr/local/bin/zsh ]; then
