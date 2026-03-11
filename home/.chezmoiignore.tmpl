@@ -148,6 +148,11 @@ Documents/*
 .var
 {{- end }}
 
+{{- if or (ne .osid "linux-chimera") (not .user_setup) .work .ephemeral }}
+.config/dinit.d/kanata
+.config/dinit.d/boot.d/kanata
+{{- end }}
+
 {{- if ne .chezmoi.os "darwin" }}
 .config/zsh/.zshrc.d/lima.zsh
 .config/zsh/functions/lima

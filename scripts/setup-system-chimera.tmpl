@@ -113,6 +113,10 @@ apk update
 
 # Available in the user repository
 apk add --no-interactive fd eza bat ripgrep sad zoxide tealdeer delta git-absorb shfmt direnv git-lfs github-cli jj restic difftastic atuin uv
+{{ if and .user_setup (not .work) (not .ephemeral) -}}
+# Keyboard remapper
+apk add --no-interactive kanata
+{{- end }}
 
 {{ if not .headless -}}
 # Terminal emulator (user repository)
