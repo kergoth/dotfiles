@@ -12,13 +12,13 @@ PATH="$scriptdir/linux:$scriptdir:$PATH"
 {{ if .use_nix -}}
 if ! has nix; then
     need_sudo
-{{   if .has_init -}}
-    curl -fsSL https://install.determinate.systems/nix |
-        sh -s -- install --determinate --no-confirm --no-modify-profile
-{{   else -}}
-    curl --proto '=https' --tlsv1.2 -sSf -L https://nixos.org/nix/install |
-        bash -s -- --no-daemon
-{{   end -}}
+    if pgrep systemd >/dev/null 2>&1; then
+        curl -fsSL https://install.determinate.systems/nix |
+            sh -s -- install --determinate --no-confirm --no-modify-profile
+    else
+        curl --proto '=https' --tlsv1.2 -sSf -L https://nixos.org/nix/install |
+            bash -s -- --no-daemon
+    fi
 fi
 {{- end }}
 
