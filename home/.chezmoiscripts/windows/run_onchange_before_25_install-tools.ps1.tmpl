@@ -51,6 +51,9 @@ RefreshEnvPath
         "zoxide" "zoxide"
         "zstd" "zstd"
 -}}
+{{-   if and (not .work) (not .ephemeral) -}}
+{{-     $_ := set $scoop_tools "kanata" "kanata" -}}
+{{-   end -}}
 {{-   $scoop_to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $scoop_tools) | fromJson -}}
 {{-   if $scoop_to_install -}}
 {{-     range $scoop_to_install -}}
