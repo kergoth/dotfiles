@@ -184,6 +184,10 @@ in {
   };
 {{- end }}
 
+{{- if and .user_setup (not .work) (not .ephemeral) .use_nix (eq .chezmoi.os "linux") }}
+  services.kanata.enable = true;
+{{- end }}
+
   nix.registry = {
     nixpkgs.flake = nixpkgs;
     nixpkgs-unstable.flake = nixpkgs-unstable;
