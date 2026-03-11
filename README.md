@@ -453,6 +453,10 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 
 - [unar](https://theunarchiver.com/command-line): Universal archives extractor. Available via brew, nix, and scoop.
 
+#### CLI Software on Linux and Windows
+
+- [Kanata](https://github.com/jtroo/kanata) ([Open-Source](https://github.com/jtroo/kanata)): A cross-platform keyboard remapper. _Conditional: user_setup, not work, not ephemeral._
+
 #### CLI Software on FreeBSD
 
 - [go](https://go.dev): An open source programming language supported by Google
