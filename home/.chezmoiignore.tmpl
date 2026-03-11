@@ -148,7 +148,10 @@ Documents/*
 .var
 {{- end }}
 
-{{- if or (ne .osid "linux-chimera") (not .user_setup) .work .ephemeral }}
+{{- $kanata_src := joinPath .chezmoi.sourceDir "dot_config/kanata/kanata.kbd" -}}
+{{- $kanata_src_tmpl := printf "%s.tmpl" $kanata_src -}}
+{{- $has_kanata_cfg := or (stat $kanata_src) (stat $kanata_src_tmpl) -}}
+{{- if or (ne .osid "linux-chimera") (not .user_setup) .work .ephemeral (not $has_kanata_cfg) }}
 .config/dinit.d/kanata
 .config/dinit.d/boot.d/kanata
 {{- end }}

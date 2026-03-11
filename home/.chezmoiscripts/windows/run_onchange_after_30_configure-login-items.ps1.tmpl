@@ -29,9 +29,11 @@ if ($SnipDo) {
 $kanataExe = "$env:SCOOP\apps\kanata\current\kanata.exe"
 if (Test-Path $kanataExe) {
     $kanataConfig = Join-Path $env:USERPROFILE ".config\\kanata\\kanata.kbd"
-    $runKey = "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
-    $kanataCmd = "`"$kanataExe`" --cfg `"$kanataConfig`""
-    New-ItemProperty -Path $runKey -Name "Kanata" -Value $kanataCmd -PropertyType String -Force | Out-Null
+    if (Test-Path $kanataConfig) {
+        $runKey = "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
+        $kanataCmd = "`"$kanataExe`" --cfg `"$kanataConfig`""
+        New-ItemProperty -Path $runKey -Name "Kanata" -Value $kanataCmd -PropertyType String -Force | Out-Null
+    }
 }
 {{- end }}
 {{- end }}
