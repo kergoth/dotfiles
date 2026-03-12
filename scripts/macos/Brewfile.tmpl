@@ -6,10 +6,10 @@ cask "keka"
 cask "kitty"
 cask "maccy"
 cask "obsidian"
-{{- if and .work (not .headless) -}}
+{{ if and .work (not .headless) -}}
 cask "raspberry-pi-imager"
 {{- end }}
-{{- if lt .macos_major_version 26 }}
+{{ if lt .macos_major_version 26 -}}
 {{/* Skip on Tahoe */}}
 cask "raycast"
 cask "rectangle"
