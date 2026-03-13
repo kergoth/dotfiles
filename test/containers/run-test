@@ -17,9 +17,10 @@
 #
 # Options:
 #     -a          Run for all distros (auto-detected from Dockerfiles)
-#     -i          Drop into a root shell before setup
-#     -s          Drop into a user shell after setup
+#     -i          Drop into a user shell after the selected setup phase
+#     -r          Stop after setup-root (skip setup/setup-full)
 #     -S          Skip setup-system, only run setup
+#     -c CMD      Run CMD as the test user after the selected setup phase
 #     -b          Just build the image(s), don't run
 #     -w          Workstation mode (DOTFILES_HEADLESS=0, DOTFILES_EPHEMERAL=0)
 #     -G          Seed GNUPGHOME from host (~/.gnupg) for test user
@@ -38,9 +39,11 @@ usage() {
 
 process_arguments() {
     all_distros=0
-    interactive=0
-    shell_after=0
-    no_system=0
+    setup_mode=full
+    saw_root_only=0
+    saw_user_only=0
+    action=run
+    command=
     build_only=0
     with_gnupg=0
     skip_nix_cache=${DOTFILES_SKIP_CACHE:-0}
@@ -53,22 +56,28 @@ process_arguments() {
     user_uid=10000
     dotfiles_mount=/home/testuser/.dotfiles
 
-    while getopts ":aisSbwCnvqhG" opt; do
+    while getopts ":aiSbc:rwCnvqhG" opt; do
         case "$opt" in
             a)
                 all_distros=1
                 ;;
             i)
-                interactive=1
-                ;;
-            s)
-                shell_after=1
+                action=shell
                 ;;
             S)
-                no_system=1
+                setup_mode=user-only
+                saw_user_only=1
                 ;;
             b)
                 build_only=1
+                ;;
+            c)
+                action=command
+                command=$OPTARG
+                ;;
+            r)
+                setup_mode=root-only
+                saw_root_only=1
                 ;;
             w)
                 DOTFILES_HEADLESS=0
@@ -105,19 +114,24 @@ process_arguments() {
             msg "Error: Unexpected argument with -a: %s" "$1"
             usage 1
         fi
-        if [ "$interactive" -eq 1 ] || [ "$shell_after" -eq 1 ]; then
-            msg "Error: -a cannot be combined with -i or -s"
+        if [ "$action" != "run" ]; then
+            msg "Error: -a cannot be combined with -i or -c"
             usage 1
         fi
         return 0
+    fi
+
+    if [ "$saw_root_only" -eq 1 ] && [ "$saw_user_only" -eq 1 ]; then
+        msg "Error: -r cannot be combined with -S"
+        usage 1
     fi
 
     if [ $# -lt 1 ]; then
         msg "Error: distro argument required (or use -a)"
         usage 1
     fi
-    if [ $# -gt 1 ] && { [ "$interactive" -eq 1 ] || [ "$shell_after" -eq 1 ]; }; then
-        msg "Error: Multiple distros cannot be combined with -i or -s"
+    if [ $# -gt 1 ] && [ "$action" != "run" ]; then
+        msg "Error: Multiple distros cannot be combined with -i or -c"
         usage 1
     fi
 }
@@ -285,12 +299,6 @@ build_image() {
 run_container() {
     image_name=$1
 
-    if [ "$no_system" -eq 1 ]; then
-        setup_cmd="script/setup"
-    else
-        setup_cmd="script/setup-full"
-    fi
-
     container_script="$dotfiles_mount/test/containers/run-test-container.sh"
 
     set -- \
@@ -300,10 +308,12 @@ run_container() {
         -e DOTFILES_DIR="$dotfiles_mount" \
         -e TEST_DOTFILES_DIR="$dotfiles_mount" \
         -e TEST_DISTRO="$distro" \
-        -e TEST_SETUP_CMD="$setup_cmd" \
+        -e TEST_SETUP_MODE="$setup_mode" \
+        -e TEST_ACTION="$action" \
         -e TEST_USER="$user" \
         -e TEST_UID="$user_uid" \
         ${GITHUB_TOKEN:+-e GITHUB_TOKEN="$GITHUB_TOKEN"} \
+        ${command:+-e TEST_COMMAND="$command"} \
         -e DOTFILES_SECRETS="${DOTFILES_SECRETS:-0}" \
         ${DOTFILES_EPHEMERAL:+-e DOTFILES_EPHEMERAL="$DOTFILES_EPHEMERAL"} \
         ${DOTFILES_HEADLESS:+-e DOTFILES_HEADLESS="$DOTFILES_HEADLESS"} \
@@ -328,19 +338,10 @@ run_container() {
         set -- "$@" -v "$age_key_path:/home/$user/.config/chezmoi/age.key:ro"
     fi
 
-    if [ "$interactive" -eq 1 ]; then
-        msg "Dropping into interactive root shell..."
-        msg "  Dotfiles repo is at %s" "$dotfiles_mount"
-        run docker run --entrypoint /bin/sh -it "$@" "$image_name"
-        return 0
-    fi
-
-    if [ "$shell_after" -eq 1 ]; then
-        run docker run --entrypoint /bin/sh -it -e SHELL_AFTER=1 \
-            "$@" "$image_name" "$container_script"
+    if [ "$action" = "shell" ]; then
+        run docker run --entrypoint /bin/sh -it "$@" "$image_name" "$container_script"
     else
-        run docker run --entrypoint /bin/sh -i \
-            "$@" "$image_name" "$container_script"
+        run docker run --entrypoint /bin/sh -i "$@" "$image_name" "$container_script"
     fi
 }
 
@@ -389,10 +390,10 @@ main() {
     while read -r distro; do
         [ -n "$distro" ] || continue
         # The while loop redirects stdin from the distros file, so we must
-        # explicitly restore /dev/tty for interactive modes (-s, -i) so that
+        # explicitly restore /dev/tty for interactive mode (-i) so that
         # docker can attach to the real terminal. Non-interactive runs use
         # /dev/null to avoid failing in CI where /dev/tty is unavailable.
-        if [ "$shell_after" -eq 1 ] || [ "$interactive" -eq 1 ]; then
+        if [ "$action" = "shell" ] && [ "${dry_run:-0}" -ne 1 ]; then
             if ! run_one "$distro" </dev/tty; then
                 msg "Test failed for distro: %s" "$distro"
                 exit 1
