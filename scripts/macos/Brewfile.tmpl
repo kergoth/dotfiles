@@ -42,7 +42,6 @@ brew "ghq"
 brew "git-absorb"
 brew "git-delta"
 brew "jira-cli"
-brew "jj"
 brew "jq"
 brew "restic"
 brew "ripgrep"
@@ -64,9 +63,10 @@ cask "devpod"
 # LLMs
 cask "chatgpt"
 
-# This is a CLI tool, but the homebrew version is newer than there
-# version available in nix, even nixpkgs-unstable, so use brew.
+# These are CLI tools, but homebrew has newer version than nix,
+# and these update frequently enough to be worth installing here.
 cask "claude-code"
+brew "jj"
 
 {{ if not .work -}}
 cask "transmission-remote-gui"

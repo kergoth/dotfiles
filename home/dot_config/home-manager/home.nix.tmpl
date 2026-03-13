@@ -108,7 +108,10 @@ in {
     git-imerge
     git-revise
     patchutils
-    jujutsu
+  {{ if not (eq .chezmoi.os "darwin") -}}
+    # This is installed via homebrew on macos
+    pkgs-unstable.jujutsu
+  {{- end }}
   {{- if .work }}
     git-crypt
     google-cloud-sdk
