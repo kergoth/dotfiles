@@ -6,7 +6,9 @@ provision:
 
       # Persist across reboots
       cat >/etc/sysctl.d/99-colima-userns.conf <<'EOF'
+      # Allow unpriviledged user namespace usage inside the containers
       kernel.apparmor_restrict_unprivileged_userns=0
+      kernel.unprivileged_userns_clone=1
       EOF
 
       # Apply now (if the sysctl exists on this kernel)
