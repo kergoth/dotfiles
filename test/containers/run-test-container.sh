@@ -9,13 +9,16 @@ fi
 : "${TEST_DISTRO:?}"
 : "${TEST_USER:?}"
 : "${TEST_UID:?}"
-: "${TEST_SETUP_CMD:?}"
+: "${TEST_SETUP_MODE:?}"
+: "${TEST_ACTION:?}"
 
 dotfiles_dir="$TEST_DOTFILES_DIR"
 test_distro="$TEST_DISTRO"
 test_user="$TEST_USER"
 test_uid="$TEST_UID"
-test_setup_cmd="$TEST_SETUP_CMD"
+test_setup_mode="$TEST_SETUP_MODE"
+test_action="$TEST_ACTION"
+test_command="${TEST_COMMAND:-}"
 host_gnupg_dir="${HOST_GNUPG_DIR:-/run/host-gnupg}"
 user_gnupg=""
 
@@ -94,11 +97,43 @@ if [ "${1:-}" != "--in-session" ] && [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ]; the
     fi
 fi
 
-if [ "${RUN_TEST_TRACE:-0}" -eq 1 ]; then
-    exec bash -x "./$TEST_SETUP_CMD" </dev/null
-else
-    exec "./$TEST_SETUP_CMD" </dev/null
-fi
+case "$TEST_SETUP_MODE" in
+    root-only)
+        ;;
+    user-only)
+        if [ "${RUN_TEST_TRACE:-0}" -eq 1 ]; then
+            bash -x ./script/setup </dev/null
+        else
+            ./script/setup </dev/null
+        fi
+        ;;
+    full)
+        if [ "${RUN_TEST_TRACE:-0}" -eq 1 ]; then
+            bash -x ./script/setup-full </dev/null
+        else
+            ./script/setup-full </dev/null
+        fi
+        ;;
+    *)
+        echo "Error: unknown TEST_SETUP_MODE: $TEST_SETUP_MODE" >&2
+        exit 1
+        ;;
+esac
+
+case "$TEST_ACTION" in
+    run)
+        ;;
+    shell)
+        exec zsh --login
+        ;;
+    command)
+        exec sh -lc "$TEST_COMMAND"
+        ;;
+    *)
+        echo "Error: unknown TEST_ACTION: $TEST_ACTION" >&2
+        exit 1
+        ;;
+esac
 EOF
 chmod +x "$user_script"
 
@@ -108,7 +143,8 @@ sh_quote() {
 
 env_cmd="env RUN_TEST_TRACE=$(sh_quote "${RUN_TEST_TRACE:-0}")"
 env_cmd="$env_cmd TEST_DOTFILES_DIR=$(sh_quote "$dotfiles_dir")"
-env_cmd="$env_cmd TEST_SETUP_CMD=$(sh_quote "$test_setup_cmd")"
+env_cmd="$env_cmd TEST_SETUP_MODE=$(sh_quote "$test_setup_mode")"
+env_cmd="$env_cmd TEST_ACTION=$(sh_quote "$test_action")"
 env_cmd="$env_cmd DOTFILES_DIR=$(sh_quote "$dotfiles_dir")"
 env_cmd="$env_cmd GITHUB_TOKEN=$(sh_quote "${GITHUB_TOKEN:-}")"
 env_cmd="$env_cmd DOTFILES_EPHEMERAL=$(sh_quote "${DOTFILES_EPHEMERAL:-}")"
@@ -119,6 +155,7 @@ env_cmd="$env_cmd DOTFILES_PERSONAL=$(sh_quote "${DOTFILES_PERSONAL:-}")"
 env_cmd="$env_cmd DOTFILES_WORK=$(sh_quote "${DOTFILES_WORK:-}")"
 env_cmd="$env_cmd XDG_RUNTIME_DIR=$(sh_quote "$xdg_runtime_dir")"
 env_cmd="$env_cmd GNUPGHOME=$(sh_quote "${GNUPGHOME:-}")"
+env_cmd="$env_cmd TEST_COMMAND=$(sh_quote "$test_command")"
 
 ret=0
 
@@ -135,22 +172,6 @@ if [ "$ret" -eq 0 ]; then
     echo >&2 "Test completed for distro: $test_distro"
 else
     echo >&2 "Setup failed for distro: $test_distro (status $ret)"
-fi
-
-if [ "${SHELL_AFTER:-0}" -eq 1 ]; then
-    if [ "$ret" -eq 0 ]; then
-        echo "Dropping into user shell..." >&2
-    else
-        echo "Dropping into user shell for debugging..." >&2
-    fi
-    if command -v doas >/dev/null 2>&1; then
-        doas -u "$test_user" $env_cmd zsh --login || ret=$?
-    elif command -v su >/dev/null 2>&1; then
-        su - "$test_user" -c "exec $env_cmd zsh --login" || ret=$?
-    else
-        echo "Error: need su or doas to drop into user shell" >&2
-        exit 1
-    fi
 fi
 
 exit "$ret"
