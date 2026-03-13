@@ -89,53 +89,53 @@ curl -f https://zed.dev/install.sh | sh
 
 {{-   if and (not $obsidian) $flatpak }}
 msg "Installing Obsidian from Flathub"
-flatpak install -y --user flathub md.obsidian.Obsidian || true
+flatpak install -y --user flathub md.obsidian.Obsidian
 {{-   end }}
 
 {{-   if and (not $discord) $flatpak }}
 msg "Installing Discord from Flathub"
-flatpak install -y --user flathub com.discordapp.Discord || true
+flatpak install -y --user flathub com.discordapp.Discord
 {{-   end }}
 
 {{-   if and (not $syncthingtray) $flatpak (not .ephemeral) }}
 msg "Installing Syncthing Tray from Flathub"
-flatpak install -y --user flathub io.github.martchus.syncthingtray || true
+flatpak install -y --user flathub io.github.martchus.syncthingtray
 {{-   end }}
 
 {{-   if and (not .work) (not $trguing) $flatpak }}
 msg "Installing TrguiNG from Flathub"
-flatpak install -y --user flathub org.openscopeproject.TrguiNG || true
+flatpak install -y --user flathub org.openscopeproject.TrguiNG
 {{-   end }}
 
 {{-   if and .retro_computing (not $86box) $flatpak }}
 msg "Installing 86Box from Flathub"
-flatpak install -y --user flathub net._86box._86Box || true
+flatpak install -y --user flathub net._86box._86Box
 {{-   end }}
 
 {{-   if and .gaming_device_library (not $scummvm) $flatpak }}
 msg "Installing ScummVM from Flathub"
-flatpak install -y --user flathub org.scummvm.ScummVM || true
+flatpak install -y --user flathub org.scummvm.ScummVM
 {{-   end }}
 
 {{-   if and .music_library (not $picard) $flatpak }}
 msg "Installing MusicBrainz Picard from Flathub"
-flatpak install -y --user flathub org.musicbrainz.Picard || true
+flatpak install -y --user flathub org.musicbrainz.Picard
 {{-   end }}
 
 {{-   if and .ebook_library (not $calibre) $flatpak }}
 msg "Installing Calibre from Flathub"
-flatpak install -y --user flathub com.calibre_ebook.calibre || true
+flatpak install -y --user flathub com.calibre_ebook.calibre
 {{-   end }}
 
 {{-   if and .video (not $vlc) $flatpak }}
 msg "Installing VLC from Flathub"
-flatpak install -y --user flathub org.videolan.VLC || true
+flatpak install -y --user flathub org.videolan.VLC
 {{-   end }}
 
 {{-   if and .gaming $flatpak (eq .chezmoi.arch "amd64") }}
 if ! flatpak info --user com.valvesoftware.SteamLink >/dev/null 2>&1 && ! flatpak info com.valvesoftware.SteamLink >/dev/null 2>&1; then
     msg "Installing Steam Link from Flathub"
-    flatpak install -y --user flathub com.valvesoftware.SteamLink || true
+    flatpak install -y --user flathub com.valvesoftware.SteamLink
 fi
 {{-   end }}
 
@@ -143,10 +143,10 @@ fi
 msg "Installing kitty"
 curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin launch=n
 mkdir -p ~/.local/bin ~/.local/share/applications
-cp ~/.local/kitty.app/share/applications/kitty.desktop ~/.local/share/applications/ 2>/dev/null || true
-cp ~/.local/kitty.app/share/applications/kitty-open.desktop ~/.local/share/applications/ 2>/dev/null || true
-sed -i "s|Icon=kitty|Icon=$HOME/.local/kitty.app/share/icons/hicolor/256x256/apps/kitty.png|g" ~/.local/share/applications/kitty*.desktop 2>/dev/null || true
-sed -i "s|Exec=kitty|Exec=$HOME/.local/kitty.app/bin/kitty|g" ~/.local/share/applications/kitty*.desktop 2>/dev/null || true
+cp ~/.local/kitty.app/share/applications/kitty.desktop ~/.local/share/applications/ 2>/dev/null
+cp ~/.local/kitty.app/share/applications/kitty-open.desktop ~/.local/share/applications/ 2>/dev/null
+sed -i "s|Icon=kitty|Icon=$HOME/.local/kitty.app/share/icons/hicolor/256x256/apps/kitty.png|g" ~/.local/share/applications/kitty*.desktop 2>/dev/null
+sed -i "s|Exec=kitty|Exec=$HOME/.local/kitty.app/bin/kitty|g" ~/.local/share/applications/kitty*.desktop 2>/dev/null
 ln -sf ~/.local/kitty.app/bin/kitty ~/.local/kitty.app/bin/kitten ~/.local/bin/
 {{-   end }}
 
