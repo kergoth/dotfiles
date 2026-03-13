@@ -15,7 +15,7 @@ Full reference for the built-in `obsidian` CLI (Obsidian 1.12+).
 | Command | Parameters | Notes |
 |---------|------------|-------|
 | `read` | `file=`, `path=` | Returns file contents |
-| `create` | `name=`, `path=`, `content=`, `template=`, `overwrite`, `open`, `newtab` | `template=` requires the core Templates plugin (not Templater); check vault CLAUDE.md |
+| `create` | `name=`, `path=`, `content=`, `template=`, `overwrite`, `open`, `newtab` | `template=` requires the core Templates plugin (not Templater); check vault CLAUDE.md. If the note already exists and `overwrite` is omitted, Obsidian creates a suffixed duplicate such as `Note 1.md`. |
 | `append` | `file=`, `path=`, `content=` (required), `inline` | `inline` appends without leading newline |
 | `prepend` | `file=`, `path=`, `content=` (required), `inline` | `inline` prepends without trailing newline |
 | `move` | `file=`, `path=`, `to=` (required) | `to=` is destination folder or full path |
@@ -134,6 +134,25 @@ obsidian prepend file="Sprint Planning" content="## Goals\n"
 obsidian daily:append content="- [ ] Task 1\n- [ ] Task 2"
 ```
 
+For larger note bodies, a single-quoted heredoc is safer because the shell will not interpret backticks, `$vars`, or `$(...)`:
+
+```bash
+obsidian create vault="knowledge-base" name="Skill Notes" content="$(cat <<'END'
+# Skill Notes
+
+- Literal backticks like `SKILL.md`
+- Literal dollars like $HOME
+END
+)"
+```
+
+If the note may already exist, prefer an idempotent flow:
+
+```bash
+obsidian create vault="knowledge-base" name="Skill Notes" overwrite content='## Notes'
+obsidian read vault="knowledge-base" file="Skill Notes"
+```
+
 ## Error Conditions
 
 | Error | Cause | Fix |
@@ -145,3 +164,6 @@ obsidian daily:append content="- [ ] Task 1\n- [ ] Task 2"
 | Template not found | Wrong template name | Check Templates folder; name without extension |
 | Vault not found | Wrong `vault=` value | Check with `obsidian vaults` |
 | Binary not found | PATH not set | Source `~/.zprofile` or add to PATH manually |
+| CLI vault commands return unusable output | Headless/CLI quirk | Fall back to `~/Library/Application Support/obsidian/obsidian.json` to identify configured and currently open vaults, then continue using the CLI for note operations |
+| Unexpected `Note 1.md` | `create` hit an existing title without `overwrite` | Use `overwrite` or `read` first before creating |
+| `zsh: command not found` while using `content=` | Backticks in double-quoted shell content triggered command substitution | Use single quotes or a `<<'END'` heredoc |
