@@ -20,6 +20,8 @@ Is this a GUI application?
     ├── Windows → Scoop (run_onchange_before_25_install-tools.ps1.tmpl)
     ├── Available in Nix? (check: https://search.nixos.org/packages)
     │   └── Yes → Add to home.nix.tmpl
+    ├── Fast-moving upstream tool?
+    │   └── Yes → Exception path: Homebrew cask/formula on macOS, npm in install-tools on POSIX, if freshness matters more than package-source conservatism
     ├── Available via language package manager?
     │   ├── Rust (cargo) → install-tools (limited)
     │   └── Python (uv) → install-tools
@@ -40,6 +42,20 @@ When multiple installation methods are available, prefer them in this order:
 4. **Language package managers (cargo/uv) over system packages** - Except on Chimera where apk is preferred since Nix is unavailable
 5. **System packages when Nix is unavailable** - Chimera (apk), FreeBSD (pkg/ports)
 6. **eget for Chimera gaps** - Tools not available in apk repos and not installable via cargo/uv
+
+### Exception: Fast-Moving Tools
+
+Tools that update frequently enough that freshness materially affects usefulness may
+intentionally bypass the default CLI hierarchy above.
+
+For this exception class, prefer:
+
+1. **Homebrew over Nix on macOS** - When Homebrew tracks upstream releases faster
+2. **npm on POSIX over slower native packages** - When upstream publishes there first and wrapper-driven auto-updates are desirable
+3. **Explicit documentation of the exception** - Record the tradeoff in this guide or a related design doc rather than silently weakening the general policy
+
+This exception is deliberately narrow. It fits tools like Claude Code, Codex, and
+`jj`, and should not be treated as the default rule for ordinary CLI software.
 
 ## Platform Support Matrix
 

@@ -62,6 +62,9 @@
 {{-     if eq .chezmoi.os "linux" -}}
 {{-       $_ := set $npm_tools "claude" "@anthropic-ai/claude-code" -}}
 {{-     end -}}
+{{-     if or (eq .chezmoi.os "linux") (eq .chezmoi.os "freebsd") -}}
+{{-       $_ := set $npm_tools "codex" "@openai/codex" -}}
+{{-     end -}}
 {{-     $npm_to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $npm_tools) | fromJson -}}
 {{-     $npm := "" -}}
 {{-     if $npm_to_install -}}
