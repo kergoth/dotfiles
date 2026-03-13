@@ -547,7 +547,7 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 
 - [1Password](https://1password.com): A password manager developed by AgileBits.
 - [86Box](https://www.86box.net/): Emulator of x86-based machines. _Conditional: retro_computing, not work._
-- [Discord](https://discord.com): A VoIP and instant messaging social platform.
+- [Discord](https://discord.com): A VoIP and instant messaging social platform. _Conditional: on Linux, amd64 only._
 - [Obsidian](https://obsidian.md): A powerful knowledge base that works on top of a local folder of plain text Markdown files. Available via brew, scoop, flatpak, or [download](https://obsidian.md/download).
 - [Steam Link](https://store.steampowered.com/steamlink/about): Stream your Steam games. _Conditional: gaming._
 - [Vivaldi](https://vivaldi.com/): Web browser with built-in email client focusing on customization and control. Available via brew, scoop, or flatpak.
@@ -565,6 +565,7 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 #### GUI Software on Linux
 
 - [TrguiNG](https://github.com/openscopeproject/TrguiNG) ([Open-Source](https://github.com/openscopeproject/TrguiNG)): A modern Transmission remote GUI. _Conditional: not work._
+- [Vesktop](https://github.com/Vencord/Vesktop) ([Open-Source](https://github.com/Vencord/Vesktop)): A Vencord-based desktop client for Discord. _Conditional: arm64._
 
 #### GUI Software on Windows and macOS
 

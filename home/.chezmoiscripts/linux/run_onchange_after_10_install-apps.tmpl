@@ -8,12 +8,15 @@
 {{- $vlc := "" -}}
 {{- $obsidian := "" -}}
 {{- $discord := "" -}}
+{{- $vesktop := "" -}}
 {{- $trguing := "" -}}
 {{- $syncthingtray := "" -}}
 {{- $flatpak := "" -}}
 {{- $kpackagetool6 := "" -}}
 {{- $kpackagetool5 := "" -}}
 {{- $need_install := false -}}
+{{- $linux_amd64 := eq .chezmoi.arch "amd64" -}}
+{{- $linux_arm64 := or (eq .chezmoi.arch "arm64") (eq .chezmoi.arch "aarch64") -}}
 {{- if not .headless -}}
 {{-   $flatpak = includeTemplate "find-tool" (dict "root" . "tool" "flatpak") -}}
 {{- end -}}
@@ -23,6 +26,7 @@
 {{-   end -}}
 {{-   $obsidian = includeTemplate "find-tool" (dict "root" . "tool" "obsidian") -}}
 {{-   $discord = includeTemplate "find-tool" (dict "root" . "tool" "discord") -}}
+{{-   $vesktop = includeTemplate "find-tool" (dict "root" . "tool" "dev.vencord.Vesktop") -}}
 {{-   $syncthingtray = includeTemplate "find-tool" (dict "root" . "tool" "syncthingtray") -}}
 {{-   if not .work -}}
 {{-     $trguing = includeTemplate "find-tool" (dict "root" . "tool" "trguing") -}}
@@ -51,7 +55,8 @@
 {{-   end -}}
 {{-   if and (not $zed) (not (eq .osid "linux-chimera")) -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and (not $obsidian) $flatpak -}}{{- $need_install = true -}}{{- end -}}
-{{-   if and (not $discord) $flatpak -}}{{- $need_install = true -}}{{- end -}}
+{{-   if and $linux_amd64 (not $discord) $flatpak -}}{{- $need_install = true -}}{{- end -}}
+{{-   if and $linux_arm64 (not $vesktop) $flatpak -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and (not $syncthingtray) $flatpak (not .ephemeral) -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and (not .work) (not $trguing) $flatpak -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and (or (eq .osid "linux-debian") (eq .osid "linux-ubuntu")) (not $kitty) -}}{{- $need_install = true -}}{{- end -}}
@@ -92,9 +97,14 @@ msg "Installing Obsidian from Flathub"
 flatpak install -y --user flathub md.obsidian.Obsidian
 {{-   end }}
 
-{{-   if and (not $discord) $flatpak }}
+{{-   if and $linux_amd64 (not $discord) $flatpak }}
 msg "Installing Discord from Flathub"
 flatpak install -y --user flathub com.discordapp.Discord
+{{-   end }}
+
+{{-   if and $linux_arm64 (not $vesktop) $flatpak }}
+msg "Installing Vesktop from Flathub"
+flatpak install -y --user flathub dev.vencord.Vesktop
 {{-   end }}
 
 {{-   if and (not $syncthingtray) $flatpak (not .ephemeral) }}
