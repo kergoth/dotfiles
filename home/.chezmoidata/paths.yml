@@ -2,6 +2,7 @@ paths:
   home_bins:
     - bin
     - .local/bin
+    - .local/share/flatpak/exports/bin
     - go/bin
     - .local/share/go/bin
     - .cargo/bin
