@@ -31,7 +31,7 @@ done
 shift $((OPTIND - 1))
 
 if [ $# -eq 0 ]; then
-    configuration=$(uname -s | tr '[:upper:]' '[:lower:]')
+    configuration="$USER"
 else
     configuration=$1
     shift
