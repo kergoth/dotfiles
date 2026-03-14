@@ -313,6 +313,7 @@ run_container() {
         -e TEST_USER="$user" \
         -e TEST_UID="$user_uid" \
         ${GITHUB_TOKEN:+-e GITHUB_TOKEN="$GITHUB_TOKEN"} \
+        ${CLAUDE_CODE_OAUTH_TOKEN:+-e CLAUDE_CODE_OAUTH_TOKEN="$CLAUDE_CODE_OAUTH_TOKEN"} \
         ${command:+-e TEST_COMMAND="$command"} \
         -e DOTFILES_SECRETS="${DOTFILES_SECRETS:-0}" \
         ${DOTFILES_EPHEMERAL:+-e DOTFILES_EPHEMERAL="$DOTFILES_EPHEMERAL"} \
@@ -321,6 +322,10 @@ run_container() {
         ${DOTFILES_WORK:+-e DOTFILES_WORK="$DOTFILES_WORK"} \
         ${DOTFILES_SKIP_GPG_SECRET_IMPORT:+-e DOTFILES_SKIP_GPG_SECRET_IMPORT="$DOTFILES_SKIP_GPG_SECRET_IMPORT"} \
         ${RUN_TEST_TRACE:+-e RUN_TEST_TRACE="$RUN_TEST_TRACE"}
+
+    if [ -s ~/.codex/auth.json ]; then
+        set -- "$@" -v "$HOME/.codex/auth.json:/mounts/.codex/auth.json:ro"
+    fi
 
     if [ "$skip_nix_cache" != "1" ]; then
         set -- "$@" \

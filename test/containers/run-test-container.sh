@@ -24,7 +24,17 @@ user_gnupg=""
 
 cd "$dotfiles_dir"
 
-script/$test_distro/setup-root "$test_user" "$test_uid" </dev/null
+if [ -e /mounts/.codex/auth.json ] && ! [ -e "/home/$test_user/.codex/auth.json" ]; then
+    mkdir -p "/home/$test_user/.codex"
+    rm -f "/home/$test_user/.codex/auth.json"
+    ln -s /mounts/.codex/auth.json "/home/$test_user/.codex/auth.json"
+fi
+
+xdg_runtime_dir="/tmp/xdg-$test_user"
+mkdir -p "$xdg_runtime_dir"
+chmod 700 "$xdg_runtime_dir"
+
+"script/$test_distro/setup-root" "$test_user" "$test_uid" </dev/null
 age_key_path="/home/$test_user/.config/chezmoi/age.key"
 if [ -e "$age_key_path" ]; then
     find "/home/$test_user" -path "$age_key_path" -prune -o -exec chown -h "$test_user" {} +
@@ -32,10 +42,7 @@ else
     chown -hR "$test_user" "/home/$test_user"
 fi
 
-xdg_runtime_dir="/tmp/xdg-$test_user"
-mkdir -p "$xdg_runtime_dir"
 chown "$test_user" "$xdg_runtime_dir"
-chmod 700 "$xdg_runtime_dir"
 
 if [ -d /nix ]; then
     if ! [ -w /nix/store ] || ! [ -w /nix/var ]; then
@@ -76,6 +83,7 @@ fi
 
 export DOTFILES_DIR="${DOTFILES_DIR:-$TEST_DOTFILES_DIR}"
 export GITHUB_TOKEN="${GITHUB_TOKEN:-}"
+export CLAUDE_CODE_OAUTH_TOKEN="${CLAUDE_CODE_OAUTH_TOKEN:-}"
 export DOTFILES_EPHEMERAL="${DOTFILES_EPHEMERAL:-}"
 export DOTFILES_HEADLESS="${DOTFILES_HEADLESS:-}"
 export DOTFILES_SECRETS="${DOTFILES_SECRETS:-}"
@@ -147,6 +155,7 @@ env_cmd="$env_cmd TEST_SETUP_MODE=$(sh_quote "$test_setup_mode")"
 env_cmd="$env_cmd TEST_ACTION=$(sh_quote "$test_action")"
 env_cmd="$env_cmd DOTFILES_DIR=$(sh_quote "$dotfiles_dir")"
 env_cmd="$env_cmd GITHUB_TOKEN=$(sh_quote "${GITHUB_TOKEN:-}")"
+env_cmd="$env_cmd CLAUDE_CODE_OAUTH_TOKEN=$(sh_quote "${CLAUDE_CODE_OAUTH_TOKEN:-}")"
 env_cmd="$env_cmd DOTFILES_EPHEMERAL=$(sh_quote "${DOTFILES_EPHEMERAL:-}")"
 env_cmd="$env_cmd DOTFILES_HEADLESS=$(sh_quote "${DOTFILES_HEADLESS:-}")"
 env_cmd="$env_cmd DOTFILES_SECRETS=$(sh_quote "${DOTFILES_SECRETS:-}")"
