@@ -1,0 +1,4 @@
+interface:
+  display_name: "Shell Script Style"
+  short_description: "Apply preferred shell script style"
+  default_prompt: "Use $shell-script-style when creating or editing a user-facing shell script."
