@@ -40,8 +40,9 @@ chezmoi doctor
 # Test dotfiles setup in containers (requires Docker)
 ./script/test           # all supported distros
 ./script/test arch      # specific distro only
-./script/test -s arch   # drop into user shell after setup (debug)
-./script/test -i arch   # drop into root shell before setup (debug)
+./script/test -i arch   # drop into user shell after setup (debug)
+./script/test -r -i arch   # stop after setup-root, then open a shell
+./script/test -c 'chezmoi data' arch   # run a command after the selected setup phase
 ./script/test -S arch   # skip setup-system, only run setup
 ./script/test -b        # build container images only, don't run
 ./script/test -w arch   # workstation mode: DOTFILES_HEADLESS=0, DOTFILES_EPHEMERAL=0 (enables GUI app installs)

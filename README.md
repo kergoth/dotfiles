@@ -220,7 +220,13 @@ supported Linux distributions. Docker is required.
 ./script/test arch
 
 # Drop into a user shell after setup (useful for debugging)
-./script/test -s debian
+./script/test -i debian
+
+# Stop after setup-root, then drop into a shell
+./script/test -r -i debian
+
+# Run a command as the test user after setup
+./script/test -c 'chezmoi data | grep -E "work|personal"' debian
 ```
 
 Supported distros: `arch`, `chimera`, `debian`, `fedora`, `ubuntu`.
