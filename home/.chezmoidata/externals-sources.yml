@@ -1,0 +1,7 @@
+externals_sources:
+  anthropic_official_plugins:
+    repo: anthropics/claude-plugins-official
+  superpowers:
+    repo: obra/superpowers
+  astral:
+    repo: astral-sh/claude-code-plugins

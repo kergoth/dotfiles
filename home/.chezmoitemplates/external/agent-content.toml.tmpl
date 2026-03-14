@@ -1,14 +1,23 @@
-{{- $refreshPeriod := .external.refreshPeriod -}}
-{{ range $id, $entry := .agent_externals -}}
-{{-   $pin := dig "agent_externals_lock" $id "pinned_ref" "" $ -}}
-{{-   if $pin }}
-{{-     $destination := dig "destination" (joinPath ".agents" "external-sources" $id) $entry -}}
-[{{ $destination | quote }}]
+{{- $lock := .externals_lock -}}
+{{- $refresh := .external.refreshPeriod -}}
+
+[".agents/external-sources/anthropic_official_plugins"]
 type = "archive"
-url = {{ printf "https://github.com/%s/archive/%s.tar.gz" $entry.repo $pin | toToml }}
+url = {{ printf "https://github.com/anthropics/claude-plugins-official/archive/%s.tar.gz" (index $lock "anthropic_official_plugins") | toToml }}
 exact = true
 stripComponents = 1
-refreshPeriod = {{ $refreshPeriod | toToml }}
+refreshPeriod = {{ $refresh | toToml }}
 
-{{ end }}
-{{- end -}}
+[".agents/external-sources/superpowers"]
+type = "archive"
+url = {{ printf "https://github.com/obra/superpowers/archive/%s.tar.gz" (index $lock "superpowers") | toToml }}
+exact = true
+stripComponents = 1
+refreshPeriod = {{ $refresh | toToml }}
+
+[".agents/external-sources/astral"]
+type = "archive"
+url = {{ printf "https://github.com/astral-sh/claude-code-plugins/archive/%s.tar.gz" (index $lock "astral") | toToml }}
+exact = true
+stripComponents = 1
+refreshPeriod = {{ $refresh | toToml }}

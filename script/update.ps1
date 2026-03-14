@@ -119,7 +119,7 @@ function Update-OpCliVersions {
 
 Update-OpCliVersions
 
-$agentExternalsUpdater = Join-Path $repodir "scripts/update-agent-externals-lock.py"
+$agentExternalsUpdater = Join-Path $repodir "scripts/update-externals-lock.py"
 if (Test-Path $agentExternalsUpdater) {
     Write-Host "Updating pinned agent externals"
     if (Get-Command python3 -ErrorAction SilentlyContinue) {

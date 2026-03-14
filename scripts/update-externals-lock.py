@@ -22,13 +22,7 @@ def load_chezmoi_data(repo_root: Path) -> dict:
     return json.loads(result.stdout)
 
 
-def resolve_pin(entry: dict) -> str:
-    strategy = entry["update_strategy"]
-    if strategy != "github_head":
-        raise ValueError(f"unsupported update strategy: {strategy}")
-
-    repo = entry["repo"]
-    ref = entry.get("ref", "main")
+def resolve_github_head(repo: str, ref: str) -> str:
     cmd = ["git", "ls-remote", f"https://github.com/{repo}.git", f"refs/heads/{ref}"]
     result = subprocess.run(cmd, check=True, capture_output=True, text=True)
     line = result.stdout.strip()
@@ -38,36 +32,35 @@ def resolve_pin(entry: dict) -> str:
 
 
 def dump_yaml(locks: dict) -> str:
-    lines = ["agent_externals_lock:"]
+    lines = ["externals_lock:"]
     for key in sorted(locks):
-        value = locks[key]
-        lines.append(f"  {key}:")
-        lines.append(f'    pinned_ref: "{value["pinned_ref"]}"')
+        lines.append(f'  {key}: "{locks[key]}"')
     lines.append("")
     return "\n".join(lines)
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Update pinned refs for agent externals.")
+    parser = argparse.ArgumentParser(description="Update pinned refs for externals.")
     parser.add_argument("ids", nargs="*", help="Optional external IDs to update")
     args = parser.parse_args()
 
     repo_root = Path(__file__).resolve().parent.parent
     data = load_chezmoi_data(repo_root)
-    externals = data.get("agent_externals", {})
+    externals = data.get("externals_sources", {})
     if not externals:
-        raise SystemExit("no agent_externals data found")
+        raise SystemExit("no externals data found")
 
     selected = args.ids or list(externals.keys())
-    unknown = [external_id for external_id in selected if external_id not in externals]
+    unknown = [eid for eid in selected if eid not in externals]
     if unknown:
         raise SystemExit(f"unknown external ids: {', '.join(sorted(unknown))}")
 
-    locks = dict(data.get("agent_externals_lock", {}))
-    for external_id in selected:
-        locks[external_id] = {"pinned_ref": resolve_pin(externals[external_id])}
+    locks = dict(data.get("externals_lock", {}))
+    for eid in selected:
+        entry = externals[eid]
+        locks[eid] = resolve_github_head(entry["repo"], entry.get("ref", "main"))
 
-    output = repo_root / "home" / ".chezmoidata" / "agent-externals-lock.yml"
+    output = repo_root / "home" / ".chezmoidata" / "externals-lock.yml"
     output.write_text(dump_yaml(locks), encoding="utf-8")
     return 0
 

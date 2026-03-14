@@ -1,7 +1,0 @@
-agent_externals_lock:
-  anthropic_official_plugins:
-    pinned_ref: "d5c15b861cd23e3102215c26020368ad5134dc47"
-  superpowers:
-    pinned_ref: "363923f74aa9cd7b470c0aaa73dee629a8bfdc90"
-  astral:
-    pinned_ref: "f3ce88a7ba830f53afd6d944c1d0278ed318e142"
