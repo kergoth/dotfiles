@@ -1,4 +1,5 @@
 {{ $refreshPeriod := .external.refreshPeriod }}
+{{- $lock := .externals_lock -}}
 {{ $clone_args := dig "external" "clone" "args" (list) . -}}
 {{ $pull_args := dig "external" "pull" "args" (list) . -}}
 
@@ -41,19 +42,17 @@ refreshPeriod = "{{ $refreshPeriod }}"
 
 [".local/bin/git-j"]
 type = "archive-file"
-url = "https://github.com/beanbaginc/dev-goodies/archive/master.tar.gz"
+url = {{ printf "https://github.com/beanbaginc/dev-goodies/archive/%s.tar.gz" (index $lock "beanbaginc_dev_goodies") | toToml }}
 path = "bin/git-j"
 exact = true
 stripComponents = 1
-refreshPeriod = "{{ $refreshPeriod }}"
 
 [".local/bin/git-rebase-chain"]
 type = "archive-file"
-url = "https://github.com/beanbaginc/dev-goodies/archive/master.tar.gz"
+url = {{ printf "https://github.com/beanbaginc/dev-goodies/archive/%s.tar.gz" (index $lock "beanbaginc_dev_goodies") | toToml }}
 path = "bin/git-rebase-chain"
 exact = true
 stripComponents = 1
-refreshPeriod = "{{ $refreshPeriod }}"
 
 {{- $gitextras_version := (gitHubLatestRelease "tj/git-extras").TagName }}
 [".local/bin/git-alias"]
@@ -71,26 +70,23 @@ refreshPeriod = "{{ $refreshPeriod }}"
 
 [".local/bin/vipe"]
 type = "archive-file"
-url = "https://github.com/madx/moreutils/archive/master.tar.gz"
+url = {{ printf "https://github.com/madx/moreutils/archive/%s.tar.gz" (index $lock "madx_moreutils") | toToml }}
 path = "vipe"
 exact = true
 stripComponents = 1
-refreshPeriod = "{{ $refreshPeriod }}"
 
 [".local/bin/wsl-open"]
 type = "file"
-url = "https://raw.githubusercontent.com/4U6U57/wsl-open/master/wsl-open.sh"
+url = {{ printf "https://raw.githubusercontent.com/4U6U57/wsl-open/%s/wsl-open.sh" (index $lock "wsl_open") | toToml }}
 executable = true
-refreshPeriod = "{{ $refreshPeriod }}"
 
 [".local/bin/ifne"]
 type = "archive-file"
-url = "https://github.com/fumiyas/home-commands/archive/master.tar.gz"
+url = {{ printf "https://github.com/fumiyas/home-commands/archive/%s.tar.gz" (index $lock "fumiyas_home_commands") | toToml }}
 path = "ifne"
 executable = true
 exact = true
 stripComponents = 1
-refreshPeriod = "{{ $refreshPeriod }}"
 
 [".local/bin/git-assembler"]
 type = "archive-file"

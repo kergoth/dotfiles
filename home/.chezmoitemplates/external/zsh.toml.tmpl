@@ -1,3 +1,4 @@
+{{- $lock := .externals_lock -}}
 {{- $binpath := ".local/bin" -}}
 {{- if eq .chezmoi.os "windows" -}}
 {{-   $binpath = "AppData/Local/Programs/bin" -}}
@@ -11,27 +12,23 @@
 
 [".config/zsh/functions/manydots-magic"]
 type = "file"
-url = "https://raw.githubusercontent.com/knu/zsh-manydots-magic/master/manydots-magic"
-refreshPeriod = "{{ .external.refreshPeriod }}"
+url = {{ printf "https://raw.githubusercontent.com/knu/zsh-manydots-magic/%s/manydots-magic" (index $lock "knu_zsh_manydots_magic") | toToml }}
 
 [".config/zsh/functions/git-escape-magic"]
 type = "file"
-url = "https://raw.githubusercontent.com/knu/zsh-git-escape-magic/master/git-escape-magic"
-refreshPeriod = "{{ .external.refreshPeriod }}"
+url = {{ printf "https://raw.githubusercontent.com/knu/zsh-git-escape-magic/%s/git-escape-magic" (index $lock "knu_zsh_git_escape_magic") | toToml }}
 
 [".config/zsh/plugins/autosuggestions"]
 type = "archive"
-url = "https://github.com/zsh-users/zsh-autosuggestions/archive/master.tar.gz"
+url = {{ printf "https://github.com/zsh-users/zsh-autosuggestions/archive/%s.tar.gz" (index $lock "zsh_autosuggestions") | toToml }}
 exact = true
 stripComponents = 1
-refreshPeriod = "{{ .external.refreshPeriod }}"
 
 [".config/zsh/plugins/bd"]
 type = "archive"
-url = "https://github.com/Tarrasch/zsh-bd/archive/master.tar.gz"
+url = {{ printf "https://github.com/Tarrasch/zsh-bd/archive/%s.tar.gz" (index $lock "zsh_bd") | toToml }}
 exact = true
 stripComponents = 1
-refreshPeriod = "{{ .external.refreshPeriod }}"
 
 [".config/zsh/plugins/completions"]
 type = "archive"
@@ -65,18 +62,16 @@ stripComponents = 1
 
 [".config/zsh/plugins/syntax-highlighting"]
 type = "archive"
-url = "https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz"
+url = {{ printf "https://github.com/zsh-users/zsh-syntax-highlighting/archive/%s.tar.gz" (index $lock "zsh_syntax_highlighting") | toToml }}
 exact = true
 stripComponents = 1
-refreshPeriod = "{{ .external.refreshPeriod }}"
 
 {{ if .wsl2 -}}
 [".config/zsh/plugins/windows-terminal-zsh-integration"]
 type = "archive"
-url = "https://github.com/romkatv/windows-terminal-zsh-integration/archive/master.tar.gz"
+url = {{ printf "https://github.com/romkatv/windows-terminal-zsh-integration/archive/%s.tar.gz" (index $lock "zsh_windows_terminal_integration") | toToml }}
 exact = true
 stripComponents = 1
-refreshPeriod = "{{ .external.refreshPeriod }}"
 {{- end }}
 
 [".config/zsh/plugins/zbell/zbell.plugin.sh"]

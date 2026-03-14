@@ -1,9 +1,9 @@
+{{- $lock := .externals_lock -}}
 {{ if .steamdeck -}}
 {{/* SteamTinkerLaunch */}}
 ["stl/prefix"]
 type = "archive"
-url = "https://github.com/sonic2kk/steamtinkerlaunch/archive/refs/heads/master.zip"
+url = {{ printf "https://github.com/sonic2kk/steamtinkerlaunch/archive/%s.zip" (index $lock "steamtinkerlaunch") | toToml }}
 exact = true
 stripComponents = 1
-refreshPeriod = "{{ .external.refreshPeriod }}"
 {{- end }}

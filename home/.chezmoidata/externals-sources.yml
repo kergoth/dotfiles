@@ -9,8 +9,49 @@ externals_sources:
     repo: anthropics/claude-plugins-official
   astral:
     repo: astral-sh/claude-code-plugins
+  beanbaginc_dev_goodies:
+    repo: beanbaginc/dev-goodies
+    ref: master
+  bitbake_syntax:
+    repo: casparfriedrich/bitbake-syntax
+    ref: master
+  dracula_bbedit:
+    repo: dracula/bbedit
+    ref: master
+  dracula_zed:
+    repo: dracula/zed
+  fumiyas_home_commands:
+    repo: fumiyas/home-commands
+    ref: master
+  knu_zsh_git_escape_magic:
+    repo: knu/zsh-git-escape-magic
+    ref: master
+  knu_zsh_manydots_magic:
+    repo: knu/zsh-manydots-magic
+    ref: master
+  madx_moreutils:
+    repo: madx/moreutils
+    ref: master
   retroarch:
     repo: libretro/RetroArch
     ref: master
+  steamtinkerlaunch:
+    repo: sonic2kk/steamtinkerlaunch
+    ref: master
   superpowers:
     repo: obra/superpowers
+  wsl_open:
+    repo: 4U6U57/wsl-open
+    ref: master
+  zsh_autosuggestions:
+    repo: zsh-users/zsh-autosuggestions
+    ref: master
+  zsh_bd:
+    repo: Tarrasch/zsh-bd
+    ref: master
+  zsh_syntax_highlighting:
+    repo: zsh-users/zsh-syntax-highlighting
+    ref: master
+  zsh_windows_terminal_integration:
+    repo: romkatv/windows-terminal-zsh-integration
+    ref: master

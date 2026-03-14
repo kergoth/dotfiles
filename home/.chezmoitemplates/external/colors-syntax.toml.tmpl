@@ -1,29 +1,27 @@
+{{- $lock := .externals_lock -}}
 {{ if eq .chezmoi.os "windows" }}
 ["AppData/Roaming/bat/syntaxes/BitBake.sublime-syntax"]
 {{ else }}
 [".config/bat/syntaxes/BitBake.sublime-syntax"]
 {{ end }}
 type = "archive-file"
-url = "https://github.com/casparfriedrich/bitbake-syntax/archive/master.tar.gz"
+url = {{ printf "https://github.com/casparfriedrich/bitbake-syntax/archive/%s.tar.gz" (index $lock "bitbake_syntax") | toToml }}
 path = "BitBake.sublime-syntax"
 exact = true
 stripComponents = 1
-refreshPeriod = "{{ .external.refreshPeriod }}"
 
 [".config/zed/themes/dracula.json"]
 type = "archive-file"
-url = "https://github.com/dracula/zed/archive/master.tar.gz"
+url = {{ printf "https://github.com/dracula/zed/archive/%s.tar.gz" (index $lock "dracula_zed") | toToml }}
 path = "themes/dracula.json"
 exact = true
 stripComponents = 1
-refreshPeriod = "{{ .external.refreshPeriod }}"
 
 {{ if eq .chezmoi.os "darwin" -}}
 ["Library/Application Support/BBEdit/Color Schemes/Dracula.bbColorScheme"]
 type = "archive-file"
-url = "https://github.com/dracula/bbedit/archive/master.tar.gz"
+url = {{ printf "https://github.com/dracula/bbedit/archive/%s.tar.gz" (index $lock "dracula_bbedit") | toToml }}
 path = "Dracula.bbColorScheme"
 exact = true
 stripComponents = 1
-refreshPeriod = "{{ .external.refreshPeriod }}"
 {{- end }}
