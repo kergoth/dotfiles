@@ -52,12 +52,12 @@ update_op_cli_versions() {
 update_op_cli_versions || :
 
 if [ -f "$sourcedir/scripts/update-externals-lock.py" ]; then
-    echo >&2 "Updating pinned agent externals"
+    echo >&2 "Updating pinned externals"
     if command -v python3 >/dev/null 2>&1; then
         python3 "$sourcedir/scripts/update-externals-lock.py" || :
         chezmoi apply -R || :
     else
-        echo >&2 "Warning: python3 not available; skipping agent externals lock update"
+        echo >&2 "Warning: python3 not available; skipping externals lock update"
     fi
 fi
 
