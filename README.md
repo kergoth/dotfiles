@@ -331,8 +331,8 @@ chezmoi update -R
 
 #### Shared Rules & Skills
 
-- Shared always-loaded agent context is rendered from repo-managed rules into `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`
-- Shared skills live under `~/.agents/skills` and are consumed by both Claude Code and Codex
+- Shared always-loaded agent context is rendered from repo-managed rules into `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, and `~/.cursor/rules/agent-rules.mdc`
+- Shared skills live under `~/.agents/skills` and are consumed by Claude Code, Codex, and Cursor
 - Third-party portable skill content is fetched into an isolated pinned cache and selectively linked into the shared skill tree
 
 #### Shared Skills
@@ -341,6 +341,9 @@ chezmoi update -R
 
 - **[Obsidian CLI](home/dot_agents/skills/obsidian-cli/SKILL.md)**
   Work with the Obsidian CLI
+
+- **[Shell Script Style](home/dot_agents/skills/shell-script-style/SKILL.md)**
+  Apply personal Bash/POSIX shell script style conventions
 
 ##### External
 

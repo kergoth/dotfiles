@@ -90,7 +90,9 @@ This is a **chezmoi-managed dotfiles** repository supporting macOS, Linux (Arch,
   - `common.ps1` - PowerShell equivalent
   - `chezmoi-*` - Helper scripts for chezmoi operations
   - `macos/Brewfile*.tmpl` - Homebrew package definitions
-- **`settings/`** - Shared settings files (GnuPG, PowerShell, etc.)
+- **`settings/`** - Shared settings files (GnuPG, PowerShell, agent rules, etc.)
+  - `agents/rules/` - Private agent rule templates (personal, work) included by `render-agent-rules.md.tmpl`
+  - `agents/` - Encrypted data blobs for work-only agent configuration
 - **`test/`** - Test infrastructure
   - `containers/` - Per-distro Dockerfiles and the `run-test` driver script
 
@@ -146,10 +148,14 @@ Chezmoi run scripts follow this pattern:
 
 Chezmoi externals download non-package-manager resources. Templates in `.chezmoitemplates/external/` define:
 
+- Agent skills and plugins (superpowers, anthropic, astral)
+- Work-only agent skill repos — encrypted TOML fragment (`agent-content-work.toml.age`), cloned as git-repos to `~/Workspace/`, conditional on `.work && .secrets`
 - Zsh plugins and themes
 - Fonts (iA Writer, MesloLGS NF)
 - Vim plugins
 - Color schemes and app data
+
+Archive-based externals are pinned by commit SHA in `.chezmoidata/externals-lock.yml` with source repos defined in `.chezmoidata/externals-sources.yml`. Run `scripts/update-externals-lock.py` (or `script/update`) to resolve refs to current SHAs. Git-repo type externals (e.g., `bin/`, work skill repos) track HEAD directly and are not pinned.
 
 ### Secrets Management
 
@@ -157,6 +163,21 @@ Chezmoi externals download non-package-manager resources. Templates in `.chezmoi
 - Encrypted files use `.age` extension
 - `chezmoi-edit-encrypted` script for editing encrypted files
 - Bootstrap scripts retrieve age key from 1Password during setup
+- **Encrypted fragment inclusion**: non-managed `.age` files can be spliced into templates via `include | decrypt` (e.g., `joinPath .chezmoi.sourceDir ".chezmoitemplates/external/agent-content-work.toml.age" | include | decrypt`). Used for work-only chezmoi externals where the content (repo URLs) must stay encrypted in the public repo.
+
+### Agent Configuration (Claude, Codex, Cursor)
+
+Agent rules and skills are managed through a shared pipeline:
+
+- **Rules**: `home/dot_agents/rules/*.md.tmpl` are sorted alphabetically and rendered by `render-agent-rules.md.tmpl` with an `agent` parameter. Each agent tool gets its own output file:
+  - Claude: `~/.claude/CLAUDE.md` (via `home/dot_claude/CLAUDE.md.tmpl`)
+  - Codex: `~/.codex/AGENTS.md` (via `home/dot_codex/AGENTS.md.tmpl`)
+  - Cursor: `~/.cursor/rules/agent-rules.mdc` (via `home/dot_cursor/rules/agent-rules.mdc.tmpl`) — uses `.mdc` format with `alwaysApply: true` frontmatter
+- **Skills**: All agent tools symlink to `~/.agents/skills/` (e.g., `~/.claude/skills → ~/.agents/skills`). Skills come from three sources:
+  - Symlinks to external archives (superpowers, anthropic, astral) in `~/.agents/external-sources/`
+  - Local skills in `home/dot_agents/skills/` (obsidian-cli, shell-script-style)
+  - Work-only skills symlinked by `run_onchange_after_40_link-work-agent-skills.tmpl` from encrypted repos cloned to `~/Workspace/`
+- **Agent-specific conditionals**: Templates can branch on the `agent` parameter (e.g., `{{ eq $agent "claude" }}`) for tool-specific guidance
 
 ### Ensuring Directories Exist
 
