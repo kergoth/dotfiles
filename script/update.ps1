@@ -119,6 +119,17 @@ function Update-OpCliVersions {
 
 Update-OpCliVersions
 
+$agentExternalsUpdater = Join-Path $repodir "scripts/update-agent-externals-lock.py"
+if (Test-Path $agentExternalsUpdater) {
+    Write-Host "Updating pinned agent externals"
+    if (Get-Command python3 -ErrorAction SilentlyContinue) {
+        python3 $agentExternalsUpdater
+        chezmoi apply -R
+    } else {
+        Write-Warning "Warning: python3 not available; skipping agent externals lock update"
+    }
+}
+
 # Exit if we don't have the nix command
 if (-not (Get-Command nix -ErrorAction SilentlyContinue)) {
     Write-Warning "Warning: nix must be installed to update Home Manager packages"

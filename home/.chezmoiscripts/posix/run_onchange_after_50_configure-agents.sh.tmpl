@@ -64,11 +64,6 @@ add_marketplace() {
 add_mcp_json github '{"type":"http","url":"https://api.githubcopilot.com/mcp","headers":{"Authorization":"Bearer '"{{ $github_token }}"'"}}' --scope user
 {{- end }}
 
-add_marketplace anthropics/claude-plugins-official
-install_plugin claude-md-management@claude-plugins-official --scope user
-install_plugin learning-output-style@claude-plugins-official --scope user
-install_plugin superpowers@claude-plugins-official --scope user
-
 add_marketplace astral-sh/claude-code-plugins
 install_plugin astral@astral-sh --scope user
 {{- end }}

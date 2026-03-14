@@ -1,0 +1,14 @@
+{{- $refreshPeriod := .external.refreshPeriod -}}
+{{ range $id, $entry := .agent_externals -}}
+{{-   $pin := dig "agent_externals_lock" $id "pinned_ref" "" $ -}}
+{{-   if $pin }}
+{{-     $destination := dig "destination" (joinPath ".agents" "external-sources" $id) $entry -}}
+[{{ $destination | quote }}]
+type = "archive"
+url = {{ printf "https://github.com/%s/archive/%s.tar.gz" $entry.repo $pin | toToml }}
+exact = true
+stripComponents = 1
+refreshPeriod = {{ $refreshPeriod | toToml }}
+
+{{ end }}
+{{- end -}}

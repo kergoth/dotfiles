@@ -321,6 +321,32 @@ chezmoi update -R
 - [zsh-nix-shell](https://github.com/chisui/zsh-nix-shell): Zsh plugin that lets you use zsh in nix-shell shells.
 - [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting): Fish shell like syntax highlighting for Zsh.
 
+### Agent Additions
+
+#### Shared Rules & Skills
+
+- Shared always-loaded agent context is rendered from repo-managed rules into `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`
+- Shared skills live under `~/.agents/skills` and are consumed by both Claude Code and Codex
+- Third-party portable skill content is fetched into an isolated pinned cache and selectively linked into the shared skill tree
+
+#### Shared Skills
+
+##### First-Party
+
+- **[Obsidian CLI](home/dot_agents/skills/obsidian-cli/SKILL.md)**
+  Work with the Obsidian CLI
+
+##### External
+
+- **[Astral Skills](https://github.com/astral-sh/claude-code-plugins/tree/main/plugins/astral/skills)**
+  Skills for working with Python using Astral tools
+
+- **[CLAUDE.md Improver](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/claude-md-management/skills/claude-md-improver)**
+  Maintain and improve `CLAUDE.md` files
+
+- **[Superpowers Skills](https://github.com/obra/superpowers/tree/main/skills)**
+  Core skills library for Claude Code: TDD, debugging, collaboration patterns, and proven techniques
+
 ### Claude Code Additions
 
 #### MCP Servers
@@ -330,17 +356,8 @@ chezmoi update -R
 
 #### Plugins
 
-- **[Superpowers](https://claude.com/plugins/superpowers)**
-  Enhances Claude Code with additional power-user capabilities
-
-- **[CLAUDE.md Management](https://claude.com/plugins/claude-md-management)**
-  Structured management of `CLAUDE.md` and Markdown-based instruction files
-
-- **[Learning Output Style](https://claude.com/plugins/learning-output-style)**
-  Enforces consistent learning- and explanation-oriented output styles
-
-- **[Astral](https://github.com/astral-sh/claude-plugin)**
-  Integrates Astral tooling and conventions (e.g. Python / Ruff ecosystem)
+- **[Astral](https://github.com/astral-sh/claude-code-plugins)**
+  Retained as a Claude-native integration for Astral tooling, including `ty` LSP support
 
 ### Fonts
 

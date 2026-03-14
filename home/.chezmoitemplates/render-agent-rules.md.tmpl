@@ -1,0 +1,19 @@
+{{- $root := .root -}}
+{{- $agent := .agent -}}
+{{- $ruleTemplates := glob (joinPath $root.chezmoi.workingTree "home/dot_agents/rules/*") | sortAlpha -}}
+{{- $first := true -}}
+{{- range $path := $ruleTemplates -}}
+  {{- $content := "" -}}
+  {{- if hasSuffix ".tmpl" $path -}}
+    {{- $content = includeTemplate $path (merge $root (dict "agent" $agent)) | trim -}}
+  {{- else -}}
+    {{- $content = include $path | trim -}}
+  {{- end -}}
+  {{- if $content -}}
+    {{- if not $first }}
+
+{{ end -}}
+{{ $content }}
+    {{- $first = false -}}
+  {{- end -}}
+{{- end -}}

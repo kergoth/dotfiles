@@ -83,6 +83,16 @@ update_op_cli_versions() {
 
 update_op_cli_versions || :
 
+if [ -f "$sourcedir/scripts/update-agent-externals-lock.py" ]; then
+    echo >&2 "Updating pinned agent externals"
+    if command -v python3 >/dev/null 2>&1; then
+        python3 "$sourcedir/scripts/update-agent-externals-lock.py" || :
+        chezmoi apply -R || :
+    else
+        echo >&2 "Warning: python3 not available; skipping agent externals lock update"
+    fi
+fi
+
 if ! command -v nix >/dev/null 2>&1; then
     echo >&2 "Error: nix must be installed to update Home Manager packages"
     exit 1

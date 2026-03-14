@@ -222,11 +222,6 @@ $githubMcpJson = '{"type":"http","url":"https://api.githubcopilot.com/mcp","head
 Add-McpJson -Name github -Json $githubMcpJson -Scope user
 {{- end }}
 
-Add-Marketplace anthropics/claude-plugins-official
-Install-Plugin -Name claude-md-management@claude-plugins-official -Scope user
-Install-Plugin -Name learning-output-style@claude-plugins-official -Scope user
-Install-Plugin -Name superpowers@claude-plugins-official -Scope user
-
 Add-Marketplace astral-sh/claude-code-plugins
 Install-Plugin -Name astral@astral-sh -Scope user
 {{- end }}
