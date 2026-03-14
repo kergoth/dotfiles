@@ -1,0 +1,6 @@
+---
+description: Global agent rules
+alwaysApply: true
+---
+
+{{ includeTemplate (joinPath .chezmoi.workingTree "home/.chezmoitemplates/render-agent-rules.md.tmpl") (dict "root" . "agent" "cursor") }}
