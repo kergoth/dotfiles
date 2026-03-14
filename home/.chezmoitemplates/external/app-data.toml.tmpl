@@ -1,3 +1,4 @@
+{{- $lock := .externals_lock -}}
 {{- $86box := "" -}}
 {{- if eq .chezmoi.os "darwin" -}}
 {{-   $installed_apps := includeTemplate "installedMacApps" (dict "root" . "apps" ( list "86Box.app" )) | fromJson -}}
@@ -21,8 +22,7 @@
 {{- $assetsDir := joinPath $86box_data "assets" -}}
 [{{ $assetsDir | quote }}]
     type = "git-repo"
-    url = "https://github.com/86Box/assets"
-    refreshPeriod = {{ $refreshPeriod | toToml }}
+    url = {{ printf "https://github.com/86Box/assets/archive/%s.zip" (index $lock "86box_assets") | toToml }}
     ["{{ $assetsDir }}".clone]
       args = {{ $clone_args | toToml }}
     ["{{ $assetsDir }}".pull]
@@ -31,8 +31,7 @@
 {{- $romsDir := joinPath $86box_data "roms" }}
 [{{ $romsDir | quote }}]
     type = "git-repo"
-    url = "https://github.com/86Box/roms"
-    refreshPeriod = {{ $refreshPeriod | toToml }}
+    url = {{ printf "https://github.com/86Box/roms/archive/%s.zip" (index $lock "86box_roms") | toToml }}
     ["{{ $romsDir }}".clone]
       args = {{ $clone_args | toToml }}
     ["{{ $romsDir }}".pull]
@@ -43,9 +42,8 @@
 {{ if and .steamdeck .retrodeck }}
 [".var/app/net.retrodeck.retrodeck/config/retroarch/filters/video"]
 type = "archive"
-url = "https://github.com/libretro/RetroArch/archive/refs/heads/master.zip"
+url = {{ printf "https://github.com/libretro/RetroArch/archive/%s.zip" (index $lock "retroarch") | toToml }}
 exact = true
 stripComponents = 3
 include = ["*/gfx/video_filters/**/*.filt"]
-refreshPeriod = "{{ .external.refreshPeriod }}"
 {{ end }}

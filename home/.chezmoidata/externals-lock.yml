@@ -1,4 +1,7 @@
 externals_lock:
+  86box_assets: "83547e9e6077350fdb960541b7a4ad540a76a6c2"
+  86box_roms: "fe6ac8527bd399fe1dbff67e568a551a474b367a"
   anthropic_official_plugins: "d5c15b861cd23e3102215c26020368ad5134dc47"
   astral: "f3ce88a7ba830f53afd6d944c1d0278ed318e142"
+  retroarch: "b0624a720abee8b3336f100d66c7498348dff171"
   superpowers: "363923f74aa9cd7b470c0aaa73dee629a8bfdc90"

@@ -1,7 +1,16 @@
 externals_sources:
+  86box_assets:
+    repo: 86Box/assets
+    ref: main
+  86box_roms:
+    repo: 86Box/roms
+    ref: master
   anthropic_official_plugins:
     repo: anthropics/claude-plugins-official
-  superpowers:
-    repo: obra/superpowers
   astral:
     repo: astral-sh/claude-code-plugins
+  retroarch:
+    repo: libretro/RetroArch
+    ref: master
+  superpowers:
+    repo: obra/superpowers
