@@ -138,6 +138,9 @@ in {
   ] ++ lib.optionals stdenv.isDarwin [
     darwin.trash
     duti
+{{- if and .containers (not .ephemeral) (eq .chezmoi.os "darwin") }}
+    pkgs-unstable.colima
+{{- end }}
     pkgs-unstable.lima
     mas
     reattach-to-user-namespace
@@ -161,9 +164,6 @@ in {
     fzf.enable = true;
     jq.enable = true;
     bat.enable = true;
-{{- if and .containers (not .ephemeral) (eq .chezmoi.os "darwin") }}
-    colima.enable = true;
-{{- end }}
 {{- if not .devpod }}
     # gnupg
     gpg.enable = true;
