@@ -2,6 +2,9 @@
 {{-   if or (ne .chezmoi.os "darwin") (ne .chezmoi.username .macos_admin_user) -}}
 {{-   includeTemplate "external/app-data.toml.tmpl" . -}}
 {{-   includeTemplate "external/agent-content.toml.tmpl" . -}}
+{{-   if and .work .secrets (not .ephemeral) -}}
+{{-     joinPath .chezmoi.sourceDir ".chezmoitemplates/external/agent-content-work.toml.age" | include | decrypt -}}
+{{-   end -}}
 {{-   includeTemplate "external/colors-syntax.toml.tmpl" . -}}
 {{-   includeTemplate "external/fonts.toml.tmpl" . -}}
 {{-   includeTemplate "external/scripts.toml.tmpl" . -}}
