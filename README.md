@@ -338,14 +338,14 @@ chezmoi update -R
 
 ##### External
 
-- **[Astral Skills](https://github.com/astral-sh/claude-code-plugins/tree/main/plugins/astral/skills)**
-  Skills for working with Python using Astral tools
+- **[Anthropic Official Plugins](https://github.com/anthropics/claude-plugins-official/tree/main/plugins)**
+  CLAUDE.md maintenance and skill authoring (claude-md-improver, skill-creator)
 
-- **[CLAUDE.md Improver](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/claude-md-management/skills/claude-md-improver)**
-  Maintain and improve `CLAUDE.md` files
+- **[Astral Skills](https://github.com/astral-sh/claude-code-plugins/tree/main/plugins/astral/skills)**
+  Skills for working with Python using Astral tools (ruff, ty, uv)
 
 - **[Superpowers Skills](https://github.com/obra/superpowers/tree/main/skills)**
-  Core skills library for Claude Code: TDD, debugging, collaboration patterns, and proven techniques
+  Core skills library for Claude Code: TDD, debugging, collaboration patterns, and proven techniques — all except writing-skills
 
 ### Claude Code Additions
 
