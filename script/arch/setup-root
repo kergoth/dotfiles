@@ -37,9 +37,8 @@ if ! getent passwd "$user" >/dev/null 2>&1; then
     fi
     # shellcheck disable=SC2086
     useradd $useradd_args "$user"
-    if [ -e /usr/bin/zsh ]; then
-        chsh -s /usr/bin/zsh "$user"
-    fi
+    pacman_install zsh
+    chsh -s /usr/bin/zsh "$user"
 
     if [ -n "${NO_USER_PASSWORD:-}" ]; then
         : # Explicitly skip password setup.
