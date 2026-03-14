@@ -1,0 +1,178 @@
+#!/usr/bin/env bash
+# Apply home-manager config changes, diff generations, commit, and switch.
+#
+# Usage: home-manager-switch [--update-inputs "input1 input2 ..."] [subject]
+#
+# Without --update-inputs: syncs the lock file without bumping versions
+#   (nix flake lock). Use this when applying home.nix changes directly.
+# With --update-inputs: bumps the named flake inputs before building
+#   (nix flake update <inputs>). Called by script/update.
+#
+# The "before" baseline is always built from the current committed config
+# (after chezmoi apply), so the diff reflects only the intended change.
+
+set -euo pipefail
+
+scriptdir=$(cd "$(dirname "$0")" && pwd -P)
+sourcedir=$(dirname "$scriptdir")
+PATH="$PATH:$scriptdir:$sourcedir/scripts"
+
+# Detect VCS type
+use_jj=0
+if [ -d "$sourcedir/.jj" ] && command -v jj >/dev/null 2>&1; then
+    use_jj=1
+fi
+
+nix() {
+    command nix --experimental-features 'nix-command flakes' "$@"
+}
+
+if ! command -v home-manager &>/dev/null; then
+    hm() {
+        nix run --no-write-lock-file github:nix-community/home-manager/ -- "$@"
+    }
+else
+    hm() {
+        home-manager "$@"
+    }
+fi
+
+usage() {
+    echo >&2 "Usage: ${0##*/} [--update-inputs \"input1 input2 ...\"] [subject]"
+    exit 2
+}
+
+# Parse arguments
+update_inputs=""
+subject=""
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+    --update-inputs)
+        shift
+        update_inputs="${1:-}"
+        [ -z "$update_inputs" ] && usage
+        shift
+        ;;
+    --update-inputs=*)
+        update_inputs="${1#--update-inputs=}"
+        shift
+        ;;
+    -h | --help)
+        usage
+        ;;
+    --)
+        shift
+        break
+        ;;
+    -*)
+        echo >&2 "Unknown option: $1"
+        usage
+        ;;
+    *)
+        subject="$1"
+        shift
+        ;;
+    esac
+done
+
+tmpfile=$(mktemp -t "${0##*/}.XXXXXX")
+
+on_exit() {
+    rm -f "$tmpfile"
+    if [ "$use_jj" -eq 0 ]; then
+        (cd "$sourcedir" && git checkout HEAD -- home/dot_config/home-manager/private_flake.lock &>/dev/null) || :
+    fi
+}
+trap on_exit EXIT INT TERM
+
+if ! command -v nix >/dev/null 2>&1; then
+    echo >&2 "Error: nix must be installed to switch Home Manager generations"
+    exit 1
+fi
+
+# Determine the home-manager configuration name (matches home-manager-build convention)
+configuration="$USER"
+package="$HOME/.config/home-manager#homeConfigurations.$configuration.activationPackage"
+
+# Build "before" from current disk state — before applying any changes.
+# This is the correct baseline whether called standalone (user edits home.nix)
+# or from script/update (chezmoi update -R already applied remote changes).
+echo >&2 "Building current Home Manager generation"
+before_path=""
+if [ -f "$HOME/.config/home-manager/flake.nix" ]; then
+    nix build --no-link "$package" 2>/dev/null \
+        && before_path=$(nix path-info "$package" 2>/dev/null) || :
+fi
+if [ -z "$before_path" ]; then
+    # No existing build (first run or broken state) — fall back to active generation
+    before_path=$(hm generations 2>/dev/null | head -n 1 | cut -d" " -f7) || :
+fi
+
+# Sync committed config to ~/.config/home-manager (applies home.nix changes)
+chezmoi apply ~/.config/home-manager
+
+# Update or sync the lock file
+cd ~/.config/home-manager
+if [ -n "$update_inputs" ]; then
+    echo >&2 "Updating Home Manager inputs: $update_inputs"
+    # shellcheck disable=SC2086
+    nix flake update $update_inputs 2>&1 \
+        | (grep -Ev '(^warning:|searching up|into the Git cache)' || :)
+else
+    echo >&2 "Syncing Home Manager lock file"
+    nix flake lock
+fi
+
+chezmoi re-add flake.lock
+
+# Build "after" — same config with updated lock
+echo >&2 "Building updated Home Manager generation"
+nix build --no-link "$package"
+after_path=$(nix path-info "$package")
+
+# Early exit if no generation change
+if [ "$before_path" = "$after_path" ]; then
+    echo >&2 "No change to Home Manager generation"
+    exit 0
+fi
+
+# Diff the two generations
+if command -v nvd >/dev/null 2>&1; then
+    nvd diff "$before_path" "$after_path" | tee "$tmpfile"
+fi
+
+# Resolve commit subject
+if [ -z "$subject" ]; then
+    if [ -t 0 ]; then
+        printf 'Commit subject: ' >&2
+        read -r subject
+    else
+        echo >&2 "Error: commit subject required as argument when not interactive"
+        exit 1
+    fi
+fi
+
+# Build commit message
+{
+    echo "$subject"
+    if [ -s "$tmpfile" ]; then
+        echo
+        echo "  Home Manager packages changes:"
+        echo
+        sed -e 's#^#    #' -e 's/#\([0-9][0-9]*\)/- \1/' "$tmpfile"
+    fi
+} >"$sourcedir/.git/COMMIT_EDITMSG"
+
+# Commit all changed home-manager tracked files
+echo >&2 "Committing Home Manager changes"
+if [ "$use_jj" -eq 1 ]; then
+    commit_msg=$(cat "$sourcedir/.git/COMMIT_EDITMSG")
+    (cd "$sourcedir" && jj commit -m "$commit_msg" home/dot_config/home-manager/)
+else
+    (cd "$sourcedir" && git commit -F .git/COMMIT_EDITMSG home/dot_config/home-manager/)
+fi
+
+hm switch
+hm expire-generations "-30 days"
+nix-env --delete-generations old

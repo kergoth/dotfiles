@@ -10,39 +10,7 @@ PATH="$PATH:$scriptdir:$sourcedir/scripts"
 use_jj=0
 if [ -d "$sourcedir/.jj" ] && command -v jj >/dev/null 2>&1; then
     use_jj=1
-    vcs="jj"
-else
-    vcs="git"
 fi
-
-on_exit() {
-    if [ -n "$tmpfile" ]; then
-        rm -f "$tmpfile"
-    fi
-    if [ "$use_jj" -eq 1 ]; then
-        # jj automatically handles uncommitted changes
-        :
-    else
-        (cd "$sourcedir" && git checkout HEAD -- home/dot_config/home-manager/private_flake.lock &>/dev/null)
-    fi
-}
-
-nix() {
-    command nix --experimental-features 'nix-command flakes' "$@"
-}
-
-if ! command -v home-manager &>/dev/null; then
-    hm() {
-        nix run --no-write-lock-file github:nix-community/home-manager/ -- "$@"
-    }
-else
-    hm() {
-        home-manager "$@"
-    }
-fi
-
-tmpfile=$(mktemp -t "${0##*/}.XXXXXX")
-trap on_exit EXIT INT TERM
 
 echo >&2 "Updating chezmoi"
 chezmoi upgrade || :
@@ -93,56 +61,4 @@ if [ -f "$sourcedir/scripts/update-externals-lock.py" ]; then
     fi
 fi
 
-if ! command -v nix >/dev/null 2>&1; then
-    echo >&2 "Error: nix must be installed to update Home Manager packages"
-    exit 1
-fi
-
-echo >&2 "Applying existing Home Manager configuration prior to update"
-chezmoi apply ~/.config/home-manager
-home-manager-switch
-
-echo >&2 "Updating Home Manager packages"
-cd ~/.config/home-manager
-nix flake update nixpkgs nixpkgs-unstable 2>&1 | (grep -Ev '(^warning:|searching up|into the Git cache)' || :) | tee "$tmpfile"
-if ! [ -s "$tmpfile" ]; then
-    echo >&2 "No update to the home-manager inputs available"
-    exit 0
-fi
-
-chezmoi re-add flake.lock
-
-{
-    echo 'Home Manager Update'
-    echo
-    echo '  Home Manager input changes:'
-    echo
-    cat "$tmpfile" | sed -e 's#^#    #; s/#\([0-9][0-9]*\)/\1/'
-} >"$sourcedir/.git/COMMIT_EDITMSG"
-
-home-manager-build | tee "$tmpfile"
-if [ -s "$tmpfile" ]; then
-    if grep -q "No version or selection state changes." "$tmpfile"; then
-        echo >&2 "No update to the home-manager packages available"
-        exit 0
-    fi
-    {
-        echo
-        echo "  Home Manager packages changes:"
-        echo
-        cat "$tmpfile" \
-            | sed -e 's#^#    #' -e 's/#\([0-9][0-9]*\)/- \1/'
-    } >>"$sourcedir/.git/COMMIT_EDITMSG"
-fi
-
-echo >&2 "Committing Home Manager updates"
-if [ "$use_jj" -eq 1 ]; then
-    commit_msg=$(cat "$sourcedir/.git/COMMIT_EDITMSG")
-    (cd "$sourcedir" && jj commit -m "$commit_msg" home/dot_config/home-manager/private_flake.lock)
-else
-    (cd "$sourcedir" && git commit -F .git/COMMIT_EDITMSG home/dot_config/home-manager/private_flake.lock)
-fi
-
-hm switch
-hm expire-generations "-30 days"
-nix-env --delete-generations old
+script/home-manager-switch --update-inputs "nixpkgs nixpkgs-unstable" "Home Manager Update"
