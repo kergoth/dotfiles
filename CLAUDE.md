@@ -14,8 +14,11 @@ chezmoi edit --watch ~/.config/zsh/.zshrc
 # Update dotfiles and external dependencies
 chezmoi update -R
 
-# Full update including Home Manager packages
+# Full update including Home Manager packages (bumps nixpkgs/nixpkgs-unstable inputs)
 ./script/update
+
+# Apply home.nix changes, diff generations, commit, and switch (no version bump)
+./script/home-manager-switch "Remove unused packages"
 
 # Setup (after cloning, applies dotfiles + user configuration)
 ./script/setup
@@ -68,7 +71,8 @@ Scripts form a progression from OS installation to dotfiles application:
 - `script/setup` / `chezmoi apply` — Apply dotfiles and user-level packages
 - `script/setup-full` — Runs `setup-system` then `setup`
 
-- `script/update` — Update dotfiles, externals, and home-manager packages
+- `script/update` — Update dotfiles, externals, and bump home-manager flake inputs (nixpkgs/nixpkgs-unstable)
+- `script/home-manager-switch [--update-inputs "..."] ["subject"]` — Apply home.nix changes, diff generations, commit all changed files under `home/dot_config/home-manager/`, and switch. Called by `script/update`; also useful standalone when editing `home.nix` directly.
 - `script/test` — Run dotfiles setup in container test environments (Arch, Debian,
   Fedora, Ubuntu, Chimera). Tests `setup-root` + `setup-full` end to end.
 
@@ -79,7 +83,7 @@ This is a **chezmoi-managed dotfiles** repository supporting macOS, Linux (Arch,
 ### Directory Structure
 
 - **`home/`** - Chezmoi source directory (set via `.chezmoiroot`). Contains all managed dotfiles.
-- **`script/`** - User-facing entry-point scripts (`bootstrap`, `setup`, `setup-system`, `update`)
+- **`script/`** - User-facing entry-point scripts (`bootstrap`, `setup`, `setup-system`, `update`, `home-manager-switch`)
 - **`scripts/`** - Supplementary scripts, libraries, and extras (internal helpers, platform configs, and optional user-facing tools)
   - `common.sh` - Shared bash functions (`has`, `run`, `msg`, `die`, `need_sudo`, package helpers)
   - `common.ps1` - PowerShell equivalent
