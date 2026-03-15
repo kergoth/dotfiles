@@ -254,8 +254,10 @@ My Kindle Content
 .ssh/config.d/work
 {{-     if not .steamdeck }}
 !.ssh/keys/frey*
+!.ssh/keys/nas-*
 {{-     else }}
 !.ssh/keys/frey.pub
+!.ssh/keys/nas-*.pub
 {{-     end }}
 {{-   end }}
 {{-   if .work }}
