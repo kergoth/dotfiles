@@ -301,3 +301,12 @@ Library/LaunchAgents/org.nix-community.home.*
 # Managed by my backup conductor
 Library/LaunchAgents/com.kergoth.backup-conductor-resume.plist
 Library/LaunchAgents/com.kergoth.backup-conductor.plist
+
+# Agents, based on usage
+{{ if .work -}}
+{{/* Don't use codex at work */}}
+.codex
+{{ else -}}
+{{/* Don't use cursor at home */}}
+.cursor
+{{- end }}
