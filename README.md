@@ -334,6 +334,7 @@ chezmoi update -R
 - Shared always-loaded agent context is rendered from repo-managed rules into `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, and `~/.cursor/rules/agent-rules.mdc`
 - Shared skills live under `~/.agents/skills` and are consumed by Claude Code, Codex, and Cursor
 - Third-party portable skill content is fetched into an isolated pinned cache and selectively linked into the shared skill tree
+- Subagent configs (Claude Code only) live under `~/.agents/agents` and are symlinked to `~/.claude/agents`; first-party configs come from `home/dot_agents/agents/`
 
 #### Shared Skills
 

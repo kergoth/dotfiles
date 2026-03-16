@@ -167,7 +167,7 @@ Archive-based externals are pinned by commit SHA in `.chezmoidata/externals-lock
 
 ### Agent Configuration (Claude, Codex, Cursor)
 
-Agent rules and skills are managed through a shared pipeline:
+Agent rules, skills, and subagent configs are managed through a shared pipeline:
 
 - **Rules**: `home/dot_agents/rules/*.md.tmpl` are sorted alphabetically and rendered by `render-agent-rules.md.tmpl` with an `agent` parameter. Each agent tool gets its own output file:
   - Claude: `~/.claude/CLAUDE.md` (via `home/dot_claude/CLAUDE.md.tmpl`)
@@ -176,7 +176,10 @@ Agent rules and skills are managed through a shared pipeline:
 - **Skills**: All agent tools symlink to `~/.agents/skills/` (e.g., `~/.claude/skills → ~/.agents/skills`). Skills come from three sources:
   - Symlinks to external archives (superpowers, anthropic, astral) in `~/.agents/external-sources/`
   - Local skills in `home/dot_agents/skills/` (obsidian-cli, shell-script-style)
-  - Work-only skills symlinked by `run_onchange_after_40_link-work-agent-skills.tmpl` from encrypted repos cloned to `~/Workspace/`
+  - Work-only skills symlinked by `run_onchange_after_40_link-work-agent-content.tmpl` from encrypted repos cloned to `~/Workspace/`
+- **Agents** (Claude Code only): `~/.claude/agents → ~/.agents/agents/`. Subagent configs (markdown files with YAML frontmatter) come from two sources:
+  - Static symlinks in `home/dot_agents/agents/` — curated, flat (top-level). Use subdirectories named after the source only to resolve name collisions.
+  - Work-only agents linked by `run_onchange_after_40_link-work-agent-content.tmpl` into repo-name subdirectories (e.g., `~/.agents/agents/ai-resources/`). Claude Code discovers agents recursively.
 - **Agent-specific conditionals**: Templates can branch on the `agent` parameter (e.g., `{{ eq $agent "claude" }}`) for tool-specific guidance
 
 ### Ensuring Directories Exist
