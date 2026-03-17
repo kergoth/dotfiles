@@ -1,0 +1,20 @@
+## Git Conventions
+- Follow the seven rules from cbea.ms/git-commit:
+  - Imperative mood in subject ("Add feature" not "Added feature")
+  - Limit subject to 50 characters (72 hard limit), no trailing period
+  - Separate subject from body with blank line; wrap body at 72 characters
+  - Explain WHY in the body, not WHAT (the diff shows what changed)
+- Always use explicit `git add` with specific file paths - never `git add -A`, `git add .`, or `git add -u` without listing files
+- Verify edits actually succeeded before committing; check `git diff` if uncertain
+
+## Markdown Conventions
+- In documentation files (READMEs, docs/, Obsidian notes): always use proper markdown links - `[descriptive text](url)` or reference-style `[text][ref]` with definitions at the bottom
+- Never use bare autolinks (`<http://...>`) or plain unlinked URLs in these contexts - these are the antipattern to avoid
+- Plan files, design documents, and conversational responses may use autolinks or bare URLs
+- Use descriptive link text that explains the destination; avoid generic text like `[here]`, `[this]`, or `[link]`
+
+## Issue Tracking Conventions
+- Epics / initiatives: outcome-level — why it exists, what done looks like, what's excluded; no implementation details
+- Tasks / stories / enhancements: definition of done, not how to implement
+- Bugs: reproduction steps, expected vs actual behavior
+- Descriptions must be self-contained — don't reference local files, unlinked docs, or context the reader won't have
