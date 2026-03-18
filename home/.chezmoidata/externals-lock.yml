@@ -1,4 +1,3 @@
-# Git commit hashes for pinned externals
 externals_lock:
   86box_assets: "83547e9e6077350fdb960541b7a4ad540a76a6c2"
   86box_roms: "2bc04a2deeee1d4a2e9394bf66307b5760b4dac7"
@@ -12,7 +11,7 @@ externals_lock:
   knu_zsh_git_escape_magic: "62af4f6a66601a517e168039614e5b528741a844"
   knu_zsh_manydots_magic: "4372de0718714046f0c7ef87b43fc0a598896af6"
   madx_moreutils: "5ca552dd82dc3ef5ee0d388716148c5a653b72bb"
-  retroarch: "12c4ff07398e37cb24f0b8b27ce812ffc2be7d88"
+  retroarch: "1bc83370475ca9a187b148c636d1042963bbce0e"
   steamtinkerlaunch: "8550ab26a712b7f5f6d0947070181446b9de61fd"
   superpowers: "7e516434f2a30114300efc9247db32fb37daa5f9"
   wsl_open: "6419bb63845acd0533f30bdc8258f8df5fbb25cb"
