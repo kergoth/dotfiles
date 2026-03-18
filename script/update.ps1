@@ -269,7 +269,7 @@ try {
     chezmoi re-add flake.lock
 
     $commitMessage = @(
-        'Home Manager Update'
+        'Update Home Manager packages'
         ''
         ($nixUpdateFiltered | ForEach-Object { "  $_" -replace '#(\d+)', '$1' })
     ) -join "`n"

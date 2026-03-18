@@ -89,4 +89,4 @@ if [ -f "$sourcedir/scripts/update-externals-lock.py" ]; then
     fi
 fi
 
-script/home-manager-switch --update-inputs "nixpkgs nixpkgs-unstable" "Home Manager Update"
+script/home-manager-switch --update-inputs "nixpkgs nixpkgs-unstable" "Update Home Manager packages"
