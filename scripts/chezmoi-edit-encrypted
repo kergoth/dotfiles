@@ -11,10 +11,14 @@ if [ $# -ne 1 ]; then
 fi
 
 filepath="$1"
-chezmoi decrypt "$filepath" >"$tmpfile" || {
-    echo "Failed to decrypt $filepath" >&2
-    exit 1
-}
+if [ -f "$filepath" ]; then
+    chezmoi decrypt "$filepath" >"$tmpfile" || {
+        echo "Failed to decrypt $filepath" >&2
+        exit 1
+    }
+else
+    touch "$tmpfile"
+fi
 ${VISUAL:-${EDITOR:-vi}} "$tmpfile"
 chezmoi encrypt "$tmpfile" >"$filepath.new" || {
     rm -f "$filepath.new"
