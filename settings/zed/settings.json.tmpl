@@ -7,6 +7,21 @@
 // custom settings, run the `open default settings` command
 // from the command palette or from `Zed` application menu.
 {
+  "agent_servers": {
+    "github-copilot-cli": {
+      "type": "registry"
+    },
+    "claude-acp": {
+      "type": "registry"
+    },
+{{ if .work -}}
+  {{ include (joinPath .chezmoi.workingTree "settings/zed/settings-agent-work.json.age") | decrypt | indent 4 }}
+{{ else -}}
+    "codex": {
+      "type": "registry"
+    }
+{{ end -}}
+  },
   "edit_predictions": {
     "provider": "copilot"
   },
