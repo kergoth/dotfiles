@@ -11,9 +11,11 @@
 {{- $root := .root -}}
 {{- $candidates := .apps -}}
 {{- $apps := dict -}}
+{{- $home_appdir := joinPath (printf "%s" $root.chezmoi.destDir) "Applications" -}}
 {{-
     $paths := list
-        (joinPath (printf "%s" $root.chezmoi.destDir) "Applications")
+        $home_appdir
+        (joinPath $home_appdir "Utilities")
         "/Applications"
         "/Applications/Utilities"
         "/System/Applications"
