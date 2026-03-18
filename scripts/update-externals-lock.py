@@ -83,7 +83,8 @@ def main() -> int:
         print(line)
 
     output = repo_root / "home" / ".chezmoidata" / "externals-lock.yml"
-    output.write_text(dump_yaml(new_locks), encoding="utf-8")
+    if new_locks != old_locks:
+        output.write_text(dump_yaml(new_locks), encoding="utf-8")
     return 0
 
 
