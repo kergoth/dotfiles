@@ -1,0 +1,30 @@
+{
+  "file_types": {
+    "JSONC": ["devcontainer.json"],
+    "Plain Text": ["*.txt"],
+    "Shell Script": [".envrc"],
+		"GitHub Actions": [
+			".github/workflows/*.yml",
+			".github/workflows/*.yaml"
+		],
+
+    // There's no Go Powershell Template syntax yet.
+    "PowerShell": ["*.ps1.tmpl"],
+		"Go Bash Template": [
+		  "**/.chezmoiscripts/darwin/*.tmpl",
+  		"**/.chezmoiscripts/freebsd/*.tmpl",
+  		"**/.chezmoiscripts/linux/*.tmpl",
+  		"**/.chezmoiscripts/posix/*.tmpl",
+      "**/scripts/setup-system-*.tmpl"
+		],
+		"Go JSON Template": ["*.json.tmpl"],
+		"Go TOML Template": [
+		  "*.toml.tmpl"
+		],
+		"Go Template": [
+		  "**/.chezmoitemplates/*",
+			".chezmmoiignore.tmpl",
+			".chezmoiremove.tmpl"
+		]
+  }
+}
