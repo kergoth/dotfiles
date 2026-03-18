@@ -121,12 +121,33 @@ Update-OpCliVersions
 
 $agentExternalsUpdater = Join-Path $repodir "scripts/update-externals-lock.py"
 if (Test-Path $agentExternalsUpdater) {
-    Write-Host "Updating pinned agent externals"
+    Write-Host "Updating pinned externals"
     if (Get-Command python3 -ErrorAction SilentlyContinue) {
-        python3 $agentExternalsUpdater
-        chezmoi apply -R
+        $changes = python3 $agentExternalsUpdater
+        if ($changes) {
+            chezmoi apply -R
+            $indentedChanges = $changes | ForEach-Object { "    $_" }
+            $commitMessage = (@(
+                'Update pinned externals'
+                ''
+                '  Changed externals:'
+                ''
+            ) + $indentedChanges) -join "`n"
+            $commitMessage | Out-File -FilePath "$repodir\.git\COMMIT_EDITMSG" -Encoding utf8
+            Write-Host "Committing pinned externals update"
+            if ($use_jj -eq 1) {
+                $commitMsg = Get-Content "$repodir\.git\COMMIT_EDITMSG" -Raw
+                Set-Location $repodir
+                jj commit -m $commitMsg home/.chezmoidata/externals-lock.yml
+            } else {
+                Set-Location $repodir
+                git commit -F .git/COMMIT_EDITMSG home/.chezmoidata/externals-lock.yml
+            }
+        } else {
+            chezmoi apply -R
+        }
     } else {
-        Write-Warning "Warning: python3 not available; skipping agent externals lock update"
+        Write-Warning "Warning: python3 not available; skipping externals lock update"
     }
 }
 

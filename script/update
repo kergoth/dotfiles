@@ -54,8 +54,29 @@ update_op_cli_versions || :
 if [ -f "$sourcedir/scripts/update-externals-lock.py" ]; then
     echo >&2 "Updating pinned externals"
     if command -v python3 >/dev/null 2>&1; then
-        python3 "$sourcedir/scripts/update-externals-lock.py" || :
-        chezmoi apply -R || :
+        python_exit=0
+        changes=$(python3 "$sourcedir/scripts/update-externals-lock.py") || python_exit=$?
+        if [ -n "$changes" ] && [ "$python_exit" -eq 0 ]; then
+            chezmoi apply -R || :
+            {
+                echo "Update pinned externals"
+                echo
+                echo "  Changed externals:"
+                echo
+                echo "$changes" | sed 's/^/    /'
+            } >"$sourcedir/.git/COMMIT_EDITMSG"
+            echo >&2 "Committing pinned externals update"
+            if [ "$use_jj" -eq 1 ]; then
+                commit_msg=$(cat "$sourcedir/.git/COMMIT_EDITMSG")
+                (cd "$sourcedir" && jj commit -m "$commit_msg" \
+                    home/.chezmoidata/externals-lock.yml)
+            else
+                (cd "$sourcedir" && git commit -F .git/COMMIT_EDITMSG \
+                    home/.chezmoidata/externals-lock.yml)
+            fi
+        else
+            chezmoi apply -R || :
+        fi
     else
         echo >&2 "Warning: python3 not available; skipping externals lock update"
     fi
