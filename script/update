@@ -42,7 +42,9 @@ update_op_cli_versions() {
 
 op_exit=0
 op_changes=$(update_op_cli_versions) || op_exit=$?
-if [ -n "$op_changes" ] && [ "$op_exit" -eq 0 ]; then
+if [ "$op_exit" -ne 0 ]; then
+    echo >&2 "Warning: op CLI version update failed (exit $op_exit); skipping"
+elif [ -n "$op_changes" ]; then
     echo >&2 "Updated op CLI versions and checksums"
     {
         echo "Update op CLI versions"
@@ -65,7 +67,10 @@ if [ -f "$sourcedir/scripts/update-externals-lock.py" ]; then
     if command -v python3 >/dev/null 2>&1; then
         python_exit=0
         changes=$(python3 "$sourcedir/scripts/update-externals-lock.py") || python_exit=$?
-        if [ -n "$changes" ] && [ "$python_exit" -eq 0 ]; then
+        if [ "$python_exit" -ne 0 ]; then
+            echo >&2 "Warning: externals lock update failed (exit $python_exit); skipping"
+            chezmoi apply -R || :
+        elif [ -n "$changes" ]; then
             chezmoi apply -R || :
             {
                 echo "Update pinned externals"

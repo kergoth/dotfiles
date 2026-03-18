@@ -162,7 +162,11 @@ if (Test-Path $agentExternalsUpdater) {
     Write-Host "Updating pinned externals"
     if (Get-Command python3 -ErrorAction SilentlyContinue) {
         $changes = python3 $agentExternalsUpdater
-        if ($changes) {
+        $pythonExit = $LASTEXITCODE
+        if ($pythonExit -ne 0) {
+            Write-Warning "Warning: externals lock update failed (exit $pythonExit); skipping"
+            chezmoi apply -R
+        } elseif ($changes) {
             chezmoi apply -R
             $indentedChanges = $changes | ForEach-Object { "  $_" }
             $commitMessage = (@(
