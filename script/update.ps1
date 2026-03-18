@@ -21,6 +21,23 @@ if ($use_jj -eq 1) {
     chezmoi update -R
 }
 
+function Get-OldOpVersions {
+    param([string]$FilePath)
+    $result = @{}
+    if (-not (Test-Path $FilePath)) { return $result }
+    $content = Get-Content $FilePath -Raw
+    $currentPlatform = $null
+    foreach ($line in ($content -split "`n")) {
+        if ($line -match '^\s{4}(\w+):\s*$') {
+            $currentPlatform = $Matches[1]
+        } elseif ($currentPlatform -and $line -match '^\s{6}version:\s*"([^"]+)"') {
+            $result[$currentPlatform] = $Matches[1]
+            $currentPlatform = $null  # version: always precedes sha256: in each block
+        }
+    }
+    return $result
+}
+
 function Update-OpCliVersions {
     $url = "https://app-updates.agilebits.com/product_history/CLI2"
     try {
@@ -31,10 +48,7 @@ function Update-OpCliVersions {
     }
 
     $file = Join-Path $repodir "home/.chezmoidata/versions.yml"
-    if (-not (Test-Path $file)) {
-        Write-Warning "Warning: $file not found; skipping op CLI version update"
-        return
-    }
+    $oldVersions = Get-OldOpVersions -FilePath $file
 
     $regex = [regex]'https://cache\.agilebits\.com/dist/1P/op2/pkg/v([^/]+)/op_(linux|freebsd)_(amd64|arm64)_v\1\.zip'
     $matches = $regex.Matches($response.Content)
@@ -114,10 +128,36 @@ function Update-OpCliVersions {
 
     $lines -join "`n" | Out-File -FilePath $file -Encoding utf8
 
-    Write-Host "Updated op CLI versions and checksums"
+    foreach ($platform in (($oldVersions.Keys + $platformVersion.Keys) | Sort-Object -Unique)) {
+        $oldVer = if ($oldVersions.ContainsKey($platform)) { "v$($oldVersions[$platform])" } else { "(new)" }
+        $newVer = if ($platformVersion.ContainsKey($platform)) { "v$($platformVersion[$platform])" } else { "(removed)" }
+        if ($oldVer -ne $newVer) {
+            Write-Output "op_cli ${platform}: $oldVer → $newVer"
+        }
+    }
 }
 
-Update-OpCliVersions
+$opChanges = Update-OpCliVersions
+if ($opChanges) {
+    Write-Host "Updated op CLI versions and checksums"
+    $indentedChanges = $opChanges | ForEach-Object { "    $_" }
+    $commitMessage = (@(
+        'Update op CLI versions'
+        ''
+        '  Changed versions:'
+        ''
+    ) + $indentedChanges) -join "`n"
+    $commitMessage | Out-File -FilePath "$repodir\.git\COMMIT_EDITMSG" -Encoding utf8
+    Write-Host "Committing op CLI version update"
+    if ($use_jj -eq 1) {
+        $commitMsg = Get-Content "$repodir\.git\COMMIT_EDITMSG" -Raw
+        Set-Location $repodir
+        jj commit -m $commitMsg home/.chezmoidata/versions.yml
+    } else {
+        Set-Location $repodir
+        git commit -F .git/COMMIT_EDITMSG home/.chezmoidata/versions.yml
+    }
+}
 
 $agentExternalsUpdater = Join-Path $repodir "scripts/update-externals-lock.py"
 if (Test-Path $agentExternalsUpdater) {

@@ -3,14 +3,50 @@ import hashlib
 import re
 import sys
 import urllib.request
+from pathlib import Path
+
+
+def read_old_versions(path: Path) -> dict:
+    """Return {platform: version} from an existing versions.yml, or {} if absent."""
+    try:
+        content = path.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        return {}
+    result = {}
+    current_platform = None
+    for line in content.splitlines():
+        m = re.match(r'^\s{4}(\w+):\s*$', line)
+        if m:
+            current_platform = m.group(1)
+            continue
+        if current_platform:
+            mv = re.match(r'^\s{6}version:\s*"([^"]+)"', line)
+            if mv:
+                result[current_platform] = mv.group(1)
+                current_platform = None  # version: always precedes sha256: in each block
+    return result
+
+
+def format_version_diff_lines(old_versions: dict, new_versions: dict) -> list:
+    """Return one diff line per platform whose version changed."""
+    lines = []
+    for platform in sorted(set(old_versions) | set(new_versions)):
+        old_ver = old_versions.get(platform, "")
+        new_ver = new_versions.get(platform, "")
+        if old_ver == new_ver:
+            continue
+        old_display = f"v{old_ver}" if old_ver else "(new)"
+        new_display = f"v{new_ver}" if new_ver else "(removed)"
+        lines.append(f"op_cli {platform}: {old_display} \u2192 {new_display}")
+    return lines
 
 
 def main() -> int:
-    if len(sys.argv) != 2:
-        print("Usage: update-op-cli-versions.py <versions.yml>", file=sys.stderr)
-        return 1
+    repo_root = Path(__file__).resolve().parent.parent
+    path = repo_root / "home" / ".chezmoidata" / "versions.yml"
 
-    path = sys.argv[1]
+    old_versions = read_old_versions(path)
+
     url = "https://app-updates.agilebits.com/product_history/CLI2"
     html = urllib.request.urlopen(url, timeout=20).read().decode("utf-8", "ignore")
 
@@ -64,6 +100,10 @@ def main() -> int:
 
     with open(path, "w", encoding="utf-8") as f:
         f.write("\n".join(lines) + "\n")
+
+    diff_lines = format_version_diff_lines(old_versions, platform_version)
+    for line in diff_lines:
+        print(line)
 
     return 0
 

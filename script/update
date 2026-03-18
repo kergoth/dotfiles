@@ -32,24 +32,35 @@ else
 fi
 
 update_op_cli_versions() {
-    local file="$sourcedir/home/.chezmoidata/versions.yml"
-
-    if [ ! -f "$file" ]; then
-        echo >&2 "Warning: $file not found; skipping op CLI version update"
-        return 0
-    fi
-
     if ! command -v python3 >/dev/null 2>&1; then
         echo >&2 "Warning: python3 not available; skipping op CLI version update"
         return 0
     fi
 
-    python3 "$sourcedir/scripts/update-op-cli-versions.py" "$file"
-
-    echo >&2 "Updated op CLI versions and checksums"
+    python3 "$sourcedir/scripts/update-op-cli-versions.py"
 }
 
-update_op_cli_versions || :
+op_exit=0
+op_changes=$(update_op_cli_versions) || op_exit=$?
+if [ -n "$op_changes" ] && [ "$op_exit" -eq 0 ]; then
+    echo >&2 "Updated op CLI versions and checksums"
+    {
+        echo "Update op CLI versions"
+        echo
+        echo "  Changed versions:"
+        echo
+        echo "$op_changes" | sed 's/^/    /'
+    } >"$sourcedir/.git/COMMIT_EDITMSG"
+    echo >&2 "Committing op CLI version update"
+    if [ "$use_jj" -eq 1 ]; then
+        commit_msg=$(cat "$sourcedir/.git/COMMIT_EDITMSG")
+        (cd "$sourcedir" && jj commit -m "$commit_msg" \
+            home/.chezmoidata/versions.yml)
+    else
+        (cd "$sourcedir" && git commit -F .git/COMMIT_EDITMSG \
+            home/.chezmoidata/versions.yml)
+    fi
+fi
 
 if [ -f "$sourcedir/scripts/update-externals-lock.py" ]; then
     echo >&2 "Updating pinned externals"
