@@ -47,9 +47,7 @@ if [ -n "$op_changes" ] && [ "$op_exit" -eq 0 ]; then
     {
         echo "Update op CLI versions"
         echo
-        echo "  Changed versions:"
-        echo
-        echo "$op_changes" | sed 's/^/    /'
+        echo "$op_changes" | sed 's/^/  /'
     } >"$sourcedir/.git/COMMIT_EDITMSG"
     echo >&2 "Committing op CLI version update"
     if [ "$use_jj" -eq 1 ]; then
@@ -72,9 +70,7 @@ if [ -f "$sourcedir/scripts/update-externals-lock.py" ]; then
             {
                 echo "Update pinned externals"
                 echo
-                echo "  Changed externals:"
-                echo
-                echo "$changes" | sed 's/^/    /'
+                echo "$changes" | sed 's/^/  /'
             } >"$sourcedir/.git/COMMIT_EDITMSG"
             echo >&2 "Committing pinned externals update"
             if [ "$use_jj" -eq 1 ]; then

@@ -158,9 +158,7 @@ fi
     echo "$subject"
     if [ -s "$tmpfile" ]; then
         echo
-        echo "  Home Manager packages changes:"
-        echo
-        sed -e 's#^#    #' -e 's/#\([0-9][0-9]*\)/- \1/' "$tmpfile"
+        sed -e 's#^#  #' -e 's/#\([0-9][0-9]*\)/- \1/' "$tmpfile"
     fi
 } >"$sourcedir/.git/COMMIT_EDITMSG"
 

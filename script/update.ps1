@@ -140,11 +140,9 @@ function Update-OpCliVersions {
 $opChanges = Update-OpCliVersions
 if ($opChanges) {
     Write-Host "Updated op CLI versions and checksums"
-    $indentedChanges = $opChanges | ForEach-Object { "    $_" }
+    $indentedChanges = $opChanges | ForEach-Object { "  $_" }
     $commitMessage = (@(
         'Update op CLI versions'
-        ''
-        '  Changed versions:'
         ''
     ) + $indentedChanges) -join "`n"
     $commitMessage | Out-File -FilePath "$repodir\.git\COMMIT_EDITMSG" -Encoding utf8
@@ -166,11 +164,9 @@ if (Test-Path $agentExternalsUpdater) {
         $changes = python3 $agentExternalsUpdater
         if ($changes) {
             chezmoi apply -R
-            $indentedChanges = $changes | ForEach-Object { "    $_" }
+            $indentedChanges = $changes | ForEach-Object { "  $_" }
             $commitMessage = (@(
                 'Update pinned externals'
-                ''
-                '  Changed externals:'
                 ''
             ) + $indentedChanges) -join "`n"
             $commitMessage | Out-File -FilePath "$repodir\.git\COMMIT_EDITMSG" -Encoding utf8
@@ -275,9 +271,7 @@ try {
     $commitMessage = @(
         'Home Manager Update'
         ''
-        '  Home Manager input changes:'
-        ''
-        ($nixUpdateFiltered | ForEach-Object { "    $_" -replace '#(\d+)', '$1' })
+        ($nixUpdateFiltered | ForEach-Object { "  $_" -replace '#(\d+)', '$1' })
     ) -join "`n"
 
     $commitMessage | Out-File -FilePath "$repodir/.git/COMMIT_EDITMSG" -Encoding utf8
@@ -294,9 +288,7 @@ try {
 
         $packageChanges = @(
             ''
-            '  Home Manager packages changes:'
-            ''
-            ($buildOutput | ForEach-Object { "    $_" -replace '#(\d+)', '- $1' })
+            ($buildOutput | ForEach-Object { "  $_" -replace '#(\d+)', '- $1' })
         ) -join "`n"
 
         Add-Content -Path "$repodir/.git/COMMIT_EDITMSG" -Value $packageChanges
