@@ -450,7 +450,6 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 - [jira-cli](https://github.com/ankitpokhrel/jira-cli) (_Only on Work machines_): Feature-rich interactive Jira command line.
 - [jujutsu](https://github.com/jj-vcs/jj) ([Open-Source](https://github.com/jj-vcs/jj)): Git-compatible VCS that is both simple and powerful.
 - [jq](https://github.com/stedolan/jq): A lightweight and flexible command-line JSON processor.
-- [repo](https://gerrit.googlesource.com/git-repo): Google's tool for managing multi-repository projects.
 - [ripgrep](https://github.com/BurntSushi/ripgrep): A line-oriented search tool that recursively searches the current directory for a regex pattern.
 - [rusage.com](https://justine.lol/rusage/): Provides the best possible way to report resource usage statistics when launching command line programs.
 - [sad](https://github.com/ms-jpq/sad): CLI search and replace | Space Age seD.
@@ -886,6 +885,7 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 
 ### Formerly-Used CLI Software
 
+- [repo](https://gerrit.googlesource.com/git-repo): Google's tool for managing multi-repository projects. Superceded by tools like **kas** in my workflows.
 - [pipx](https://pypi.org/project/pipx/): Install and run python applications in isolated environments. Superceded by **uv tool** in my workflows.
 - [git-branchless](https://github.com/arxanas/git-branchless): High-velocity, monorepo-scale workflow for Git. I rarely used this, and there are other options for this workflow.
 - [sapling](https://sapling-scm.com): A Scalable, User-Friendly Source Control System. Evaluated but not actively used in my workflows.

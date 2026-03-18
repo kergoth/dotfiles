@@ -34,12 +34,6 @@ stripComponents = 1
 executable = true
 {{ end }}
 
-[".local/bin/repo"]
-type = "file"
-url = "https://storage.googleapis.com/git-repo-downloads/repo"
-executable = true
-refreshPeriod = "{{ $refreshPeriod }}"
-
 [".local/bin/git-j"]
 type = "archive-file"
 url = {{ printf "https://github.com/beanbaginc/dev-goodies/archive/%s.tar.gz" (index $lock "beanbaginc_dev_goodies") | toToml }}
