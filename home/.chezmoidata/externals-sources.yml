@@ -4,58 +4,58 @@
 #   purpose of this file is to allow the update script to update the pins.
 externals_sources:
   86box_assets:
-    repo: 86Box/assets
+    repo: https://github.com/86Box/assets
     ref: main
   86box_roms:
-    repo: 86Box/roms
+    repo: https://github.com/86Box/roms
     ref: master
   anthropic_official_plugins:
-    repo: anthropics/claude-plugins-official
+    repo: https://github.com/anthropics/claude-plugins-official
   astral:
-    repo: astral-sh/claude-code-plugins
+    repo: https://github.com/astral-sh/claude-code-plugins
   beanbaginc_dev_goodies:
-    repo: beanbaginc/dev-goodies
+    repo: https://github.com/beanbaginc/dev-goodies
     ref: master
   bitbake_syntax:
-    repo: casparfriedrich/bitbake-syntax
+    repo: https://github.com/casparfriedrich/bitbake-syntax
     ref: master
   dracula_bbedit:
-    repo: dracula/bbedit
+    repo: https://github.com/dracula/bbedit
     ref: master
   dracula_zed:
-    repo: dracula/zed
+    repo: https://github.com/dracula/zed
   fumiyas_home_commands:
-    repo: fumiyas/home-commands
+    repo: https://github.com/fumiyas/home-commands
     ref: master
   knu_zsh_git_escape_magic:
-    repo: knu/zsh-git-escape-magic
+    repo: https://github.com/knu/zsh-git-escape-magic
     ref: master
   knu_zsh_manydots_magic:
-    repo: knu/zsh-manydots-magic
+    repo: https://github.com/knu/zsh-manydots-magic
     ref: master
   madx_moreutils:
-    repo: madx/moreutils
+    repo: https://github.com/madx/moreutils
     ref: master
   retroarch:
-    repo: libretro/RetroArch
+    repo: https://github.com/libretro/RetroArch
     ref: master
   steamtinkerlaunch:
-    repo: sonic2kk/steamtinkerlaunch
+    repo: https://github.com/sonic2kk/steamtinkerlaunch
     ref: master
   superpowers:
-    repo: obra/superpowers
+    repo: https://github.com/obra/superpowers
   wsl_open:
-    repo: 4U6U57/wsl-open
+    repo: https://github.com/4U6U57/wsl-open
     ref: master
   zsh_autosuggestions:
-    repo: zsh-users/zsh-autosuggestions
+    repo: https://github.com/zsh-users/zsh-autosuggestions
     ref: master
   zsh_bd:
-    repo: Tarrasch/zsh-bd
+    repo: https://github.com/Tarrasch/zsh-bd
     ref: master
   zsh_syntax_highlighting:
-    repo: zsh-users/zsh-syntax-highlighting
+    repo: https://github.com/zsh-users/zsh-syntax-highlighting
     ref: master
   zsh_windows_terminal_integration:
-    repo: romkatv/windows-terminal-zsh-integration
+    repo: https://github.com/romkatv/windows-terminal-zsh-integration
     ref: master

@@ -22,8 +22,8 @@ def load_chezmoi_data(repo_root: Path) -> dict:
     return json.loads(result.stdout)
 
 
-def resolve_github_head(repo: str, ref: str) -> str:
-    cmd = ["git", "ls-remote", f"https://github.com/{repo}.git", f"refs/heads/{ref}"]
+def resolve_ref(repo: str, ref: str) -> str:
+    cmd = ["git", "ls-remote", f"{repo}.git", f"refs/heads/{ref}"]
     result = subprocess.run(cmd, check=True, capture_output=True, text=True)
     line = result.stdout.strip()
     if not line:
@@ -58,7 +58,7 @@ def main() -> int:
     locks = dict(data.get("externals_lock", {}))
     for eid in selected:
         entry = externals[eid]
-        locks[eid] = resolve_github_head(entry["repo"], entry.get("ref", "main"))
+        locks[eid] = resolve_ref(entry["repo"], entry.get("ref", "main"))
 
     output = repo_root / "home" / ".chezmoidata" / "externals-lock.yml"
     output.write_text(dump_yaml(locks), encoding="utf-8")
