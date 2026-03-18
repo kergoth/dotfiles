@@ -3,20 +3,34 @@
 {{-   $github_token := or (env "GITHUB_PERSONAL_ACCESS_TOKEN") (env "GITHUB_TOKEN") -}}
 #!/usr/bin/env bash
 
-has_mcp_server() {
+claude_has_mcp_server() {
     # claude mcp list works but runs a health check adding latency;
     # checking the config file directly with jq is faster
     jq -e --arg name "$1" '.mcpServers[$name] // empty' ~/.claude.json >/dev/null 2>&1
 }
 
-add_mcp_server() {
+claude_add_mcp_server() {
     local name="$1"; shift
 {{- if stat (joinPath (printf "%s" .chezmoi.destDir) ".claude.json") }}
-    if has_mcp_server "$name"; then
+    if claude_has_mcp_server "$name"; then
         return 0
     fi
 {{- end }}
     claude mcp add "$@" "$name" || { echo "Failed to add MCP server: $name" >&2; return 1; }
+}
+
+codex_has_mcp_server() {
+    grep -Fxq '[mcp_servers.github]' ~/.codex/config.toml 2>/dev/null
+}
+
+codex_add_mcp_server() {
+    local name="$1"; shift
+{{- if stat (joinPath (printf "%s" .chezmoi.destDir) ".codex/config.toml") }}
+    if codex_has_mcp_server "$name"; then
+        return 0
+    fi
+{{- end }}
+    codex mcp add "$name" "$@" || { echo "Failed to add MCP server: $name" >&2; return 1; }
 }
 
 add_mcp_json() {
@@ -24,7 +38,7 @@ add_mcp_json() {
     local json="$2"
     shift 2
 {{- if stat (joinPath (printf "%s" .chezmoi.destDir) ".claude.json") }}
-    if has_mcp_server "$name"; then
+    if claude_has_mcp_server "$name"; then
         return 0
     fi
 {{- end }}
@@ -62,6 +76,10 @@ add_marketplace() {
 
 {{ if $github_token -}}
 add_mcp_json github '{"type":"http","url":"https://api.githubcopilot.com/mcp","headers":{"Authorization":"Bearer '"{{ $github_token }}"'"}}' --scope user
+
+{{   if not .work -}}
+codex_add_mcp_server github --url https://api.githubcopilot.com/mcp/ --bearer-token-env-var GITHUB_TOKEN
+{{-   end }}
 {{- end }}
 
 add_marketplace astral-sh/claude-code-plugins
