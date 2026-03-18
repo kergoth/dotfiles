@@ -1,3 +1,7 @@
+# Sources for pinned externals.
+#   This is specifically *not* used to template creation of externals, as that's
+#   left to the user to ensure they can leverage template capabilities. The sole
+#   purpose of this file is to allow the update script to update the pins.
 externals_sources:
   86box_assets:
     repo: 86Box/assets
