@@ -39,6 +39,23 @@ def dump_yaml(locks: dict) -> str:
     return "\n".join(lines)
 
 
+def format_diff_lines(
+    old_locks: dict, new_locks: dict, externals: dict, selected: list
+) -> list:
+    """Return one diff line per changed or new entry in `selected`."""
+    lines = []
+    for eid in selected:
+        old_sha = old_locks.get(eid, "")
+        new_sha = new_locks.get(eid, "")
+        if old_sha == new_sha:
+            continue
+        ref = externals[eid].get("ref", "main")
+        old_display = old_sha[:7] if old_sha else "(new)"
+        new_display = new_sha[:7] if new_sha else "(removed)"
+        lines.append(f"{eid}: {old_display} \u2192 {new_display} ({ref})")
+    return lines
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Update pinned refs for externals.")
     parser.add_argument("ids", nargs="*", help="Optional external IDs to update")
@@ -55,13 +72,18 @@ def main() -> int:
     if unknown:
         raise SystemExit(f"unknown external ids: {', '.join(sorted(unknown))}")
 
-    locks = dict(data.get("externals_lock", {}))
+    old_locks = dict(data.get("externals_lock", {}))
+    new_locks = dict(old_locks)
     for eid in selected:
         entry = externals[eid]
-        locks[eid] = resolve_ref(entry["repo"], entry.get("ref", "main"))
+        new_locks[eid] = resolve_ref(entry["repo"], entry.get("ref", "main"))
+
+    diff_lines = format_diff_lines(old_locks, new_locks, externals, selected)
+    for line in diff_lines:
+        print(line)
 
     output = repo_root / "home" / ".chezmoidata" / "externals-lock.yml"
-    output.write_text(dump_yaml(locks), encoding="utf-8")
+    output.write_text(dump_yaml(new_locks), encoding="utf-8")
     return 0
 
 
