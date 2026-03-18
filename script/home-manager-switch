@@ -142,6 +142,12 @@ if command -v nvd >/dev/null 2>&1; then
     nvd diff "$before_path" "$after_path" | tee "$tmpfile"
 fi
 
+# Skip commit if nvd reports no meaningful package changes
+if grep -q "No version or selection state changes" "$tmpfile" 2>/dev/null; then
+    echo >&2 "No version or selection state changes; reverting flake update and skipping commit"
+    exit 0
+fi
+
 # Resolve commit subject
 if [ -z "$subject" ]; then
     if [ -t 0 ]; then

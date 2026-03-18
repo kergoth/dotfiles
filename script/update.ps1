@@ -286,7 +286,9 @@ try {
 
     if (Get-Content $tmpfile) {
         if ($buildOutput -match "No version or selection state changes.") {
-            Write-Host "No update to the home-manager packages available"
+            Write-Host "No version or selection state changes; reverting flake update and skipping commit"
+            git -C $repodir checkout HEAD -- home/dot_config/home-manager/private_flake.lock
+            chezmoi apply (Join-Path $sourcedir "flake.lock")
             exit 0
         }
 
