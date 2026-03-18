@@ -64,14 +64,19 @@ def main() -> int:
         print("No op CLI links found (non-beta)", file=sys.stderr)
         return 1
 
-    # Newest first in HTML; take first per platform+arch.
+    # Pick the highest version per platform+arch by comparing version tuples,
+    # not by page order (which is unreliable and caused version flip-flopping).
+    def version_key(v: str) -> tuple:
+        return tuple(int(x) for x in v.split("."))
+
     latest = {}
     order = []
     for platform, arch, ver, link in found:
         key = (platform, arch)
-        if key not in latest:
+        if key not in latest or version_key(ver) > version_key(latest[key][0]):
+            if key not in latest:
+                order.append(key)
             latest[key] = (ver, link)
-            order.append(key)
 
     platform_version = {}
     for platform, arch in order:
