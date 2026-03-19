@@ -56,6 +56,10 @@ def format_diff_lines(
     return lines
 
 
+def find_stale_lock_entries(locks: dict, externals: dict) -> list[str]:
+    return sorted(set(locks) - set(externals))
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Update pinned refs for externals.")
     parser.add_argument("ids", nargs="*", help="Optional external IDs to update")
@@ -73,6 +77,13 @@ def main() -> int:
         raise SystemExit(f"unknown external ids: {', '.join(sorted(unknown))}")
 
     old_locks = dict(data.get("externals_lock", {}))
+    stale_locks = find_stale_lock_entries(old_locks, externals)
+    for eid in stale_locks:
+        print(
+            f"warning: lock entry lacks source entry: {eid}",
+            file=sys.stderr,
+        )
+
     new_locks = dict(old_locks)
     for eid in selected:
         entry = externals[eid]
