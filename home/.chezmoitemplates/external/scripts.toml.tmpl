@@ -58,7 +58,7 @@ stripComponents = 1
 
 [".local/bin/linux-bundle-clone"]
 type = "file"
-url = "https://git.kernel.org/pub/scm/linux/kernel/git/mricon/korg-helpers.git/plain/linux-bundle-clone"
+url = {{ printf "https://git.kernel.org/pub/scm/linux/kernel/git/mricon/korg-helpers.git/plain/linux-bundle-clone?id=%s" (index $lock "korg_helpers") | toToml }}
 executable = true
 refreshPeriod = "{{ $refreshPeriod }}"
 
@@ -84,7 +84,7 @@ stripComponents = 1
 
 [".local/bin/git-assembler"]
 type = "archive-file"
-url = "https://gitlab.com/wavexx/git-assembler/-/archive/master/git-assembler-master.tar.gz"
+url = {{ printf "https://gitlab.com/wavexx/git-assembler/-/archive/%s/git-assembler-%s.tar.gz" (index $lock "git_assembler") (index $lock "git_assembler") | toToml }}
 path = "git-assembler"
 exact = true
 stripComponents = 1

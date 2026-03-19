@@ -27,6 +27,18 @@ externals_sources:
   fumiyas_home_commands:
     repo: https://github.com/fumiyas/home-commands
     ref: master
+  gist_sort_timings:
+    repo: https://gist.github.com/2d7ef99f93b226be29e01cadcad37405
+    ref: master
+  gist_zbell:
+    repo: https://gist.github.com/5278239
+    ref: master
+  git_assembler:
+    repo: https://gitlab.com/wavexx/git-assembler
+    ref: master
+  korg_helpers:
+    repo: https://git.kernel.org/pub/scm/linux/kernel/git/mricon/korg-helpers
+    ref: master
   ia_fonts:
     repo: https://github.com/iaolo/iA-Fonts
     ref: master
@@ -39,6 +51,9 @@ externals_sources:
     ref: master
   madx_moreutils:
     repo: https://github.com/madx/moreutils
+    ref: master
+  vim_profiler:
+    repo: https://github.com/bchretien/vim-profiler
     ref: master
   powerlevel10k_media:
     repo: https://github.com/romkatv/powerlevel10k-media

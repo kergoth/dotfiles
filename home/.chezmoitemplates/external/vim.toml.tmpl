@@ -1,3 +1,4 @@
+{{- $lock := .externals_lock -}}
 {{ $clone_args := dig "external" "clone" "args" (list) . -}}
 {{ $pull_args := dig "external" "pull" "args" (list) . -}}
 {{- $binpath := ".local/bin" -}}
@@ -41,7 +42,7 @@ refreshPeriod = "{{ .external.refreshPeriod }}"
 {{ if ne .chezmoi.os "windows" -}}
 ["{{ $binpath }}/vim-profiler"]
 type = "archive-file"
-url = "https://github.com/bchretien/vim-profiler/archive/master.tar.gz"
+url = {{ printf "https://github.com/bchretien/vim-profiler/archive/%s.tar.gz" (index $lock "vim_profiler") | toToml }}
 path = "vim-profiler.py"
 executable = true
 exact = true
