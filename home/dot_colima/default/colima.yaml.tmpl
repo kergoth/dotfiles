@@ -38,6 +38,14 @@ arch: x86_64
 # Default: docker
 runtime: docker
 
+# AI model runner (docker, ramalama).
+# Both require krunkit VM type for GPU access.
+# docker: Uses Docker Model Runner.
+# ramalama: Uses Ramalama.
+#
+# Default: docker
+modelRunner: ""
+
 # Set custom hostname for the virtual machine.
 # Default: colima
 #          colima-profile_name for other profiles
@@ -120,6 +128,15 @@ network:
   #
   # Default: false
   hostAddresses: false
+  
+  # Custom gateway address for the virtual machine.
+  # The last octet needs to be 2.
+  #
+  # EXAMPLE
+  # gatewayAddress: 192.168.10.2
+  #
+  # Default: 192.168.5.2
+  gatewayAddress: null
 
 # ===================================================================== #
 # ADVANCED CONFIGURATION
@@ -148,29 +165,27 @@ forwardAgent: true
 # Default: {}
 docker: {}
 
-# Virtual Machine type (qemu, vz)
+# Virtual Machine type (krunkit, qemu, vz)
 # NOTE: this is macOS 13 only. For Linux and macOS <13.0, qemu is always used.
 #
-# vz is macOS virtualization framework and requires macOS 13
+# vz is macOS virtualization framework and requires macOS 13.
+# krunkit runs super‑light VMs on macOS/ARM64 with a focus on GPU access. It is experimental.
 #
 # NOTE: value cannot be changed after virtual machine is created.
 # Default: qemu
 vmType: vz
 
-vmOpts:
-  vz:
-    # Utilise rosetta for amd64 emulation (requires m1 mac and vmType `vz`)
-    # Default: false
-    rosetta: {{ $rosetta_enabled }}
-
-rosetta: {{ $rosetta_enabled }}
-
-# Port forwarder for the virtual machine (ssh, grpc).
+# Port forwarder for the virtual machine (ssh, grpc, none).
 # ssh is more stable but supports only TCP.
 # grpc supports both TCP and UDP, but is experimental.
+# none disables port forwarding.
 #
 # Default: ssh
 portForwarder: ssh
+
+# Utilise rosetta for amd64 emulation (requires m1 mac and vmType `vz`)
+# Default: false
+rosetta: {{ $rosetta_enabled }}
 
 # Enable foreign architecture emulation via binfmt (e.g. amd64 on arm64, arm64 on amd64)
 # Default: true
@@ -218,6 +233,16 @@ cpuType: ""
 #       [ -f ~/.provision ] && exit 0;
 #       echo provisioning as $USER...
 #       touch ~/.provision
+#
+# EXAMPLE - script executed after VM boot, before container runtimes start
+# provision:
+#   - mode: after-boot
+#     script: echo "VM is up, containers not yet started"
+#
+# EXAMPLE - script executed after VM and container runtimes are ready
+# provision:
+#   - mode: ready
+#     script: echo "everything is ready"
 #
 # Default: []
 provision: []
