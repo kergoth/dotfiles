@@ -1,0 +1,9 @@
+{{/* Cursor's CLI agent */}}
+{{- $cursor_agent := includeTemplate "find-tool" (dict "root" . "tool" "agent") -}}
+{{- if $cursor_agent -}}
+
+echo >&2 "Checking for Cursor agent updates..."
+command agent update
+
+command agent "$@"
+{{ end -}}
