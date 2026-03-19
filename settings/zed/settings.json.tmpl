@@ -14,8 +14,10 @@
     "claude-acp": {
       "type": "registry"
     },
-{{ if .work -}}
+{{ if and .work -}}
+{{   if .secrets -}}
   {{ include (joinPath .chezmoi.workingTree "settings/zed/settings-agent-work.json.age") | decrypt | indent 4 }}
+{{   end -}}
 {{ else -}}
     "codex": {
       "type": "registry"
