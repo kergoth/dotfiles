@@ -8,7 +8,7 @@ externals_lock:
   dracula_bbedit: "038d50d8ce01349012cf815bbef855a1793c4fea"
   dracula_zed: "08a007ef54231a6144fcb04a764912651f015bc4"
   fumiyas_home_commands: "fbaa85f209e38a0d865002429fea685ceb7869c0"
-  gist_sort_timings: "2d88b477c29de14250ba03650745348781077ae8"
+  gist_zsh_timing: "2d88b477c29de14250ba03650745348781077ae8"
   gist_zbell: "e0b06247f3ecd6ca3de341c54ba8d85de7ef6566"
   git_assembler: "e8cf3b24c4322f08217271de65dbce0a22505c3a"
   ia_fonts: "f32c04c3058a75d7ce28919ce70fe8800817491b"

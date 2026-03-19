@@ -84,7 +84,7 @@ url = "https://github.com/romkatv/powerlevel10k/archive/refs/tags/{{ $powerlevel
 exact = true
 stripComponents = 1
 
-[".local/bin/zsh_sort_timings"]
+[".config/zsh/process.awk"]
 type = "file"
-url = {{ printf "https://gist.githubusercontent.com/bdesham/2d7ef99f93b226be29e01cadcad37405/raw/%s/sort_timings.zsh" (index $lock "gist_sort_timings") | toToml }}
+url = {{ printf "https://gist.githubusercontent.com/bdesham/2d7ef99f93b226be29e01cadcad37405/raw/%s/process.awk" (index $lock "gist_zsh_timing") | toToml }}
 executable = true

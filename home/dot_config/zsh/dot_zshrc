@@ -106,7 +106,7 @@ if [[ "$ZSH_PROFILE_STARTUP_LINES" == true ]]; then
     exec 2>&3 3>&-
     ln -sf $XDG_DATA_HOME/zsh/start-$$.log $XDG_DATA_HOME/zsh/start.log
     if [[ "${ZSH_PROFILE_STARTUP_PARSE:-true}" == true ]]; then
-        zsh_sort_timings $XDG_DATA_HOME/zsh/start.log | head -n 20
+        awk -f "$ZDOTDIR/process.awk" $XDG_DATA_HOME/zsh/start.log | head -n 20
         exit
     fi
 elif [[ "$ZSH_PROFILE_STARTUP" == true ]]; then

@@ -27,7 +27,7 @@ externals_sources:
   fumiyas_home_commands:
     repo: https://github.com/fumiyas/home-commands
     ref: master
-  gist_sort_timings:
+  gist_zsh_timing:
     repo: https://gist.github.com/2d7ef99f93b226be29e01cadcad37405
     ref: master
   gist_zbell:
