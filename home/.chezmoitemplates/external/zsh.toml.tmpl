@@ -77,7 +77,6 @@ stripComponents = 1
 [".config/zsh/plugins/zbell/zbell.plugin.sh"]
 type = "file"
 url = {{ printf "https://gist.githubusercontent.com/jpouellet/5278239/raw/%s/zbell.sh" (index $lock "gist_zbell") | toToml }}
-refreshPeriod = "{{ .external.refreshPeriod }}"
 
 [".config/zsh/themes/powerlevel10k"]
 type = "archive"

@@ -60,7 +60,6 @@ stripComponents = 1
 type = "file"
 url = {{ printf "https://git.kernel.org/pub/scm/linux/kernel/git/mricon/korg-helpers.git/plain/linux-bundle-clone?id=%s" (index $lock "korg_helpers") | toToml }}
 executable = true
-refreshPeriod = "{{ $refreshPeriod }}"
 
 [".local/bin/vipe"]
 type = "archive-file"
@@ -88,7 +87,6 @@ url = {{ printf "https://gitlab.com/wavexx/git-assembler/-/archive/%s/git-assemb
 path = "git-assembler"
 exact = true
 stripComponents = 1
-refreshPeriod = "{{ $refreshPeriod }}"
 
 [".local/bin/git-attic"]
 type = "file"
