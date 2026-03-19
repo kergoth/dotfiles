@@ -1,12 +1,41 @@
 fonts:
-
-  - "https://github.com/iaolo/iA-Fonts/raw/master/iA%20Writer%20Duo/Variable/iAWriterDuoV-Italic.ttf"
-  - "https://github.com/iaolo/iA-Fonts/raw/master/iA%20Writer%20Duo/Variable/iAWriterDuoV.ttf"
-  - "https://github.com/iaolo/iA-Fonts/raw/master/iA%20Writer%20Mono/Variable/iAWriterMonoV-Italic.ttf"
-  - "https://github.com/iaolo/iA-Fonts/raw/master/iA%20Writer%20Mono/Variable/iAWriterMonoV.ttf"
-  - "https://github.com/iaolo/iA-Fonts/raw/master/iA%20Writer%20Quattro/Variable/iAWriterQuattroV-Italic.ttf"
-  - "https://github.com/iaolo/iA-Fonts/raw/master/iA%20Writer%20Quattro/Variable/iAWriterQuattroV.ttf"
-  - "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf"
-  - "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold.ttf"
-  - "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Italic.ttf"
-  - "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf"
+  ia_writer_duo_italic:
+    source: ia_fonts
+    repo_path: "iA Writer Duo/Variable/iAWriterDuoV-Italic.ttf"
+    filename: "iAWriterDuoV-Italic.ttf"
+  ia_writer_duo:
+    source: ia_fonts
+    repo_path: "iA Writer Duo/Variable/iAWriterDuoV.ttf"
+    filename: "iAWriterDuoV.ttf"
+  ia_writer_mono_italic:
+    source: ia_fonts
+    repo_path: "iA Writer Mono/Variable/iAWriterMonoV-Italic.ttf"
+    filename: "iAWriterMonoV-Italic.ttf"
+  ia_writer_mono:
+    source: ia_fonts
+    repo_path: "iA Writer Mono/Variable/iAWriterMonoV.ttf"
+    filename: "iAWriterMonoV.ttf"
+  ia_writer_quattro_italic:
+    source: ia_fonts
+    repo_path: "iA Writer Quattro/Variable/iAWriterQuattroV-Italic.ttf"
+    filename: "iAWriterQuattroV-Italic.ttf"
+  ia_writer_quattro:
+    source: ia_fonts
+    repo_path: "iA Writer Quattro/Variable/iAWriterQuattroV.ttf"
+    filename: "iAWriterQuattroV.ttf"
+  meslo_regular:
+    source: powerlevel10k_media
+    repo_path: "MesloLGS NF Regular.ttf"
+    filename: "MesloLGS NF Regular.ttf"
+  meslo_bold:
+    source: powerlevel10k_media
+    repo_path: "MesloLGS NF Bold.ttf"
+    filename: "MesloLGS NF Bold.ttf"
+  meslo_italic:
+    source: powerlevel10k_media
+    repo_path: "MesloLGS NF Italic.ttf"
+    filename: "MesloLGS NF Italic.ttf"
+  meslo_bold_italic:
+    source: powerlevel10k_media
+    repo_path: "MesloLGS NF Bold Italic.ttf"
+    filename: "MesloLGS NF Bold Italic.ttf"

@@ -2,6 +2,7 @@
 {{ $refreshPeriod := .external.refreshPeriod }}
 {{ if not .headless }}
 {{-   $fontDir := "" }}
+{{-   $fonts := includeTemplate "render-font-records.json.tmpl" . | fromJson }}
 {{-   if eq .chezmoi.os "darwin" }}
 {{-     $fontDir = "Library/Fonts" }}
 {{-   else if eq .chezmoi.os "linux" }}
@@ -12,10 +13,10 @@
 {{-     $fontDir = "AppData/Local/Microsoft/Windows/Fonts" }}
 {{-   end }}
 {{-   if $fontDir }}
-{{-     range .fonts }}
-["{{ $fontDir }}/{{ base . | replace "%20" " " }}"]
+{{-     range $font := $fonts }}
+["{{ $fontDir }}/{{ $font.filename }}"]
     type = "file"
-    url = "{{ . }}"
+    url = "{{ $font.url }}"
     refreshPeriod = "{{ $refreshPeriod }}"
 {{-     end }}
 {{-   end }}

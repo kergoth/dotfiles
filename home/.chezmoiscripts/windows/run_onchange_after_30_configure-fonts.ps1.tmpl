@@ -1,4 +1,5 @@
 {{- if .user_setup -}}
+{{-   $fonts := includeTemplate "render-font-records.json.tmpl" . | fromJson -}}
 #!/usr/bin/env powershell
 $ErrorActionPreference = "Stop"
 
@@ -34,8 +35,8 @@ function Register-Font {
 $FontsPath = Join-Path -Path ([Environment]::GetFolderPath('LocalApplicationData')) -ChildPath 'Microsoft\Windows\Fonts'
 
 $fonts = @(
-{{- range .fonts }}
-    (Join-Path $FontsPath "{{ base . }}")
+{{- range $font := $fonts }}
+    (Join-Path $FontsPath "{{ $font.filename }}")
 {{- end }}
 )
 

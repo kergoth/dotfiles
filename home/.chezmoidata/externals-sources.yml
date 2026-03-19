@@ -27,6 +27,10 @@ externals_sources:
   fumiyas_home_commands:
     repo: https://github.com/fumiyas/home-commands
     ref: master
+  ia_fonts:
+    repo: https://github.com/iaolo/iA-Fonts
+    ref: master
+    raw_base: https://raw.githubusercontent.com/iaolo/iA-Fonts
   knu_zsh_git_escape_magic:
     repo: https://github.com/knu/zsh-git-escape-magic
     ref: master
@@ -36,6 +40,10 @@ externals_sources:
   madx_moreutils:
     repo: https://github.com/madx/moreutils
     ref: master
+  powerlevel10k_media:
+    repo: https://github.com/romkatv/powerlevel10k-media
+    ref: master
+    raw_base: https://raw.githubusercontent.com/romkatv/powerlevel10k-media
   retroarch:
     repo: https://github.com/libretro/RetroArch
     ref: master

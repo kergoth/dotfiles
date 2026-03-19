@@ -1,0 +1,26 @@
+{{- $records := list -}}
+{{- range $id, $font := .fonts -}}
+{{-   if not $font.source -}}
+{{-     fail (printf "missing source for font: %s" $id) -}}
+{{-   end -}}
+{{-   if not $font.repo_path -}}
+{{-     fail (printf "missing repo_path for font: %s" $id) -}}
+{{-   end -}}
+{{-   if not $font.filename -}}
+{{-     fail (printf "missing filename for font: %s" $id) -}}
+{{-   end -}}
+{{-   $source := index $.externals_sources $font.source -}}
+{{-   if not $source -}}
+{{-     fail (printf "unknown font source: %s" $font.source) -}}
+{{-   end -}}
+{{-   if not $source.raw_base -}}
+{{-     fail (printf "missing raw_base for font source: %s" $font.source) -}}
+{{-   end -}}
+{{-   $sha := index $.externals_lock $font.source -}}
+{{-   if not $sha -}}
+{{-     fail (printf "missing lock entry for font source: %s" $font.source) -}}
+{{-   end -}}
+{{-   $url := printf "%s/%s/%s" $source.raw_base $sha ($font.repo_path | replace " " "%20") -}}
+{{-   $records = append $records (dict "id" $id "filename" $font.filename "url" $url) -}}
+{{- end -}}
+{{- $records | toJson -}}
