@@ -11,11 +11,11 @@
 {{ include (joinPath .chezmoi.workingTree "settings/claude/CLAUDE-personal.md.age") | decrypt }}
 {{- end }}
 
-## Environment Context
-- This file is managed (or intended to be managed) via chezmoi templates from `~/.dotfiles/`
-- The `work` and `personal` flags in chezmoi data determine the current machine's context (`chezmoi data | grep -E 'work|personal'` or see `~/.config/chezmoi/chezmoi.toml`)
-- Work-machine-specific sections at the end of this file apply only when `work` is true
-- On personal machines (`work` is false) the work section is omitted
+## Dotfiles Source of Truth
+- I manage my dotfiles in `~/.dotfiles/` using chezmoi
+- For config or settings changes that belong to my dotfiles, edit the source in `~/.dotfiles/`, not files in `$HOME`
+- If a file under `$HOME` might be chezmoi-managed, check `~/.dotfiles/` first before editing it directly
+- When behavior depends on machine-specific chezmoi data or templates, inspect those to determine the active configuration
 
 ## Interaction Preferences
 - Default to thinking mode: be exploratory and questioning; understand before acting
@@ -36,7 +36,8 @@
 
 ## Personal Tooling
 - Dotfiles: `~/.dotfiles/` (chezmoi + Nix Home Manager, multi-platform) - has its own CLAUDE.md with full architecture docs
-- Scripts: `~/bin/` has 300+ personal utilities - check there before writing new ones
+- `~/bin/` contains my personal shell scripts and small convenience utilities; check there before writing a new one
+- If I ask for a standalone personal script that is not project-specific and does not need chezmoi templating, `~/bin/` is the default destination
 - Package install preference: chezmoi externals > Nix > Homebrew > upstream installers > language pkg mgrs > system pkg mgrs
 - Shell is zsh with extensive customization via dotfiles
 
@@ -49,7 +50,7 @@
 
 ## Obsidian Integration
 - When asked to save learnings or session notes, write to the active Obsidian vault
-- Use the `obsidian` CLI (see obsidian-cli skill) for vault operations (create, search, daily notes, metadata); use Read/Edit tools for surgical in-file edits; avoid shell file manipulation (echo, sed, etc.)
+- Use the `obsidian` CLI (see obsidian-cli skill) for vault operations (create, search, daily notes, metadata); avoid shell file manipulation (echo, sed, etc.)
 - Use vault's PARA structure for placement; use Obsidian-compatible formatting (YAML frontmatter, wikilinks, Dataview metadata)
 - General technical learnings go in `02_Areas/Technical Skills/Shared/` (synced to work machines - only generic knowledge or references to published open-source work; no private/unpublished personal project code or details)
 
