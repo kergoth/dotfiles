@@ -165,7 +165,7 @@ Archive-based externals are pinned by commit SHA in `.chezmoidata/externals-lock
 - Bootstrap scripts retrieve age key from 1Password during setup
 - **Encrypted fragment inclusion**: non-managed `.age` files can be spliced into templates via `include | decrypt` (e.g., `joinPath .chezmoi.sourceDir ".chezmoitemplates/external/agent-content-work.toml.age" | include | decrypt`). Used for work-only chezmoi externals where the content (repo URLs) must stay encrypted in the public repo.
 
-### Agent Configuration (Claude, Codex, Cursor)
+### Agent Configuration
 
 Agent rules, skills, and subagent configs are managed through a shared pipeline:
 
