@@ -1,0 +1,37 @@
+;; ---------------------------------------------------------------------------
+;; Integration: Keychain
+;; macOS Keychain and Security framework for agent authentication/credential
+;; storage.
+;; Source model: 55-integrations-optional/keychain.sb
+;; ---------------------------------------------------------------------------
+
+(allow file-read* file-write*
+    (home-subpath "/Library/Keychains")
+    (home-literal "/Library/Preferences/com.apple.security.plist")
+)
+
+(allow file-read*
+    (literal "/Library/Preferences/com.apple.security.plist")
+    (literal "/Library/Keychains/System.keychain")
+    (subpath "/private/var/db/mds")
+)
+
+(allow file-read-metadata
+    (home-literal "/Library")
+    (home-literal "/Library/Keychains")
+    (literal "/Library")
+    (literal "/Library/Keychains")
+)
+
+(allow mach-lookup
+    (global-name "com.apple.SecurityServer")
+    (global-name "com.apple.security.agent")
+    (global-name "com.apple.securityd.xpc")
+    (global-name "com.apple.security.authhost")
+    (global-name "com.apple.secd")
+    (global-name "com.apple.trustd")
+)
+
+(allow ipc-posix-shm-read-data ipc-posix-shm-write-create ipc-posix-shm-write-data
+    (ipc-posix-name "com.apple.AppleDatabaseChanged")
+)

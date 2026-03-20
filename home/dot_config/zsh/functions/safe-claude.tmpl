@@ -1,0 +1,4 @@
+{{- $claude := includeTemplate "find-tool" (dict "root" . "tool" "claude") -}}
+{{- if and (eq .chezmoi.os "darwin") $claude -}}
+command "$HOME/.config/sandbox-exec/run-sandboxed.sh" --keychain claude "$@"
+{{ end -}}

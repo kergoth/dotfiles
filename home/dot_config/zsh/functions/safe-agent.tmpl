@@ -1,0 +1,5 @@
+{{/* Cursor's CLI agent */}}
+{{- $cursor_agent := includeTemplate "find-tool" (dict "root" . "tool" "agent") -}}
+{{- if and (eq .chezmoi.os "darwin") .work $cursor_agent -}}
+command "$HOME/.config/sandbox-exec/run-sandboxed.sh" --keychain agent "$@"
+{{ end -}}

@@ -1,0 +1,515 @@
+(version 1)
+
+;; ---------------------------------------------------------------------------
+;; Agent Policy
+;; Machine-local custom profile modeled on Agent Safehouse.
+;; Assembly order:
+;;   00-base
+;;   10-system-runtime
+;;   20-network
+;;   30-toolchains
+;;   40-shared
+;;   50-integrations-core
+;;   55-integrations-optional
+;;   60-agents
+;; Dynamic workdir/worktree grants are appended by the wrapper at launch time.
+;; ---------------------------------------------------------------------------
+
+;; ---------------------------------------------------------------------------
+;; Base Profile
+;; Source model: 00-base.sb
+;; ---------------------------------------------------------------------------
+
+(define HOME_DIR "{{ printf "%s" .chezmoi.destDir }}")
+
+(define (home-subpath rel) (subpath (string-append HOME_DIR rel)))
+(define (home-literal rel) (literal (string-append HOME_DIR rel)))
+(define (home-prefix rel) (prefix (string-append HOME_DIR rel)))
+
+(deny default)
+
+;; ---------------------------------------------------------------------------
+;; System Runtime
+;; Source model: 10-system-runtime.sb
+;; ---------------------------------------------------------------------------
+
+(allow file-read*
+    (subpath "/usr")
+    (subpath "/bin")
+    (subpath "/sbin")
+    (subpath "/opt")
+    (subpath "/System/Library")
+    (subpath "/System/Volumes/Preboot")
+    (subpath "/Library/Apple")
+    (subpath "/Library/Frameworks")
+    (subpath "/Library/Fonts")
+    (subpath "/Library/Filesystems/NetFSPlugins")
+    (literal "/Library/Preferences/.GlobalPreferences.plist")
+    (literal "/Library/Preferences/com.apple.networkd.plist")
+    (subpath "/Library/Preferences/Logging")
+    (literal "/dev")
+)
+
+(allow file-read-metadata
+    (subpath "/System")
+    (subpath "/private/var/run")
+)
+
+(allow file-read*
+    (literal "/private")
+    (literal "/private/var")
+    (subpath "/private/var/db/timezone")
+    (literal "/private/var/select/sh")
+    (literal "/private/etc/hosts")
+    (literal "/private/etc/resolv.conf")
+    (literal "/private/etc/services")
+    (literal "/private/etc/protocols")
+    (literal "/private/etc/shells")
+    (subpath "/private/etc/ssl")
+    (literal "/private/etc/localtime")
+    (literal "/etc")
+    (literal "/var")
+)
+
+(allow file-read-metadata
+    (literal "/home")
+    (literal "/private/etc")
+    (subpath "/dev")
+    (home-literal "/.config")
+    (home-literal "/.cache")
+    (home-literal "/.local")
+    (home-literal "/.local/share")
+    (home-literal "/.claude")
+    (home-literal "/.codex")
+)
+
+;; User preference reads needed by local agents/CLIs at startup.
+;; Shell startup file reads are opt-in via the custom shell-init section below.
+(allow file-read*
+    (home-prefix "/Library/Preferences/.GlobalPreferences")
+    (home-prefix "/Library/Preferences/com.apple.GlobalPreferences")
+    (home-subpath "/Library/Preferences/ByHost")
+    (home-literal "/.CFUserTextEncoding")
+    (home-literal "/.config")
+    (home-literal "/.cache")
+    (home-literal "/.local/bin")
+)
+
+;; Safehouse runtime process primitives.
+(allow process-exec)
+(allow process-fork)
+(allow sysctl-read)
+(allow process-info* (target same-sandbox))
+(allow signal (target same-sandbox))
+(allow mach-priv-task-port (target same-sandbox))
+(allow pseudo-tty)
+
+;; Temporary file and socket locations used by agent subprocesses.
+(allow file-read* file-write*
+    (subpath "/tmp")
+    (subpath "/private/tmp")
+    (subpath "/var/folders")
+    (subpath "/private/var/folders")
+)
+
+;; Keep launchd listener sockets opt-in.
+(deny file-read* file-write*
+    (regex #"^/private/tmp/com\.apple\.launchd\.[^/]+/Listeners$")
+    (regex #"^/tmp/com\.apple\.launchd\.[^/]+/Listeners$")
+)
+
+(allow file-read* file-write*
+    (subpath "/dev/fd")
+    (literal "/dev/stdout")
+    (literal "/dev/stderr")
+    (literal "/dev/null")
+    (literal "/dev/tty")
+    (literal "/dev/ptmx")
+    (literal "/dev/dtracehelper")
+    (regex #"^/dev/tty")
+    (regex #"^/dev/ttys")
+    (regex #"^/dev/pty")
+)
+
+(allow file-read*
+    (literal "/dev/zero")
+    (literal "/dev/autofs_nowait")
+    (literal "/dev/dtracehelper")
+    (literal "/dev/urandom")
+    (literal "/dev/random")
+)
+
+(allow file-ioctl
+    (literal "/dev/dtracehelper")
+    (literal "/dev/tty")
+    (literal "/dev/ptmx")
+    (regex #"^/dev/tty")
+    (regex #"^/dev/ttys")
+    (regex #"^/dev/pty")
+)
+
+(allow mach-lookup
+    (global-name "com.apple.system.notification_center")
+    (global-name "com.apple.system.opendirectoryd.libinfo")
+    (global-name "com.apple.logd")
+    (global-name "com.apple.FSEvents")
+    (global-name "com.apple.SystemConfiguration.configd")
+    (global-name "com.apple.SystemConfiguration.DNSConfiguration")
+    (global-name "com.apple.trustd.agent")
+    (global-name "com.apple.diagnosticd")
+    (global-name "com.apple.analyticsd")
+    (global-name "com.apple.dnssd.service")
+    (global-name "com.apple.CoreServices.coreservicesd")
+    (global-name "com.apple.DiskArbitration.diskarbitrationd")
+    (global-name "com.apple.analyticsd.messagetracer")
+    (global-name "com.apple.system.logger")
+    (global-name "com.apple.coreservices.launchservicesd")
+)
+
+(allow system-socket)
+
+(allow ipc-posix-shm-read-data
+    (ipc-posix-name "apple.shm.notification_center")
+)
+
+;; ---------------------------------------------------------------------------
+;; Network
+;; Source model: 20-network.sb
+;; ---------------------------------------------------------------------------
+
+(allow network*)
+
+;; ---------------------------------------------------------------------------
+;; Toolchain Access
+;; Source models: 30-toolchains/node.sb, python.sb, runtime-managers.sb
+;; ---------------------------------------------------------------------------
+
+;; Generated ancestor directory literals for ~/.brew access.
+(allow file-read*
+    (literal "/")
+    (literal "/Users")
+    (literal "/Users/kergoth")
+    (literal "/Users/kergoth/.brew")
+)
+
+;; Generated ancestor directory literals for ~/.nix-profile access.
+(allow file-read*
+    (literal "/")
+    (literal "/Users")
+    (literal "/Users/kergoth")
+    (literal "/Users/kergoth/.nix-profile")
+)
+
+;; Generated ancestor directory literals for /nix access.
+(allow file-read*
+    (literal "/")
+    (literal "/nix")
+)
+
+(allow file-read*
+    (home-subpath "/.brew")
+    (home-subpath "/.nix-profile")
+    (subpath "/nix")
+)
+
+(allow file-read* file-write*
+    (home-subpath "/.npm")
+    (home-subpath "/.config/npm")
+    (home-subpath "/.cache/npm")
+    (home-subpath "/.cache/node")
+    (home-subpath "/.cache/prisma")
+    (home-literal "/.npmrc")
+    (home-subpath "/.config/configstore")
+    (home-subpath "/.node-gyp")
+    (home-subpath "/.cache/node-gyp")
+    (home-subpath "/.config/pnpm")
+    (home-subpath "/.pnpm-state")
+    (home-subpath "/.pnpm-store")
+    (home-subpath "/.local/share/pnpm")
+    (home-subpath "/.local/state/pnpm")
+    (home-subpath "/Library/pnpm")
+    (home-subpath "/Library/Caches/pnpm")
+    (home-subpath "/Library/Preferences/pnpm")
+    (home-subpath "/.yarn")
+    (home-literal "/.yarnrc")
+    (home-literal "/.yarnrc.yml")
+    (home-subpath "/.config/yarn")
+    (home-subpath "/.cache/yarn")
+    (home-subpath "/Library/Caches/Yarn")
+    (home-subpath "/.cache/node/corepack")
+    (home-subpath "/Library/Caches/node/corepack")
+    (home-subpath "/Library/Caches/ms-playwright")
+    (home-subpath "/Library/Caches/Cypress")
+    (home-subpath "/.cache/puppeteer")
+    (home-subpath "/Library/Caches/typescript")
+    (home-subpath "/Library/Caches/prisma-nodejs")
+    (home-subpath "/Library/Caches/checkpoint-nodejs")
+    (home-subpath "/Library/Caches/claude-cli-nodejs")
+    (home-subpath "/.cache/turbo")
+    (home-subpath "/Library/Caches/turbo")
+    (home-subpath "/Library/Application Support/turborepo")
+)
+
+(allow file-read* file-write*
+    (home-literal "/.local/bin/uv")
+    (home-literal "/.local/bin/uvx")
+    (home-subpath "/.local/share/uv")
+    (home-subpath "/.local/state/uv")
+    (home-subpath "/.local/pipx")
+    (home-subpath "/.cache/uv")
+    (home-subpath "/Library/Caches/uv")
+    (home-subpath "/.config/uv")
+    (home-subpath "/.cache/pip")
+    (home-subpath "/.config/pip")
+    (home-subpath "/Library/Caches/pip")
+    (home-subpath "/.cache/pypoetry")
+    (home-subpath "/.config/pypoetry")
+    (home-subpath "/.local/share/pypoetry")
+    (home-subpath "/Library/Caches/pypoetry")
+    (home-subpath "/.cache/pdm")
+    (home-subpath "/.config/pdm")
+    (home-subpath "/.local/share/pdm")
+    (home-subpath "/.cache/pre-commit")
+    (home-subpath "/.cache/mypy")
+    (home-subpath "/.cache/ruff")
+    (home-subpath "/.virtualenvs")
+    (home-subpath "/.ipython")
+    (home-subpath "/.jupyter")
+    (home-subpath "/.pyenv")
+    (home-literal "/.pypirc")
+    (home-literal "/.python_history")
+    (home-subpath "/.cache/hatch")
+    (home-subpath "/.config/hatch")
+    (home-subpath "/.local/share/hatch")
+)
+
+(allow file-read* file-write*
+    (home-subpath "/.config/mise")
+    (home-subpath "/.local/share/mise")
+    (home-subpath "/.local/state/mise")
+    (home-subpath "/.cache/mise")
+    (home-subpath "/Library/Caches/mise")
+    (home-literal "/.mise.toml")
+    (home-subpath "/.asdf")
+    (home-subpath "/.config/asdf")
+    (home-subpath "/.local/share/asdf")
+    (home-subpath "/.local/state/asdf")
+    (home-subpath "/.cache/asdf")
+    (home-subpath "/Library/Caches/asdf")
+    (home-literal "/.asdfrc")
+    (home-literal "/.tool-versions")
+)
+
+;; ---------------------------------------------------------------------------
+;; Shared Agent Context
+;; Source model: 40-shared/agent-common.sb, narrowed to observed local paths.
+;; ---------------------------------------------------------------------------
+
+(allow file-read* file-write*
+    (home-subpath "/.agents")
+)
+
+;; ---------------------------------------------------------------------------
+;; Core Integrations
+;; Source models: 50-integrations-core/*.sb
+;; ---------------------------------------------------------------------------
+
+(deny file-read* file-write*
+    (literal "/var/run/docker.sock")
+    (literal "/private/var/run/docker.sock")
+    (literal "/var/run/podman/podman.sock")
+    (literal "/private/var/run/podman/podman.sock")
+    (home-literal "/.docker/run/docker.sock")
+    (home-literal "/.rd/docker.sock")
+    (home-literal "/.orbstack/run/docker.sock")
+    (regex (string-append "^" HOME_DIR "/\\.colima/docker\\.sock$"))
+    (regex (string-append "^" HOME_DIR "/\\.colima/[^/]+/docker\\.sock$"))
+)
+
+(deny network-outbound
+    (remote unix-socket (path-literal "/var/run/docker.sock"))
+    (remote unix-socket (path-literal "/private/var/run/docker.sock"))
+    (remote unix-socket (path-literal "/var/run/podman/podman.sock"))
+    (remote unix-socket (path-literal "/private/var/run/podman/podman.sock"))
+    (remote unix-socket (path-regex (string-append "^" HOME_DIR "/\\.docker/run/docker\\.sock$")))
+    (remote unix-socket (path-regex (string-append "^" HOME_DIR "/\\.rd/docker\\.sock$")))
+    (remote unix-socket (path-regex (string-append "^" HOME_DIR "/\\.orbstack/run/docker\\.sock$")))
+    (remote unix-socket (path-regex (string-append "^" HOME_DIR "/\\.colima/docker\\.sock$")))
+    (remote unix-socket (path-regex (string-append "^" HOME_DIR "/\\.colima/[^/]+/docker\\.sock$")))
+)
+
+(allow file-read*
+    (home-prefix "/.gitconfig")
+    (home-prefix "/.gitignore")
+    (home-subpath "/.config/git")
+    (home-literal "/.gitattributes")
+    (home-literal "/.ssh")
+)
+
+(allow mach-lookup
+    (global-name "com.apple.lsd.mapdb")
+    (global-name "com.apple.lsd.modifydb")
+    (global-name "com.apple.coreservices.quarantine-resolver")
+)
+
+(allow file-issue-extension
+    (extension-class "com.apple.app-sandbox.read")
+    (extension-class "com.apple.app-sandbox.read-write")
+)
+
+(allow lsopen)
+
+(allow file-read* file-write*
+    (home-subpath "/.config/gh")
+    (home-subpath "/.cache/gh")
+    (home-subpath "/.local/share/gh")
+    (home-subpath "/.local/state/gh")
+)
+
+(deny network-outbound
+    (remote unix-socket (path-regex #"^/private/tmp/com\.apple\.launchd\.[^/]+/Listeners$"))
+    (remote unix-socket (path-regex #"^/tmp/com\.apple\.launchd\.[^/]+/Listeners$"))
+    (remote unix-socket (path-regex (string-append "^" HOME_DIR "/\\.ssh/agent(/.*)?$")))
+)
+
+;; Worktree modules are dynamic in this custom build.
+;; The wrapper appends:
+;; - sibling linked worktree read-only grants
+;; - external git common-dir read/write grant for linked worktrees
+
+;; ---------------------------------------------------------------------------
+;; Optional Integrations
+;; Source models: shell-init.sb, ssh.sb
+;; ---------------------------------------------------------------------------
+
+;; Custom shell-init for ZDOTDIR=~/.config/zsh
+(allow file-read*
+    (literal "/private/etc/profile")
+    (literal "/private/etc/paths")
+    (subpath "/private/etc/paths.d")
+    (literal "/private/etc/zprofile")
+    (literal "/private/etc/zshrc")
+    (home-literal "/.zshenv")
+    (home-literal "/.config")
+    (home-literal "/.config/zsh")
+    (home-subpath "/.config/zsh")
+)
+
+;; SSH with private-key deny intact.
+(deny file-read* file-write*
+    (home-subpath "/.ssh")
+)
+
+(allow file-read-metadata
+    (home-literal "/.ssh")
+)
+
+(allow file-read*
+    (home-literal "/.ssh/known_hosts")
+    (home-literal "/.ssh/config")
+    (home-subpath "/.ssh/config.d")
+    (home-literal "/.ssh/allowed_signers")
+    (literal "/private/etc/ssh/ssh_config")
+    (subpath "/private/etc/ssh/ssh_config.d")
+    (literal "/private/etc/ssh/crypto.conf")
+    (subpath "/private/etc/ssh/crypto")
+)
+
+(allow file-write*
+    (home-literal "/.ssh/known_hosts")
+    (home-literal "/.ssh/known_hosts.old")
+)
+
+(allow file-read-metadata
+    (home-literal "/.ssh/agent")
+)
+
+(allow file-read* file-write*
+    (regex #"^/private/tmp/com\.apple\.launchd\.[^/]+/Listeners$")
+    (regex #"^/tmp/com\.apple\.launchd\.[^/]+/Listeners$")
+    (home-subpath "/.ssh/agent")
+)
+
+(allow network-outbound
+    (remote unix-socket (path-regex #"^/private/tmp/com\.apple\.launchd\.[^/]+/Listeners$"))
+    (remote unix-socket (path-regex #"^/tmp/com\.apple\.launchd\.[^/]+/Listeners$"))
+    (remote unix-socket (path-regex (string-append "^" HOME_DIR "/\\.ssh/agent(/.*)?$")))
+)
+
+;; ---------------------------------------------------------------------------
+;; Agent CLIs
+;; Source models: 60-agents/claude-code.sb, codex.sb, cursor-agent.sb
+;; Keychain is intentionally not included in the baseline profile.
+;; ---------------------------------------------------------------------------
+
+(allow file-read* file-write*
+    (home-subpath "/.cache/claude")
+    (home-subpath "/.claude")
+    (home-prefix "/.claude.json")
+    (home-literal "/.claude.lock")
+    (home-subpath "/.config/claude")
+    (home-subpath "/.local/state/claude")
+    (home-subpath "/.local/share/claude")
+    (home-literal "/.mcp.json")
+)
+
+(allow file-read*
+    (home-prefix "/.claude.json.")
+    (home-literal "/Library/Application Support/Claude/claude_desktop_config.json")
+    (subpath "/Library/Application Support/ClaudeCode/.claude")
+    (literal "/Library/Application Support/ClaudeCode/managed-settings.json")
+    (literal "/Library/Application Support/ClaudeCode/managed-mcp.json")
+    (literal "/Library/Application Support/ClaudeCode/CLAUDE.md")
+)
+
+(allow file-read* file-write*
+    (home-subpath "/.codex")
+    (home-subpath "/.cache/codex")
+)
+
+(allow file-read*
+    (home-literal "/Library/Preferences/com.openai.codex.plist")
+    (literal "/Library/Preferences/com.openai.codex.plist")
+    (literal "/Library/Managed Preferences/com.openai.codex.plist")
+    (subpath "/etc/codex")
+)
+
+{{- if .work }}
+
+(allow file-read* file-write*
+    (home-prefix "/.local/bin/agent")
+    (home-prefix "/.local/bin/cursor-agent")
+    (home-prefix "/.local/bin/cursor")
+    (home-subpath "/.local/share/cursor-agent")
+    (home-subpath "/.cursor")
+    (home-subpath "/.config/cursor")
+    (home-subpath "/.cache/cursor-compile-cache")
+    (home-subpath "/Library/Caches/cursor-compile-cache")
+)
+
+(allow file-read*
+    (home-subpath "/Library/Application Support/Cursor")
+    (literal "/Applications")
+    (literal "/usr/local/bin/cursor")
+    (literal "/opt/homebrew/bin/cursor")
+    (subpath "/Applications/Cursor.app")
+)
+{{- end }}
+
+;; ---------------------------------------------------------------------------
+;; Explicit Denies
+;; ---------------------------------------------------------------------------
+
+(deny file-read* file-write*
+    (home-literal "/.envrc")
+)
+
+;; ---------------------------------------------------------------------------
+;; Dynamic Grants
+;; The wrapper appends launch-time rules here:
+;; - ancestor literal grants for the selected workdir
+;; - selected workdir read/write
+;; - sibling linked worktrees read-only
+;; - linked-worktree common git dir read/write
+;; - any explicitly appended optional profiles
+;; ---------------------------------------------------------------------------

@@ -1,0 +1,3 @@
+{{- if eq .chezmoi.os "darwin" -}}
+command "$HOME/.config/sandbox-exec/run-sandboxed.sh" "$@"
+{{ end -}}

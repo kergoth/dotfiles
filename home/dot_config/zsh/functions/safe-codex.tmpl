@@ -1,0 +1,4 @@
+{{- $codex := includeTemplate "find-tool" (dict "root" . "tool" "codex") -}}
+{{- if and (eq .chezmoi.os "darwin") (not .work) $codex -}}
+command "$HOME/.config/sandbox-exec/run-sandboxed.sh" --keychain codex "$@"
+{{ end -}}
