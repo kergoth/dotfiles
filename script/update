@@ -2,6 +2,20 @@
 
 set -euo pipefail
 
+dry_run=0
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -n|--dry-run)
+            dry_run=1
+            shift
+            ;;
+        *)
+            echo >&2 "Usage: script/update [-n|--dry-run]"
+            exit 1
+            ;;
+    esac
+done
+
 scriptdir=$(cd "$(dirname "$0")" && pwd -P)
 sourcedir=$(dirname "$scriptdir")
 PATH="$PATH:$scriptdir:$sourcedir/scripts"
@@ -12,22 +26,30 @@ if [ -d "$sourcedir/.jj" ] && command -v jj >/dev/null 2>&1; then
     use_jj=1
 fi
 
-echo >&2 "Updating chezmoi"
-chezmoi upgrade || :
-
-echo >&2 "Updating dotfiles repository"
-if [ "$use_jj" -eq 1 ]; then
-    (cd "$sourcedir" && jj git fetch)
-    # Don't use chezmoi update (it would try to use git), just apply
-    chezmoi apply -R
+if [ "$dry_run" -eq 1 ]; then
+    echo >&2 "Dry run: skipping chezmoi upgrade"
 else
-    # Check if we're on a branch before attempting update
-    if (cd "$sourcedir" && git symbolic-ref -q HEAD >/dev/null); then
-        chezmoi update -R
-    else
-        echo >&2 "Warning: Not on a branch, skipping git pull. Fetching only."
-        (cd "$sourcedir" && git fetch)
+    echo >&2 "Updating chezmoi"
+    chezmoi upgrade || :
+fi
+
+if [ "$dry_run" -eq 1 ]; then
+    echo >&2 "Dry run: skipping dotfiles repository sync"
+else
+    echo >&2 "Updating dotfiles repository"
+    if [ "$use_jj" -eq 1 ]; then
+        (cd "$sourcedir" && jj git fetch)
+        # Don't use chezmoi update (it would try to use git), just apply
         chezmoi apply -R
+    else
+        # Check if we're on a branch before attempting update
+        if (cd "$sourcedir" && git symbolic-ref -q HEAD >/dev/null); then
+            chezmoi update -R
+        else
+            echo >&2 "Warning: Not on a branch, skipping git pull. Fetching only."
+            (cd "$sourcedir" && git fetch)
+            chezmoi apply -R
+        fi
     fi
 fi
 
@@ -40,58 +62,70 @@ update_op_cli_versions() {
     python3 "$sourcedir/scripts/update-op-cli-versions.py"
 }
 
-op_exit=0
-op_changes=$(update_op_cli_versions) || op_exit=$?
-if [ "$op_exit" -ne 0 ]; then
-    echo >&2 "Warning: op CLI version update failed (exit $op_exit); skipping"
-elif [ -n "$op_changes" ]; then
-    echo >&2 "Updated op CLI versions and checksums"
-    {
-        echo "Update op CLI versions"
-        echo
-        echo "$op_changes" | sed 's/^/  /'
-    } >"$sourcedir/.git/COMMIT_EDITMSG"
-    echo >&2 "Committing op CLI version update"
-    if [ "$use_jj" -eq 1 ]; then
-        commit_msg=$(cat "$sourcedir/.git/COMMIT_EDITMSG")
-        (cd "$sourcedir" && jj commit -m "$commit_msg" \
-            home/.chezmoidata/versions.yml)
-    else
-        (cd "$sourcedir" && git commit -F .git/COMMIT_EDITMSG \
-            home/.chezmoidata/versions.yml)
+if [ "$dry_run" -eq 1 ]; then
+    echo >&2 "Dry run: skipping op CLI version update"
+else
+    op_exit=0
+    op_changes=$(update_op_cli_versions) || op_exit=$?
+    if [ "$op_exit" -ne 0 ]; then
+        echo >&2 "Warning: op CLI version update failed (exit $op_exit); skipping"
+    elif [ -n "$op_changes" ]; then
+        echo >&2 "Updated op CLI versions and checksums"
+        {
+            echo "Update op CLI versions"
+            echo
+            echo "$op_changes" | sed 's/^/  /'
+        } >"$sourcedir/.git/COMMIT_EDITMSG"
+        echo >&2 "Committing op CLI version update"
+        if [ "$use_jj" -eq 1 ]; then
+            commit_msg=$(cat "$sourcedir/.git/COMMIT_EDITMSG")
+            (cd "$sourcedir" && jj commit -m "$commit_msg" \
+                home/.chezmoidata/versions.yml)
+        else
+            (cd "$sourcedir" && git commit -F .git/COMMIT_EDITMSG \
+                home/.chezmoidata/versions.yml)
+        fi
     fi
 fi
 
-if [ -f "$sourcedir/scripts/update-externals-lock.py" ]; then
-    echo >&2 "Updating pinned externals"
-    if command -v python3 >/dev/null 2>&1; then
-        python_exit=0
-        changes=$(python3 "$sourcedir/scripts/update-externals-lock.py") || python_exit=$?
-        if [ "$python_exit" -ne 0 ]; then
-            echo >&2 "Warning: externals lock update failed (exit $python_exit); skipping"
-            chezmoi apply -R || :
-        elif [ -n "$changes" ]; then
-            chezmoi apply -R || :
-            {
-                echo "Update pinned externals"
-                echo
-                echo "$changes" | sed 's/^/  /'
-            } >"$sourcedir/.git/COMMIT_EDITMSG"
-            echo >&2 "Committing pinned externals update"
-            if [ "$use_jj" -eq 1 ]; then
-                commit_msg=$(cat "$sourcedir/.git/COMMIT_EDITMSG")
-                (cd "$sourcedir" && jj commit -m "$commit_msg" \
-                    home/.chezmoidata/externals-lock.yml)
+if [ "$dry_run" -eq 1 ]; then
+    echo >&2 "Dry run: skipping externals lock update"
+else
+    if [ -f "$sourcedir/scripts/update-externals-lock.py" ]; then
+        echo >&2 "Updating pinned externals"
+        if command -v python3 >/dev/null 2>&1; then
+            python_exit=0
+            changes=$(python3 "$sourcedir/scripts/update-externals-lock.py") || python_exit=$?
+            if [ "$python_exit" -ne 0 ]; then
+                echo >&2 "Warning: externals lock update failed (exit $python_exit); skipping"
+                chezmoi apply -R || :
+            elif [ -n "$changes" ]; then
+                chezmoi apply -R || :
+                {
+                    echo "Update pinned externals"
+                    echo
+                    echo "$changes" | sed 's/^/  /'
+                } >"$sourcedir/.git/COMMIT_EDITMSG"
+                echo >&2 "Committing pinned externals update"
+                if [ "$use_jj" -eq 1 ]; then
+                    commit_msg=$(cat "$sourcedir/.git/COMMIT_EDITMSG")
+                    (cd "$sourcedir" && jj commit -m "$commit_msg" \
+                        home/.chezmoidata/externals-lock.yml)
+                else
+                    (cd "$sourcedir" && git commit -F .git/COMMIT_EDITMSG \
+                        home/.chezmoidata/externals-lock.yml)
+                fi
             else
-                (cd "$sourcedir" && git commit -F .git/COMMIT_EDITMSG \
-                    home/.chezmoidata/externals-lock.yml)
+                chezmoi apply -R || :
             fi
         else
-            chezmoi apply -R || :
+            echo >&2 "Warning: python3 not available; skipping externals lock update"
         fi
-    else
-        echo >&2 "Warning: python3 not available; skipping externals lock update"
     fi
 fi
 
-script/home-manager-switch --update-inputs "nixpkgs nixpkgs-unstable" "Update Home Manager packages"
+if [ "$dry_run" -eq 1 ]; then
+    echo >&2 "Dry run: skipping Home Manager switch"
+else
+    script/home-manager-switch --update-inputs "nixpkgs nixpkgs-unstable" "Update Home Manager packages"
+fi
