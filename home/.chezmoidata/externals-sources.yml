@@ -6,9 +6,11 @@ externals_sources:
   86box_assets:
     repo: https://github.com/86Box/assets
     ref: main
+    review: false
   86box_roms:
     repo: https://github.com/86Box/roms
     ref: master
+    review: false
   anthropic_official_plugins:
     repo: https://github.com/anthropics/claude-plugins-official
   astral:
@@ -43,6 +45,7 @@ externals_sources:
     repo: https://github.com/iaolo/iA-Fonts
     ref: master
     raw_base: https://raw.githubusercontent.com/iaolo/iA-Fonts
+    review: false
   knu_zsh_git_escape_magic:
     repo: https://github.com/knu/zsh-git-escape-magic
     ref: master
@@ -59,9 +62,11 @@ externals_sources:
     repo: https://github.com/romkatv/powerlevel10k-media
     ref: master
     raw_base: https://raw.githubusercontent.com/romkatv/powerlevel10k-media
+    review: false
   retroarch:
     repo: https://github.com/libretro/RetroArch
     ref: master
+    review: false
   steamtinkerlaunch:
     repo: https://github.com/sonic2kk/steamtinkerlaunch
     ref: master
