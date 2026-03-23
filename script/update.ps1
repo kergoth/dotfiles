@@ -1,3 +1,14 @@
+param(
+    [Alias("n")]
+    [switch]$DryRun,
+    [switch]$Help
+)
+
+if ($Help) {
+    Write-Host "Usage: script/update.ps1 [-DryRun|-n]"
+    exit 0
+}
+
 # Detect VCS type
 $repodir = $PSScriptRoot | Split-Path -Parent
 $use_jj = 0
@@ -8,17 +19,25 @@ if ((Test-Path "$repodir/.jj") -and (Get-Command jj -ErrorAction SilentlyContinu
     $vcs = "git"
 }
 
-Write-Host "Updating chezmoi"
-chezmoi upgrade
-
-Write-Host "Updating dotfiles repository"
-if ($use_jj -eq 1) {
-    Set-Location $repodir
-    jj git fetch
-    # Don't use chezmoi update (it would try to use git), just apply
-    chezmoi apply -R
+if ($DryRun) {
+    Write-Host "Dry run: skipping chezmoi upgrade"
 } else {
-    chezmoi update -R
+    Write-Host "Updating chezmoi"
+    chezmoi upgrade
+}
+
+if ($DryRun) {
+    Write-Host "Dry run: skipping dotfiles repository sync"
+} else {
+    Write-Host "Updating dotfiles repository"
+    if ($use_jj -eq 1) {
+        Set-Location $repodir
+        jj git fetch
+        # Don't use chezmoi update (it would try to use git), just apply
+        chezmoi apply -R
+    } else {
+        chezmoi update -R
+    }
 }
 
 function Get-OldOpVersions {
@@ -137,58 +156,71 @@ function Update-OpCliVersions {
     }
 }
 
-$opChanges = Update-OpCliVersions
-if ($opChanges) {
-    Write-Host "Updated op CLI versions and checksums"
-    $indentedChanges = $opChanges | ForEach-Object { "  $_" }
-    $commitMessage = (@(
-        'Update op CLI versions'
-        ''
-    ) + $indentedChanges) -join "`n"
-    $commitMessage | Out-File -FilePath "$repodir\.git\COMMIT_EDITMSG" -Encoding utf8
-    Write-Host "Committing op CLI version update"
-    if ($use_jj -eq 1) {
-        $commitMsg = Get-Content "$repodir\.git\COMMIT_EDITMSG" -Raw
-        Set-Location $repodir
-        jj commit -m $commitMsg home/.chezmoidata/versions.yml
-    } else {
-        Set-Location $repodir
-        git commit -F .git/COMMIT_EDITMSG home/.chezmoidata/versions.yml
+if ($DryRun) {
+    Write-Host "Dry run: skipping op CLI version update"
+} else {
+    $opChanges = Update-OpCliVersions
+    if ($opChanges) {
+        Write-Host "Updated op CLI versions and checksums"
+        $indentedChanges = $opChanges | ForEach-Object { "  $_" }
+        $commitMessage = (@(
+            'Update op CLI versions'
+            ''
+        ) + $indentedChanges) -join "`n"
+        $commitMessage | Out-File -FilePath "$repodir\.git\COMMIT_EDITMSG" -Encoding utf8
+        Write-Host "Committing op CLI version update"
+        if ($use_jj -eq 1) {
+            $commitMsg = Get-Content "$repodir\.git\COMMIT_EDITMSG" -Raw
+            Set-Location $repodir
+            jj commit -m $commitMsg home/.chezmoidata/versions.yml
+        } else {
+            Set-Location $repodir
+            git commit -F .git/COMMIT_EDITMSG home/.chezmoidata/versions.yml
+        }
     }
 }
 
-$agentExternalsUpdater = Join-Path $repodir "scripts/update-externals-lock.py"
-if (Test-Path $agentExternalsUpdater) {
-    Write-Host "Updating pinned externals"
-    if (Get-Command python3 -ErrorAction SilentlyContinue) {
-        $changes = python3 $agentExternalsUpdater
-        $pythonExit = $LASTEXITCODE
-        if ($pythonExit -ne 0) {
-            Write-Warning "Warning: externals lock update failed (exit $pythonExit); skipping"
-            chezmoi apply -R
-        } elseif ($changes) {
-            chezmoi apply -R
-            $indentedChanges = $changes | ForEach-Object { "  $_" }
-            $commitMessage = (@(
-                'Update pinned externals'
-                ''
-            ) + $indentedChanges) -join "`n"
-            $commitMessage | Out-File -FilePath "$repodir\.git\COMMIT_EDITMSG" -Encoding utf8
-            Write-Host "Committing pinned externals update"
-            if ($use_jj -eq 1) {
-                $commitMsg = Get-Content "$repodir\.git\COMMIT_EDITMSG" -Raw
-                Set-Location $repodir
-                jj commit -m $commitMsg home/.chezmoidata/externals-lock.yml
+if ($DryRun) {
+    Write-Host "Dry run: skipping externals lock update"
+} else {
+    $agentExternalsUpdater = Join-Path $repodir "scripts/update-externals-lock.py"
+    if (Test-Path $agentExternalsUpdater) {
+        Write-Host "Updating pinned externals"
+        if (Get-Command python3 -ErrorAction SilentlyContinue) {
+            $changes = python3 $agentExternalsUpdater
+            $pythonExit = $LASTEXITCODE
+            if ($pythonExit -ne 0) {
+                Write-Warning "Warning: externals lock update failed (exit $pythonExit); skipping"
+                chezmoi apply -R
+            } elseif ($changes) {
+                chezmoi apply -R
+                $indentedChanges = $changes | ForEach-Object { "  $_" }
+                $commitMessage = (@(
+                    'Update pinned externals'
+                    ''
+                ) + $indentedChanges) -join "`n"
+                $commitMessage | Out-File -FilePath "$repodir\.git\COMMIT_EDITMSG" -Encoding utf8
+                Write-Host "Committing pinned externals update"
+                if ($use_jj -eq 1) {
+                    $commitMsg = Get-Content "$repodir\.git\COMMIT_EDITMSG" -Raw
+                    Set-Location $repodir
+                    jj commit -m $commitMsg home/.chezmoidata/externals-lock.yml
+                } else {
+                    Set-Location $repodir
+                    git commit -F .git/COMMIT_EDITMSG home/.chezmoidata/externals-lock.yml
+                }
             } else {
-                Set-Location $repodir
-                git commit -F .git/COMMIT_EDITMSG home/.chezmoidata/externals-lock.yml
+                chezmoi apply -R
             }
         } else {
-            chezmoi apply -R
+            Write-Warning "Warning: python3 not available; skipping externals lock update"
         }
-    } else {
-        Write-Warning "Warning: python3 not available; skipping externals lock update"
     }
+}
+
+if ($DryRun) {
+    Write-Host "Dry run: skipping Home Manager update"
+    exit 0
 }
 
 # Exit if we don't have the nix command
