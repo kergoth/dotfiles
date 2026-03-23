@@ -31,6 +31,8 @@ def parse_args():
     parser.add_argument("new_sha", help="New commit SHA")
     parser.add_argument("--name", help="Human-friendly label for output headers")
     parser.add_argument("--diff", action="store_true", help="Include full file diff")
+    parser.add_argument("--diff-only", action="store_true",
+                        help="Show only the diff, skipping shortlog and AI review")
     parser.add_argument("--no-ai", action="store_true", help="Skip AI summary")
     parser.add_argument("--ai-cmd", help="Override agent CLI detection")
     parser.add_argument(
@@ -316,6 +318,7 @@ def render_changes(
     new_sha: str,
     data: dict,
     show_diff: bool = False,
+    diff_only: bool = False,
     ai_cmd: str | None = None,
     skip_ai: bool = False,
     review_note: str | None = None,
@@ -323,6 +326,16 @@ def render_changes(
     """Render the tiered review output."""
     label = name or "unknown"
     header = f"{label}: {old_sha[:7]} → {new_sha[:7]}"
+
+    if diff_only:
+        if data.get("diff"):
+            stdout_console.print(
+                Panel(
+                    Syntax(data["diff"], "diff", theme="monokai", line_numbers=True),
+                    title=f"[bold]Diff — {label}[/bold]",
+                )
+            )
+        return
 
     # Tier 1: Shortlog (always)
     shortlog = data.get("shortlog") or data.get("log", "(no commits found)")
@@ -370,6 +383,7 @@ def main():
         new_sha=args.new_sha,
         data=data,
         show_diff=args.diff,
+        diff_only=args.diff_only,
         ai_cmd=args.ai_cmd,
         skip_ai=args.no_ai,
         review_note=args.review_note,

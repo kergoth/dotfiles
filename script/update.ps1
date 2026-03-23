@@ -228,7 +228,7 @@ if (Test-Path $agentExternalsUpdater) {
                                     foreach ($c in $changes) {
                                         if ($c.review -ne $false) {
                                             $ref = if ($c.ref) { $c.ref } else { "main" }
-                                            $reviewArgs = @($c.repo, $c.old_sha, $c.new_sha, '--name', $c.id, '--ref', $ref, '--diff')
+                                            $reviewArgs = @($c.repo, $c.old_sha, $c.new_sha, '--name', $c.id, '--ref', $ref, '--diff-only')
                                             if ($c.review_note) { $reviewArgs += @('--review-note', $c.review_note) }
                                             uv run (Join-Path $repodir "scripts/show-git-changes.py") @reviewArgs
                                         }

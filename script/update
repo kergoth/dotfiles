@@ -149,7 +149,7 @@ script = sys.argv[2]
 for c in changes:
     if c.get('review', True):
         cmd = ['uv', 'run', script, c['repo'], c['old_sha'], c['new_sha'],
-               '--name', c['id'], '--ref', c.get('ref', 'main'), '--diff']
+               '--name', c['id'], '--ref', c.get('ref', 'main'), '--diff-only']
         if c.get('review_note'):
             cmd += ['--review-note', c['review_note']]
         subprocess.run(cmd)
