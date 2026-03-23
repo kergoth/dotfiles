@@ -165,6 +165,7 @@ def main() -> int:
                     "old_sha": old_sha,
                     "new_sha": new_sha,
                     "review": entry.get("review", True),
+                    "review_note": entry.get("review_note"),
                 })
         if not changes:
             return 2

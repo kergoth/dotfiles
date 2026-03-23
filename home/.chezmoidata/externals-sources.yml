@@ -13,6 +13,7 @@ externals_sources:
     review: false
   anthropic_official_plugins:
     repo: https://github.com/anthropics/claude-plugins-official
+    review_note: "Only two plugins are installed: claude-md-management (claude-md-improver skill) and skill-creator. Focus review on changes to those plugin directories and any shared infrastructure. Changes to other plugins can be noted briefly but don't require deep analysis."
   astral:
     repo: https://github.com/astral-sh/claude-code-plugins
   beanbaginc_dev_goodies:

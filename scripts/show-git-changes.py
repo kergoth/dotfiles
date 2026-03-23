@@ -43,6 +43,10 @@ def parse_args():
         type=Path,
         help="Directory for cached bare clones (default: .cache/git-clones/ in repo root)",
     )
+    parser.add_argument(
+        "--review-note",
+        help="Context injected into the AI prompt (e.g. which items are installed)",
+    )
     return parser.parse_args()
 
 
@@ -243,7 +247,7 @@ Focus on:
 3. Breaking changes requiring user action
 
 Be concise. Flag only genuine concerns, not stylistic changes.
-
+{review_context}
 --- GIT LOG ---
 {log}
 
@@ -265,10 +269,11 @@ def find_agent_cli(override: str | None = None) -> str | None:
 
 
 def run_ai_review(
-    agent_cmd: str, log: str, diff: str, name: str | None
+    agent_cmd: str, log: str, diff: str, name: str | None, review_note: str | None = None
 ) -> str | None:
     """Run AI agent to produce a supply chain review summary."""
-    prompt = SUPPLY_CHAIN_PROMPT.format(log=log, diff=diff)
+    review_context = f"--- REVIEW CONTEXT ---\n{review_note}\n\n" if review_note else ""
+    prompt = SUPPLY_CHAIN_PROMPT.format(log=log, diff=diff, review_context=review_context)
 
     try:
         if agent_cmd == "claude":
@@ -313,6 +318,7 @@ def render_changes(
     show_diff: bool = False,
     ai_cmd: str | None = None,
     skip_ai: bool = False,
+    review_note: str | None = None,
 ):
     """Render the tiered review output."""
     label = name or "unknown"
@@ -327,7 +333,7 @@ def render_changes(
         agent = find_agent_cli(ai_cmd)
         if agent:
             console.print(f"Running AI review via {agent}...", style="dim")
-            review = run_ai_review(agent, data.get("log", ""), data.get("diff", ""), name)
+            review = run_ai_review(agent, data.get("log", ""), data.get("diff", ""), name, review_note)
             if review:
                 stdout_console.print(
                     Panel(review, title=f"[bold]AI Review — {label}[/bold]", subtitle=agent)
@@ -366,6 +372,7 @@ def main():
         show_diff=args.diff,
         ai_cmd=args.ai_cmd,
         skip_ai=args.no_ai,
+        review_note=args.review_note,
     )
     return 0
 

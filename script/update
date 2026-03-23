@@ -116,15 +116,17 @@ if [ -f "$sourcedir/scripts/update-externals-lock.py" ]; then
             # Step 2: Review (unless --no-review)
             if [ "$no_review" -eq 0 ]; then
                 uv run python3 -c "
-import json, sys
+import json, subprocess, sys
 changes = json.load(open(sys.argv[1]))
+script = sys.argv[2]
 for c in changes:
     if c.get('review', True):
-        print(c['repo'], c['old_sha'], c['new_sha'], c['id'], c.get('ref', 'main'))
-" "$changes_file" | while IFS=' ' read -r repo old_sha new_sha name ref; do
-                    uv run "$sourcedir/scripts/show-git-changes.py" \
-                        "$repo" "$old_sha" "$new_sha" --name "$name" --ref "$ref" || :
-                done
+        cmd = ['uv', 'run', script, c['repo'], c['old_sha'], c['new_sha'],
+               '--name', c['id'], '--ref', c.get('ref', 'main')]
+        if c.get('review_note'):
+            cmd += ['--review-note', c['review_note']]
+        subprocess.run(cmd)
+" "$changes_file" "$sourcedir/scripts/show-git-changes.py"
             fi
 
             # Step 3: Decision point
@@ -141,15 +143,17 @@ for c in changes:
                             [Nn]|[Nn]o) apply=0; break ;;
                             [Dd]|[Dd]iff)
                                 uv run python3 -c "
-import json, sys
+import json, subprocess, sys
 changes = json.load(open(sys.argv[1]))
+script = sys.argv[2]
 for c in changes:
     if c.get('review', True):
-        print(c['repo'], c['old_sha'], c['new_sha'], c['id'], c.get('ref', 'main'))
-" "$changes_file" | while IFS=' ' read -r repo old_sha new_sha name ref; do
-                                    uv run "$sourcedir/scripts/show-git-changes.py" \
-                                        "$repo" "$old_sha" "$new_sha" --name "$name" --ref "$ref" --diff || :
-                                done
+        cmd = ['uv', 'run', script, c['repo'], c['old_sha'], c['new_sha'],
+               '--name', c['id'], '--ref', c.get('ref', 'main'), '--diff']
+        if c.get('review_note'):
+            cmd += ['--review-note', c['review_note']]
+        subprocess.run(cmd)
+" "$changes_file" "$sourcedir/scripts/show-git-changes.py"
                                 ;;
                             *) echo >&2 "Please answer Y, n, or d" ;;
                         esac
