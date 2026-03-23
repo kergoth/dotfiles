@@ -3,18 +3,23 @@
 set -euo pipefail
 
 dry_run=0
+no_review=0
 while [ $# -gt 0 ]; do
     case "$1" in
         -n|--dry-run)
             dry_run=1
             shift
             ;;
+        --no-review)
+            no_review=1
+            shift
+            ;;
         -h|--help)
-            echo "Usage: script/update [-n|--dry-run]"
+            echo "Usage: script/update [-n|--dry-run] [--no-review]"
             exit 0
             ;;
         *)
-            echo >&2 "Usage: script/update [-n|--dry-run]"
+            echo >&2 "Usage: script/update [-n|--dry-run] [--no-review]"
             exit 1
             ;;
     esac
@@ -92,39 +97,102 @@ else
     fi
 fi
 
-if [ "$dry_run" -eq 1 ]; then
-    echo >&2 "Dry run: skipping externals lock update"
-else
-    if [ -f "$sourcedir/scripts/update-externals-lock.py" ]; then
-        echo >&2 "Updating pinned externals"
-        if command -v python3 >/dev/null 2>&1; then
-            python_exit=0
-            changes=$(python3 "$sourcedir/scripts/update-externals-lock.py") || python_exit=$?
-            if [ "$python_exit" -ne 0 ]; then
-                echo >&2 "Warning: externals lock update failed (exit $python_exit); skipping"
-                chezmoi apply -R || :
-            elif [ -n "$changes" ]; then
-                chezmoi apply -R || :
-                {
-                    echo "Update pinned externals"
-                    echo
-                    echo "$changes" | sed 's/^/  /'
-                } >"$sourcedir/.git/COMMIT_EDITMSG"
-                echo >&2 "Committing pinned externals update"
-                if [ "$use_jj" -eq 1 ]; then
-                    commit_msg=$(cat "$sourcedir/.git/COMMIT_EDITMSG")
-                    (cd "$sourcedir" && jj commit -m "$commit_msg" \
-                        home/.chezmoidata/externals-lock.yml)
-                else
-                    (cd "$sourcedir" && git commit -F .git/COMMIT_EDITMSG \
-                        home/.chezmoidata/externals-lock.yml)
-                fi
-            else
-                chezmoi apply -R || :
-            fi
+if [ -f "$sourcedir/scripts/update-externals-lock.py" ]; then
+    echo >&2 "Checking for externals updates"
+    if command -v uv >/dev/null 2>&1; then
+        # Step 1: Resolve (always, even in dry-run)
+        changes_file=$(mktemp)
+        cleanup_changes_file() { rm -f "$changes_file"; }
+        trap cleanup_changes_file EXIT INT TERM
+
+        resolve_exit=0
+        uv run "$sourcedir/scripts/update-externals-lock.py" --dry-run --json > "$changes_file" || resolve_exit=$?
+
+        if [ "$resolve_exit" -eq 2 ]; then
+            echo >&2 "No externals updates available"
+        elif [ "$resolve_exit" -ne 0 ]; then
+            echo >&2 "Warning: externals resolution failed (exit $resolve_exit); skipping"
         else
-            echo >&2 "Warning: python3 not available; skipping externals lock update"
+            # Step 2: Review (unless --no-review)
+            if [ "$no_review" -eq 0 ]; then
+                uv run python3 -c "
+import json, sys
+changes = json.load(open(sys.argv[1]))
+for c in changes:
+    if c.get('review', True):
+        print(c['repo'], c['old_sha'], c['new_sha'], c['id'], c.get('ref', 'main'))
+" "$changes_file" | while IFS=' ' read -r repo old_sha new_sha name ref; do
+                    uv run "$sourcedir/scripts/show-git-changes.py" \
+                        "$repo" "$old_sha" "$new_sha" --name "$name" --ref "$ref" || :
+                done
+            fi
+
+            # Step 3: Decision point
+            if [ "$dry_run" -eq 1 ]; then
+                echo >&2 "Dry run: externals review complete, not applying"
+            else
+                apply=1
+                if [ "$no_review" -eq 0 ] && [ -t 0 ]; then
+                    while true; do
+                        printf >&2 "Apply externals updates? [Y/n/d] "
+                        read -r answer
+                        case "$answer" in
+                            ""|[Yy]|[Yy]es) break ;;
+                            [Nn]|[Nn]o) apply=0; break ;;
+                            [Dd]|[Dd]iff)
+                                uv run python3 -c "
+import json, sys
+changes = json.load(open(sys.argv[1]))
+for c in changes:
+    if c.get('review', True):
+        print(c['repo'], c['old_sha'], c['new_sha'], c['id'], c.get('ref', 'main'))
+" "$changes_file" | while IFS=' ' read -r repo old_sha new_sha name ref; do
+                                    uv run "$sourcedir/scripts/show-git-changes.py" \
+                                        "$repo" "$old_sha" "$new_sha" --name "$name" --ref "$ref" --diff || :
+                                done
+                                ;;
+                            *) echo >&2 "Please answer Y, n, or d" ;;
+                        esac
+                    done
+                fi
+
+                if [ "$apply" -eq 1 ]; then
+                    # Step 4: Write lock from pre-resolved data
+                    uv run "$sourcedir/scripts/update-externals-lock.py" \
+                        --apply-resolved "$changes_file"
+                    chezmoi apply -R || :
+
+                    # Step 5: Build commit message and commit
+                    {
+                        echo "Update pinned externals"
+                        echo
+                        uv run python3 -c "
+import json, sys
+changes = json.load(open(sys.argv[1]))
+for c in changes:
+    old = c['old_sha'][:7]
+    new = c['new_sha'][:7]
+    ref = c.get('ref', 'main')
+    print(f\"  {c['id']}: {old} → {new} ({ref})\")
+" "$changes_file"
+                    } > "$sourcedir/.git/COMMIT_EDITMSG"
+                    echo >&2 "Committing pinned externals update"
+                    if [ "$use_jj" -eq 1 ]; then
+                        commit_msg=$(cat "$sourcedir/.git/COMMIT_EDITMSG")
+                        (cd "$sourcedir" && jj commit -m "$commit_msg" \
+                            home/.chezmoidata/externals-lock.yml)
+                    else
+                        (cd "$sourcedir" && git commit -F .git/COMMIT_EDITMSG \
+                            home/.chezmoidata/externals-lock.yml)
+                    fi
+                else
+                    echo >&2 "Skipping externals update"
+                    chezmoi apply -R || :
+                fi
+            fi
         fi
+    else
+        echo >&2 "Warning: uv not available; skipping externals update"
     fi
 fi
 

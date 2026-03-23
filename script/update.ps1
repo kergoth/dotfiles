@@ -1,11 +1,12 @@
 param(
     [Alias("n")]
     [switch]$DryRun,
+    [switch]$NoReview,
     [switch]$Help
 )
 
 if ($Help) {
-    Write-Host "Usage: script/update.ps1 [-DryRun|-n]"
+    Write-Host "Usage: script/update.ps1 [-DryRun|-n] [-NoReview]"
     exit 0
 }
 
@@ -180,41 +181,98 @@ if ($DryRun) {
     }
 }
 
-if ($DryRun) {
-    Write-Host "Dry run: skipping externals lock update"
-} else {
-    $agentExternalsUpdater = Join-Path $repodir "scripts/update-externals-lock.py"
-    if (Test-Path $agentExternalsUpdater) {
-        Write-Host "Updating pinned externals"
-        if (Get-Command python3 -ErrorAction SilentlyContinue) {
-            $changes = python3 $agentExternalsUpdater
-            $pythonExit = $LASTEXITCODE
-            if ($pythonExit -ne 0) {
-                Write-Warning "Warning: externals lock update failed (exit $pythonExit); skipping"
-                chezmoi apply -R
-            } elseif ($changes) {
-                chezmoi apply -R
-                $indentedChanges = $changes | ForEach-Object { "  $_" }
-                $commitMessage = (@(
-                    'Update pinned externals'
-                    ''
-                ) + $indentedChanges) -join "`n"
-                $commitMessage | Out-File -FilePath "$repodir\.git\COMMIT_EDITMSG" -Encoding utf8
-                Write-Host "Committing pinned externals update"
-                if ($use_jj -eq 1) {
-                    $commitMsg = Get-Content "$repodir\.git\COMMIT_EDITMSG" -Raw
-                    Set-Location $repodir
-                    jj commit -m $commitMsg home/.chezmoidata/externals-lock.yml
-                } else {
-                    Set-Location $repodir
-                    git commit -F .git/COMMIT_EDITMSG home/.chezmoidata/externals-lock.yml
-                }
+$agentExternalsUpdater = Join-Path $repodir "scripts/update-externals-lock.py"
+if (Test-Path $agentExternalsUpdater) {
+    Write-Host "Checking for externals updates"
+    if (Get-Command uv -ErrorAction SilentlyContinue) {
+        $changesFile = [System.IO.Path]::GetTempFileName()
+        try {
+            # Step 1: Resolve (always, even in dry-run)
+            $resolveOutput = uv run $agentExternalsUpdater --dry-run --json
+            $resolveExit = $LASTEXITCODE
+
+            if ($resolveExit -eq 2) {
+                Write-Host "No externals updates available"
+            } elseif ($resolveExit -ne 0) {
+                Write-Warning "Warning: externals resolution failed (exit $resolveExit); skipping"
             } else {
-                chezmoi apply -R
+                # Write JSON to temp file
+                $resolveOutput | Out-File -FilePath $changesFile -Encoding utf8
+                $changes = Get-Content $changesFile -Raw | ConvertFrom-Json
+
+                # Step 2: Review (unless --no-review)
+                if (-not $NoReview) {
+                    foreach ($c in $changes) {
+                        if ($c.review -ne $false) {
+                            $ref = if ($c.ref) { $c.ref } else { "main" }
+                            uv run (Join-Path $repodir "scripts/show-git-changes.py") `
+                                $c.repo $c.old_sha $c.new_sha --name $c.id --ref $ref
+                        }
+                    }
+                }
+
+                # Step 3: Decision point
+                if ($DryRun) {
+                    Write-Host "Dry run: externals review complete, not applying"
+                } else {
+                    $apply = $true
+                    if (-not $NoReview -and -not [Console]::IsInputRedirected) {
+                        $decided = $false
+                        while (-not $decided) {
+                            $answer = Read-Host "Apply externals updates? [Y/n/d]"
+                            switch -Regex ($answer) {
+                                '^$|^[Yy]' { $decided = $true }
+                                '^[Nn]' { $apply = $false; $decided = $true }
+                                '^[Dd]' {
+                                    foreach ($c in $changes) {
+                                        if ($c.review -ne $false) {
+                                            $ref = if ($c.ref) { $c.ref } else { "main" }
+                                            uv run (Join-Path $repodir "scripts/show-git-changes.py") `
+                                                $c.repo $c.old_sha $c.new_sha --name $c.id --ref $ref --diff
+                                        }
+                                    }
+                                }
+                                default { Write-Host "Please answer Y, n, or d" }
+                            }
+                        }
+                    }
+
+                    if ($apply) {
+                        uv run $agentExternalsUpdater --apply-resolved $changesFile
+                        chezmoi apply -R
+
+                        $commitLines = @("Update pinned externals", "")
+                        foreach ($c in $changes) {
+                            $old = $c.old_sha.Substring(0, 7)
+                            $new = $c.new_sha.Substring(0, 7)
+                            $ref = if ($c.ref) { $c.ref } else { "main" }
+                            $commitLines += "  $($c.id): $old -> $new ($ref)"
+                        }
+                        $commitMessage = $commitLines -join "`n"
+                        $commitMessage | Out-File -FilePath "$repodir\.git\COMMIT_EDITMSG" -Encoding utf8
+
+                        Write-Host "Committing pinned externals update"
+                        if ($use_jj -eq 1) {
+                            $commitMsg = Get-Content "$repodir\.git\COMMIT_EDITMSG" -Raw
+                            Set-Location $repodir
+                            jj commit -m $commitMsg home/.chezmoidata/externals-lock.yml
+                        } else {
+                            Set-Location $repodir
+                            git commit -F .git/COMMIT_EDITMSG home/.chezmoidata/externals-lock.yml
+                        }
+                    } else {
+                        Write-Host "Skipping externals update"
+                        chezmoi apply -R
+                    }
+                }
             }
-        } else {
-            Write-Warning "Warning: python3 not available; skipping externals lock update"
+        } finally {
+            if (Test-Path $changesFile) {
+                Remove-Item $changesFile -Force
+            }
         }
+    } else {
+        Write-Warning "Warning: uv not available; skipping externals update"
     }
 }
 
