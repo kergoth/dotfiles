@@ -30,6 +30,7 @@ externals_sources:
   fumiyas_home_commands:
     repo: https://github.com/fumiyas/home-commands
     ref: master
+    review_note: "Only one script is installed from this collection, 'ifne'. Only review changes to this file. If no changes are made to this file, output nothing."
   gist_zsh_timing:
     repo: https://gist.github.com/2d7ef99f93b226be29e01cadcad37405
     ref: master
