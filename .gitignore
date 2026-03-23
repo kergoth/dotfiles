@@ -4,3 +4,4 @@ others
 .devpod-internal
 .worktrees
 .claude/settings.local.json
+.cache/
