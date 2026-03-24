@@ -280,14 +280,14 @@ def run_ai_review(
     try:
         if agent_cmd == "claude":
             result = subprocess.run(
-                ["claude", "-p", prompt],
+                ["claude", "--print", "--no-session-persistence", prompt],
                 capture_output=True,
                 text=True,
                 timeout=120,
             )
         elif agent_cmd == "codex":
             result = subprocess.run(
-                ["codex", "-q", prompt],
+                ["codex", "exec", "--ephemeral", prompt],
                 capture_output=True,
                 text=True,
                 timeout=120,
