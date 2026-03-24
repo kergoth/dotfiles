@@ -208,9 +208,10 @@ EOF
             shift
         fi
         # shellcheck disable=SC2059
-        printf "$fmt\n" "$@" >&2
+        printf -- "$fmt\n" "$@" >&2
     }
     ```
+    The `--` is necessary: without it, a format string that starts with `-` (e.g. `"--- section ---"`) is misinterpreted by `printf` as a flag.
   - `msg_color()` - Color support with NO_COLOR/COLOR checks:
     ```bash
     msg_color() {
@@ -289,6 +290,24 @@ EOF
 
 - Allow `|| true` only when intentionally masking errors.
 - Avoid `[[ … ]] && action` with `set -e`.
+- Avoid `A && B || C` as a substitute for `if/else`. The intent is usually "if A succeeds do B, otherwise do C", but `C` runs whenever `B` fails too — not only when `A` fails. Use an explicit `if/else`:
+  ```bash
+  # Wrong: "Failed" also prints if chmod fails, even though cp succeeded
+  cp "$src" "$dst" && chmod 644 "$dst" || echo "Failed"
+
+  # Right
+  if cp "$src" "$dst"; then
+      chmod 644 "$dst"
+  else
+      echo "Failed"
+  fi
+  ```
+- When you want cleanup to run if *any* step in a pipeline fails, `A && B && C || cleanup` and `{ A && B && C; } || cleanup` are functionally equivalent — but prefer the grouped form because it makes the intent unambiguous:
+  ```bash
+  # Both rm invocations behave the same way, but the grouped form is clearer
+  cp "$f" "$f.new" && transform "$f.new" && mv "$f.new" "$f" || rm -f "$f.new"
+  { cp "$f" "$f.new" && transform "$f.new" && mv "$f.new" "$f"; } || rm -f "$f.new"
+  ```
 
 ## Function Practices
 
