@@ -238,7 +238,7 @@ def fetch_changes(
     return fetch_via_bare_clone(repo_url, old_sha, new_sha, name, ref, cache_dir)
 
 
-AGENT_CLIS = ["claude", "codex", "agent"]
+AGENT_CLIS = ["codex", "claude", "agent"]
 
 SUPPLY_CHAIN_PROMPT = """\
 Analyze the following git changes for a software dependency update.
