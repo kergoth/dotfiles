@@ -13,20 +13,24 @@ externals_sources:
     review: false
   anthropic_official_plugins:
     repo: https://github.com/anthropics/claude-plugins-official
-    review_note: "Focus attention on changes to claude-md-management and skill-creator, which are the only plugins I install from this marketplace, shared infrastructure that may impact the plugins I use, and on new plugins added to marketplace.json."
+    review_note: "The only plugins I install from this marketplace are claude-md-management and skill-creator. State explicitly at the start whether either has code changes. Also review in full: shared infrastructure changes (marketplace.json format/schema, plugin-loading code) and supply-chain risks in marketplace.json (unpinned entries, source changes). For code changes inside other plugins' own files (e.g. telegram/, discord/, math-olympiad/), skip detailed analysis — note the plugin name and one-line summary only if it adds systemic risk."
   astral:
     repo: https://github.com/astral-sh/claude-code-plugins
+    review_note: "This package provides the ruff, ty, and uv agent skills that I actively use. Focus on changes to those three skills and any shared infrastructure. Flag changes that alter how linting, type checking, or package management is recommended or executed, or that add unexpected network calls or file system access."
   beanbaginc_dev_goodies:
     repo: https://github.com/beanbaginc/dev-goodies
     ref: master
   bitbake_syntax:
     repo: https://github.com/casparfriedrich/bitbake-syntax
     ref: master
+    review: false
   dracula_bbedit:
     repo: https://github.com/dracula/bbedit
     ref: master
+    review: false
   dracula_zed:
     repo: https://github.com/dracula/zed
+    review: false
   fumiyas_home_commands:
     repo: https://github.com/fumiyas/home-commands
     ref: master
@@ -74,6 +78,7 @@ externals_sources:
     ref: master
   superpowers:
     repo: https://github.com/obra/superpowers
+    review_note: "I use the full skill library from this package. Focus on: changes to existing skill content (especially using-superpowers, brainstorming, systematic-debugging, test-driven-development, writing-plans, and other core workflow skills), new skills added, and any skill instructions that could encourage unsafe or unauthorized actions or alter established tool-use patterns."
   wsl_open:
     repo: https://github.com/4U6U57/wsl-open
     ref: master
