@@ -10,7 +10,6 @@ import argparse
 import json
 import shutil
 import subprocess
-import sys
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -31,8 +30,11 @@ def parse_args():
     parser.add_argument("new_sha", help="New commit SHA")
     parser.add_argument("--name", help="Human-friendly label for output headers")
     parser.add_argument("--diff", action="store_true", help="Include full file diff")
-    parser.add_argument("--diff-only", action="store_true",
-                        help="Show only the diff, skipping shortlog and AI review")
+    parser.add_argument(
+        "--diff-only",
+        action="store_true",
+        help="Show only the diff, skipping shortlog and AI review",
+    )
     parser.add_argument("--no-ai", action="store_true", help="Skip AI summary")
     parser.add_argument("--ai-cmd", help="Override agent CLI detection")
     parser.add_argument(
@@ -67,9 +69,7 @@ def parse_github_owner_repo(url: str) -> tuple[str, str] | None:
     return None
 
 
-def fetch_via_github_api(
-    repo_url: str, old_sha: str, new_sha: str
-) -> dict | None:
+def fetch_via_github_api(repo_url: str, old_sha: str, new_sha: str) -> dict | None:
     """Fetch commit comparison via gh CLI. Returns parsed JSON or None on failure."""
     if not is_github_repo(repo_url):
         return None
@@ -171,7 +171,9 @@ def fetch_via_bare_clone(
             "diff": diff_result.stdout.strip(),
         }
     except (subprocess.CalledProcessError, subprocess.TimeoutExpired, OSError) as exc:
-        console.print(f"Warning: bare clone failed for {name or clone_id}: {exc}", style="yellow")
+        console.print(
+            f"Warning: bare clone failed for {name or clone_id}: {exc}", style="yellow"
+        )
         return None
 
 
@@ -192,8 +194,7 @@ def fetch_changes(
     if api_data is not None:
         commits = api_data.get("commits", [])
         log_lines = [
-            f"{c['sha'][:7]} {c['commit']['message'].splitlines()[0]}"
-            for c in commits
+            f"{c['sha'][:7]} {c['commit']['message'].splitlines()[0]}" for c in commits
         ]
         # Build shortlog (group by author)
         by_author: dict[str, list[str]] = {}
@@ -271,11 +272,17 @@ def find_agent_cli(override: str | None = None) -> str | None:
 
 
 def run_ai_review(
-    agent_cmd: str, log: str, diff: str, name: str | None, review_note: str | None = None
+    agent_cmd: str,
+    log: str,
+    diff: str,
+    name: str | None,
+    review_note: str | None = None,
 ) -> str | None:
     """Run AI agent to produce a supply chain review summary."""
     review_context = f"--- REVIEW CONTEXT ---\n{review_note}\n\n" if review_note else ""
-    prompt = SUPPLY_CHAIN_PROMPT.format(log=log, diff=diff, review_context=review_context)
+    prompt = SUPPLY_CHAIN_PROMPT.format(
+        log=log, diff=diff, review_context=review_context
+    )
 
     try:
         if agent_cmd == "claude":
@@ -330,22 +337,33 @@ def render_changes(
     # Tier 1: Shortlog (always)
     if not skip_log:
         shortlog = data.get("shortlog") or data.get("log", "(no commits found)")
-        stdout_console.print(Panel(shortlog, title=f"[bold]{header}[/bold]", subtitle="shortlog"))
+        stdout_console.print(
+            Panel(shortlog, title=f"[bold]{header}[/bold]", subtitle="shortlog")
+        )
 
     # Tier 2: AI-generated review (if available)
     if not skip_ai:
         agent = find_agent_cli(ai_cmd)
         if agent:
             console.print(f"Running AI review via {agent}...", style="dim")
-            review = run_ai_review(agent, data.get("log", ""), data.get("diff", ""), name, review_note)
+            review = run_ai_review(
+                agent, data.get("log", ""), data.get("diff", ""), name, review_note
+            )
             if review:
                 stdout_console.print(
-                    Panel(review, title=f"[bold]AI Review — {label}[/bold]", subtitle=agent)
+                    Panel(
+                        review,
+                        title=f"[bold]AI Review — {label}[/bold]",
+                        subtitle=agent,
+                    )
                 )
             else:
                 console.print(f"AI review produced no output for {label}", style="dim")
         else:
-            console.print("(no AI agent available for summary — showing shortlog only)", style="dim")
+            console.print(
+                "(no AI agent available for summary — showing shortlog only)",
+                style="dim",
+            )
 
     # Tier 3: Full diff (opt-in)
     if show_diff and data.get("diff"):
@@ -365,7 +383,10 @@ def main():
         args.repo_url, args.old_sha, args.new_sha, args.name, args.ref, cache_dir
     )
     if data is None:
-        console.print(f"Error: could not fetch changes for {args.name or args.repo_url}", style="red")
+        console.print(
+            f"Error: could not fetch changes for {args.name or args.repo_url}",
+            style="red",
+        )
         return 1
 
     render_changes(

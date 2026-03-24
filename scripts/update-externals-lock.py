@@ -100,9 +100,7 @@ def main() -> int:
             print(f"error: file not found: {args.apply_resolved}", file=sys.stderr)
             return 1
         except json.JSONDecodeError as e:
-            print(
-                f"error: invalid JSON in {args.apply_resolved}: {e}", file=sys.stderr
-            )
+            print(f"error: invalid JSON in {args.apply_resolved}: {e}", file=sys.stderr)
             return 1
         if not isinstance(changes, list):
             print(
@@ -115,9 +113,7 @@ def main() -> int:
                 merged[change["id"]] = change["new_sha"]
         except (KeyError, TypeError) as e:
             field = e.args[0] if isinstance(e, KeyError) else "id/new_sha"
-            print(
-                f"error: missing field '{field}' in JSON entry", file=sys.stderr
-            )
+            print(f"error: missing field '{field}' in JSON entry", file=sys.stderr)
             return 1
         output = repo_root / "home" / ".chezmoidata" / "externals-lock.yml"
         output.write_text(dump_yaml(merged), encoding="utf-8")
@@ -158,15 +154,17 @@ def main() -> int:
             new_sha = new_locks.get(eid, "")
             if old_sha != new_sha:
                 entry = externals[eid]
-                changes.append({
-                    "id": eid,
-                    "repo": entry["repo"],
-                    "ref": entry.get("ref", "main"),
-                    "old_sha": old_sha,
-                    "new_sha": new_sha,
-                    "review": entry.get("review", True),
-                    "review_note": entry.get("review_note"),
-                })
+                changes.append(
+                    {
+                        "id": eid,
+                        "repo": entry["repo"],
+                        "ref": entry.get("ref", "main"),
+                        "old_sha": old_sha,
+                        "new_sha": new_sha,
+                        "review": entry.get("review", True),
+                        "review_note": entry.get("review_note"),
+                    }
+                )
         if not changes:
             return 2
         if args.json:

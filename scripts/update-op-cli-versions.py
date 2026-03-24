@@ -15,7 +15,7 @@ def read_old_versions(path: Path) -> dict:
     result = {}
     current_platform = None
     for line in content.splitlines():
-        m = re.match(r'^\s{4}(\w+):\s*$', line)
+        m = re.match(r"^\s{4}(\w+):\s*$", line)
         if m:
             current_platform = m.group(1)
             continue
@@ -23,7 +23,8 @@ def read_old_versions(path: Path) -> dict:
             mv = re.match(r'^\s{6}version:\s*"([^"]+)"', line)
             if mv:
                 result[current_platform] = mv.group(1)
-                current_platform = None  # version: always precedes sha256: in each block
+                # version: always precedes sha256: in each block
+                current_platform = None
     return result
 
 
@@ -98,10 +99,10 @@ def main() -> int:
         if not ver:
             continue
         lines.append(f"    {platform}:")
-        lines.append(f"      version: \"{ver}\"")
+        lines.append(f'      version: "{ver}"')
         lines.append("      sha256:")
         for arch in sorted(checksums[platform].keys()):
-            lines.append(f"        {arch}: \"{checksums[platform][arch]}\"")
+            lines.append(f'        {arch}: "{checksums[platform][arch]}"')
 
     with open(path, "w", encoding="utf-8") as f:
         f.write("\n".join(lines) + "\n")
