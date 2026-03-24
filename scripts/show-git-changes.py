@@ -240,6 +240,7 @@ def fetch_changes(
 
 
 AGENT_CLIS = ["codex", "claude", "agent"]
+AGENT_CMDS = {"claude": ["claude", "--model", "sonnet"]}
 
 SUPPLY_CHAIN_PROMPT = """\
 This is a non-interactive, automated security review. Do not invoke any skills, tools, or interactive workflows — respond directly with your analysis.
@@ -292,29 +293,38 @@ def run_ai_review(
     review_note: str | None = None,
 ) -> str | None:
     """Run AI agent to produce a supply chain review summary."""
-    review_context = f"IMPORTANT — additional reviewer instructions:\n{review_note}\n\n" if review_note else ""
+    review_context = (
+        f"IMPORTANT — additional reviewer instructions:\n{review_note}\n\n"
+        if review_note
+        else ""
+    )
     prompt = SUPPLY_CHAIN_PROMPT.format(
         log=log, diff=diff, review_context=review_context
     )
 
+    if agent_cmd in AGENT_CMDS:
+        full_cmd = AGENT_CMDS[agent_cmd]
+    else:
+        full_cmd = [agent_cmd]
+
     try:
         if agent_cmd == "claude":
             result = subprocess.run(
-                ["claude", "--print", "--no-session-persistence", prompt],
+                full_cmd + ["--print", "--no-session-persistence", prompt],
                 capture_output=True,
                 text=True,
                 timeout=120,
             )
         elif agent_cmd == "codex":
             result = subprocess.run(
-                ["codex", "exec", "--ephemeral", prompt],
+                full_cmd + ["exec", "--ephemeral", prompt],
                 capture_output=True,
                 text=True,
                 timeout=120,
             )
         elif agent_cmd == "agent":
             result = subprocess.run(
-                ["agent", "-m", prompt],
+                full_cmd + ["-m", prompt],
                 capture_output=True,
                 text=True,
                 timeout=120,
