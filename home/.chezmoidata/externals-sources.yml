@@ -13,7 +13,7 @@ externals_sources:
     review: false
   anthropic_official_plugins:
     repo: https://github.com/anthropics/claude-plugins-official
-    review_note: "Only two plugins are installed: claude-md-management (claude-md-improver skill) and skill-creator. Focus review on changes to those plugin directories and any shared infrastructure. Changes to other plugins can be noted briefly but don't require deep analysis."
+    review_note: "Focus attention on changes to claude-md-management and skill-creator, which are the only plugins I install from this marketplace, shared infrastructure that may impact the plugins I use, and on new plugins added to marketplace.json."
   astral:
     repo: https://github.com/astral-sh/claude-code-plugins
   beanbaginc_dev_goodies:
@@ -30,7 +30,7 @@ externals_sources:
   fumiyas_home_commands:
     repo: https://github.com/fumiyas/home-commands
     ref: master
-    review_note: "Only one script is installed from this collection, 'ifne'. Only review changes to this file. If no changes are made to this file, output nothing."
+    review_note: "Focus only on changes to the 'ifne' script, as it's the only one I use from this repository. Do NOT review changes to other files. Do NOT output anything if changes are solely to other files."
   gist_zsh_timing:
     repo: https://gist.github.com/2d7ef99f93b226be29e01cadcad37405
     ref: master
