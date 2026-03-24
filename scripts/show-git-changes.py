@@ -318,8 +318,8 @@ def render_changes(
     new_sha: str,
     data: dict,
     show_diff: bool = False,
-    diff_only: bool = False,
     ai_cmd: str | None = None,
+    skip_log: bool = False,
     skip_ai: bool = False,
     review_note: str | None = None,
 ):
@@ -327,19 +327,10 @@ def render_changes(
     label = name or "unknown"
     header = f"{label}: {old_sha[:7]} → {new_sha[:7]}"
 
-    if diff_only:
-        if data.get("diff"):
-            stdout_console.print(
-                Panel(
-                    Syntax(data["diff"], "diff", theme="monokai", line_numbers=True),
-                    title=f"[bold]Diff — {label}[/bold]",
-                )
-            )
-        return
-
     # Tier 1: Shortlog (always)
-    shortlog = data.get("shortlog") or data.get("log", "(no commits found)")
-    stdout_console.print(Panel(shortlog, title=f"[bold]{header}[/bold]", subtitle="shortlog"))
+    if not skip_log:
+        shortlog = data.get("shortlog") or data.get("log", "(no commits found)")
+        stdout_console.print(Panel(shortlog, title=f"[bold]{header}[/bold]", subtitle="shortlog"))
 
     # Tier 2: AI-generated review (if available)
     if not skip_ai:
@@ -382,10 +373,10 @@ def main():
         old_sha=args.old_sha,
         new_sha=args.new_sha,
         data=data,
-        show_diff=args.diff,
-        diff_only=args.diff_only,
+        show_diff=args.diff or args.diff_only,
         ai_cmd=args.ai_cmd,
-        skip_ai=args.no_ai,
+        skip_ai=args.no_ai or args.diff_only,
+        skip_log=args.diff_only,
         review_note=args.review_note,
     )
     return 0
