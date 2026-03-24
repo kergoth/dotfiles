@@ -239,7 +239,7 @@ def fetch_changes(
     return fetch_via_bare_clone(repo_url, old_sha, new_sha, name, ref, cache_dir)
 
 
-AGENT_CLIS = ["codex", "claude", "agent"]
+AGENT_CLIS = ["claude", "codex", "agent"]
 AGENT_CMDS = {"claude": ["claude", "--model", "sonnet"]}
 
 SUPPLY_CHAIN_PROMPT = """\
