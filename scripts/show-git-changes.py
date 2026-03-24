@@ -343,22 +343,35 @@ def render_changes(
 
     # Tier 2: AI-generated review (if available)
     if not skip_ai:
-        agent = find_agent_cli(ai_cmd)
-        if agent:
+        if ai_cmd:
+            candidates = [ai_cmd] if shutil.which(ai_cmd) else []
+        else:
+            candidates = [cli for cli in AGENT_CLIS if shutil.which(cli)]
+
+        review = None
+        used_agent = None
+        for agent in candidates:
             console.print(f"Running AI review via {agent}...", style="dim")
             review = run_ai_review(
                 agent, data.get("log", ""), data.get("diff", ""), name, review_note
             )
             if review:
-                stdout_console.print(
-                    Panel(
-                        review,
-                        title=f"[bold]AI Review — {label}[/bold]",
-                        subtitle=agent,
-                    )
+                used_agent = agent
+                break
+            console.print(
+                f"AI review via {agent} produced no output, trying next...", style="dim"
+            )
+
+        if review:
+            stdout_console.print(
+                Panel(
+                    review,
+                    title=f"[bold]AI Review — {label}[/bold]",
+                    subtitle=used_agent,
                 )
-            else:
-                console.print(f"AI review produced no output for {label}", style="dim")
+            )
+        elif candidates:
+            console.print(f"AI review produced no output for {label}", style="dim")
         else:
             console.print(
                 "(no AI agent available for summary — showing shortlog only)",
