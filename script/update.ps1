@@ -204,7 +204,7 @@ if (Test-Path $agentExternalsUpdater) {
                 if (-not $NoReview) {
                     foreach ($c in $changes) {
                         if ($c.review -ne $false) {
-                            $ref = if ($c.ref) { $c.ref } else { "main" }
+                            $ref = if ($c.kind -eq 'tag') { $c.new_sha } elseif ($c.ref) { $c.ref } else { "main" }
                             $reviewArgs = @($c.repo, $c.old_sha, $c.new_sha, '--name', $c.id, '--ref', $ref)
                             if ($c.review_note) { $reviewArgs += @('--review-note', $c.review_note) }
                             uv run (Join-Path $repodir "scripts/show-git-changes.py") @reviewArgs
@@ -227,7 +227,7 @@ if (Test-Path $agentExternalsUpdater) {
                                 '^[Dd]' {
                                     foreach ($c in $changes) {
                                         if ($c.review -ne $false) {
-                                            $ref = if ($c.ref) { $c.ref } else { "main" }
+                                            $ref = if ($c.kind -eq 'tag') { $c.new_sha } elseif ($c.ref) { $c.ref } else { "main" }
                                             $reviewArgs = @($c.repo, $c.old_sha, $c.new_sha, '--name', $c.id, '--ref', $ref, '--diff-only')
                                             if ($c.review_note) { $reviewArgs += @('--review-note', $c.review_note) }
                                             uv run (Join-Path $repodir "scripts/show-git-changes.py") @reviewArgs
@@ -245,10 +245,16 @@ if (Test-Path $agentExternalsUpdater) {
 
                         $commitLines = @("Update pinned externals", "")
                         foreach ($c in $changes) {
-                            $old = $c.old_sha.Substring(0, 7)
-                            $new = $c.new_sha.Substring(0, 7)
-                            $ref = if ($c.ref) { $c.ref } else { "main" }
-                            $commitLines += "  $($c.id): $old -> $new ($ref)"
+                            if ($c.kind -eq 'tag') {
+                                $old = if ($c.old_sha) { $c.old_sha } else { '(new)' }
+                                $new = $c.new_sha
+                                $commitLines += "  $($c.id): $old -> $new"
+                            } else {
+                                $old = $c.old_sha.Substring(0, 7)
+                                $new = $c.new_sha.Substring(0, 7)
+                                $ref = if ($c.ref) { $c.ref } else { "main" }
+                                $commitLines += "  $($c.id): $old -> $new ($ref)"
+                            }
                         }
                         $commitMessage = $commitLines -join "`n"
                         $commitMessage | Out-File -FilePath "$repodir\.git\COMMIT_EDITMSG" -Encoding utf8

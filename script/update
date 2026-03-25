@@ -121,8 +121,9 @@ changes = json.load(open(sys.argv[1]))
 script = sys.argv[2]
 for c in changes:
     if c.get('review', True):
+        ref = c['new_sha'] if c.get('kind') == 'tag' else (c.get('ref') or 'main')
         cmd = ['uv', 'run', script, c['repo'], c['old_sha'], c['new_sha'],
-               '--name', c['id'], '--ref', c.get('ref', 'main')]
+               '--name', c['id'], '--ref', ref]
         if c.get('review_note'):
             cmd += ['--review-note', c['review_note']]
         subprocess.run(cmd)
@@ -148,8 +149,9 @@ changes = json.load(open(sys.argv[1]))
 script = sys.argv[2]
 for c in changes:
     if c.get('review', True):
+        ref = c['new_sha'] if c.get('kind') == 'tag' else (c.get('ref') or 'main')
         cmd = ['uv', 'run', script, c['repo'], c['old_sha'], c['new_sha'],
-               '--name', c['id'], '--ref', c.get('ref', 'main'), '--diff-only']
+               '--name', c['id'], '--ref', ref, '--diff-only']
         if c.get('review_note'):
             cmd += ['--review-note', c['review_note']]
         subprocess.run(cmd)
@@ -174,10 +176,15 @@ for c in changes:
 import json, sys
 changes = json.load(open(sys.argv[1]))
 for c in changes:
-    old = c['old_sha'][:7]
-    new = c['new_sha'][:7]
-    ref = c.get('ref', 'main')
-    print(f\"  {c['id']}: {old} → {new} ({ref})\")
+    if c.get('kind') == 'tag':
+        old = c['old_sha'] if c['old_sha'] else '(new)'
+        new = c['new_sha']
+        print(f\"  {c['id']}: {old} → {new}\")
+    else:
+        old = c['old_sha'][:7]
+        new = c['new_sha'][:7]
+        ref = c.get('ref') or 'main'
+        print(f\"  {c['id']}: {old} → {new} ({ref})\")
 " "$changes_file"
                     } > "$sourcedir/.git/COMMIT_EDITMSG"
                     echo >&2 "Committing pinned externals update"
