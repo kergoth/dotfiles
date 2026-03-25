@@ -17,6 +17,9 @@ externals_sources:
   astral:
     repo: https://github.com/astral-sh/claude-code-plugins
     review_note: "This package provides the ruff, ty, and uv agent skills that I actively use. Focus on changes to those three skills and any shared infrastructure. Flag changes that alter how linting, type checking, or package management is recommended or executed, or that add unexpected network calls or file system access."
+  bat_extras:
+    repo: https://github.com/eth-p/bat-extras
+    tagged: true
   beanbaginc_dev_goodies:
     repo: https://github.com/beanbaginc/dev-goodies
     ref: master
@@ -35,6 +38,9 @@ externals_sources:
     repo: https://github.com/fumiyas/home-commands
     ref: master
     review_note: "Focus only on changes to the 'ifne' script, as it's the only one I use from this repository. Do NOT review changes to other files. Do NOT output anything if changes are solely to other files."
+  fzf_tab:
+    repo: https://github.com/Aloxaf/fzf-tab
+    tagged: true
   gist_zsh_timing:
     repo: https://gist.github.com/2d7ef99f93b226be29e01cadcad37405
     ref: master
@@ -44,6 +50,9 @@ externals_sources:
   git_assembler:
     repo: https://gitlab.com/wavexx/git-assembler
     ref: master
+  git_extras:
+    repo: https://github.com/tj/git-extras
+    tagged: true
   korg_helpers:
     repo: https://git.kernel.org/pub/scm/linux/kernel/git/mricon/korg-helpers
     ref: master
@@ -61,14 +70,20 @@ externals_sources:
   madx_moreutils:
     repo: https://github.com/madx/moreutils
     ref: master
-  vim_profiler:
-    repo: https://github.com/bchretien/vim-profiler
-    ref: master
+  nix_zsh_completions:
+    repo: https://github.com/nix-community/nix-zsh-completions
+    tagged: true
+  powerlevel10k:
+    repo: https://github.com/romkatv/powerlevel10k
+    tagged: true
   powerlevel10k_media:
     repo: https://github.com/romkatv/powerlevel10k-media
     ref: master
     raw_base: https://raw.githubusercontent.com/romkatv/powerlevel10k-media
     review: false
+  vim_profiler:
+    repo: https://github.com/bchretien/vim-profiler
+    ref: master
   retroarch:
     repo: https://github.com/libretro/RetroArch
     ref: master
@@ -88,6 +103,15 @@ externals_sources:
   zsh_bd:
     repo: https://github.com/Tarrasch/zsh-bd
     ref: master
+  zsh_completions:
+    repo: https://github.com/zsh-users/zsh-completions
+    tagged: true
+  zsh_history_substring_search:
+    repo: https://github.com/zsh-users/zsh-history-substring-search
+    tagged: true
+  zsh_nix_shell:
+    repo: https://github.com/chisui/zsh-nix-shell
+    tagged: true
   zsh_syntax_highlighting:
     repo: https://github.com/zsh-users/zsh-syntax-highlighting
     ref: master
