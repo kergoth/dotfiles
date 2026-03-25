@@ -8,6 +8,7 @@
 
 import argparse
 import json
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -342,6 +343,14 @@ def run_ai_review(
         return None
 
 
+_SHA_RE = re.compile(r"^[0-9a-f]{40}$")
+
+
+def _display_ref(ref: str) -> str:
+    """Return 7-char prefix for SHAs; return full string for tag names."""
+    return ref[:7] if _SHA_RE.fullmatch(ref) else ref
+
+
 def render_changes(
     name: str | None,
     old_sha: str,
@@ -355,7 +364,7 @@ def render_changes(
 ):
     """Render the tiered review output."""
     label = name or "unknown"
-    header = f"{label}: {old_sha[:7]} → {new_sha[:7]}"
+    header = f"{label}: {_display_ref(old_sha)} → {_display_ref(new_sha)}"
 
     # Tier 1: Shortlog (always)
     if not skip_log:
