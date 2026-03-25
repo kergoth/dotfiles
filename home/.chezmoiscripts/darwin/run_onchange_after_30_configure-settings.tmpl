@@ -123,6 +123,9 @@ defaults write com.apple.dock wvous-br-modifier -int 0
 # Disable font smoothing
 defaults -currentHost write -g AppleFontSmoothing -int 0
 
+# Hide at least some of the extremely irritating menu item icons in Tahoe
+defaults write -g NSMenuEnableActionImages -bool false || :
+
 {{ if eq .chezmoi.hostname "vaelin" -}}
     # Select 2x display scaling for better font rendering
     /usr/bin/python3 -m venv "$tmpdir/venv"
