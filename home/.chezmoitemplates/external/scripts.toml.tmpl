@@ -23,8 +23,8 @@
     args = {{ $pull_args | toToml }}
 {{- end }}
 
-{{ $bat_extras_version := (gitHubLatestRelease "eth-p/bat-extras").TagName | trimPrefix "v" }}
-{{ $splitver := $bat_extras_version | splitList "." }}
+{{ $bat_extras_version := trimPrefix "v" (index $lock "bat_extras") }}
+{{ $splitver := splitList "." $bat_extras_version }}
 {{ range list "batdiff" "batgrep" "batman" "bat-modules" "batpipe" "batwatch" -}}
 [".local/bin/{{ . }}"]
 type = "archive-file"
@@ -48,10 +48,9 @@ path = "bin/git-rebase-chain"
 exact = true
 stripComponents = 1
 
-{{- $gitextras_version := (gitHubLatestRelease "tj/git-extras").TagName }}
 [".local/bin/git-alias"]
 type = "archive-file"
-url = "https://github.com/tj/git-extras/archive/refs/tags/{{ $gitextras_version }}.tar.gz"
+url = {{ printf "https://github.com/tj/git-extras/archive/refs/tags/%s.tar.gz" (index $lock "git_extras") | toToml }}
 path = "bin/git-alias"
 exact = true
 stripComponents = 1
