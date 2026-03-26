@@ -18,7 +18,7 @@ if [[ -z $DOTFILES_NO_UPDATE ]]; then
         if (( _dotfiles_updated )); then
             echo >&2 "Restarting zsh for dotfiles updates"
             if (( $+commands[direnv] )); then
-                exec direnv exec / zsh --login
+                exec direnv exec "$HOME" zsh --login
             else
                 exec zsh --login
             fi
