@@ -331,7 +331,7 @@ set-credential CLAUDE_CODE_OAUTH_TOKEN "<paste-token-here>"
 - `gh auth login` is a valid alternative source for `GITHUB_TOKEN`, but `CLAUDE_CODE_OAUTH_TOKEN` still needs to come from the platform keychain for this initial implementation.
 - `claude setup-token` can be used as a one-time interactive way to obtain the Claude token value before storing it in the keychain, but it is not the runtime lookup mechanism used by `get-credential`.
 - Remove a stored value with `delete-credential NAME`.
-- On macOS, values are refreshed on the next login or by manually running `~/.local/bin/session-env-sync launchctl`.
+- On macOS, values are refreshed during `chezmoi apply` or by manually running `~/.local/bin/session-env-sync launchctl`.
 - On KDE Plasma, values are refreshed on the next login or by manually running `~/.local/bin/session-env-sync dbus`.
 
 ## What's Included
