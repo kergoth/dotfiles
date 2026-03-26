@@ -27,6 +27,7 @@ fi
 {{- end }}
 
 # shellcheck disable=SC1091
-if [ -f "$HOME/.envrc.local" ]; then
-    source "$HOME/.envrc.local"
-fi
+source_env "$HOME/.envrc.local" || \
+    if [ -f "$HOME/.envrc.local" ]; then
+        source "$HOME/.envrc.local"
+    fi
