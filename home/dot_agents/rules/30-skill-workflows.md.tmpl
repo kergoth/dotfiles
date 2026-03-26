@@ -4,3 +4,7 @@
 - For all other skills, use the skills system rather than improvising a new process when a matching skill exists.
 - Prefer the workflow, guardrails, and supporting references defined by a matching skill over ad hoc execution.
 - When creating or substantially editing a user-facing Bash or POSIX shell script, use the `shell-script-style` skill before writing code. Skip it only for temporary test scripts, disposable intermediate artifacts, or scripts used solely by AI agents.
+
+## Agent Tooling Design
+- Reserve agents for judgment and orchestration; push mechanical computation (API sequences, ID mapping, pagination) into scripts/tools
+- Design script interfaces with high-level intent flags alongside precise targeting so agents don't need to assemble complex arguments
