@@ -190,7 +190,12 @@ if [ -z "${DOTFILES_DIR:-}" ]; then
         scriptdir=$(dirname "$0")
         if [ -n "$scriptdir" ]; then
             scriptdir=$(cd "$scriptdir" && pwd -P)
-            DOTFILES_DIR="$(dirname "$scriptdir")"
+            repodir=$(dirname "$scriptdir")
+            if [ -e "$repodir/.git" ] && [ -e "$repodir/.chezmoiroot" ]; then
+                DOTFILES_DIR="$repodir"
+            else
+                DOTFILES_DIR="$HOME/.dotfiles"
+            fi
         else
             DOTFILES_DIR="$HOME/.dotfiles"
         fi

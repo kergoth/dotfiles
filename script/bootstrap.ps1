@@ -28,7 +28,13 @@ if (-not (Get-Command chezmoi -ErrorAction SilentlyContinue)) {
 }
 
 # Set path to this dotfiles repo
-$env:DOTFILES_DIR = $PSScriptRoot | Split-Path -Parent
+$repoRoot = $PSScriptRoot | Split-Path -Parent
+if ((Test-Path (Join-Path $repoRoot ".git")) -and
+    (Test-Path (Join-Path $repoRoot ".chezmoiroot"))) {
+  $env:DOTFILES_DIR = $repoRoot
+} else {
+  $env:DOTFILES_DIR = Join-Path $env:USERPROFILE ".dotfiles"
+}
 
 $chezmoidir = "$env:USERPROFILE\.local\share\chezmoi"
 if (($env:DOTFILES_DIR -ne $chezmoidir) -and (-not $IsWindows)) {
