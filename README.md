@@ -308,6 +308,32 @@ chezmoi update -R
 - Run vscode, enable settings sync
 - Remove Edge, Store, Mail from the task bar pins.
 
+### Manual Setup Steps for Session Credentials
+
+`~/.envrc` is the chezmoi-managed source of truth for shared session variables used by shells, direnv-chained projects, and desktop-launched apps.
+
+Project-level `.envrc` files are expected to chain back to the home-level file via `source_up` or `source_env ~/.envrc`. If a project-local `.envrc` does not do this, that project is bypassing the shared session environment and should be fixed there rather than worked around in dotfiles.
+
+#### macOS
+
+```bash
+set-credential GITHUB_TOKEN "<paste-token-here>"
+set-credential CLAUDE_CODE_OAUTH_TOKEN "<paste-token-here>"
+```
+
+#### KDE Plasma (Linux and FreeBSD)
+
+```bash
+set-credential GITHUB_TOKEN "<paste-token-here>"
+set-credential CLAUDE_CODE_OAUTH_TOKEN "<paste-token-here>"
+```
+
+- `gh auth login` is a valid alternative source for `GITHUB_TOKEN`, but `CLAUDE_CODE_OAUTH_TOKEN` still needs to come from the platform keychain for this initial implementation.
+- `claude setup-token` can be used as a one-time interactive way to obtain the Claude token value before storing it in the keychain, but it is not the runtime lookup mechanism used by `get-credential`.
+- Remove a stored value with `delete-credential NAME`.
+- On macOS, values are refreshed on the next login or by manually running `~/.local/bin/session-env-sync launchctl`.
+- On KDE Plasma, values are refreshed on the next login or by manually running `~/.local/bin/session-env-sync dbus`.
+
 ## What's Included
 
 ### Dotfiles
@@ -1076,6 +1102,7 @@ These files are not tracked in the repository and allow per-machine customizatio
 
 - **`~/.zshenv.local`** — Sourced at the end of `.zshenv`. Use for early environment variable overrides that need to be set in all shell types (interactive, non-interactive, login, non-login).
 - **`~/.zprofile.local`** — Sourced at the end of `.zprofile`. Use for login-shell-specific overrides such as PATH modifications or environment setup that only applies to login shells.
+- **`~/.envrc.local`** — Sourced from the managed `~/.envrc`. Use for machine-specific session variables or PATH additions that should participate in direnv and desktop-session environment injection without editing the shared dotfiles.
 - **`~/.zshrc.local`** or **`~/.localrc`** — Sourced at the end of `.zshrc`. Use for interactive shell customizations such as aliases, functions, or prompt tweaks specific to this machine.
 - **New `.zsh` files in `~/.config/zsh/.zshrc.d/`** — Any `.zsh` file placed here is automatically sourced by `.zshrc`. Files are loaded in glob order, with special handling for `path.zsh` (loaded first), `early.zsh`, `completion.zsh`, and `final.zsh`. Unmanaged files in this directory coexist with chezmoi-managed ones.
 
