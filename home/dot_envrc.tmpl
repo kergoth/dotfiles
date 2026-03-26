@@ -1,0 +1,22 @@
+SESSION_VARS="PATH GITHUB_TOKEN CLAUDE_CODE_OAUTH_TOKEN"
+
+prepend_path() {
+    case ":$PATH:" in
+        *":$1:"*) ;;
+        *) PATH="$1${PATH:+:$PATH}" ;;
+    esac
+}
+
+prepend_path "$HOME/bin"
+prepend_path "$HOME/.local/bin"
+prepend_path "$HOME/.nix-profile/bin"
+prepend_path "$HOME/.brew/bin"
+export PATH
+
+{{- if or .personal .work }}
+export GITHUB_TOKEN="${GITHUB_TOKEN:-$(get-credential GITHUB_TOKEN)}"
+export CLAUDE_CODE_OAUTH_TOKEN="${CLAUDE_CODE_OAUTH_TOKEN:-$(get-credential CLAUDE_CODE_OAUTH_TOKEN)}"
+{{- end }}
+
+# shellcheck disable=SC1091
+[ -f "$HOME/.envrc.local" ] && . "$HOME/.envrc.local"
