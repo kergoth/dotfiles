@@ -105,6 +105,9 @@ if [ "${1:-}" != "--in-session" ] && [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ]; the
     fi
 fi
 
+cp script/bootstrap /tmp
+/tmp/bootstrap
+
 case "$TEST_SETUP_MODE" in
     root-only)
         ;;
