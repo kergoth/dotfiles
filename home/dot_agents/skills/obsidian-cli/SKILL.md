@@ -15,6 +15,10 @@ description: Use when running the `obsidian` CLI command, interacting with an Ob
 
 Run `obsidian` (no args) for interactive TUI with autocomplete.
 
+## Sandbox
+
+The CLI communicates with the running Obsidian app via IPC (Unix socket). Sandbox mode blocks this. Always use `dangerouslyDisableSandbox: true` for `obsidian` commands — they will fail silently or error within the sandbox.
+
 ## Parameter Syntax — CRITICAL
 
 ```
