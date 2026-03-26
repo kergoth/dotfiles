@@ -20,5 +20,5 @@ if [[ ${commands[claude]} = "{{ $localClaudeBin }}" ]]; then
 fi
 {{- end }}
 
-command env CLAUDE_CODE_OAUTH_TOKEN= claude "$@"
+command env CLAUDE_CODE_OAUTH_TOKEN= USE_BUILTIN_RIPGREP=0 claude "$@"
 {{ end -}}
