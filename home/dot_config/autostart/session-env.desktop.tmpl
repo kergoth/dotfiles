@@ -1,0 +1,11 @@
+{{- if and (not .headless) (or (eq .chezmoi.os "linux") (eq .chezmoi.os "freebsd")) -}}
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Session Environment
+Comment=Inject shared session vars into the desktop activation environment
+Exec={{ .chezmoi.destDir }}/.local/bin/session-env-sync dbus
+OnlyShowIn=KDE;
+X-KDE-autostart-after=panel
+X-KDE-StartupNotify=false
+{{- end -}}

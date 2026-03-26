@@ -1,0 +1,24 @@
+{{- if and (eq .chezmoi.os "darwin") (not .ephemeral) -}}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.kergoth.session-env</string>
+
+	<key>ProgramArguments</key>
+	<array>
+		<string>{{ .chezmoi.destDir }}/.local/bin/session-env-sync</string>
+		<string>launchctl</string>
+	</array>
+
+	<key>RunAtLoad</key>
+	<true/>
+
+	<key>StandardOutPath</key>
+	<string>{{ .chezmoi.destDir }}/Library/Logs/session-env.log</string>
+	<key>StandardErrorPath</key>
+	<string>{{ .chezmoi.destDir }}/Library/Logs/session-env.log</string>
+</dict>
+</plist>
+{{- end -}}
