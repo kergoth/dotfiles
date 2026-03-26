@@ -40,6 +40,10 @@
 - If I ask for a standalone personal script that is not project-specific and does not need chezmoi templating, `~/bin/` is the default destination
 - Package install preference: chezmoi externals > Nix > Homebrew > upstream installers > language pkg mgrs > system pkg mgrs
 - Shell is zsh with extensive customization via dotfiles
+- `~/Repos/` contains clean repository clones managed by [ghq](https://github.com/x-motemen/ghq), organized as `~/Repos/{host}/{owner}/{repo}` (e.g., `~/Repos/github.com/panoai/pano-ec`)
+  - When you need to read a file from a repo and the current working directory is not inside that repo, prefer `~/Repos/` over grepping `~/Workspace` (which may contain project-specific modifications) or fetching from GitHub
+  - These clones track the default branch and may include untracked docs from analysis; they are not guaranteed to be up-to-date — run `git -C <path> pull` if freshness matters
+  - `~/Workspace/` project clones may have branch-specific modifications; `~/Repos/` clones are for clean reference
 
 ## Pano AI
 - Wildfire detection platform: panoramic cameras on edge computers capture imagery, CV/AI pipeline identifies smoke, operators verify via Pano 360 frontend, customers receive alerts
