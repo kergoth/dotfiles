@@ -29,6 +29,7 @@ apk add socat
 {{- else }}
 # Install gnupg
 apk add --no-interactive gnupg
+apk add --no-interactive libsecret
 {{- end }}
 
 {{ if and (not .ephemeral) (not .wsl2) (not (env "CONTAINER_ID")) -}}

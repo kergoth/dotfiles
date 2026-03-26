@@ -144,8 +144,9 @@ in {
     pkgs-unstable.lima
     mas
     reattach-to-user-namespace
-  ] ++ lib.optionals stdenv.isLinux [
+  ] ++ lib.optionals (stdenv.isLinux || stdenv.isFreeBSD) [
     glibcLocales
+    libsecret
   {{- if .wsl2 }}
     socat
   {{- end }}
