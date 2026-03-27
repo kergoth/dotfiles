@@ -97,8 +97,8 @@ else
     fi
 fi
 
-if [ -f "$sourcedir/scripts/update-externals-lock.py" ]; then
-    echo >&2 "Checking for externals updates"
+if [ -f "$sourcedir/scripts/update-git-lock.py" ]; then
+    echo >&2 "Checking for Git source updates"
     if command -v uv >/dev/null 2>&1; then
         # Step 1: Resolve (always, even in dry-run)
         changes_file=$(mktemp)
@@ -106,12 +106,12 @@ if [ -f "$sourcedir/scripts/update-externals-lock.py" ]; then
         trap cleanup_changes_file EXIT INT TERM
 
         resolve_exit=0
-        uv run "$sourcedir/scripts/update-externals-lock.py" --dry-run --json > "$changes_file" || resolve_exit=$?
+        uv run "$sourcedir/scripts/update-git-lock.py" --dry-run --json > "$changes_file" || resolve_exit=$?
 
         if [ "$resolve_exit" -eq 2 ]; then
-            echo >&2 "No externals updates available"
+            echo >&2 "No Git source updates available"
         elif [ "$resolve_exit" -ne 0 ]; then
-            echo >&2 "Warning: externals resolution failed (exit $resolve_exit); skipping"
+            echo >&2 "Warning: Git source resolution failed (exit $resolve_exit); skipping"
         else
             # Step 2: Review (unless --no-review)
             if [ "$no_review" -eq 0 ]; then
@@ -132,12 +132,12 @@ for c in changes:
 
             # Step 3: Decision point
             if [ "$dry_run" -eq 1 ]; then
-                echo >&2 "Dry run: externals review complete, not applying"
+                echo >&2 "Dry run: Git source review complete, not applying"
             else
                 apply=1
                 if [ "$no_review" -eq 0 ] && [ -t 0 ]; then
                     while true; do
-                        printf >&2 "Apply externals updates? [Y/n/d] "
+                        printf >&2 "Apply Git source updates? [Y/n/d] "
                         read -r answer
                         case "$answer" in
                             ""|[Yy]|[Yy]es) break ;;
@@ -164,13 +164,13 @@ for c in changes:
 
                 if [ "$apply" -eq 1 ]; then
                     # Step 4: Write lock from pre-resolved data
-                    uv run "$sourcedir/scripts/update-externals-lock.py" \
+                    uv run "$sourcedir/scripts/update-git-lock.py" \
                         --apply-resolved "$changes_file"
                     chezmoi apply -R || :
 
                     # Step 5: Build commit message and commit
                     {
-                        echo "Update pinned externals"
+                        echo "Update Git lock"
                         echo
                         uv run python3 -c "
 import json, sys
@@ -187,23 +187,23 @@ for c in changes:
         print(f\"  {c['id']}: {old} → {new} ({ref})\")
 " "$changes_file"
                     } > "$sourcedir/.git/COMMIT_EDITMSG"
-                    echo >&2 "Committing pinned externals update"
+                    echo >&2 "Committing Git lock update"
                     if [ "$use_jj" -eq 1 ]; then
                         commit_msg=$(cat "$sourcedir/.git/COMMIT_EDITMSG")
                         (cd "$sourcedir" && jj commit -m "$commit_msg" \
-                            home/.chezmoidata/externals-lock.yml)
+                            home/.chezmoidata/git-lock.yml)
                     else
                         (cd "$sourcedir" && git commit -F .git/COMMIT_EDITMSG \
-                            home/.chezmoidata/externals-lock.yml)
+                            home/.chezmoidata/git-lock.yml)
                     fi
                 else
-                    echo >&2 "Skipping externals update"
+                    echo >&2 "Skipping Git source update"
                     chezmoi apply -R || :
                 fi
             fi
         fi
     else
-        echo >&2 "Warning: uv not available; skipping externals update"
+        echo >&2 "Warning: uv not available; skipping Git source update"
     fi
 fi
 

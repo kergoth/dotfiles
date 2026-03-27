@@ -9,14 +9,14 @@
 {{-   if not $font.filename -}}
 {{-     fail (printf "missing filename for font: %s" $id) -}}
 {{-   end -}}
-{{-   $source := index $.externals_sources $font.source -}}
+{{-   $source := index $.git_sources $font.source -}}
 {{-   if not $source -}}
 {{-     fail (printf "unknown font source: %s" $font.source) -}}
 {{-   end -}}
 {{-   if not $source.raw_base -}}
 {{-     fail (printf "missing raw_base for font source: %s" $font.source) -}}
 {{-   end -}}
-{{-   $sha := index $.externals_lock $font.source -}}
+{{-   $sha := index $.git_lock $font.source -}}
 {{-   if not $sha -}}
 {{-     fail (printf "missing lock entry for font source: %s" $font.source) -}}
 {{-   end -}}

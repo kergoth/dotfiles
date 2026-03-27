@@ -155,7 +155,7 @@ Chezmoi externals download non-package-manager resources. Templates in `.chezmoi
 - Vim plugins
 - Color schemes and app data
 
-Archive-based externals are pinned by commit SHA in `.chezmoidata/externals-lock.yml` with source repos defined in `.chezmoidata/externals-sources.yml`. Run `scripts/update-externals-lock.py` (or `script/update`) to resolve refs to current SHAs. Git-repo type externals (e.g., `bin/`, work skill repos) track HEAD directly and are not pinned.
+Archive-based externals are one consumer of the shared Git lock, with pinned refs stored in `.chezmoidata/git-lock.yml` and source repos defined in `.chezmoidata/git-sources.yml`. Run `scripts/update-git-lock.py` (or `script/update`) to resolve refs to current SHAs or tag names. Git-repo type externals (e.g., `bin/`, work skill repos) track HEAD directly and are not pinned.
 
 ### Secrets Management
 

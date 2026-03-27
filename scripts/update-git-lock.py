@@ -147,7 +147,7 @@ def _resolve_generic_tag(repo: str, name: str, tag_pattern: str | None) -> str:
 
 
 def dump_yaml(locks: dict) -> str:
-    lines = ["externals_lock:"]
+    lines = ["git_lock:"]
     for key in sorted(locks):
         lines.append(f'  {key}: "{locks[key]}"')
     lines.append("")
@@ -155,7 +155,7 @@ def dump_yaml(locks: dict) -> str:
 
 
 def format_diff_lines(
-    old_locks: dict, new_locks: dict, externals: dict, selected: list
+    old_locks: dict, new_locks: dict, sources: dict, selected: list
 ) -> list:
     """Return one diff line per changed or new entry in `selected`."""
     lines = []
@@ -164,7 +164,7 @@ def format_diff_lines(
         new_sha = new_locks.get(eid, "")
         if old_sha == new_sha:
             continue
-        entry = externals.get(eid, {})
+        entry = sources.get(eid, {})
         if entry.get("tagged"):
             old_display = old_sha if old_sha else "(new)"
             new_display = new_sha if new_sha else "(removed)"
@@ -177,13 +177,15 @@ def format_diff_lines(
     return lines
 
 
-def find_stale_lock_entries(locks: dict, externals: dict) -> list[str]:
-    return sorted(set(locks) - set(externals))
+def find_stale_lock_entries(locks: dict, sources: dict) -> list[str]:
+    return sorted(set(locks) - set(sources))
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Update pinned refs for externals.")
-    parser.add_argument("ids", nargs="*", help="Optional external IDs to update")
+    parser = argparse.ArgumentParser(
+        description="Update pinned refs for Git sources."
+    )
+    parser.add_argument("ids", nargs="*", help="Optional Git source IDs to update")
     parser.add_argument(
         "--dry-run",
         action="store_true",
@@ -206,8 +208,8 @@ def main() -> int:
 
     repo_root = Path(__file__).resolve().parent.parent
     data = load_chezmoi_data(repo_root)
-    externals = data.get("externals_sources", {})
-    old_locks = dict(data.get("externals_lock", {}))
+    sources = data.get("git_sources", {})
+    old_locks = dict(data.get("git_lock", {}))
 
     if args.apply_resolved:
         try:
@@ -251,27 +253,27 @@ def main() -> int:
                     file=sys.stderr,
                 )
                 return 1
-        output = repo_root / "home" / ".chezmoidata" / "externals-lock.yml"
+        output = repo_root / "home" / ".chezmoidata" / "git-lock.yml"
         output.write_text(dump_yaml(merged), encoding="utf-8")
         diff_lines = format_diff_lines(
             old_locks,
             merged,
-            externals,
+            sources,
             [c["id"] for c in changes],
         )
         for line in diff_lines:
             print(line)
         return 0
 
-    if not externals:
-        raise SystemExit("no externals data found")
+    if not sources:
+        raise SystemExit("no git sources data found")
 
-    selected = args.ids or list(externals.keys())
-    unknown = [eid for eid in selected if eid not in externals]
+    selected = args.ids or list(sources.keys())
+    unknown = [eid for eid in selected if eid not in sources]
     if unknown:
-        raise SystemExit(f"unknown external ids: {', '.join(sorted(unknown))}")
+        raise SystemExit(f"unknown git source ids: {', '.join(sorted(unknown))}")
 
-    stale_locks = find_stale_lock_entries(old_locks, externals)
+    stale_locks = find_stale_lock_entries(old_locks, sources)
     for eid in stale_locks:
         print(
             f"warning: lock entry lacks source entry: {eid}",
@@ -280,7 +282,7 @@ def main() -> int:
 
     # Validate tag_pattern regexes upfront before any network calls
     for eid in selected:
-        entry = externals[eid]
+        entry = sources[eid]
         if entry.get("tagged") and entry.get("ref"):
             print(
                 f"warning: {eid!r} has both 'tagged: true' and 'ref' — "
@@ -296,7 +298,7 @@ def main() -> int:
 
     new_locks = dict(old_locks)
     for eid in selected:
-        entry = externals[eid]
+        entry = sources[eid]
         if entry.get("tagged"):
             new_locks[eid] = resolve_latest_tag(
                 entry["repo"], eid, entry.get("tag_pattern")
@@ -310,7 +312,7 @@ def main() -> int:
             old_sha = old_locks.get(eid, "")
             new_sha = new_locks.get(eid, "")
             if old_sha != new_sha:
-                entry = externals[eid]
+                entry = sources[eid]
                 changes.append(
                     {
                         "id": eid,
@@ -329,15 +331,15 @@ def main() -> int:
         if args.json:
             print(json.dumps(changes, indent=2))
         else:
-            for line in format_diff_lines(old_locks, new_locks, externals, selected):
+            for line in format_diff_lines(old_locks, new_locks, sources, selected):
                 print(line)
         return 0
 
-    diff_lines = format_diff_lines(old_locks, new_locks, externals, selected)
+    diff_lines = format_diff_lines(old_locks, new_locks, sources, selected)
     for line in diff_lines:
         print(line)
 
-    output = repo_root / "home" / ".chezmoidata" / "externals-lock.yml"
+    output = repo_root / "home" / ".chezmoidata" / "git-lock.yml"
     if new_locks != old_locks:
         output.write_text(dump_yaml(new_locks), encoding="utf-8")
     return 0

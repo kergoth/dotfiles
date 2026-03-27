@@ -181,20 +181,20 @@ if ($DryRun) {
     }
 }
 
-$agentExternalsUpdater = Join-Path $repodir "scripts/update-externals-lock.py"
-if (Test-Path $agentExternalsUpdater) {
-    Write-Host "Checking for externals updates"
+$gitLockUpdater = Join-Path $repodir "scripts/update-git-lock.py"
+if (Test-Path $gitLockUpdater) {
+    Write-Host "Checking for Git source updates"
     if (Get-Command uv -ErrorAction SilentlyContinue) {
         $changesFile = [System.IO.Path]::GetTempFileName()
         try {
             # Step 1: Resolve (always, even in dry-run)
-            $resolveOutput = uv run $agentExternalsUpdater --dry-run --json
+            $resolveOutput = uv run $gitLockUpdater --dry-run --json
             $resolveExit = $LASTEXITCODE
 
             if ($resolveExit -eq 2) {
-                Write-Host "No externals updates available"
+                Write-Host "No Git source updates available"
             } elseif ($resolveExit -ne 0) {
-                Write-Warning "Warning: externals resolution failed (exit $resolveExit); skipping"
+                Write-Warning "Warning: Git source resolution failed (exit $resolveExit); skipping"
             } else {
                 # Write JSON to temp file
                 $resolveOutput | Out-File -FilePath $changesFile -Encoding utf8
@@ -214,13 +214,13 @@ if (Test-Path $agentExternalsUpdater) {
 
                 # Step 3: Decision point
                 if ($DryRun) {
-                    Write-Host "Dry run: externals review complete, not applying"
+                    Write-Host "Dry run: Git source review complete, not applying"
                 } else {
                     $apply = $true
                     if (-not $NoReview -and -not [Console]::IsInputRedirected) {
                         $decided = $false
                         while (-not $decided) {
-                            $answer = Read-Host "Apply externals updates? [Y/n/d]"
+                            $answer = Read-Host "Apply Git source updates? [Y/n/d]"
                             switch -Regex ($answer) {
                                 '^$|^[Yy]' { $decided = $true }
                                 '^[Nn]' { $apply = $false; $decided = $true }
@@ -240,10 +240,10 @@ if (Test-Path $agentExternalsUpdater) {
                     }
 
                     if ($apply) {
-                        uv run $agentExternalsUpdater --apply-resolved $changesFile
+                        uv run $gitLockUpdater --apply-resolved $changesFile
                         chezmoi apply -R
 
-                        $commitLines = @("Update pinned externals", "")
+                        $commitLines = @("Update Git lock", "")
                         foreach ($c in $changes) {
                             if ($c.kind -eq 'tag') {
                                 $old = if ($c.old_sha) { $c.old_sha } else { '(new)' }
@@ -259,17 +259,17 @@ if (Test-Path $agentExternalsUpdater) {
                         $commitMessage = $commitLines -join "`n"
                         $commitMessage | Out-File -FilePath "$repodir\.git\COMMIT_EDITMSG" -Encoding utf8
 
-                        Write-Host "Committing pinned externals update"
+                        Write-Host "Committing Git lock update"
                         if ($use_jj -eq 1) {
                             $commitMsg = Get-Content "$repodir\.git\COMMIT_EDITMSG" -Raw
                             Set-Location $repodir
-                            jj commit -m $commitMsg home/.chezmoidata/externals-lock.yml
+                            jj commit -m $commitMsg home/.chezmoidata/git-lock.yml
                         } else {
                             Set-Location $repodir
-                            git commit -F .git/COMMIT_EDITMSG home/.chezmoidata/externals-lock.yml
+                            git commit -F .git/COMMIT_EDITMSG home/.chezmoidata/git-lock.yml
                         }
                     } else {
-                        Write-Host "Skipping externals update"
+                        Write-Host "Skipping Git source update"
                         chezmoi apply -R
                     }
                 }
@@ -280,7 +280,7 @@ if (Test-Path $agentExternalsUpdater) {
             }
         }
     } else {
-        Write-Warning "Warning: uv not available; skipping externals update"
+        Write-Warning "Warning: uv not available; skipping Git source update"
     }
 }
 

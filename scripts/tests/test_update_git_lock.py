@@ -8,8 +8,8 @@ import types
 from unittest.mock import MagicMock, patch
 
 spec = importlib.util.spec_from_file_location(
-    "update_externals_lock",
-    pathlib.Path(__file__).parent.parent / "update-externals-lock.py",
+    "update_git_lock",
+    pathlib.Path(__file__).parent.parent / "update-git-lock.py",
 )
 assert spec is not None and spec.loader is not None
 mod = importlib.util.module_from_spec(spec)
@@ -22,11 +22,11 @@ _SHA_RE = mod._SHA_RE  # needed in Task 6 integration test
 
 def test_format_diff_lines_branch_unchanged():
     """Branch entries still show 7-char SHA and ref suffix."""
-    externals = {"foo": {"repo": "https://github.com/x/y", "ref": "master"}}
+    sources = {"foo": {"repo": "https://github.com/x/y", "ref": "master"}}
     result = format_diff_lines(
         {"foo": "aaa" + "0" * 37},
         {"foo": "bbb" + "0" * 37},
-        externals,
+        sources,
         ["foo"],
     )
     assert result == ["foo: aaa0000 \u2192 bbb0000 (master)"]
@@ -34,16 +34,16 @@ def test_format_diff_lines_branch_unchanged():
 
 def test_format_diff_lines_tagged_new():
     """Tagged new entry shows full tag name, no ref suffix."""
-    externals = {"bar": {"repo": "https://github.com/x/y", "tagged": True}}
-    result = format_diff_lines({}, {"bar": "v0.35.0"}, externals, ["bar"])
+    sources = {"bar": {"repo": "https://github.com/x/y", "tagged": True}}
+    result = format_diff_lines({}, {"bar": "v0.35.0"}, sources, ["bar"])
     assert result == ["bar: (new) \u2192 v0.35.0"]
 
 
 def test_format_diff_lines_tagged_update():
     """Tagged update shows both tag names, no truncation."""
-    externals = {"bar": {"repo": "https://github.com/x/y", "tagged": True}}
+    sources = {"bar": {"repo": "https://github.com/x/y", "tagged": True}}
     result = format_diff_lines(
-        {"bar": "v0.34.0"}, {"bar": "v0.35.0"}, externals, ["bar"]
+        {"bar": "v0.34.0"}, {"bar": "v0.35.0"}, sources, ["bar"]
     )
     assert result == ["bar: v0.34.0 \u2192 v0.35.0"]
 
@@ -59,9 +59,9 @@ def test_format_diff_lines_tagged_missing_externals_key():
     assert result == ["stale: aaa0000 \u2192 bbb0000 (main)"]
 
 
-def _run_main_dry_run_json(externals: dict, ids: list[str]) -> list:
+def _run_main_dry_run_json(sources: dict, ids: list[str]) -> list:
     """Call main() directly with mocked data, return parsed JSON changes list."""
-    fake_data = {"externals_sources": externals, "externals_lock": {}}
+    fake_data = {"git_sources": sources, "git_lock": {}}
     fake_sha = "a" * 40
 
     captured = io.StringIO()
@@ -70,7 +70,7 @@ def _run_main_dry_run_json(externals: dict, ids: list[str]) -> list:
         patch.object(mod, "resolve_ref", return_value=fake_sha),
         patch.object(mod, "resolve_latest_tag", return_value="v1.0.0"),
         patch("sys.stdout", captured),
-        patch("sys.argv", ["update-externals-lock.py", "--dry-run", "--json"] + ids),
+        patch("sys.argv", ["update-git-lock.py", "--dry-run", "--json"] + ids),
     ):
         rc = mod.main()
 
@@ -80,23 +80,23 @@ def _run_main_dry_run_json(externals: dict, ids: list[str]) -> list:
 
 def test_dry_run_json_branch_has_kind():
     """Branch entries get kind=branch in JSON output."""
-    externals = {
+    sources = {
         "_test_kind": {"repo": "https://github.com/x/y", "ref": "master"},
     }
-    changes = _run_main_dry_run_json(externals, ["_test_kind"])
+    changes = _run_main_dry_run_json(sources, ["_test_kind"])
     assert len(changes) == 1, f"expected 1 change, got {changes}"
     assert changes[0]["kind"] == "branch"
 
 
 def test_dry_run_json_tag_has_kind():
     """Tagged entries get kind=tag in JSON output."""
-    externals = {
+    sources = {
         "_test_kind": {
             "repo": "https://github.com/x/y",
             "tagged": True,
         },
     }
-    changes = _run_main_dry_run_json(externals, ["_test_kind"])
+    changes = _run_main_dry_run_json(sources, ["_test_kind"])
     assert len(changes) == 1, f"expected 1 change, got {changes}"
     assert changes[0]["kind"] == "tag"
     assert changes[0]["tag_pattern"] is None
@@ -228,13 +228,13 @@ def test_resolve_latest_tag_non_github_no_match_hard_fails():
 
 def test_tagged_entry_routes_to_resolve_latest_tag():
     """tagged: true entries call resolve_latest_tag, not resolve_ref."""
-    externals = {
+    sources = {
         "_test_tagged": {
             "repo": "https://github.com/x/y",
             "tagged": True,
         },
     }
-    fake_data = {"externals_sources": externals, "externals_lock": {}}
+    fake_data = {"git_sources": sources, "git_lock": {}}
 
     captured = io.StringIO()
     with (
@@ -242,7 +242,7 @@ def test_tagged_entry_routes_to_resolve_latest_tag():
         patch.object(mod, "resolve_latest_tag", return_value="v1.0.0") as mock_tag,
         patch.object(mod, "resolve_ref") as mock_ref,
         patch("sys.stdout", captured),
-        patch("sys.argv", ["update-externals-lock.py", "--dry-run", "_test_tagged"]),
+        patch("sys.argv", ["update-git-lock.py", "--dry-run", "_test_tagged"]),
     ):
         rc = mod.main()
 
@@ -269,7 +269,7 @@ def test_apply_resolved_rejects_sha_for_tag_kind(tmp_path):
         [
             "uv",
             "run",
-            str(repo_root / "scripts/update-externals-lock.py"),
+            str(repo_root / "scripts/update-git-lock.py"),
             "--apply-resolved",
             str(json_file),
         ],
@@ -299,7 +299,7 @@ def test_apply_resolved_rejects_tag_for_branch_kind(tmp_path):
         [
             "uv",
             "run",
-            str(repo_root / "scripts/update-externals-lock.py"),
+            str(repo_root / "scripts/update-git-lock.py"),
             "--apply-resolved",
             str(json_file),
         ],

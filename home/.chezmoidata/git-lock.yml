@@ -1,4 +1,4 @@
-externals_lock:
+git_lock:
   86box_assets: "83547e9e6077350fdb960541b7a4ad540a76a6c2"
   86box_roms: "34445a5683402b8ee6f2b09feba242e04eaaf17d"
   anthropic_official_plugins: "15268f03d2f560b955584a283927ed175569678c"
@@ -10,6 +10,7 @@ externals_lock:
   dracula_zed: "08a007ef54231a6144fcb04a764912651f015bc4"
   fumiyas_home_commands: "861e89cb24c7746e32bcd58ca6ae8df0f07d7a82"
   fzf_tab: "v1.3.0"
+  gh_pr_review: "v1.6.2"
   gist_zbell: "e0b06247f3ecd6ca3de341c54ba8d85de7ef6566"
   gist_zsh_timing: "2d88b477c29de14250ba03650745348781077ae8"
   git_assembler: "e8cf3b24c4322f08217271de65dbce0a22505c3a"

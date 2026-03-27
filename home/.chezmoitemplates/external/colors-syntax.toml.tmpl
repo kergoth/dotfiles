@@ -1,4 +1,4 @@
-{{- $lock := .externals_lock -}}
+{{- $lock := .git_lock -}}
 {{ if eq .chezmoi.os "windows" }}
 ["AppData/Roaming/bat/syntaxes/BitBake.sublime-syntax"]
 {{ else }}

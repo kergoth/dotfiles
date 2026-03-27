@@ -1,5 +1,5 @@
 {{ $refreshPeriod := .external.refreshPeriod }}
-{{- $lock := .externals_lock -}}
+{{- $lock := .git_lock -}}
 {{ $clone_args := dig "external" "clone" "args" (list) . -}}
 {{ $pull_args := dig "external" "pull" "args" (list) . -}}
 
