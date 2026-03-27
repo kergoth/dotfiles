@@ -8,8 +8,8 @@ git_sources:
     repo: https://github.com/agynio/gh-pr-review
     tagged: true
   gh_pr_review_skill:
-    repo: https://github.com/agynio/gh-pr-review
-    ref: main
+    repo: https://github.com/kergoth/gh-pr-review
+    ref: tighten-security-guardrails
     review_note: "Focus primarily on SKILL.md and any documentation or code changes that affect the advertised skill workflow or command interface. The released gh extension binary remains pinned separately via the tagged gh_pr_review entry; this source exists only to pin skill content."
   86box_assets:
     repo: https://github.com/86Box/assets
