@@ -1,5 +1,5 @@
 ## Git Conventions
-- Follow the seven rules from cbea.ms/git-commit:
+- Follow the [seven rules of commit messages](https://cbea.ms/git-commit):
   - Imperative mood in subject ("Add feature" not "Added feature")
   - Limit subject to 50 characters (72 hard limit), no trailing period
   - Separate subject from body with blank line; wrap body at 72 characters
