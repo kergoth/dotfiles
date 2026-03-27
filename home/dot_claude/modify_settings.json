@@ -1,0 +1,12 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- /* Merge managed Claude Code settings into the existing settings.json.
+       Managed keys (from settings/claude/settings.json) override; all other
+       keys (enabledPlugins, permissions, extraKnownMarketplaces, etc.) are
+       preserved. mergeOverwrite does recursive object merge. */ -}}
+{{- $managed := joinPath .chezmoi.sourceDir "/../settings/claude/settings.json" | include | fromJson -}}
+{{- if eq .chezmoi.stdin "" -}}
+{{-   $managed | toPrettyJson -}}
+{{- else -}}
+{{-   $existing := fromJson .chezmoi.stdin -}}
+{{-   mergeOverwrite $existing $managed | toPrettyJson -}}
+{{- end -}}
