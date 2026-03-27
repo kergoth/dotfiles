@@ -1,3 +1,10 @@
+# Ensure we have to `direnv allow` parent .envrc
+# Normally I'd want to see the loading messages from source_up, not those from
+# the direnv exec, but they go to stderr, and I don't want to suppress a need
+# to allow the parent envrc.
+direnv exec .. true >/dev/null || exit 1
+source_up_if_exists >/dev/null 2>&1
+
 SESSION_VARS="PATH GITHUB_TOKEN CLAUDE_CODE_OAUTH_TOKEN"
 
 prepend_path() {
