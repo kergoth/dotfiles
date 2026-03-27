@@ -13,6 +13,11 @@
 - Plan files, design documents, and conversational responses may use autolinks or bare URLs
 - Use descriptive link text that explains the destination; avoid generic text like `[here]`, `[this]`, or `[link]`
 
+## GitHub CLI Conventions
+- Prefer explicit `gh` subcommands (`gh pr view`, `gh issue list`) and installed extensions (`gh pr-review`) over raw `gh api` or `gh api graphql` calls
+- Fall back to `gh api` only when no subcommand or extension covers the needed operation
+- Reason: subcommands are easier to permission-gate, less brittle, and handle pagination/error cases automatically
+
 ## Issue Tracking Conventions
 - Epics / initiatives: outcome-level — why it exists, what done looks like, what's excluded; no implementation details
 - Tasks / stories / enhancements: definition of done, not how to implement
