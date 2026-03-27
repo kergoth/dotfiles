@@ -18,6 +18,8 @@ if command -v gh >/dev/null 2>&1; then
 fi
 {{- end }}
 
+_export_if_set CLAUDE_CODE_OAUTH_TOKEN
+
 # shellcheck disable=SC1091
 if [ -f "$HOME/.session-env.local" ]; then
     . "$HOME/.session-env.local"
