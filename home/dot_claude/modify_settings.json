@@ -2,11 +2,38 @@
 {{- /* Merge managed Claude Code settings into the existing settings.json.
        Managed keys (from settings/claude/settings.json) override; all other
        keys (enabledPlugins, permissions, extraKnownMarketplaces, etc.) are
-       preserved. mergeOverwrite does recursive object merge. */ -}}
+       preserved. mergeOverwrite does recursive object merge.
+
+       Special handling for permissions.allow and permissions.deny: these are
+       arrays, which mergeOverwrite replaces rather than concatenates. We
+       manually concat+uniq them before the merge, then patch them back. */ -}}
 {{- $managed := joinPath .chezmoi.sourceDir "/../settings/claude/settings.json" | include | fromJson -}}
 {{- if eq .chezmoi.stdin "" -}}
 {{-   $managed | toPrettyJson -}}
 {{- else -}}
 {{-   $existing := fromJson .chezmoi.stdin -}}
-{{-   mergeOverwrite $existing $managed | toPrettyJson -}}
+{{- /* Merge permission arrays before the object merge clobbers them */ -}}
+{{-   $existingAllow := dig "permissions" "allow" (list) $existing -}}
+{{-   $managedAllow := dig "permissions" "allow" (list) $managed -}}
+{{-   $existingDeny := dig "permissions" "deny" (list) $existing -}}
+{{-   $managedDeny := dig "permissions" "deny" (list) $managed -}}
+{{-   $merged := mergeOverwrite $existing $managed -}}
+{{- /* Concat and deduplicate permission arrays */ -}}
+{{-   $mergedAllow := concat $existingAllow $managedAllow | uniq -}}
+{{-   $mergedDeny := concat $existingDeny $managedDeny | uniq -}}
+{{- /* Ensure permissions object exists, then patch arrays back in */ -}}
+{{-   if not (hasKey $merged "permissions") -}}
+{{-     $_ := set $merged "permissions" dict -}}
+{{-   end -}}
+{{-   if $mergedAllow -}}
+{{-     $_ := set $merged.permissions "allow" $mergedAllow -}}
+{{-   else -}}
+{{-     $_ := unset $merged.permissions "allow" -}}
+{{-   end -}}
+{{-   if $mergedDeny -}}
+{{-     $_ := set $merged.permissions "deny" $mergedDeny -}}
+{{-   else -}}
+{{-     $_ := unset $merged.permissions "deny" -}}
+{{-   end -}}
+{{-   $merged | toPrettyJson -}}
 {{- end -}}
