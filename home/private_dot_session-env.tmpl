@@ -1,0 +1,24 @@
+#!/bin/sh
+# ~/.session-env — sourced by session-env sync, shell profiles, and direnv.
+# Every 'export' here is discovered and injected into the desktop session.
+
+export PATH="$HOME/bin:$HOME/.local/bin:$HOME/.nix-profile/bin:$HOME/.brew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+export EMAIL='{{ .email }}'
+
+# Export a variable only if not already set and session-env resolves a non-empty value.
+_export_if_set() {
+    eval "[ -n \"\${$1+x}\" ]" && return 0
+    _val=$(session-env get "$1" 2>/dev/null) || return 0
+    [ -n "$_val" ] && export "$1=$_val"
+}
+
+{{ if or .personal .work -}}
+if command -v gh >/dev/null 2>&1; then
+    export GITHUB_TOKEN="${GITHUB_TOKEN:-$(GITHUB_TOKEN= gh auth token 2>/dev/null)}"
+fi
+{{- end }}
+
+# shellcheck disable=SC1091
+if [ -f "$HOME/.session-env.local" ]; then
+    . "$HOME/.session-env.local"
+fi

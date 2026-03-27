@@ -12,6 +12,13 @@
     [bin.pull]
     args = {{ $pull_args | toToml }}
 
+{{ if and (not .headless) (ne .chezmoi.os "windows") -}}
+[".local/share/session-env"]
+    type = "git-repo"
+    url = "https://github.com/kergoth/session-env"
+    refreshPeriod = "168h"
+{{- end }}
+
 {{- if and .secrets .personal (not .ephemeral) (ne .chezmoi.os "windows") }}
 [".config/backup"]
     type = "git-repo"

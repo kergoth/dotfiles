@@ -1,42 +1,16 @@
 # Ensure we have to `direnv allow` parent .envrc
-# Normally I'd want to see the loading messages from source_up, not those from
-# the direnv exec, but they go to stderr, and I don't want to suppress a need
-# to allow the parent envrc.
 direnv exec .. true >/dev/null || exit 1
 source_up_if_exists >/dev/null 2>&1
 
-SESSION_VARS="PATH GITHUB_TOKEN CLAUDE_CODE_OAUTH_TOKEN"
-
-prepend_path() {
-    case ":$PATH:" in
-        *":$1:"*) ;;
-        *) PATH="$1${PATH:+:$PATH}" ;;
-    esac
-}
-
-prepend_path "$HOME/bin"
-prepend_path "$HOME/.local/bin"
-prepend_path "$HOME/.nix-profile/bin"
-prepend_path "$HOME/.brew/bin"
-
-export PATH
-
-{{ if or .personal .work -}}
-if [ -z "${GITHUB_TOKEN+x}" ]; then
-    GITHUB_TOKEN=$(get-credential GITHUB_TOKEN)
-    [ -n "$GITHUB_TOKEN" ] && export GITHUB_TOKEN
-fi
-
-if [ -z "${CLAUDE_CODE_OAUTH_TOKEN+x}" ]; then
-    CLAUDE_CODE_OAUTH_TOKEN=$(get-credential CLAUDE_CODE_OAUTH_TOKEN)
-    [ -n "$CLAUDE_CODE_OAUTH_TOKEN" ] && export CLAUDE_CODE_OAUTH_TOKEN
-fi
-{{- end }}
-
 # shellcheck disable=SC1091
 if direnv_version 2.38.0 2>/dev/null; then
+    require_allowed "$HOME/.session-env"
+    require_allowed "$HOME/.session-env.local"
     require_allowed "$HOME/.envrc.local"
 fi
+
+# shellcheck disable=SC1091
+source_env_if_exists "$HOME/.session-env"
 
 # shellcheck disable=SC1091
 source_env_if_exists "$HOME/.envrc.local"
