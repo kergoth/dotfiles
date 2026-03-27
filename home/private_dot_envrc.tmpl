@@ -27,4 +27,9 @@ fi
 {{- end }}
 
 # shellcheck disable=SC1091
+if direnv_version 2.38.0 2>/dev/null; then
+    require_allowed "$HOME/.envrc.local"
+fi
+
+# shellcheck disable=SC1091
 source_env_if_exists "$HOME/.envrc.local"
