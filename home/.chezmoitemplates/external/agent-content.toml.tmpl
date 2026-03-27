@@ -17,3 +17,9 @@ type = "archive"
 url = {{ printf "https://github.com/astral-sh/claude-code-plugins/archive/%s.tar.gz" (index $lock "astral") | toToml }}
 exact = true
 stripComponents = 1
+
+[".agents/external-sources/gh-pr-review"]
+type = "archive"
+url = {{ printf "https://github.com/agynio/gh-pr-review/archive/%s.tar.gz" (index $lock "gh_pr_review_skill") | toToml }}
+exact = true
+stripComponents = 1

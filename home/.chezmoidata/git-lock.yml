@@ -11,6 +11,7 @@ git_lock:
   fumiyas_home_commands: "861e89cb24c7746e32bcd58ca6ae8df0f07d7a82"
   fzf_tab: "v1.3.0"
   gh_pr_review: "v1.6.2"
+  gh_pr_review_skill: "9c422aaa07cfc296cdc8e349ec490d9236b7bfdf"
   gist_zbell: "e0b06247f3ecd6ca3de341c54ba8d85de7ef6566"
   gist_zsh_timing: "2d88b477c29de14250ba03650745348781077ae8"
   git_assembler: "e8cf3b24c4322f08217271de65dbce0a22505c3a"
