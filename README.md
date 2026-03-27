@@ -380,6 +380,9 @@ set-credential CLAUDE_CODE_OAUTH_TOKEN "<paste-token-here>"
 - **[Astral Skills](https://github.com/astral-sh/claude-code-plugins/tree/main/plugins/astral/skills)**
   Skills for working with Python using Astral tools (ruff, ty, uv)
 
+- **[gh-pr-review](https://github.com/agynio/gh-pr-review)**
+  Shared skill for GitHub PR review threads and inline review comments, with structured terminal workflows and explicit safety guardrails for write operations
+
 - **[Superpowers Skills](https://github.com/obra/superpowers/tree/main/skills)**
   Core skills library for Claude Code: TDD, debugging, collaboration patterns, and proven techniques — all except writing-skills
 
