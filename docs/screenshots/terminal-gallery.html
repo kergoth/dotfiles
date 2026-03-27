@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terminal Gallery — Dotfiles Configuration</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: #0e0e16;
+    color: #cdd6f4;
+    padding: 32px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  h1 {
+    font-size: 24px;
+    color: #cdd6f4;
+    margin-bottom: 8px;
+  }
+  .subtitle {
+    color: #6c7086;
+    font-size: 14px;
+    margin-bottom: 40px;
+  }
+  h2 {
+    font-size: 18px;
+    color: #89b4fa;
+    margin: 36px 0 6px 0;
+    padding-top: 24px;
+    border-top: 1px solid #313244;
+  }
+  h2:first-of-type { border-top: none; padding-top: 0; }
+  .section-desc {
+    color: #a6adc8;
+    font-size: 13px;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+  .state-label {
+    font-size: 11px;
+    color: #6c7086;
+    margin: 14px 0 5px 0;
+    font-family: 'MesloLGS NF', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .state-label:first-child { margin-top: 0; }
+
+  /* Terminal frame */
+  .terminal {
+    background: #1e1e2e;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 8px 0 20px 0;
+    border: 1px solid #313244;
+  }
+  .terminal-titlebar {
+    background: #181825;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .terminal-dot {
+    width: 12px; height: 12px; border-radius: 50%;
+  }
+  .dot-red { background: #f38ba8; }
+  .dot-yellow { background: #f9e2af; }
+  .dot-green { background: #a6e3a1; }
+  .terminal-title {
+    flex: 1;
+    text-align: center;
+    color: #6c7086;
+    font-size: 12px;
+    font-family: 'MesloLGS NF', monospace;
+  }
+  .terminal-body {
+    padding: 12px 16px;
+    font-family: 'MesloLGS NF', 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  /* Status bars */
+  .bar {
+    font-family: 'MesloLGS NF', 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 13px;
+    line-height: 1;
+    padding: 5px 0;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    white-space: nowrap;
+    overflow-x: auto;
+  }
+  .seg { padding: 4px 10px; display: inline-flex; align-items: center; gap: 5px; }
+
+  /* tmux bar */
+  .tmux-bar { background: #1c1c1c; /* colour234 */ }
+  .tmux-session { background: #e4e4e4; color: #000000; font-weight: bold; /* colour254/colour16 */ }
+  .tmux-win-inactive { color: #808080; /* colour244/250 */ }
+  .tmux-win-active-bg { background: #0087af; /* colour31 */ }
+  .tmux-win-active-num { color: #87d7ff; /* colour117 */ }
+  .tmux-win-active-name { color: #ffffff; font-weight: bold; /* colour231 */ }
+  .tmux-right-mid { background: #303030; color: #9e9e9e; /* colour236/247 */ }
+  .tmux-right-host { background: #d0d0d0; color: #262626; /* colour252/235 */ }
+  .tmux-spacer { flex: 1; }
+
+  /* Shell prompt (p10k lean through Dracula kitty theme) */
+  .prompt-dir { color: #6272a4; font-weight: bold; }       /* Dracula comment/darker blue */
+  .prompt-git { color: #50fa7b; }                           /* Dracula green (lighter) */
+  .prompt-dirty { color: #f1fa8c; }                         /* Dracula yellow */
+  .prompt-clean { color: #50fa7b; }                         /* Dracula green */
+  .prompt-char { color: #50fa7b; }                          /* Dracula green */
+  .prompt-right-bg { background: #45475a; color: #cdd6f4; padding: 2px 8px; border-radius: 2px; font-size: 12px; }
+
+  /* Claude Code status bar */
+  .claude-bar { background: #1e1e2e; }
+  .claude-model { background: #45475a; color: #cdd6f4; font-weight: bold; }
+  .claude-path { color: #cba6f7; }
+  .claude-worktree { color: #94e2d5; }
+  .claude-branch { color: #6c7086; }
+  .claude-gap { width: 12px; }
+
+  /* Context colors */
+  .ctx-good { background: #2a3a2a; color: #a6e3a1; }
+  .ctx-warn { background: #f9e2af; color: #1e1e2e; font-weight: bold; }
+  .ctx-crit { background: #f38ba8; color: #1e1e2e; font-weight: bold; }
+
+  /* Rate limit colors */
+  .rl-ok { background: #a6e3a1; color: #1e1e2e; }
+  .rl-warn { background: #f9e2af; color: #1e1e2e; font-weight: bold; }
+  .rl-crit { background: #f38ba8; color: #1e1e2e; font-weight: bold; }
+
+  /* Claude UI elements */
+  .claude-ui-bar {
+    background: #181825;
+    padding: 4px 12px;
+    font-family: 'MesloLGS NF', monospace;
+    font-size: 12px;
+    color: #585b70;
+    display: flex;
+    align-items: center;
+  }
+  .claude-ui-mode { color: #6c7086; }
+  .claude-ui-spacer { flex: 1; }
+
+  .annotation {
+    font-size: 11px;
+    color: #585b70;
+    font-style: italic;
+    margin: 2px 0 0 0;
+  }
+</style>
+</head>
+<body>
+
+<h1>Terminal Configuration Gallery</h1>
+<p class="subtitle">Screenshots of shell prompt, tmux status bar, and Claude Code status line as configured by these dotfiles. Dracula color scheme throughout.</p>
+
+<!-- ==================== SHELL PROMPT ==================== -->
+<h2>Shell Prompt — Powerlevel10k</h2>
+<p class="section-desc">Two-line lean prompt with 8-color palette. Left: directory + git status. Right: command duration, exit codes, environment indicators.</p>
+
+<div class="terminal">
+  <div class="terminal-titlebar">
+    <div class="terminal-dot dot-red"></div>
+    <div class="terminal-dot dot-yellow"></div>
+    <div class="terminal-dot dot-green"></div>
+    <div class="terminal-title">kitty — zsh</div>
+  </div>
+  <div class="terminal-body">
+    <div><span class="prompt-dir">~/.dotfiles</span> <span class="prompt-git">main</span> <span class="prompt-clean">✔</span></div>
+    <div><span class="prompt-char">❯</span> <span style="color:#f8f8f2">chezmoi apply</span></div>
+    <div style="height:8px"></div>
+    <div><span class="prompt-dir">~/Workspace/projects/my-project</span> <span class="prompt-git">feature/new-feature</span> <span class="prompt-dirty">!1</span></div>
+    <div><span class="prompt-char">❯</span> <span style="color:#f8f8f2;opacity:0.4">█</span></div>
+  </div>
+</div>
+
+<!-- ==================== TMUX STATUS BAR ==================== -->
+<h2>Tmux Status Bar</h2>
+<p class="section-desc">Generated by tmuxline.vim. Session name on left, window list in center, date/time and hostname on right. Active window highlighted in blue.</p>
+
+<div class="state-label">Active window: claude-code</div>
+<div class="bar tmux-bar">
+  <span class="seg tmux-session"> dotfiles </span>
+  <span class="seg tmux-win-inactive"> 0 |<span style="color:#bcbcbc"> zsh </span></span>
+  <span class="seg tmux-win-active-bg"><span class="tmux-win-active-num"> 1 |</span><span class="tmux-win-active-name"> claude-code </span></span>
+  <span class="seg tmux-win-inactive"> 2 |<span style="color:#bcbcbc"> nvim </span></span>
+  <span class="tmux-spacer"></span>
+  <span class="seg tmux-right-mid"> 2026-03-27 | 14:32 </span>
+  <span class="seg tmux-right-host"> asano </span>
+</div>
+
+<!-- ==================== CLAUDE CODE STATUS LINE ==================== -->
+<h2>Claude Code Status Line</h2>
+<p class="section-desc">Custom status line showing model, project path (fish-style shortened), git branch, rate limit pacing, and context window usage. Rate limits appear only when above 50%. Colors escalate with severity.</p>
+
+<div class="state-label">Calm session — context low, no rate limit warnings</div>
+<div class="terminal">
+  <div class="bar claude-bar">
+    <span class="seg claude-model"> Opus </span>
+    <span class="claude-gap"></span>
+    <span class="seg claude-path">.dotfiles</span>
+    <span class="claude-gap"></span>
+    <span class="seg claude-branch">main</span>
+    <span class="tmux-spacer"></span>
+    <span class="seg ctx-good"> ctx 21% </span>
+  </div>
+  <div class="claude-ui-bar">
+    <span class="claude-ui-mode">⏵⏵ accept edits on · 1 shell</span>
+    <span class="claude-ui-spacer"></span>
+    <span style="color:#6c7086">medium</span>
+  </div>
+</div>
+
+<div class="state-label">Worktree session — project path + worktree indicator</div>
+<div class="terminal">
+  <div class="bar claude-bar">
+    <span class="seg claude-model"> Opus </span>
+    <span class="claude-gap"></span>
+    <span class="seg claude-path">W/p/my-project</span>
+    <span class="claude-gap"></span>
+    <span class="seg claude-worktree">⊕ upload-retry</span>
+    <span class="claude-gap"></span>
+    <span class="seg claude-branch">feature/retry-logic</span>
+    <span class="tmux-spacer"></span>
+    <span class="seg ctx-good"> ctx 35% </span>
+  </div>
+  <div class="claude-ui-bar">
+    <span class="claude-ui-mode">⏵⏵ accept edits on · 3 shells</span>
+    <span class="claude-ui-spacer"></span>
+    <span style="color:#6c7086">medium</span>
+  </div>
+</div>
+
+<div class="state-label">5-hour rate limit warning — on track</div>
+<div class="terminal">
+  <div class="bar claude-bar">
+    <span class="seg claude-model"> Opus </span>
+    <span class="claude-gap"></span>
+    <span class="seg claude-path">W/my-o/my-project</span>
+    <span class="claude-gap"></span>
+    <span class="seg claude-branch">main</span>
+    <span class="tmux-spacer"></span>
+    <span class="seg rl-ok"> 5h ✓ 55% </span>
+    <span style="width:4px"></span>
+    <span class="seg ctx-good"> ctx 42% </span>
+  </div>
+  <div class="claude-ui-bar">
+    <span class="claude-ui-mode">⏵⏵ accept edits on</span>
+    <span class="claude-ui-spacer"></span>
+    <span style="color:#6c7086">medium</span>
+  </div>
+</div>
+
+<div class="state-label">5-hour rate limit over-pace — will exhaust before reset</div>
+<div class="terminal">
+  <div class="bar claude-bar">
+    <span class="seg claude-model"> Opus </span>
+    <span class="claude-gap"></span>
+    <span class="seg claude-path">W/my-o/my-project</span>
+    <span class="claude-gap"></span>
+    <span class="seg claude-branch">main</span>
+    <span class="tmux-spacer"></span>
+    <span class="seg rl-warn"> 5h ⚠ 62% ~1.2h </span>
+    <span style="width:4px"></span>
+    <span class="seg ctx-good"> ctx 45% </span>
+  </div>
+  <div class="claude-ui-bar">
+    <span class="claude-ui-mode">⏵⏵ accept edits on</span>
+    <span class="claude-ui-spacer"></span>
+    <span style="color:#6c7086">medium</span>
+  </div>
+</div>
+
+<div class="state-label">Critical — rate limit nearly exhausted, context getting high</div>
+<div class="terminal">
+  <div class="bar claude-bar">
+    <span class="seg claude-model"> Opus </span>
+    <span class="claude-gap"></span>
+    <span class="seg claude-path">W/my-o/my-project</span>
+    <span class="claude-gap"></span>
+    <span class="seg claude-branch">main</span>
+    <span class="tmux-spacer"></span>
+    <span class="seg rl-crit"> 5h ⚠ 89% ~15m </span>
+    <span style="width:4px"></span>
+    <span class="seg ctx-warn"> ctx 68% </span>
+  </div>
+  <div class="claude-ui-bar">
+    <span class="claude-ui-mode">⏵⏵ accept edits on</span>
+    <span class="claude-ui-spacer"></span>
+    <span style="color:#6c7086">medium</span>
+  </div>
+</div>
+
+<div class="state-label">Both rate limits visible — 5h critical, 7d warning</div>
+<div class="terminal">
+  <div class="bar claude-bar">
+    <span class="seg claude-model"> Opus </span>
+    <span class="claude-gap"></span>
+    <span class="seg claude-path">W/my-o/my-project</span>
+    <span class="claude-gap"></span>
+    <span class="seg claude-branch">main</span>
+    <span class="tmux-spacer"></span>
+    <span class="seg rl-crit"> 5h ⚠ 89% ~15m </span>
+    <span style="width:4px"></span>
+    <span class="seg rl-warn"> 7d ⚠ 74% ~1.8d </span>
+    <span style="width:4px"></span>
+    <span class="seg ctx-warn"> ctx 68% </span>
+  </div>
+  <div class="claude-ui-bar">
+    <span class="claude-ui-mode">⏵⏵ accept edits on</span>
+    <span class="claude-ui-spacer"></span>
+    <span style="color:#6c7086">medium</span>
+  </div>
+</div>
+
+<div class="state-label">Different model — Sonnet</div>
+<div class="terminal">
+  <div class="bar claude-bar">
+    <span class="seg claude-model"> Sonnet </span>
+    <span class="claude-gap"></span>
+    <span class="seg claude-path">.dotfiles</span>
+    <span class="claude-gap"></span>
+    <span class="seg claude-branch">main</span>
+    <span class="tmux-spacer"></span>
+    <span class="seg ctx-good"> ctx 12% </span>
+  </div>
+  <div class="claude-ui-bar">
+    <span class="claude-ui-mode">⏵⏵ accept edits on</span>
+    <span class="claude-ui-spacer"></span>
+    <span style="color:#6c7086">medium</span>
+  </div>
+</div>
+
+<div class="annotation">Note: The "accept edits on" bar and "medium" indicator are Claude Code's built-in UI, not part of the custom status line.</div>
+
+</body>
+</html>

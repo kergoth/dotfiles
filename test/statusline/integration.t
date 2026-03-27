@@ -47,11 +47,11 @@ No API calls yet (null percentage):
   $ make_json 'del(.context_window.used_percentage)' | COLUMNS=120 bash "$STATUSLINE" | strip_ansi
   * Opus * ctx 0% * (glob)
 
-Worktree session:
+Worktree session — shows both path and worktree name:
 
   $ make_json '.worktree.name = "upload-retry" | .worktree.branch = "feature/retry"' \
   >   | COLUMNS=120 bash "$STATUSLINE" | strip_ansi
-  *upload-retry*retry*ctx 35%* (glob)
+  *myapp*upload-retry*retry*ctx 35%* (glob)
 
 Session name not rendered (Claude Code shows it in header bar):
 

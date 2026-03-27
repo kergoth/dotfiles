@@ -435,12 +435,16 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
         branch=$(git -C "$cwd" rev-parse --abbrev-ref HEAD 2>/dev/null || true)
     fi
 
-    # Path: worktree name or shortened project path
+    # Path: shortened project path (always if available)
     display_path=""
-    if [[ -n "${wt_name:-}" ]]; then
-        display_path="${SYMBOL_WORKTREE} ${wt_name}"
-    elif [[ -n "${cwd:-}" ]]; then
+    if [[ -n "${cwd:-}" ]]; then
         display_path=$(shorten_path "$cwd" "$HOME")
+    fi
+
+    # Worktree indicator (shown alongside path when in a worktree)
+    worktree_display=""
+    if [[ -n "${wt_name:-}" ]]; then
+        worktree_display="${SYMBOL_WORKTREE} ${wt_name}"
     fi
 
     # Rate limit elapsed times (window_duration - time_until_reset)
@@ -493,7 +497,10 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     fi
 
     # ── Degradation ─────────────────────────────────────────
-    tier=$(select_degradation_tier "$cols" "$model" "$display_path" "$branch" \
+    # Combine path + worktree for width calculation (they drop together)
+    location_text="$display_path"
+    [[ -n "$worktree_display" ]] && location_text="${location_text}  ${worktree_display}"
+    tier=$(select_degradation_tier "$cols" "$model" "$location_text" "$branch" \
         "$rl_worst_text" "$rl_second_text" "$context_text")
 
     # ── Render segments (left-justified with spacing) ──────
@@ -505,11 +512,12 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
 
     # Path (tier <= 1)
     if (( tier <= 1 )) && [[ -n "$display_path" ]]; then
-        if [[ -n "${wt_name:-}" ]]; then
-            printf '%s%s%s%s' "$sep" "$COLOR_CYAN_TEXT" "$display_path" "$COLOR_RESET"
-        else
-            printf '%s%s%s%s' "$sep" "$COLOR_PURPLE_TEXT" "$display_path" "$COLOR_RESET"
-        fi
+        printf '%s%s%s%s' "$sep" "$COLOR_PURPLE_TEXT" "$display_path" "$COLOR_RESET"
+    fi
+
+    # Worktree indicator (tier <= 1, shown after path)
+    if (( tier <= 1 )) && [[ -n "$worktree_display" ]]; then
+        printf '%s%s%s%s' "$sep" "$COLOR_CYAN_TEXT" "$worktree_display" "$COLOR_RESET"
     fi
 
     # Branch (tier <= 2)
