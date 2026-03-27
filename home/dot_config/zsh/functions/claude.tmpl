@@ -1,7 +1,11 @@
 {{- $claude := includeTemplate "find-tool" (dict "root" . "tool" "claude") -}}
 {{- if $claude -}}
-{{- $home := printf "%s" .chezmoi.destDir -}}
-{{- $os := .chezmoi.os -}}
+{{-   $home := printf "%s" .chezmoi.destDir -}}
+{{-   $os := .chezmoi.os -}}
+{{-   $clear_env := "" -}}
+{{-   if not .ephemeral -}}
+{{-     $clear_env = "CLAUDE_CODE_OUTH_TOKEN= " -}}
+{{-   end -}}
 
 {{- $localPrefix := joinPath $home ".local" -}}
 {{- $localClaudeBin := joinPath $localPrefix "bin" "claude" -}}
@@ -20,5 +24,5 @@ if [[ ${commands[claude]} = "{{ $localClaudeBin }}" ]]; then
 fi
 {{- end }}
 
-command env CLAUDE_CODE_OAUTH_TOKEN= USE_BUILTIN_RIPGREP=0 claude "$@"
+command env {{ $clear_env -}} USE_BUILTIN_RIPGREP=0 claude "$@"
 {{ end -}}
