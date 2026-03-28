@@ -128,7 +128,9 @@ freebsd_check sysutils/exa exa
 freebsd_check sysutils/direnv direnv
 
 # LLM
-freebsd_check misc/claude-code claude
+if pkg info -e claude-code >/dev/null 2>&1; then
+    pkg delete -y claude-code
+fi
 
 # FreeBSD-only
 freebsd_check sysutils/lsblk lsblk
