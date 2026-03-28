@@ -126,6 +126,8 @@ for c in changes:
                '--name', c['id'], '--ref', ref]
         if c.get('review_note'):
             cmd += ['--review-note', c['review_note']]
+        for pat in (c.get('review_paths') or []):
+            cmd += ['--review-paths', pat]
         subprocess.run(cmd)
 " "$changes_file" "$sourcedir/scripts/show-git-changes.py"
             fi
@@ -154,6 +156,8 @@ for c in changes:
                '--name', c['id'], '--ref', ref, '--diff-only']
         if c.get('review_note'):
             cmd += ['--review-note', c['review_note']]
+        for pat in (c.get('review_paths') or []):
+            cmd += ['--review-paths', pat]
         subprocess.run(cmd)
 " "$changes_file" "$sourcedir/scripts/show-git-changes.py"
                                 ;;
