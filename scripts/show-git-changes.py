@@ -126,6 +126,7 @@ def fetch_via_bare_clone(
     name: str | None,
     ref: str,
     cache_dir: Path,
+    review_paths: list[str] | None = None,
 ) -> dict | None:
     """Fetch data via cached bare clone. Returns dict with 'log', 'shortlog', 'diff' keys."""
     clone_id = name or repo_url.split("/")[-1].removesuffix(".git")
@@ -162,27 +163,32 @@ def fetch_via_bare_clone(
                 timeout=120,
             )
 
+        log_cmd = [
+            "git", "-C", str(clone_path), "log", "--oneline", f"{old_sha}..{new_sha}"
+        ]
+        if review_paths:
+            log_cmd += ["--"] + review_paths
         log_result = subprocess.run(
-            ["git", "-C", str(clone_path), "log", "--oneline", f"{old_sha}..{new_sha}"],
-            capture_output=True,
-            text=True,
-            check=True,
+            log_cmd, capture_output=True, text=True, check=True
         )
+
         shortlog_result = subprocess.run(
             ["git", "-C", str(clone_path), "shortlog", f"{old_sha}..{new_sha}"],
             capture_output=True,
             text=True,
         )
-        diff_result = subprocess.run(
-            ["git", "-C", str(clone_path), "diff", old_sha, new_sha],
-            capture_output=True,
-            text=True,
-        )
 
+        diff_cmd = ["git", "-C", str(clone_path), "diff", old_sha, new_sha]
+        if review_paths:
+            diff_cmd += ["--"] + review_paths
+        diff_result = subprocess.run(diff_cmd, capture_output=True, text=True)
+
+        log_text = log_result.stdout.strip()
+        diff_text = diff_result.stdout.strip()
         return {
-            "log": log_result.stdout.strip(),
+            "log": log_text or (NO_COMMITS_IN_SCOPE if review_paths else ""),
             "shortlog": shortlog_result.stdout.strip(),
-            "diff": diff_result.stdout.strip(),
+            "diff": diff_text or (NO_CHANGES_IN_SCOPE if review_paths else ""),
         }
     except (subprocess.CalledProcessError, subprocess.TimeoutExpired, OSError) as exc:
         console.print(

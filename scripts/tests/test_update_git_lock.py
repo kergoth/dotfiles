@@ -553,3 +553,80 @@ def test_fetch_changes_github_api_no_review_paths_unchanged():
         )
     assert result is not None
     assert result["diff"] == "raw diff here"
+
+
+def test_bare_clone_passes_pathspecs_to_log_and_diff(tmp_path):
+    """review_paths are appended after -- in git log and git diff commands."""
+    captured_cmds = []
+    clone_path = tmp_path / "myrepo"
+    clone_path.mkdir()
+
+    def fake_run(cmd, **kw):
+        captured_cmds.append(cmd)
+        m = MagicMock()
+        m.returncode = 0
+        m.stdout = "some output"
+        return m
+
+    with patch("subprocess.run", side_effect=fake_run):
+        _sgc_mod.fetch_via_bare_clone(
+            "https://github.com/x/y", "a" * 40, "b" * 40,
+            name="myrepo", ref="main", cache_dir=tmp_path,
+            review_paths=["CHANGELOG.md"],
+        )
+
+    log_cmd = next(c for c in captured_cmds if "log" in c)
+    diff_cmd = next(c for c in captured_cmds if "diff" in c)
+    shortlog_cmd = next(c for c in captured_cmds if "shortlog" in c)
+
+    assert "--" in log_cmd and "CHANGELOG.md" in log_cmd
+    assert "--" in diff_cmd and "CHANGELOG.md" in diff_cmd
+    # shortlog is intentionally NOT filtered — it conveys intent
+    assert "CHANGELOG.md" not in shortlog_cmd
+
+
+def test_bare_clone_empty_log_returns_sentinel(tmp_path):
+    """Empty log after path filtering returns a sentinel string, not empty string."""
+    clone_path = tmp_path / "myrepo"
+    clone_path.mkdir()
+
+    def fake_run(cmd, **kw):
+        m = MagicMock()
+        m.returncode = 0
+        m.stdout = ""
+        return m
+
+    with patch("subprocess.run", side_effect=fake_run):
+        result = _sgc_mod.fetch_via_bare_clone(
+            "https://github.com/x/y", "a" * 40, "b" * 40,
+            name="myrepo", ref="main", cache_dir=tmp_path,
+            review_paths=["CHANGELOG.md"],
+        )
+
+    assert result is not None
+    assert result["log"] == _sgc_mod.NO_COMMITS_IN_SCOPE
+    assert result["diff"] == _sgc_mod.NO_CHANGES_IN_SCOPE
+
+
+def test_bare_clone_no_review_paths_no_pathspecs(tmp_path):
+    """Without review_paths, git commands have no -- separator."""
+    captured_cmds = []
+    clone_path = tmp_path / "myrepo"
+    clone_path.mkdir()
+
+    def fake_run(cmd, **kw):
+        captured_cmds.append(cmd)
+        m = MagicMock()
+        m.returncode = 0
+        m.stdout = "output"
+        return m
+
+    with patch("subprocess.run", side_effect=fake_run):
+        _sgc_mod.fetch_via_bare_clone(
+            "https://github.com/x/y", "a" * 40, "b" * 40,
+            name="myrepo", ref="main", cache_dir=tmp_path,
+            review_paths=None,
+        )
+
+    for cmd in captured_cmds:
+        assert "--" not in cmd, f"Unexpected -- in {cmd}"
