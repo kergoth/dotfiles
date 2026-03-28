@@ -6,6 +6,7 @@ git_lock:
   bat_extras: "v2024.08.24"
   beanbaginc_dev_goodies: "61fec42ad35352f3c1ada707cb4419879f68bd97"
   bitbake_syntax: "92f657768e8f5544fb631112ea38beee3cde2fe8"
+  claude_code: "v2.1.86"
   dracula_bbedit: "038d50d8ce01349012cf815bbef855a1793c4fea"
   dracula_zed: "08a007ef54231a6144fcb04a764912651f015bc4"
   fumiyas_home_commands: "861e89cb24c7746e32bcd58ca6ae8df0f07d7a82"
