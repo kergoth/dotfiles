@@ -447,3 +447,22 @@ def test_display_ref_truncates_sha():
 def test_display_ref_preserves_tag():
     """Tag names are returned unchanged."""
     assert _sgc_mod._display_ref("v2024.08.24") == "v2024.08.24"
+
+
+def test_review_paths_arg_none_when_absent():
+    """--review-paths absent → args.review_paths is None."""
+    with patch("sys.argv", ["show-git-changes.py",
+                            "https://github.com/x/y", "aaa" * 14, "bbb" * 14]):
+        args = _sgc_mod.parse_args()
+    assert args.review_paths is None
+
+
+def test_review_paths_arg_accumulates():
+    """Multiple --review-paths accumulate as a list."""
+    with patch("sys.argv", [
+        "show-git-changes.py", "https://github.com/x/y", "aaa" * 14, "bbb" * 14,
+        "--review-paths", "CHANGELOG.md",
+        "--review-paths", "src/*.py",
+    ]):
+        args = _sgc_mod.parse_args()
+    assert args.review_paths == ["CHANGELOG.md", "src/*.py"]

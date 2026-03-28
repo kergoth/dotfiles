@@ -52,6 +52,13 @@ def parse_args():
         "--review-note",
         help="Context injected into the AI prompt (e.g. which items are installed)",
     )
+    parser.add_argument(
+        "--review-paths",
+        dest="review_paths",
+        action="append",
+        metavar="PATTERN",
+        help="Glob pattern to limit diff scope (repeatable). For large monorepos.",
+    )
     return parser.parse_args()
 
 
