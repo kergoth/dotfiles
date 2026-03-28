@@ -62,11 +62,25 @@ def _gh_api(path: str) -> Any:
     return json.loads(result.stdout)
 
 
-def resolve_latest_tag(repo: str, name: str, tag_pattern: str | None) -> str:
-    """Return the tag name of the latest release for this repo."""
-    if _is_github_repo(repo):
+def resolve_latest_tag(
+    repo: str, name: str, tag_pattern: str | None, tag_source: str | None = None
+) -> str:
+    """Return the latest pinned tag according to the requested source."""
+    if tag_source is None:
+        tag_source = "github_releases" if _is_github_repo(repo) else "git_tags"
+
+    if tag_source == "github_releases":
+        if not _is_github_repo(repo):
+            raise SystemExit(
+                f"error: tag_source 'github_releases' is only valid for GitHub repos ({name!r})"
+            )
         return _resolve_github_tag(repo, name, tag_pattern)
-    return _resolve_generic_tag(repo, name, tag_pattern)
+    if tag_source == "git_tags":
+        return _resolve_generic_tag(repo, name, tag_pattern)
+    raise SystemExit(
+        f"error: invalid tag_source {tag_source!r} for {name!r} "
+        "(expected 'github_releases' or 'git_tags')"
+    )
 
 
 def _resolve_github_tag(repo: str, name: str, tag_pattern: str | None) -> str:
@@ -295,13 +309,25 @@ def main() -> int:
                 re.compile(pattern)
             except re.error as exc:
                 raise SystemExit(f"error: invalid tag_pattern for {eid!r}: {exc}")
+        tag_source = entry.get("tag_source")
+        if tag_source and tag_source not in {"github_releases", "git_tags"}:
+            raise SystemExit(
+                f"error: invalid tag_source for {eid!r}: {tag_source!r}"
+            )
+        if (
+            tag_source == "github_releases"
+            and not _is_github_repo(entry["repo"])
+        ):
+            raise SystemExit(
+                f"error: tag_source 'github_releases' is only valid for GitHub repos ({eid!r})"
+            )
 
     new_locks = dict(old_locks)
     for eid in selected:
         entry = sources[eid]
         if entry.get("tagged"):
             new_locks[eid] = resolve_latest_tag(
-                entry["repo"], eid, entry.get("tag_pattern")
+                entry["repo"], eid, entry.get("tag_pattern"), entry.get("tag_source")
             )
         else:
             new_locks[eid] = resolve_ref(entry["repo"], entry.get("ref", "main"))
@@ -320,6 +346,7 @@ def main() -> int:
                         "repo": entry["repo"],
                         "ref": entry.get("ref"),
                         "tag_pattern": entry.get("tag_pattern"),
+                        "tag_source": entry.get("tag_source"),
                         "old_sha": old_sha,
                         "new_sha": new_sha,
                         "review": entry.get("review", True),

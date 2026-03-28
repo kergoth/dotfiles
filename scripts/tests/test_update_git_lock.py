@@ -101,6 +101,23 @@ def test_dry_run_json_tag_has_kind():
     assert changes[0]["kind"] == "tag"
     assert changes[0]["tag_pattern"] is None
     assert changes[0]["ref"] is None
+    assert changes[0]["tag_source"] is None
+
+
+def test_dry_run_json_preserves_review_note_for_tagged_entry():
+    """Tagged entries preserve review_note in dry-run JSON output."""
+    sources = {
+        "_test_claude_code": {
+            "repo": "https://github.com/anthropics/claude-code",
+            "tagged": True,
+            "review_note": "Review CHANGELOG.md only.",
+        },
+    }
+    changes = _run_main_dry_run_json(sources, ["_test_claude_code"])
+    assert len(changes) == 1
+    assert changes[0]["kind"] == "tag"
+    assert changes[0]["tag_source"] is None
+    assert changes[0]["review_note"] == "Review CHANGELOG.md only."
 
 
 def _gh_result(data):
@@ -114,7 +131,9 @@ def test_resolve_latest_tag_github_no_pattern():
     """GitHub repo without pattern uses releases/latest."""
     fake = _gh_result({"tag_name": "v1.2.3"})
     with patch("subprocess.run", return_value=fake) as mock_run:
-        tag = resolve_latest_tag("https://github.com/owner/repo", "owner/repo", None)
+        tag = resolve_latest_tag(
+            "https://github.com/owner/repo", "owner/repo", None, None
+        )
     assert tag == "v1.2.3"
     call_args = mock_run.call_args[0][0]
     assert "releases/latest" in " ".join(call_args)
@@ -128,7 +147,7 @@ def test_resolve_latest_tag_github_no_releases():
     err.stderr = "404"
     with patch("subprocess.run", side_effect=err):
         try:
-            resolve_latest_tag("https://github.com/owner/repo", "owner/repo", None)
+            resolve_latest_tag("https://github.com/owner/repo", "owner/repo", None, None)
             assert False, "should have raised"
         except SystemExit:
             pass
@@ -142,7 +161,10 @@ def test_resolve_latest_tag_github_with_pattern_matches():
     ]
     with patch("subprocess.run", return_value=_gh_result(releases)):
         tag = resolve_latest_tag(
-            "https://github.com/owner/repo", "owner/repo", r"v\d+\.\d+\.\d+-rc\d+"
+            "https://github.com/owner/repo",
+            "owner/repo",
+            r"v\d+\.\d+\.\d+-rc\d+",
+            None,
         )
     assert tag == "v2.0.0-rc1"
 
@@ -155,7 +177,7 @@ def test_resolve_latest_tag_github_with_pattern_skips_drafts():
     ]
     with patch("subprocess.run", return_value=_gh_result(releases)):
         tag = resolve_latest_tag(
-            "https://github.com/owner/repo", "owner/repo", r"v\d+.*"
+            "https://github.com/owner/repo", "owner/repo", r"v\d+.*", None
         )
     assert tag == "v1.9.0"
 
@@ -167,7 +189,10 @@ def test_resolve_latest_tag_github_pattern_no_match():
     with patch("subprocess.run", side_effect=[_gh_result(releases), _gh_result([])]):
         try:
             resolve_latest_tag(
-                "https://github.com/owner/repo", "owner/repo", r"v2\.\d+\.\d+"
+                "https://github.com/owner/repo",
+                "owner/repo",
+                r"v2\.\d+\.\d+",
+                None,
             )
             assert False, "should have raised"
         except SystemExit:
@@ -190,7 +215,7 @@ def test_resolve_latest_tag_non_github_default_pattern():
     """Non-GitHub uses default vX.Y.Z pattern and returns highest semver."""
     fake = _ls_remote_result(["v1.0.0", "v1.2.0", "v1.10.0", "v0.9.9"])
     with patch("subprocess.run", return_value=fake):
-        tag = resolve_latest_tag("https://gitlab.com/owner/repo", "repo", None)
+        tag = resolve_latest_tag("https://gitlab.com/owner/repo", "repo", None, None)
     assert tag == "v1.10.0"
 
 
@@ -199,7 +224,10 @@ def test_resolve_latest_tag_non_github_custom_pattern():
     fake = _ls_remote_result(["release-1.0.0", "release-2.0.0", "nightly-2024"])
     with patch("subprocess.run", return_value=fake):
         tag = resolve_latest_tag(
-            "https://gitlab.com/owner/repo", "repo", r"release-\d+\.\d+\.\d+"
+            "https://gitlab.com/owner/repo",
+            "repo",
+            r"release-\d+\.\d+\.\d+",
+            None,
         )
     assert tag == "release-2.0.0"
 
@@ -209,7 +237,9 @@ def test_resolve_latest_tag_non_github_non_semver_hard_fails():
     fake = _ls_remote_result(["nightly-20240101", "nightly-20240201"])
     with patch("subprocess.run", return_value=fake):
         try:
-            resolve_latest_tag("https://gitlab.com/owner/repo", "repo", r"nightly-\d+")
+            resolve_latest_tag(
+                "https://gitlab.com/owner/repo", "repo", r"nightly-\d+", None
+            )
             assert False, "should have raised"
         except SystemExit:
             pass
@@ -220,10 +250,36 @@ def test_resolve_latest_tag_non_github_no_match_hard_fails():
     fake = _ls_remote_result(["alpha-1", "alpha-2"])
     with patch("subprocess.run", return_value=fake):
         try:
-            resolve_latest_tag("https://gitlab.com/owner/repo", "repo", None)
+            resolve_latest_tag("https://gitlab.com/owner/repo", "repo", None, None)
             assert False, "should have raised"
         except SystemExit:
             pass
+
+
+def test_resolve_latest_tag_github_git_tags_override():
+    """GitHub repos can opt into raw git tag resolution."""
+    fake = _ls_remote_result(["v2.1.85", "v2.1.86"])
+    with patch("subprocess.run", return_value=fake) as mock_run:
+        tag = resolve_latest_tag(
+            "https://github.com/anthropics/claude-code",
+            "claude_code",
+            None,
+            "git_tags",
+        )
+    assert tag == "v2.1.86"
+    call_args = mock_run.call_args[0][0]
+    assert call_args[:3] == ["git", "ls-remote", "--tags"]
+
+
+def test_resolve_latest_tag_non_github_rejects_github_releases_source():
+    """Non-GitHub repos cannot request github_releases as tag_source."""
+    try:
+        resolve_latest_tag(
+            "https://gitlab.com/owner/repo", "repo", None, "github_releases"
+        )
+        assert False, "should have raised"
+    except SystemExit:
+        pass
 
 
 def test_tagged_entry_routes_to_resolve_latest_tag():
@@ -247,7 +303,7 @@ def test_tagged_entry_routes_to_resolve_latest_tag():
         rc = mod.main()
 
     assert rc == 0
-    mock_tag.assert_called_once_with("https://github.com/x/y", "_test_tagged", None)
+    mock_tag.assert_called_once_with("https://github.com/x/y", "_test_tagged", None, None)
     mock_ref.assert_not_called()
 
 
