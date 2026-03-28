@@ -254,12 +254,20 @@ def fetch_changes(
         if review_paths:
             # Build diff from per-file patches (already filtered); avoids parsing unified diff
             patch_pieces = []
+            patch_missing = []
             for f in files:
                 patch = f.get("patch")
                 if patch:
                     patch_pieces.append(
                         f"diff --git a/{f['filename']} b/{f['filename']}\n{patch}"
                     )
+                else:
+                    patch_missing.append(f["filename"])
+            if patch_missing:
+                console.print(
+                    f"[yellow]Warning: GitHub API omitted patch for: "
+                    f"{', '.join(patch_missing)} (file too large?)[/yellow]"
+                )
             diff_text = "\n".join(patch_pieces) or NO_CHANGES_IN_SCOPE
         else:
             diff_text = api_data.get("diff", "")
