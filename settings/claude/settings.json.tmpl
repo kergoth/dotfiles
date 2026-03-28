@@ -5,7 +5,14 @@
 {{-     end -}}
 {{-   end -}}
 {
-  "model": "opus[1m]",
+  "alwaysThinkingEnabled": true,
+  "autoDreamEnabled": true,
+  "effortLevel": "medium",
+  "env": {
+    "DISABLE_AUTOUPDATER": "1"{{ if $uses_musl }},
+    "USE_BUILTIN_RIPGREP": "0"{{ end }}
+  },
+  "model": "sonnet",
   "sandbox": {
     "enabled": true,
     "autoAllowBashIfSandboxed": true
@@ -14,9 +21,5 @@
   "statusLine": {
     "type": "command",
     "command": "bash ~/.claude/statusline-command.sh"
-  },
-  "env": {
-    "DISABLE_AUTOUPDATER": "1"{{ if $uses_musl }},
-    "USE_BUILTIN_RIPGREP": "0"{{ end }}
   }
 }
