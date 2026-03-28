@@ -35,9 +35,9 @@ git_sources:
     review_paths:
       - "CHANGELOG.md"
     review_note: "This repository is a release-tracking distribution repo for Claude Code.
-      Summarize only the user-visible, installer, packaging, or security-relevant changes
-      described in CHANGELOG.md. If CHANGELOG.md did not change, flag the update for
-      manual inspection."
+      List each notable user-visible, installer, packaging, or security-relevant change
+      from the CHANGELOG.md diff. Do not just say 'safe to apply' without listing them.
+      If CHANGELOG.md did not change, flag the update for manual inspection."
   beanbaginc_dev_goodies:
     repo: https://github.com/beanbaginc/dev-goodies
     ref: master
