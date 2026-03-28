@@ -424,6 +424,7 @@ def render_changes(
     skip_log: bool = False,
     skip_ai: bool = False,
     review_note: str | None = None,
+    review_paths: list[str] | None = None,
 ):
     """Render the tiered review output."""
     label = name or "unknown"
@@ -448,7 +449,7 @@ def render_changes(
         for agent in candidates:
             console.print(f"Running AI review via {agent}...", style="dim")
             review = run_ai_review(
-                agent, data.get("log", ""), data.get("diff", ""), name, review_note
+                agent, data.get("log", ""), data.get("diff", ""), name, review_note, review_paths
             )
             if review:
                 used_agent = agent
@@ -488,7 +489,8 @@ def main():
     cache_dir = get_cache_dir(args.cache_dir)
 
     data = fetch_changes(
-        args.repo_url, args.old_sha, args.new_sha, args.name, args.ref, cache_dir
+        args.repo_url, args.old_sha, args.new_sha, args.name, args.ref, cache_dir,
+        review_paths=args.review_paths
     )
     if data is None:
         console.print(
@@ -507,6 +509,7 @@ def main():
         skip_ai=args.no_ai or args.diff_only,
         skip_log=args.diff_only,
         review_note=args.review_note,
+        review_paths=args.review_paths,
     )
     return 0
 

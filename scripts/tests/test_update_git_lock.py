@@ -407,9 +407,17 @@ def _make_rich_stubs():
         def print(self, *a, **kw):
             pass
 
+    class _FakePanel:
+        def __init__(self, *a, **kw):
+            pass
+
+    class _FakeSyntax:
+        def __init__(self, *a, **kw):
+            pass
+
     console_mod.Console = _FakeConsole
-    panel_mod.Panel = object
-    syntax_mod.Syntax = object
+    panel_mod.Panel = _FakePanel
+    syntax_mod.Syntax = _FakeSyntax
     return rich, console_mod, panel_mod, syntax_mod
 
 
@@ -697,3 +705,28 @@ def test_run_ai_review_no_scope_restriction_without_paths():
 
     if captured_prompt:
         assert "SCOPE RESTRICTION" not in captured_prompt[0]
+
+
+def test_render_changes_passes_review_paths_to_ai():
+    """render_changes forwards review_paths to run_ai_review."""
+    captured_paths = []
+    original = _sgc_mod.run_ai_review
+
+    def capturing_run_ai_review(agent_cmd, log, diff, name,
+                                review_note=None, review_paths=None):
+        captured_paths.append(review_paths)
+        return "safe"
+
+    data = {"log": "log", "shortlog": "shortlog", "diff": "diff"}
+    with (
+        patch.object(_sgc_mod, "run_ai_review", side_effect=capturing_run_ai_review),
+        patch("shutil.which", return_value="/usr/bin/claude"),
+    ):
+        _sgc_mod.render_changes(
+            name="test", old_sha="a" * 40, new_sha="b" * 40,
+            data=data, show_diff=False, ai_cmd="claude",
+            skip_ai=False, skip_log=True,
+            review_note=None, review_paths=["CHANGELOG.md"],
+        )
+
+    assert captured_paths == [["CHANGELOG.md"]]
