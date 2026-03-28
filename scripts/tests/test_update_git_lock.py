@@ -630,3 +630,70 @@ def test_bare_clone_no_review_paths_no_pathspecs(tmp_path):
 
     for cmd in captured_cmds:
         assert "--" not in cmd, f"Unexpected -- in {cmd}"
+
+
+def test_run_ai_review_scope_restriction_in_prompt():
+    """Prompt includes SCOPE RESTRICTION header when review_paths is provided."""
+    captured_prompt = []
+
+    def fake_run(cmd, **kw):
+        captured_prompt.append(cmd[-1])  # prompt is last arg for all supported agents
+        m = MagicMock()
+        m.returncode = 0
+        m.stdout = "looks safe"
+        return m
+
+    with patch("subprocess.run", side_effect=fake_run):
+        result = _sgc_mod.run_ai_review(
+            "claude", "log text", "diff text", "test-repo",
+            review_note=None, review_paths=["CHANGELOG.md"],
+        )
+
+    assert result == "looks safe"
+    assert captured_prompt, "subprocess.run was not called"
+    assert "SCOPE RESTRICTION" in captured_prompt[0]
+    assert "CHANGELOG.md" in captured_prompt[0]
+
+
+def test_run_ai_review_scope_restriction_before_review_note():
+    """SCOPE RESTRICTION appears before additional reviewer instructions."""
+    captured_prompt = []
+
+    def fake_run(cmd, **kw):
+        captured_prompt.append(cmd[-1])
+        m = MagicMock()
+        m.returncode = 0
+        m.stdout = "safe"
+        return m
+
+    with patch("subprocess.run", side_effect=fake_run):
+        _sgc_mod.run_ai_review(
+            "claude", "log", "diff", "repo",
+            review_note="Custom instructions.", review_paths=["src/*.py"],
+        )
+
+    prompt = captured_prompt[0]
+    scope_pos = prompt.find("SCOPE RESTRICTION")
+    note_pos = prompt.find("Custom instructions.")
+    assert scope_pos < note_pos, "SCOPE RESTRICTION must precede review_note"
+
+
+def test_run_ai_review_no_scope_restriction_without_paths():
+    """No SCOPE RESTRICTION header when review_paths is absent."""
+    def fake_run(cmd, **kw):
+        m = MagicMock()
+        m.returncode = 0
+        m.stdout = "safe"
+        return m
+
+    captured_prompt = []
+
+    def capturing_run(cmd, **kw):
+        captured_prompt.append(cmd[-1])
+        return fake_run(cmd, **kw)
+
+    with patch("subprocess.run", side_effect=capturing_run):
+        _sgc_mod.run_ai_review("claude", "log", "diff", "repo", review_paths=None)
+
+    if captured_prompt:
+        assert "SCOPE RESTRICTION" not in captured_prompt[0]

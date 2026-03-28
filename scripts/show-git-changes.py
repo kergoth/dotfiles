@@ -346,12 +346,21 @@ def run_ai_review(
     diff: str,
     name: str | None,
     review_note: str | None = None,
+    review_paths: list[str] | None = None,
 ) -> str | None:
     """Run AI agent to produce a supply chain review summary."""
+    context_parts = []
+    if review_paths:
+        paths_display = ", ".join(review_paths)
+        context_parts.append(
+            f"SCOPE RESTRICTION: This diff has been pre-filtered to paths matching: "
+            f"{paths_display}\n"
+            f"Changes to other paths are not shown. Do not speculate about unshown paths."
+        )
+    if review_note:
+        context_parts.append(f"Additional reviewer instructions:\n{review_note}")
     review_context = (
-        f"IMPORTANT — additional reviewer instructions:\n{review_note}\n\n"
-        if review_note
-        else ""
+        "IMPORTANT — " + "\n\n".join(context_parts) + "\n\n" if context_parts else ""
     )
     prompt = SUPPLY_CHAIN_PROMPT.format(
         log=log, diff=diff, review_context=review_context
