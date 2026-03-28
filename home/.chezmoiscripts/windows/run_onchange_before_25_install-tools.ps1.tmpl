@@ -7,6 +7,7 @@ RefreshEnvPath
 
 {{-   $rusage := includeTemplate "find-tool" (dict "root" . "tool" "rusage") -}}
 {{-   $lock := .git_lock -}}
+{{-   $claude_version := trimPrefix "v" (index $lock "claude_code") -}}
 {{-   $gh_cmd := includeTemplate "find-tool" (dict "root" . "tool" "gh") -}}
 
 {{/* Note: tmux and zsh are unavailable on Windows */}}
@@ -16,7 +17,6 @@ RefreshEnvPath
         "bat" "bat"
         "batman" "bat-extras"
         "cargo" "rust"
-        "claude" "claude-code"
         "curl" "curl"
         "delta" "delta"
         "difft" "difftastic"
@@ -64,6 +64,29 @@ reg import "{{ $scoop_python }}\install-pep-514.reg"
 {{-       end -}}
 {{-     end -}}
 {{-   end -}}
+
+$currentClaudeVersion = ""
+if (Get-Command claude -ErrorAction SilentlyContinue) {
+    $versionOutput = & claude --version 2>$null
+    if ($versionOutput -match '([0-9]+\.[0-9]+\.[0-9]+)') {
+        $currentClaudeVersion = $Matches[1]
+    }
+}
+$needClaudeInstall = $currentClaudeVersion -ne "{{ $claude_version }}"
+
+if (Get-Command scoop -ErrorAction SilentlyContinue) {
+    $scoopClaude = scoop list claude-code 2>$null
+    if ($LASTEXITCODE -eq 0 -and $scoopClaude) {
+        Write-Host "Removing legacy Scoop Claude Code install"
+        scoop uninstall claude-code
+        $needClaudeInstall = $true
+    }
+}
+
+if ($needClaudeInstall) {
+    Write-Host "Installing Claude Code {{ $claude_version }} via official installer"
+    & ([scriptblock]::Create((irm https://claude.ai/install.ps1))) {{ $claude_version }}
+}
 
 {{-   $cargo_git_tools := dict "choose" "--git https://github.com/theryangeary/choose" -}}
 {{-   $cargo_to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $cargo_git_tools) | fromJson -}}
