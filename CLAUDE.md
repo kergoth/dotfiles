@@ -146,16 +146,18 @@ Chezmoi run scripts follow this pattern:
 
 ### External Dependencies
 
-Chezmoi externals download non-package-manager resources. Templates in `.chezmoitemplates/external/` define:
+Chezmoi externals download non-package-manager resources. The templates under `.chezmoitemplates/external/` cover several categories of pinned upstream content, including tooling, agent content, editor assets, fonts, and other app data.
 
-- Agent skills and plugins (superpowers, anthropic, astral)
-- Work-only agent skill repos — encrypted TOML fragment (`agent-content-work.toml.age`), cloned as git-repos to `~/Workspace/`, conditional on `.work && .secrets`
-- Zsh plugins and themes
-- Fonts (iA Writer, MesloLGS NF)
-- Vim plugins
-- Color schemes and app data
+Shared Git pinning is part of the repo's broader move toward review-first updates for external resources.
 
-Archive-based externals are one consumer of the shared Git lock, with pinned refs stored in `.chezmoidata/git-lock.yml` and source repos defined in `.chezmoidata/git-sources.yml`. Run `scripts/update-git-lock.py` (or `script/update`) to resolve refs to current SHAs or tag names. Git-repo type externals (e.g., `bin/`, work skill repos) track HEAD directly and are not pinned.
+- `home/.chezmoidata/git-sources.yml` defines the shared Git sources, how each one is resolved, and optional review metadata. Templates and scripts remain responsible for deciding how pinned content is consumed.
+- `home/.chezmoidata/git-lock.yml` stores the current pinned value for each source. Branch-tracked entries store SHAs; tagged entries may store tag names instead of SHAs.
+- This shared mechanism is used by chezmoi externals, install/update scripts, and other templates or scripts that consume upstream Git content.
+- `scripts/update-git-lock.py --dry-run --json` resolves candidate updates and emits the structured metadata consumed by downstream review/apply tooling.
+- `script/update` and `script/update.ps1` orchestrate the review-first flow: resolve updates, review each candidate, prompt before apply, write `git-lock.yml`, and commit the lock change.
+- `scripts/show-git-changes.py` is the review surface for a candidate update: it fetches the old/new range, shows commit log/shortlog and diff output, and may run an AI review summary.
+- `review_note` adds repo-specific instructions to that AI review.
+- `review_paths` hard-scopes the fetched log and diff passed into review, which is useful for large repositories or release-tracking sources where only part of the tree matters.
 
 ### Secrets Management
 
