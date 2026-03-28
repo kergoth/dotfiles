@@ -1,7 +1,15 @@
 {{-   $uses_musl := false -}}
+{{-   $has_git_bash := false -}}
+{{-   $bash := "" -}}
 {{-   if ne .chezmoi.os "windows" -}}
 {{-     if exec "sh" "-c" "ldd --version 2>&1 | grep -qi musl" -}}
 {{-       $uses_musl = true -}}
+{{-     end -}}
+{{-   else -}}
+{{-     $userprofile := .env.USERPROFILE | default "" -}}
+{{-     $bash = joinPath $userprofile "scoop" "apps" "git" "current" "bin" "bash.exe" -}}
+{{-     if and $userprofile (stat $bash) -}}
+{{-       $has_git_bash = true -}}
 {{-     end -}}
 {{-   end -}}
 {
@@ -10,7 +18,8 @@
   "effortLevel": "medium",
   "env": {
     "DISABLE_AUTOUPDATER": "1"{{ if $uses_musl }},
-    "USE_BUILTIN_RIPGREP": "0"{{ end }}
+    "USE_BUILTIN_RIPGREP": "0"{{ end }}{{ if $has_git_bash }},
+    "CLAUDE_CODE_GIT_BASH_PATH": "{{ replace $bash `\` `\\` }}"{{ end }}
   },
   "model": "sonnet",
   "sandbox": {
