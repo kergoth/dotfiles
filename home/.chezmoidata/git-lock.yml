@@ -1,7 +1,7 @@
 git_lock:
   86box_assets: "83547e9e6077350fdb960541b7a4ad540a76a6c2"
   86box_roms: "34445a5683402b8ee6f2b09feba242e04eaaf17d"
-  anthropic_official_plugins: "72b975468071669f5503fd49c37ab657d9212fbd"
+  anthropic_official_plugins: "548bfa83750f4191adcb46ffa51b44f02e1ceaa7"
   astral: "f3ce88a7ba830f53afd6d944c1d0278ed318e142"
   bat_extras: "v2024.08.24"
   beanbaginc_dev_goodies: "61fec42ad35352f3c1ada707cb4419879f68bd97"
@@ -24,7 +24,7 @@ git_lock:
   nix_zsh_completions: "0.5.1"
   powerlevel10k: "v1.20.0"
   powerlevel10k_media: "145eb9fbc2f42ee408dacd9b22d8e6e0e553f83d"
-  retroarch: "935e6f549ce6882a2649657b10daa309c7d329b5"
+  retroarch: "31038fc9816783bd477fdaf857012ccbdc70ce27"
   steamtinkerlaunch: "8550ab26a712b7f5f6d0947070181446b9de61fd"
   superpowers: "eafe962b18f6c5dc70fb7c8cc7e83e61f4cdde06"
   vim_profiler: "d4fda79830528ffb6cce895448ac10b502f9f756"
