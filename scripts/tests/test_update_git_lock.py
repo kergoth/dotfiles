@@ -120,6 +120,30 @@ def test_dry_run_json_preserves_review_note_for_tagged_entry():
     assert changes[0]["review_note"] == "Review CHANGELOG.md only."
 
 
+def test_dry_run_json_preserves_review_paths():
+    """review_paths list is included in dry-run JSON output."""
+    sources = {
+        "_test_paths": {
+            "repo": "https://github.com/x/y",
+            "ref": "main",
+            "review_paths": ["CHANGELOG.md"],
+        },
+    }
+    changes = _run_main_dry_run_json(sources, ["_test_paths"])
+    assert len(changes) == 1
+    assert changes[0]["review_paths"] == ["CHANGELOG.md"]
+
+
+def test_dry_run_json_review_paths_absent_when_not_set():
+    """review_paths is null in JSON when not present in source entry."""
+    sources = {
+        "_test_no_paths": {"repo": "https://github.com/x/y", "ref": "main"},
+    }
+    changes = _run_main_dry_run_json(sources, ["_test_no_paths"])
+    assert len(changes) == 1
+    assert changes[0]["review_paths"] is None
+
+
 def _gh_result(data):
     m = MagicMock()
     m.stdout = json.dumps(data)
