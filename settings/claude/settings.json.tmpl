@@ -1,0 +1,27 @@
+{{-   $uses_musl := false -}}
+{{-   if ne .chezmoi.os "windows" -}}
+{{-     if exec "sh" "-c" "ldd --version 2>&1 | grep -qi musl" -}}
+{{-       $uses_musl = true -}}
+{{-     end -}}
+{{-   end -}}
+{
+  "model": "opus[1m]",
+  "sandbox": {
+    "enabled": true,
+    "autoAllowBashIfSandboxed": true
+  },
+  "skipDangerousModePermissionPrompt": true,
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline-command.sh"
+{{ if $uses_musl -}}
+  },
+  {
+    "env": {
+      "USE_BUILTIN_RIPGREP": "0"
+    }
+  }
+{{ else -}}
+  }
+{{- end }}
+}

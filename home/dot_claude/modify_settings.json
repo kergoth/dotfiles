@@ -7,7 +7,7 @@
        Special handling for permissions.allow and permissions.deny: these are
        arrays, which mergeOverwrite replaces rather than concatenates. We
        manually concat+uniq them before the merge, then patch them back. */ -}}
-{{- $managed := joinPath .chezmoi.sourceDir "/../settings/claude/settings.json" | include | fromJson -}}
+{{- $managed := includeTemplate (joinPath .chezmoi.workingTree "settings/claude/settings.json.tmpl") . | fromJson -}}
 {{- if eq .chezmoi.stdin "" -}}
 {{-   $managed | toPrettyJson -}}
 {{- else -}}
