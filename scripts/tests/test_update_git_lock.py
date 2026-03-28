@@ -466,3 +466,11 @@ def test_review_paths_arg_accumulates():
     ]):
         args = _sgc_mod.parse_args()
     assert args.review_paths == ["CHANGELOG.md", "src/*.py"]
+
+
+def test_sentinel_constants_exist():
+    """Module exposes the expected sentinel constant names."""
+    assert hasattr(_sgc_mod, "NO_COMMITS_IN_SCOPE")
+    assert hasattr(_sgc_mod, "NO_CHANGES_IN_SCOPE")
+    assert isinstance(_sgc_mod.NO_COMMITS_IN_SCOPE, str)
+    assert isinstance(_sgc_mod.NO_CHANGES_IN_SCOPE, str)

@@ -21,6 +21,11 @@ from rich.syntax import Syntax
 console = Console(stderr=True)
 stdout_console = Console()
 
+# Sentinel strings returned to the AI reviewer when path filtering yields no content.
+# Kept here alongside SUPPLY_CHAIN_PROMPT so all reviewer-facing text is in one place.
+NO_COMMITS_IN_SCOPE = "(no commits touch the reviewed paths)"
+NO_CHANGES_IN_SCOPE = "(no changes in reviewed paths)"
+
 
 def parse_args():
     parser = argparse.ArgumentParser(
