@@ -1,0 +1,30 @@
+{{- $zoxide := includeTemplate "find-tool" (dict "root" . "tool" "zoxide") -}}
+{{- $claude := includeTemplate "find-tool" (dict "root" . "tool" "claude") -}}
+{{- if and $zoxide $claude -}}
+# Interactively select directory via zoxide+fzf and launch claude there.
+# Usage: zicl [<query>...] [-- <claude-args>...]
+local args=("$@")
+local sep_index=${args[(i)--]}  # index of first "--", or $#args+1 if not found
+
+local query
+local claude_args
+
+if (( sep_index <= ${#args} )); then
+    query=("${args[1,sep_index-1]}")
+    claude_args=("${args[sep_index+1,-1]}")
+else
+    query=("${args[@]}")
+    claude_args=()
+fi
+
+local target_dir="$("{{ $zoxide }}" query --interactive -- "${query[@]}")"
+if [[ -z "$target_dir" ]]; then
+    echo "No match found for query: ${query[*]}" >&2
+    return 1
+fi
+
+(
+    cd "$target_dir" || return 1
+    "{{ $claude }}" "${claude_args[@]}"
+) || return $?
+{{ end -}}
