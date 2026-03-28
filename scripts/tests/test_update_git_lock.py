@@ -474,3 +474,82 @@ def test_sentinel_constants_exist():
     assert hasattr(_sgc_mod, "NO_CHANGES_IN_SCOPE")
     assert isinstance(_sgc_mod.NO_COMMITS_IN_SCOPE, str)
     assert isinstance(_sgc_mod.NO_CHANGES_IN_SCOPE, str)
+
+
+def test_paths_match_single_file():
+    """Exact filename matches itself."""
+    assert _sgc_mod._paths_match("CHANGELOG.md", ["CHANGELOG.md"]) is True
+
+
+def test_paths_match_glob():
+    """Simple glob matches."""
+    assert _sgc_mod._paths_match("src/foo.py", ["src/*.py"]) is True
+    assert _sgc_mod._paths_match("src/foo.py", ["lib/*.py"]) is False
+
+
+def test_paths_match_any_of_multiple():
+    """Matches if any pattern matches."""
+    assert _sgc_mod._paths_match("README.md", ["CHANGELOG.md", "README.md"]) is True
+
+
+def test_fetch_changes_github_api_filters_files():
+    """With review_paths, only matching files are included in the diff."""
+    fake_api_data = {
+        "commits": [
+            {
+                "sha": "a" * 40,
+                "commit": {
+                    "message": "Update changelog",
+                    "author": {"name": "Alice"},
+                },
+            }
+        ],
+        "files": [
+            {"filename": "CHANGELOG.md", "patch": "-old\n+new"},
+            {"filename": "src/main.py", "patch": "-x\n+y"},
+        ],
+    }
+    with (
+        patch.object(_sgc_mod, "fetch_via_github_api", return_value=fake_api_data),
+    ):
+        result = _sgc_mod.fetch_changes(
+            "https://github.com/x/y", "a" * 40, "b" * 40,
+            name="test", ref="main", cache_dir=pathlib.Path("/tmp"),
+            review_paths=["CHANGELOG.md"],
+        )
+    assert result is not None
+    assert "CHANGELOG.md" in result["diff"]
+    assert "src/main.py" not in result["diff"]
+
+
+def test_fetch_changes_github_api_no_match_returns_sentinel():
+    """When no files match review_paths, diff is a sentinel string."""
+    fake_api_data = {
+        "commits": [],
+        "files": [{"filename": "src/main.py", "patch": "-x\n+y"}],
+    }
+    with patch.object(_sgc_mod, "fetch_via_github_api", return_value=fake_api_data):
+        result = _sgc_mod.fetch_changes(
+            "https://github.com/x/y", "a" * 40, "b" * 40,
+            name="test", ref="main", cache_dir=pathlib.Path("/tmp"),
+            review_paths=["CHANGELOG.md"],
+        )
+    assert result is not None
+    assert result["diff"] == _sgc_mod.NO_CHANGES_IN_SCOPE
+
+
+def test_fetch_changes_github_api_no_review_paths_unchanged():
+    """Without review_paths, existing raw-diff logic is still used."""
+    fake_api_data = {"commits": [], "files": []}
+    fake_diff = subprocess.CompletedProcess([], 0, stdout="raw diff here", stderr="")
+    with (
+        patch.object(_sgc_mod, "fetch_via_github_api", return_value=fake_api_data),
+        patch("subprocess.run", return_value=fake_diff),
+    ):
+        result = _sgc_mod.fetch_changes(
+            "https://github.com/x/y", "a" * 40, "b" * 40,
+            name="test", ref="main", cache_dir=pathlib.Path("/tmp"),
+            review_paths=None,
+        )
+    assert result is not None
+    assert result["diff"] == "raw diff here"

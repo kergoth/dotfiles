@@ -7,6 +7,7 @@
 """Show changes between two commits in a git repository."""
 
 import argparse
+import fnmatch
 import json
 import re
 import shutil
@@ -190,6 +191,18 @@ def fetch_via_bare_clone(
         return None
 
 
+def _paths_match(filename: str, patterns: list[str]) -> bool:
+    """Return True if filename matches any glob pattern using fnmatch.
+
+    Note: fnmatch treats * as matching any character including /, so 'src/*.py'
+    matches 'src/deep/nested/file.py'. Git pathspecs respect segment boundaries,
+    so the same pattern would NOT match nested files in the bare-clone path. Use
+    exact names (e.g. 'CHANGELOG.md') or basename globs (e.g. '*.md') for
+    consistent behaviour across both fetch paths.
+    """
+    return any(fnmatch.fnmatch(filename, pat) for pat in patterns)
+
+
 def fetch_changes(
     repo_url: str,
     old_sha: str,
@@ -197,6 +210,7 @@ def fetch_changes(
     name: str | None,
     ref: str,
     cache_dir: Path,
+    review_paths: list[str] | None = None,
 ) -> dict | None:
     """Fetch changes via GitHub API or bare clone fallback.
 
@@ -222,25 +236,45 @@ def fetch_changes(
                 shortlog_lines.append(f"      {msg}")
             shortlog_lines.append("")
 
-        diff_text = api_data.get("diff", "")
-        # gh api returns patch format; fetch raw diff if needed
-        if not diff_text:
-            owner_repo = parse_github_owner_repo(repo_url)
-            if owner_repo:
-                owner, repo = owner_repo
-                diff_result = subprocess.run(
-                    [
-                        "gh",
-                        "api",
-                        f"repos/{owner}/{repo}/compare/{old_sha}...{new_sha}",
-                        "-H",
-                        "Accept: application/vnd.github.diff",
-                    ],
-                    capture_output=True,
-                    text=True,
-                )
-                if diff_result.returncode == 0:
-                    diff_text = diff_result.stdout
+        # Filter files by review_paths if specified.
+        # NOTE: fnmatch treats * as matching across /, while git pathspecs respect segment
+        # boundaries. For consistent behaviour on both fetch paths, use exact names
+        # (e.g. 'CHANGELOG.md') or basename globs (e.g. '*.md') rather than patterns
+        # with directory prefixes like 'src/*.py'.
+        files = api_data.get("files", [])
+        if review_paths:
+            files = [f for f in files if _paths_match(f["filename"], review_paths)]
+
+        if review_paths:
+            # Build diff from per-file patches (already filtered); avoids parsing unified diff
+            patch_pieces = []
+            for f in files:
+                patch = f.get("patch")
+                if patch:
+                    patch_pieces.append(
+                        f"diff --git a/{f['filename']} b/{f['filename']}\n{patch}"
+                    )
+            diff_text = "\n".join(patch_pieces) or NO_CHANGES_IN_SCOPE
+        else:
+            diff_text = api_data.get("diff", "")
+            # gh api returns patch format; fetch raw diff if needed
+            if not diff_text:
+                owner_repo = parse_github_owner_repo(repo_url)
+                if owner_repo:
+                    owner, repo = owner_repo
+                    diff_result = subprocess.run(
+                        [
+                            "gh",
+                            "api",
+                            f"repos/{owner}/{repo}/compare/{old_sha}...{new_sha}",
+                            "-H",
+                            "Accept: application/vnd.github.diff",
+                        ],
+                        capture_output=True,
+                        text=True,
+                    )
+                    if diff_result.returncode == 0:
+                        diff_text = diff_result.stdout
 
         return {
             "log": "\n".join(log_lines),
@@ -249,7 +283,9 @@ def fetch_changes(
         }
 
     # Fallback to bare clone
-    return fetch_via_bare_clone(repo_url, old_sha, new_sha, name, ref, cache_dir)
+    return fetch_via_bare_clone(
+        repo_url, old_sha, new_sha, name, ref, cache_dir, review_paths=review_paths
+    )
 
 
 AGENT_CLIS = ["claude", "codex", "agent"]
