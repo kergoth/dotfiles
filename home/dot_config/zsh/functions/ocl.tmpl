@@ -1,0 +1,34 @@
+{{- $claude := includeTemplate "find-tool" (dict "root" . "tool" "claude") -}}
+{{- $obsidian := includeTemplate "find-tool" (dict "root" . "tool" "obsidian") -}}
+{{- if and (not $obsidian) (eq .chezmoi.os "darwin") -}}
+{{/* Default for macOS: look for Obsidian.app in the list of installed apps */}}
+{{-   $apps := includeTemplate "installedMacApps" (dict "root" . "apps" (list "Obsidian.app")) | fromJson -}}
+{{-   $obsidian_app := index $apps "Obsidian.app" -}}
+{{-   if $obsidian_app -}}
+{{-     $obsidian = joinPath $obsidian_app "Contents/MacOS/obsidian" -}}
+{{-     if not (stat $obsidian) -}}
+{{-       $obsidian = "" -}}
+{{-     end -}}
+{{-   end -}}
+{{- end -}}
+{{- if $claude -}}
+# Launch claude in my Obsidian Vault
+# Usage: ocl [<claude-args>...]
+
+{{ if not $obsidian -}}
+echo "Error: Obsidian not found, cannot launch claude in vault" >&2
+return 1
+{{- end }}
+
+local vault_path=$("{{ $obsidian }}" vault info=path)
+
+if [[ -z "$vault_path" ]]; then
+    echo "Error: Could not determine Obsidian vault path" >&2
+    return 1
+fi
+
+(
+    cd "$vault_path" || return 1
+    "{{ $claude }}" "$@"
+)
+{{ end -}}
