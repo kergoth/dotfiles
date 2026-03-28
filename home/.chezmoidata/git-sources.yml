@@ -32,7 +32,12 @@ git_sources:
     repo: https://github.com/anthropics/claude-code
     tagged: true
     tag_source: git_tags
-    review_note: "This repository is a release-tracking distribution repo for Claude Code. Treat the CHANGELOG.md diff between the old and new tags as the only meaningful review surface. Ignore general repo diffs unless CHANGELOG.md suggests a mismatch, packaging anomaly, or integrity concern. Summarize only the user-visible, installer, packaging, or security-relevant changes described in CHANGELOG.md. If CHANGELOG.md did not change, flag the update for manual inspection."
+    review_paths:
+      - "CHANGELOG.md"
+    review_note: "This repository is a release-tracking distribution repo for Claude Code.
+      Summarize only the user-visible, installer, packaging, or security-relevant changes
+      described in CHANGELOG.md. If CHANGELOG.md did not change, flag the update for
+      manual inspection."
   beanbaginc_dev_goodies:
     repo: https://github.com/beanbaginc/dev-goodies
     ref: master
