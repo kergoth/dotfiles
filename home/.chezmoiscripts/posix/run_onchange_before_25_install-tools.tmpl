@@ -59,19 +59,16 @@
 {{-     $install_uv_tools := and $uv $uv_to_install -}}
 
 {{-     $npm_tools := dict -}}
-{{-     if eq .chezmoi.os "linux" -}}
-{{-       $_ := set $npm_tools "claude" "@anthropic-ai/claude-code" -}}
-{{-     end -}}
 {{-     if or (eq .chezmoi.os "linux") (eq .chezmoi.os "freebsd") -}}
 {{-       $_ := set $npm_tools "codex" "@openai/codex" -}}
 {{-     end -}}
 {{-     $npm_to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $npm_tools) | fromJson -}}
-{{-     $npm := "" -}}
-{{-     if $npm_to_install -}}
-{{-       $npm = includeTemplate "find-tool" (dict "root" . "tool" "npm") -}}
-{{-     end -}}
+{{-     $npm := includeTemplate "find-tool" (dict "root" . "tool" "npm") -}}
 {{-     $install_npm_tools := and $npm $npm_to_install -}}
 {{-     $lock := .git_lock -}}
+{{-     $claude := includeTemplate "find-tool" (dict "root" . "tool" "claude") -}}
+{{-     $claude_tag := index $lock "claude_code" -}}
+{{-     $claude_version := trimPrefix "v" $claude_tag -}}
 {{-     $gh_cmd := includeTemplate "find-tool" (dict "root" . "tool" "gh") -}}
 
 #!/usr/bin/env bash
@@ -130,6 +127,55 @@ echo >&2 "Installing {{ . }}"
 {{-         range $uv_to_install }}
 "{{ $uv }}" tool install {{ . }}
 {{-         end }}
+{{-       end }}
+
+need_claude_install=0
+current_claude_version=""
+if command -v claude >/dev/null 2>&1; then
+    current_claude_version=$(claude --version 2>/dev/null | sed -E 's/.*([0-9]+\.[0-9]+\.[0-9]+).*/\1/' | head -n1)
+fi
+if [ "$current_claude_version" != "{{ $claude_version }}" ]; then
+    need_claude_install=1
+fi
+
+{{-       if and (eq .chezmoi.os "darwin") $claude }}
+if command -v brew >/dev/null 2>&1 && brew list --cask claude-code >/dev/null 2>&1; then
+    echo >&2 "Removing legacy Homebrew Claude Code install"
+    brew uninstall --cask claude-code
+    need_claude_install=1
+    hash -r
+fi
+{{-       end }}
+
+{{-       if and (eq .chezmoi.os "linux") $claude }}
+if command -v npm >/dev/null 2>&1 && npm list -g @anthropic-ai/claude-code >/dev/null 2>&1; then
+    echo >&2 "Removing legacy npm Claude Code install"
+    npm uninstall -g @anthropic-ai/claude-code || true
+    need_claude_install=1
+    hash -r
+fi
+{{-       end }}
+
+{{-       if or (eq .chezmoi.os "darwin") (eq .chezmoi.os "linux") }}
+if [ "$need_claude_install" -eq 1 ]; then
+    echo >&2 "Installing Claude Code {{ $claude_version }} via official installer"
+    curl -fsSL https://claude.ai/install.sh | bash -s {{ $claude_version }}
+fi
+{{-       end }}
+
+{{-       if eq .chezmoi.os "freebsd" }}
+if [ "$need_claude_install" -eq 1 ]; then
+    echo >&2 "Installing Claude Code {{ $claude_version }} via pinned npm package"
+    if ! command -v npm >/dev/null 2>&1; then
+        echo >&2 "npm is required to install Claude Code on FreeBSD"
+        exit 1
+    fi
+    export NPM_CONFIG_PREFIX="$HOME/.local"
+    export NPM_CONFIG_CACHE="$HOME/.cache/npm"
+    export NPM_CONFIG_FUND=false
+    export NPM_CONFIG_AUDIT=false
+    "{{ $npm }}" install -g @anthropic-ai/claude-code@{{ $claude_version }}
+fi
 {{-       end }}
 
 {{-       if $install_npm_tools }}
