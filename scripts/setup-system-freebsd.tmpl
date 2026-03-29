@@ -5,15 +5,27 @@ set -eu
 
 scriptdir=$(cd "$(dirname "$0")" && pwd -P)
 PATH="$scriptdir/freebsd:$scriptdir:$PATH"
-tmpdir=$(mktemp -d -t "${0##*/}.XXXXXXX")
-trap 'rm -rf "$tmpdir"' EXIT INT TERM
 
 # shellcheck source=./common.sh
 . "$scriptdir/common.sh" || exit 1
 
+if [ "$(id -u)" != "0" ]; then
+    # Re-execute ourselves as root. We need to re-execute the generated temporary file created by chezmoi-exec,
+    # but need to make sure we keep overriding $0 to its original path, and overriding $0 in a shell script
+    # requires that it be sourced.
+    doas env PATH="$PATH" bash -c "exec -a \"$0\" bash -c \". \\\"$CHEZMOI_EXEC_SCRIPT\\\" \\\"$USER\\\"\""
+    exit $?
+fi
+
+tmpdir=$(mktemp -d -t "${0##*/}.XXXXXXX")
+trap 'rm -rf "$tmpdir"' EXIT INT TERM
+
+username="$1"
+shift
+
 pkg_install_freebsd() {
     msg "Installing '$1'"
-    sudorun env ASSUME_ALWAYS_YES=YES pkg install "$@"
+    env ASSUME_ALWAYS_YES=YES pkg install "$@"
 }
 
 port_install() {
@@ -27,8 +39,8 @@ port_install() {
             cd "/usr/ports/$1" || exit 1
             for variable in LIB_DEPENDS BUILD_DEPENDS; do
                 make -V "$variable"
-            done | xargs -n 1 echo | cut -d: -f2 | sort -u | doas xargs --no-run-if-empty -o pkg install --automatic
-            doas make MAKE_JOBS_UNSAFE=yes install
+            done | xargs -n 1 echo | cut -d: -f2 | sort -u | xargs --no-run-if-empty -o pkg install --automatic
+            make MAKE_JOBS_UNSAFE=yes install
         )
     else
         die "No port found for $1"
@@ -249,6 +261,6 @@ if [ -e /usr/local/bin/zsh ]; then
     current_shell="$(getent passwd "$USER" | sed -e 's#.*:##')"
     if [ "$current_shell" != /usr/local/bin/zsh ]; then
         msg "Changing current user shell to zsh"
-        sudorun chsh -s /usr/local/bin/zsh "$USER"
+        chsh -s /usr/local/bin/zsh "$USER"
     fi
 fi
