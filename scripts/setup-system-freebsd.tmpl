@@ -149,6 +149,8 @@ freebsd_check sysutils/lsblk lsblk
 
 # GUI Applications
 {{ if not .headless -}}
+freebsd_check x11/plasma6-plasma startplasma-x11
+freebsd_check x11/sddm sddm
 freebsd_check www/librewolf librewolf
 freebsd_check x11/kitty kitty
 freebsd_check editors/zed zed
@@ -173,7 +175,44 @@ freebsd_check audio/picard picard
 {{ if .video -}}
 freebsd_check multimedia/vlc vlc
 {{- end }}
+{{- end }}
 
+# Add user to operator and video groups
+pw groupmod operator -m "$USER"
+pw groupmod video -m "$USER"
+
+# Installation
+if [ -n "$(echo "$pkgs" | sed -e 's/^ *//; s/ *$//')" ]; then
+    echo "$pkgs" | tr ' ' '\n' | sort -u | tr '\n' '\0' | xargs -0 --no-run-if-empty -o env ASSUME_ALWAYS_YES=YES pkg install
+fi
+
+if [ -n "$(echo "$ports" | sed -e 's/^ *//; s/ *$//')" ]; then
+    for port in $ports; do
+        port_install "$port" || die "Failed to install $port"
+    done
+fi
+
+{{ if not .ephemeral -}}
+# SSH
+if ! service sshd onestatus >/dev/null 2>&1; then
+    sysrc sshd_enable=YES
+    service sshd start
+fi
+{{- end }}
+
+{{ if not .headless -}}
+if ! service dbus onestatus >/dev/null 2>&1; then
+    sysrc dbus_enable=YES
+    service dbus start
+fi
+
+if ! service sddm onestatus >/dev/null 2>&1; then
+    sysrc sddm_enable=YES
+    service sddm start
+fi
+{{- end }}
+
+{{ if not .headless -}}
 if pkg search --exact plasma-applet-commandoutput >/dev/null 2>&1; then
     pkg_install_freebsd plasma-applet-commandoutput
 else
@@ -202,29 +241,6 @@ else
             "$plasmoid_tmpdir/plasma-applet-commandoutput-master/package"
         rm -rf "$plasmoid_tmpdir"
     fi
-fi
-{{- end }}
-
-# Add user to operator and video groups
-doas pw groupmod operator -m "$USER"
-doas pw groupmod video -m "$USER"
-
-# Installation
-if [ -n "$(echo "$pkgs" | sed -e 's/^ *//; s/ *$//')" ]; then
-    echo "$pkgs" | tr ' ' '\n' | sort -u | tr '\n' '\0' | xargs -0 --no-run-if-empty -o env ASSUME_ALWAYS_YES=YES doas pkg install
-fi
-
-if [ -n "$(echo "$ports" | sed -e 's/^ *//; s/ *$//')" ]; then
-    for port in $ports; do
-        port_install "$port" || die "Failed to install $port"
-    done
-fi
-
-{{ if not .ephemeral -}}
-# SSH
-if ! service sshd onestatus >/dev/null 2>&1; then
-    doas sysrc sshd_enable=YES
-    doas service sshd start
 fi
 {{- end }}
 
