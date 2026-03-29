@@ -1,4 +1,8 @@
 {{- if .user_setup -}}
+{{-     $chezmoiGithubTokenPath := "" -}}
+{{-     if .secrets -}}
+{{-       $chezmoiGithubTokenPath = joinPath (printf "%s" .chezmoi.destDir) ".config" "chezmoi_github_token" -}}
+{{-     end -}}
 # Install tools via Scoop (Scoop bootstrapped by before_00).
 
 . $env:CHEZMOI_COMMAND_DIR\scripts\common.ps1
@@ -125,6 +129,9 @@ Invoke-WebRequest -Uri $rusageUrl -OutFile $rusageDest
 {{-   end }}
 
 {{   if $gh_cmd -}}
+{{     if and $chezmoiGithubTokenPath (stat $chezmoiGithubTokenPath) -}}
+$env:GH_TOKEN = Get-Content -Raw -Path "{{ $chezmoiGithubTokenPath }}"
+{{     end -}}
 Write-Host "Installing gh extensions"
 {{ $gh_cmd }} extension install --pin {{ index $lock "gh_pr_review" }} agynio/gh-pr-review
 {{-   end }}

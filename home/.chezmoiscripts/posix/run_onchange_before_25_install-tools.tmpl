@@ -1,4 +1,8 @@
 {{- if .user_setup -}}
+{{-     $chezmoiGithubTokenPath := "" -}}
+{{-     if .secrets -}}
+{{-       $chezmoiGithubTokenPath = joinPath (printf "%s" .chezmoi.destDir) ".config" "chezmoi_github_token" -}}
+{{-     end -}}
 {{-     $rusage := includeTemplate "find-tool" (dict "root" . "tool" "rusage") -}}
 {{-     $install_rusage := not $rusage -}}
 {{-     $install_distrobox := false -}}
@@ -200,6 +204,9 @@ chmod +x "$HOME/.local/bin/rusage"
 {{-       end }}
 
 {{   if $gh_cmd -}}
+{{     if and $chezmoiGithubTokenPath (stat $chezmoiGithubTokenPath) -}}
+export GH_TOKEN="$(cat {{ $chezmoiGithubTokenPath }})"
+{{     end -}}
 echo >&2 "Installing gh extensions"
 {{ $gh_cmd }} extension install --pin {{ index $lock "gh_pr_review" }} agynio/gh-pr-review
 {{-   end }}
