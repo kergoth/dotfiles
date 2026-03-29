@@ -24,6 +24,7 @@ abspath() {
 }
 
 script=$(abspath "$1")
+shift
 tmpdir=$(mktemp -d -t "${script##*/}.XXXXXX")
 trap 'rm -rf "$tmpdir"' EXIT INT TERM
 
@@ -39,9 +40,13 @@ case "$interpreter" in
 esac
 
 export CHEZMOI_EXEC_SCRIPT="$tmpdir/script"
-case "$interpreter" in
-*/bash | */zsh)
-    exec -a "$script" "$interpreter" -c ". \"$tmpdir/script\"" "$@"
+case "${interpreter##*/}" in
+bash | zsh | sh | dash | ash | ksh | mksh)
+    exec "$interpreter" -c '
+        script_path=$1
+        shift
+        . "$script_path"
+    ' "$script" "$tmpdir/script" "$@"
     ;;
 *)
     exec -a "$script" "$tmpdir/script" "$@"
