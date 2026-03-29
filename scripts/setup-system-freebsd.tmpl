@@ -193,26 +193,6 @@ if [ -n "$(echo "$ports" | sed -e 's/^ *//; s/ *$//')" ]; then
     done
 fi
 
-{{ if not .ephemeral -}}
-# SSH
-if ! service sshd onestatus >/dev/null 2>&1; then
-    sysrc sshd_enable=YES
-    service sshd start
-fi
-{{- end }}
-
-{{ if not .headless -}}
-if ! service dbus onestatus >/dev/null 2>&1; then
-    sysrc dbus_enable=YES
-    service dbus start
-fi
-
-if ! service sddm onestatus >/dev/null 2>&1; then
-    sysrc sddm_enable=YES
-    service sddm start
-fi
-{{- end }}
-
 {{ if not .headless -}}
 if pkg search --exact plasma-applet-commandoutput >/dev/null 2>&1; then
     pkg_install_freebsd plasma-applet-commandoutput
@@ -252,3 +232,23 @@ if [ -e /usr/local/bin/zsh ]; then
         chsh -s /usr/local/bin/zsh "$USER"
     fi
 fi
+
+{{ if not .ephemeral -}}
+# SSH
+if ! service sshd onestatus >/dev/null 2>&1; then
+    sysrc sshd_enable=YES
+    service sshd start
+fi
+{{- end }}
+
+{{ if not .headless -}}
+if ! service dbus onestatus >/dev/null 2>&1; then
+    sysrc dbus_enable=YES
+fi
+
+if ! service sddm onestatus >/dev/null 2>&1; then
+    sysrc sddm_enable=YES
+    service sddm start || :
+fi
+{{- end }}
+
