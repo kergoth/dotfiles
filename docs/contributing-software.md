@@ -259,6 +259,8 @@ This script self-elevates to administrator. Use for:
 **File:** `home/.chezmoiscripts/linux/run_onchange_after_10_install-apps.tmpl`
 
 > **Critical: two-phase template.** The header computes `$need_install`; the script body only emits if `$need_install` is true. New apps must be added to **both** the header (tool detection + `$need_install` trigger) and the body (flatpak install command). Adding only to the body means the script won't run when only that app is missing.
+>
+> For flatpak-backed entries in this script, detection must use the exported flatpak app ID under `~/.local/share/flatpak/exports/bin` (for example `md.obsidian.Obsidian`), not a guessed short command such as `obsidian`.
 
 ```go
 {{/* HEADER — add tool detection and $need_install trigger (inside the user_setup guard) */}}

@@ -11,6 +11,7 @@
 {{- $vesktop := "" -}}
 {{- $trguing := "" -}}
 {{- $syncthingtray := "" -}}
+{{- $steamlink := "" -}}
 {{- $flatpak := "" -}}
 {{- $need_install := false -}}
 {{- $linux_amd64 := eq .chezmoi.arch "amd64" -}}
@@ -22,30 +23,33 @@
 {{-   if not (eq .osid "linux-chimera") -}}
 {{-     $zed = includeTemplate "find-tool" (dict "root" . "tool" "zed") -}}
 {{-   end -}}
-{{-   $obsidian = includeTemplate "find-tool" (dict "root" . "tool" "obsidian") -}}
-{{-   $discord = includeTemplate "find-tool" (dict "root" . "tool" "discord") -}}
+{{-   $obsidian = includeTemplate "find-tool" (dict "root" . "tool" "md.obsidian.Obsidian") -}}
+{{-   $discord = includeTemplate "find-tool" (dict "root" . "tool" "com.discordapp.Discord") -}}
 {{-   $vesktop = includeTemplate "find-tool" (dict "root" . "tool" "dev.vencord.Vesktop") -}}
-{{-   $syncthingtray = includeTemplate "find-tool" (dict "root" . "tool" "syncthingtray") -}}
+{{-   $syncthingtray = includeTemplate "find-tool" (dict "root" . "tool" "io.github.martchus.syncthingtray") -}}
 {{-   if not .work -}}
-{{-     $trguing = includeTemplate "find-tool" (dict "root" . "tool" "trguing") -}}
+{{-     $trguing = includeTemplate "find-tool" (dict "root" . "tool" "org.openscopeproject.TrguiNG") -}}
 {{-   end -}}
 {{-   if or (eq .osid "linux-debian") (eq .osid "linux-ubuntu") -}}
 {{-     $kitty = includeTemplate "find-tool" (dict "root" . "tool" "kitty") -}}
 {{-   end -}}
 {{-   if .retro_computing -}}
-{{-     $86box = includeTemplate "find-tool" (dict "root" . "tool" "86box") -}}
+{{-     $86box = includeTemplate "find-tool" (dict "root" . "tool" "net._86box._86Box") -}}
 {{-   end -}}
 {{-   if .gaming_device_library -}}
-{{-     $scummvm = includeTemplate "find-tool" (dict "root" . "tool" "scummvm") -}}
+{{-     $scummvm = includeTemplate "find-tool" (dict "root" . "tool" "org.scummvm.ScummVM") -}}
 {{-   end -}}
 {{-   if .music_library -}}
-{{-     $picard = includeTemplate "find-tool" (dict "root" . "tool" "picard") -}}
+{{-     $picard = includeTemplate "find-tool" (dict "root" . "tool" "org.musicbrainz.Picard") -}}
 {{-   end -}}
 {{-   if .ebook_library -}}
-{{-     $calibre = includeTemplate "find-tool" (dict "root" . "tool" "calibre") -}}
+{{-     $calibre = includeTemplate "find-tool" (dict "root" . "tool" "com.calibre_ebook.calibre") -}}
 {{-   end -}}
 {{-   if .video -}}
-{{-     $vlc = includeTemplate "find-tool" (dict "root" . "tool" "vlc") -}}
+{{-     $vlc = includeTemplate "find-tool" (dict "root" . "tool" "org.videolan.VLC") -}}
+{{-   end -}}
+{{-   if .gaming -}}
+{{-     $steamlink = includeTemplate "find-tool" (dict "root" . "tool" "com.valvesoftware.SteamLink") -}}
 {{-   end -}}
 {{-   if and (not $zed) (not (eq .osid "linux-chimera")) -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and (not $obsidian) $flatpak -}}{{- $need_install = true -}}{{- end -}}
@@ -59,7 +63,7 @@
 {{-   if and .music_library (not $picard) $flatpak -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and .ebook_library (not $calibre) $flatpak -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and .video (not $vlc) $flatpak -}}{{- $need_install = true -}}{{- end -}}
-{{-   if and .gaming $flatpak (eq .chezmoi.arch "amd64") -}}{{- $need_install = true -}}{{- end -}}
+{{-   if and .gaming $flatpak (eq .chezmoi.arch "amd64") (not $steamlink) -}}{{- $need_install = true -}}{{- end -}}
 {{- end -}}
 {{- if and .coding .containers -}}
 {{-   $devpod = includeTemplate "find-tool" (dict "root" . "tool" "devpod") -}}
@@ -135,11 +139,9 @@ msg "Installing VLC from Flathub"
 flatpak install -y --user flathub org.videolan.VLC
 {{-   end }}
 
-{{-   if and .gaming $flatpak (eq .chezmoi.arch "amd64") }}
-if ! flatpak info --user com.valvesoftware.SteamLink >/dev/null 2>&1 && ! flatpak info com.valvesoftware.SteamLink >/dev/null 2>&1; then
-    msg "Installing Steam Link from Flathub"
-    flatpak install -y --user flathub com.valvesoftware.SteamLink
-fi
+{{-   if and .gaming $flatpak (eq .chezmoi.arch "amd64") (not $steamlink) }}
+msg "Installing Steam Link from Flathub"
+flatpak install -y --user flathub com.valvesoftware.SteamLink
 {{-   end }}
 
 {{-   if and (or (eq .osid "linux-debian") (eq .osid "linux-ubuntu")) (not $kitty) }}
