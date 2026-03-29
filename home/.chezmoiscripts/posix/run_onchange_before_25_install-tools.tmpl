@@ -63,7 +63,7 @@
 {{-     $install_uv_tools := and $uv $uv_to_install -}}
 
 {{-     $npm_tools := dict -}}
-{{-     if or (eq .chezmoi.os "linux") (eq .chezmoi.os "freebsd") -}}
+{{-     if eq .chezmoi.os "linux" -}}
 {{-       $_ := set $npm_tools "codex" "@openai/codex" -}}
 {{-     end -}}
 {{-     $npm_to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $npm_tools) | fromJson -}}
