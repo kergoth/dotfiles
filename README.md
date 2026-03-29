@@ -430,7 +430,7 @@ set-credential CLAUDE_CODE_OAUTH_TOKEN "<paste-token-here>"
 
 - **Desktop environment**: KDE Plasma on Linux and FreeBSD. _Conditional: non-headless._
 - **Display manager**: SDDM on Linux and FreeBSD. _Conditional: non-headless. init present to enable/start._
-- **Terminal emulator**: kitty on all platforms. _Conditional: non-headless._
+- **Terminal emulator**: kitty on macOS, Linux, and FreeBSD; Windows Terminal on Windows. _Conditional: non-headless._
 - **PDF viewer**: Okular on Linux and FreeBSD. _Conditional: non-headless._
 - **App distribution (Flatpak)**: Flatpak + Flathub on all supported Linux distros. Primary mechanism for GUI app installs where native packages are absent or stale. _Conditional: non-headless._
 - **Core services**: mDNS/Avahi, SSH, Bluetooth, and audio stack. PipeWire where applicable. Varies by distro.

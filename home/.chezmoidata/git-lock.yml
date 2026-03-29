@@ -18,6 +18,7 @@ git_lock:
   git_assembler: "e8cf3b24c4322f08217271de65dbce0a22505c3a"
   git_extras: "7.4.0"
   ia_fonts: "f32c04c3058a75d7ce28919ce70fe8800817491b"
+  kitty: "v0.46.2"
   knu_zsh_git_escape_magic: "62af4f6a66601a517e168039614e5b528741a844"
   knu_zsh_manydots_magic: "4372de0718714046f0c7ef87b43fc0a598896af6"
   korg_helpers: "3cd422ea7cf306572abea2b9e5f56548a474c37a"

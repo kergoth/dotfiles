@@ -5,6 +5,7 @@
 {{- $flatpak_apps := dict -}}
 {{- $flatpak_to_install := list -}}
 {{- $need_install := false -}}
+{{- $kitty_version := "" -}}
 {{- $linux_amd64 := eq .chezmoi.arch "amd64" -}}
 {{- $linux_arm64 := or (eq .chezmoi.arch "arm64") (eq .chezmoi.arch "aarch64") -}}
 {{- if not .headless -}}
@@ -16,6 +17,7 @@
 {{-   end -}}
 {{-   if or (eq .osid "linux-debian") (eq .osid "linux-ubuntu") -}}
 {{-     $kitty = includeTemplate "find-tool" (dict "root" . "tool" "kitty") -}}
+{{-     $kitty_version = index .git_lock "kitty" | trimPrefix "v" -}}
 {{-   end -}}
 {{-   if $flatpak -}}
 {{-     $_ := set $flatpak_apps "md.obsidian.Obsidian" "md.obsidian.Obsidian" -}}
@@ -86,7 +88,7 @@ flatpak install -y --user flathub {{ . }}
 
 {{-   if and (or (eq .osid "linux-debian") (eq .osid "linux-ubuntu")) (not $kitty) }}
 msg "Installing kitty"
-curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin launch=n
+curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin launch=n installer=version-{{ $kitty_version }}
 mkdir -p ~/.local/bin ~/.local/share/applications
 cp ~/.local/kitty.app/share/applications/kitty.desktop ~/.local/share/applications/ 2>/dev/null
 cp ~/.local/kitty.app/share/applications/kitty-open.desktop ~/.local/share/applications/ 2>/dev/null

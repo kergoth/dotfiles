@@ -74,6 +74,10 @@ git_sources:
   korg_helpers:
     repo: https://git.kernel.org/pub/scm/linux/kernel/git/mricon/korg-helpers
     ref: master
+  kitty:
+    repo: https://github.com/kovidgoyal/kitty
+    tagged: true
+    review_note: "Focus on user-visible changes, installer behavior, packaging, and release integrity. Pay particular attention to changes affecting the official installer, published checksums or signatures, and Linux/macOS binary distribution."
   ia_fonts:
     repo: https://github.com/iaolo/iA-Fonts
     ref: master
