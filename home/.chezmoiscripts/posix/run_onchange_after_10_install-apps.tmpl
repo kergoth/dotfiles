@@ -1,0 +1,38 @@
+{{- $kpackagetool6 := "" -}}
+{{- $kpackagetool5 := "" -}}
+{{- if and .user_setup (not .headless) (not (env "CONTAINER_ID")) -}}
+{{-   $kpackagetool6 = includeTemplate "find-tool" (dict "root" . "tool" "kpackagetool6" "home_paths" false) -}}
+{{-   if not $kpackagetool6 -}}
+{{-     $kpackagetool5 = includeTemplate "find-tool" (dict "root" . "tool" "kpackagetool5" "home_paths" false) -}}
+{{-   end -}}
+{{- end -}}
+{{- $kpackagetool := or $kpackagetool6 $kpackagetool5 -}}
+{{- if $kpackagetool -}}
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+scriptsdir="$CHEZMOI_WORKING_TREE/scripts"
+PATH="$scriptsdir:$PATH"
+
+# shellcheck source=../../../scripts/common.sh
+. "$scriptsdir/common.sh" || exit 1
+
+tmpdir=$(mktemp -d -t commandoutput.XXXXXXX)
+trap 'rm -rf "$tmpdir"' EXIT
+
+kpackagetool="{{ $kpackagetool }}"
+plasmoid_id="com.github.zren.commandoutput"
+action="install"
+
+if "$kpackagetool" --type Plasma/Applet --show "$plasmoid_id" >/dev/null 2>&1; then
+    action="upgrade"
+fi
+
+msg "Installing Command Output plasmoid ($kpackagetool, $action)"
+curl -fL -o "$tmpdir/commandoutput.tar.gz" \
+    https://github.com/Zren/plasma-applet-commandoutput/archive/refs/heads/master.tar.gz
+tar -xzf "$tmpdir/commandoutput.tar.gz" -C "$tmpdir"
+"$kpackagetool" --type Plasma/Applet --"$action" \
+    "$tmpdir/plasma-applet-commandoutput-master/package"
+{{- end }}
