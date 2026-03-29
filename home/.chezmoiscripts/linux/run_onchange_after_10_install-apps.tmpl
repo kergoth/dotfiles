@@ -1,18 +1,9 @@
 {{- $zed := "" -}}
 {{- $kitty := "" -}}
 {{- $devpod := "" -}}
-{{- $86box := "" -}}
-{{- $scummvm := "" -}}
-{{- $picard := "" -}}
-{{- $calibre := "" -}}
-{{- $vlc := "" -}}
-{{- $obsidian := "" -}}
-{{- $discord := "" -}}
-{{- $vesktop := "" -}}
-{{- $trguing := "" -}}
-{{- $syncthingtray := "" -}}
-{{- $steamlink := "" -}}
 {{- $flatpak := "" -}}
+{{- $flatpak_apps := dict -}}
+{{- $flatpak_to_install := list -}}
 {{- $need_install := false -}}
 {{- $linux_amd64 := eq .chezmoi.arch "amd64" -}}
 {{- $linux_arm64 := or (eq .chezmoi.arch "arm64") (eq .chezmoi.arch "aarch64") -}}
@@ -23,47 +14,46 @@
 {{-   if not (eq .osid "linux-chimera") -}}
 {{-     $zed = includeTemplate "find-tool" (dict "root" . "tool" "zed") -}}
 {{-   end -}}
-{{-   $obsidian = includeTemplate "find-tool" (dict "root" . "tool" "md.obsidian.Obsidian") -}}
-{{-   $discord = includeTemplate "find-tool" (dict "root" . "tool" "com.discordapp.Discord") -}}
-{{-   $vesktop = includeTemplate "find-tool" (dict "root" . "tool" "dev.vencord.Vesktop") -}}
-{{-   $syncthingtray = includeTemplate "find-tool" (dict "root" . "tool" "io.github.martchus.syncthingtray") -}}
-{{-   if not .work -}}
-{{-     $trguing = includeTemplate "find-tool" (dict "root" . "tool" "org.openscopeproject.TrguiNG") -}}
-{{-   end -}}
 {{-   if or (eq .osid "linux-debian") (eq .osid "linux-ubuntu") -}}
 {{-     $kitty = includeTemplate "find-tool" (dict "root" . "tool" "kitty") -}}
 {{-   end -}}
-{{-   if .retro_computing -}}
-{{-     $86box = includeTemplate "find-tool" (dict "root" . "tool" "net._86box._86Box") -}}
+{{-   if $flatpak -}}
+{{-     $_ := set $flatpak_apps "md.obsidian.Obsidian" "md.obsidian.Obsidian" -}}
+{{-     if $linux_amd64 -}}
+{{-       $_ := set $flatpak_apps "com.discordapp.Discord" "com.discordapp.Discord" -}}
+{{-     end -}}
+{{-     if $linux_arm64 -}}
+{{-       $_ := set $flatpak_apps "dev.vencord.Vesktop" "dev.vencord.Vesktop" -}}
+{{-     end -}}
+{{-     if not .ephemeral -}}
+{{-       $_ := set $flatpak_apps "io.github.martchus.syncthingtray" "io.github.martchus.syncthingtray" -}}
+{{-     end -}}
+{{-     if not .work -}}
+{{-       $_ := set $flatpak_apps "org.openscopeproject.TrguiNG" "org.openscopeproject.TrguiNG" -}}
+{{-     end -}}
+{{-     if .retro_computing -}}
+{{-       $_ := set $flatpak_apps "net._86box._86Box" "net._86box._86Box" -}}
+{{-     end -}}
+{{-     if .gaming_device_library -}}
+{{-       $_ := set $flatpak_apps "org.scummvm.ScummVM" "org.scummvm.ScummVM" -}}
+{{-     end -}}
+{{-     if .music_library -}}
+{{-       $_ := set $flatpak_apps "org.musicbrainz.Picard" "org.musicbrainz.Picard" -}}
+{{-     end -}}
+{{-     if .ebook_library -}}
+{{-       $_ := set $flatpak_apps "com.calibre_ebook.calibre" "com.calibre_ebook.calibre" -}}
+{{-     end -}}
+{{-     if .video -}}
+{{-       $_ := set $flatpak_apps "org.videolan.VLC" "org.videolan.VLC" -}}
+{{-     end -}}
+{{-     if and .gaming $linux_amd64 -}}
+{{-       $_ := set $flatpak_apps "com.valvesoftware.SteamLink" "com.valvesoftware.SteamLink" -}}
+{{-     end -}}
 {{-   end -}}
-{{-   if .gaming_device_library -}}
-{{-     $scummvm = includeTemplate "find-tool" (dict "root" . "tool" "org.scummvm.ScummVM") -}}
-{{-   end -}}
-{{-   if .music_library -}}
-{{-     $picard = includeTemplate "find-tool" (dict "root" . "tool" "org.musicbrainz.Picard") -}}
-{{-   end -}}
-{{-   if .ebook_library -}}
-{{-     $calibre = includeTemplate "find-tool" (dict "root" . "tool" "com.calibre_ebook.calibre") -}}
-{{-   end -}}
-{{-   if .video -}}
-{{-     $vlc = includeTemplate "find-tool" (dict "root" . "tool" "org.videolan.VLC") -}}
-{{-   end -}}
-{{-   if .gaming -}}
-{{-     $steamlink = includeTemplate "find-tool" (dict "root" . "tool" "com.valvesoftware.SteamLink") -}}
-{{-   end -}}
+{{-   $flatpak_to_install = includeTemplate "packagesForMissingTools" (dict "root" . "packages" $flatpak_apps) | fromJson -}}
 {{-   if and (not $zed) (not (eq .osid "linux-chimera")) -}}{{- $need_install = true -}}{{- end -}}
-{{-   if and (not $obsidian) $flatpak -}}{{- $need_install = true -}}{{- end -}}
-{{-   if and $linux_amd64 (not $discord) $flatpak -}}{{- $need_install = true -}}{{- end -}}
-{{-   if and $linux_arm64 (not $vesktop) $flatpak -}}{{- $need_install = true -}}{{- end -}}
-{{-   if and (not $syncthingtray) $flatpak (not .ephemeral) -}}{{- $need_install = true -}}{{- end -}}
-{{-   if and (not .work) (not $trguing) $flatpak -}}{{- $need_install = true -}}{{- end -}}
 {{-   if and (or (eq .osid "linux-debian") (eq .osid "linux-ubuntu")) (not $kitty) -}}{{- $need_install = true -}}{{- end -}}
-{{-   if and .retro_computing (not $86box) $flatpak -}}{{- $need_install = true -}}{{- end -}}
-{{-   if and .gaming_device_library (not $scummvm) $flatpak -}}{{- $need_install = true -}}{{- end -}}
-{{-   if and .music_library (not $picard) $flatpak -}}{{- $need_install = true -}}{{- end -}}
-{{-   if and .ebook_library (not $calibre) $flatpak -}}{{- $need_install = true -}}{{- end -}}
-{{-   if and .video (not $vlc) $flatpak -}}{{- $need_install = true -}}{{- end -}}
-{{-   if and .gaming $flatpak (eq .chezmoi.arch "amd64") (not $steamlink) -}}{{- $need_install = true -}}{{- end -}}
+{{-   if gt (len $flatpak_to_install) 0 -}}{{- $need_install = true -}}{{- end -}}
 {{- end -}}
 {{- if and .coding .containers -}}
 {{-   $devpod = includeTemplate "find-tool" (dict "root" . "tool" "devpod") -}}
@@ -89,59 +79,9 @@ msg "Installing Zed"
 curl -f https://zed.dev/install.sh | sh
 {{-   end }}
 
-{{-   if and (not $obsidian) $flatpak }}
-msg "Installing Obsidian from Flathub"
-flatpak install -y --user flathub md.obsidian.Obsidian
-{{-   end }}
-
-{{-   if and $linux_amd64 (not $discord) $flatpak }}
-msg "Installing Discord from Flathub"
-flatpak install -y --user flathub com.discordapp.Discord
-{{-   end }}
-
-{{-   if and $linux_arm64 (not $vesktop) $flatpak }}
-msg "Installing Vesktop from Flathub"
-flatpak install -y --user flathub dev.vencord.Vesktop
-{{-   end }}
-
-{{-   if and (not $syncthingtray) $flatpak (not .ephemeral) }}
-msg "Installing Syncthing Tray from Flathub"
-flatpak install -y --user flathub io.github.martchus.syncthingtray
-{{-   end }}
-
-{{-   if and (not .work) (not $trguing) $flatpak }}
-msg "Installing TrguiNG from Flathub"
-flatpak install -y --user flathub org.openscopeproject.TrguiNG
-{{-   end }}
-
-{{-   if and .retro_computing (not $86box) $flatpak }}
-msg "Installing 86Box from Flathub"
-flatpak install -y --user flathub net._86box._86Box
-{{-   end }}
-
-{{-   if and .gaming_device_library (not $scummvm) $flatpak }}
-msg "Installing ScummVM from Flathub"
-flatpak install -y --user flathub org.scummvm.ScummVM
-{{-   end }}
-
-{{-   if and .music_library (not $picard) $flatpak }}
-msg "Installing MusicBrainz Picard from Flathub"
-flatpak install -y --user flathub org.musicbrainz.Picard
-{{-   end }}
-
-{{-   if and .ebook_library (not $calibre) $flatpak }}
-msg "Installing Calibre from Flathub"
-flatpak install -y --user flathub com.calibre_ebook.calibre
-{{-   end }}
-
-{{-   if and .video (not $vlc) $flatpak }}
-msg "Installing VLC from Flathub"
-flatpak install -y --user flathub org.videolan.VLC
-{{-   end }}
-
-{{-   if and .gaming $flatpak (eq .chezmoi.arch "amd64") (not $steamlink) }}
-msg "Installing Steam Link from Flathub"
-flatpak install -y --user flathub com.valvesoftware.SteamLink
+{{-   range $flatpak_to_install }}
+msg "Installing {{ . }} from Flathub"
+flatpak install -y --user flathub {{ . }}
 {{-   end }}
 
 {{-   if and (or (eq .osid "linux-debian") (eq .osid "linux-ubuntu")) (not $kitty) }}
