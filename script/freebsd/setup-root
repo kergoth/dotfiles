@@ -37,6 +37,6 @@ if ! [ -e /usr/local/etc/doas.conf ] || ! grep -q "^permit :wheel" /usr/local/et
     echo "permit :wheel" >>/usr/local/etc/doas.conf
 fi
 
-if ! command bash >/dev/null 2>&1; then
+if ! command -v bash >/dev/null 2>&1; then
     pkg install -y bash
 fi
