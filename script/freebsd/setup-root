@@ -31,7 +31,7 @@ if ! pkg -N; then
     pkg bootstrap
 fi
 if ! command -v doas >/dev/null 2>&1; then
-    pkg install doas
+    pkg install -y doas
 fi
 if ! [ -e /usr/local/etc/doas.conf ] || ! grep -q "^permit :wheel" /usr/local/etc/doas.conf; then
     echo "permit :wheel" >>/usr/local/etc/doas.conf
