@@ -149,6 +149,7 @@ freebsd_check sysutils/lsblk lsblk
 
 # GUI Applications
 {{ if not .headless -}}
+freebsd_check x11/xorg Xorg
 freebsd_check x11/plasma6-plasma startplasma-x11
 freebsd_check x11/sddm sddm
 freebsd_check www/librewolf librewolf
