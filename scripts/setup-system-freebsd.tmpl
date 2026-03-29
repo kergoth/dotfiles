@@ -162,7 +162,7 @@ freebsd_check deskutils/syncthingtray syncthingtray
 {{- end }}
 freebsd_check security/pinentry-qt6 pinentry-qt6
 {{ if not .work -}}
-freebsd_check transmission-remote-gui-qt6 transgui
+#freebsd_check transmission-remote-gui-qt6 transgui
 {{- end }}
 {{ if .ebook_library -}}
 freebsd_check deskutils/calibre calibre
