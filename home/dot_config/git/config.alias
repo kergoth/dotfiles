@@ -58,10 +58,12 @@
 
 	# Log with signatures
 	logsigs = log --show-signature
+	logsig = log --show-signature
 
 	# Trimmed log with stat
 	logstat = log --compact-summary --stat=,,20
 	logst = !git logstat
+	logs = !git logstat
 
 	# History tree
 	show-tree = lg --all --decorate --simplify-by-decoration
