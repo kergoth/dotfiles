@@ -95,6 +95,9 @@ git_sources:
   nix_zsh_completions:
     repo: https://github.com/nix-community/nix-zsh-completions
     tagged: true
+  plasma_applet_commandoutput:
+    repo: https://github.com/Zren/plasma-applet-commandoutput
+    ref: master
   powerlevel10k:
     repo: https://github.com/romkatv/powerlevel10k
     tagged: true

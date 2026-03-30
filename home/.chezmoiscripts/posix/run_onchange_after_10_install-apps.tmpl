@@ -31,7 +31,7 @@ fi
 
 msg "Installing Command Output plasmoid ($kpackagetool, $action)"
 curl -fL -o "$tmpdir/commandoutput.tar.gz" \
-    https://github.com/Zren/plasma-applet-commandoutput/archive/refs/heads/master.tar.gz
+    https://github.com/Zren/plasma-applet-commandoutput/archive/{{ index .git_lock "plasma_applet_commandoutput" }}.tar.gz
 tar -xzf "$tmpdir/commandoutput.tar.gz" -C "$tmpdir"
 "$kpackagetool" --type Plasma/Applet --"$action" \
     "$tmpdir/plasma-applet-commandoutput-master/package"

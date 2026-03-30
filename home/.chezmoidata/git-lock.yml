@@ -24,6 +24,7 @@ git_lock:
   korg_helpers: "3cd422ea7cf306572abea2b9e5f56548a474c37a"
   madx_moreutils: "5ca552dd82dc3ef5ee0d388716148c5a653b72bb"
   nix_zsh_completions: "0.5.1"
+  plasma_applet_commandoutput: "b2b5a3f05a5613fd4f57f448c34814f65e18a21f"
   powerlevel10k: "v1.20.0"
   powerlevel10k_media: "145eb9fbc2f42ee408dacd9b22d8e6e0e553f83d"
   retroarch: "31038fc9816783bd477fdaf857012ccbdc70ce27"
