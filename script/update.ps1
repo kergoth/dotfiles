@@ -24,7 +24,11 @@ if ($DryRun) {
     Write-Host "Dry run: skipping chezmoi upgrade"
 } else {
     Write-Host "Updating chezmoi"
-    chezmoi upgrade
+    try {
+        chezmoi upgrade
+    } catch {
+        # Match the shell script behavior and keep going on upgrade failures.
+    }
 }
 
 if ($DryRun) {
@@ -37,7 +41,15 @@ if ($DryRun) {
         # Don't use chezmoi update (it would try to use git), just apply
         chezmoi apply -R
     } else {
-        chezmoi update -R
+        Set-Location $repodir
+        git symbolic-ref -q HEAD *> $null
+        if ($LASTEXITCODE -eq 0) {
+            chezmoi update -R
+        } else {
+            Write-Warning "Warning: Not on a branch, skipping git pull. Fetching only."
+            git fetch
+            chezmoi apply -R
+        }
     }
 }
 
@@ -138,11 +150,11 @@ function Update-OpCliVersions {
         if (-not $platformVersion.ContainsKey($platform)) {
             continue
         }
-        $lines += "    $platform:"
+        $lines += "    ${platform}:"
         $lines += "      version: `"$($platformVersion[$platform])`""
         $lines += "      sha256:"
         foreach ($arch in ($checksums[$platform].Keys | Sort-Object)) {
-            $lines += "        $arch: `"$($checksums[$platform][$arch])`""
+            $lines += "        ${arch}: `"$($checksums[$platform][$arch])`""
         }
     }
 
@@ -207,6 +219,11 @@ if (Test-Path $gitLockUpdater) {
                             $ref = if ($c.kind -eq 'tag') { $c.new_sha } elseif ($c.ref) { $c.ref } else { "main" }
                             $reviewArgs = @($c.repo, $c.old_sha, $c.new_sha, '--name', $c.id, '--ref', $ref)
                             if ($c.review_note) { $reviewArgs += @('--review-note', $c.review_note) }
+                            foreach ($reviewPath in @($c.review_paths)) {
+                                if ($reviewPath) {
+                                    $reviewArgs += @('--review-paths', $reviewPath)
+                                }
+                            }
                             uv run (Join-Path $repodir "scripts/show-git-changes.py") @reviewArgs
                         }
                     }
@@ -230,6 +247,11 @@ if (Test-Path $gitLockUpdater) {
                                             $ref = if ($c.kind -eq 'tag') { $c.new_sha } elseif ($c.ref) { $c.ref } else { "main" }
                                             $reviewArgs = @($c.repo, $c.old_sha, $c.new_sha, '--name', $c.id, '--ref', $ref, '--diff-only')
                                             if ($c.review_note) { $reviewArgs += @('--review-note', $c.review_note) }
+                                            foreach ($reviewPath in @($c.review_paths)) {
+                                                if ($reviewPath) {
+                                                    $reviewArgs += @('--review-paths', $reviewPath)
+                                                }
+                                            }
                                             uv run (Join-Path $repodir "scripts/show-git-changes.py") @reviewArgs
                                         }
                                     }
@@ -241,9 +263,20 @@ if (Test-Path $gitLockUpdater) {
 
                     if ($apply) {
                         uv run $gitLockUpdater --apply-resolved $changesFile
-                        chezmoi apply -R
+                        $fetchLockUpdater = Join-Path $repodir "scripts/update-fetch-lock.py"
+                        if (Test-Path $fetchLockUpdater) {
+                            uv run $fetchLockUpdater
+                        }
+                        try {
+                            chezmoi apply -R
+                        } catch {
+                            # Match the shell script behavior and keep going.
+                        }
 
-                        $commitLines = @("Update Git lock", "")
+                        Set-Location $repodir
+                        git diff --quiet -- home/.chezmoidata/fetch-lock.yml 2> $null
+                        $title = if ($LASTEXITCODE -eq 0) { "Update Git lock" } else { "Update source locks" }
+                        $commitLines = @($title, "")
                         foreach ($c in $changes) {
                             if ($c.kind -eq 'tag') {
                                 $old = if ($c.old_sha) { $c.old_sha } else { '(new)' }
@@ -263,14 +296,18 @@ if (Test-Path $gitLockUpdater) {
                         if ($use_jj -eq 1) {
                             $commitMsg = Get-Content "$repodir\.git\COMMIT_EDITMSG" -Raw
                             Set-Location $repodir
-                            jj commit -m $commitMsg home/.chezmoidata/git-lock.yml
+                            jj commit -m $commitMsg home/.chezmoidata/git-lock.yml home/.chezmoidata/fetch-lock.yml
                         } else {
                             Set-Location $repodir
-                            git commit -F .git/COMMIT_EDITMSG home/.chezmoidata/git-lock.yml
+                            git commit -F .git/COMMIT_EDITMSG home/.chezmoidata/git-lock.yml home/.chezmoidata/fetch-lock.yml
                         }
                     } else {
                         Write-Host "Skipping Git source update"
-                        chezmoi apply -R
+                        try {
+                            chezmoi apply -R
+                        } catch {
+                            # Match the shell script behavior and keep going.
+                        }
                     }
                 }
             }
