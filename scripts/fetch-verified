@@ -1,0 +1,166 @@
+#!/usr/bin/env bash
+#
+# Usage: fetch-verified [-h] [-f] [-o outfile] url digest [-- curl_args...]
+#
+# Download a file to a temporary location, verify its SHA-256 digest, and only
+# then emit it to stdout or install it to an output path.
+#
+# Options:
+#   -f                  Replace a mismatched existing output file.
+#   -o outfile          Write the verified file to outfile instead of stdout.
+#   -h                  Show this help message and exit.
+
+set -euo pipefail
+
+scriptname=${BASH_SOURCE[0]##*/}
+verify_exit=100
+local_error_exit=101
+force=0
+outfile=
+curl_args=()
+cleanup_tmpdir=
+
+show_help() {
+    sed -n '/^# Usage:/,/^# *-h /p' "$0" | sed 's/^# *//'
+}
+
+die_local() {
+    printf '%s: %s\n' "$scriptname" "$1" >&2
+    exit "$local_error_exit"
+}
+
+cleanup() {
+    if [ -n "${cleanup_tmpdir:-}" ]; then
+        rm -rf -- "$cleanup_tmpdir"
+    fi
+}
+
+hash_file_sha256() {
+    local path=$1
+
+    if command -v sha256sum >/dev/null 2>&1; then
+        sha256sum -- "$path" | awk '{print $1}'
+    elif command -v shasum >/dev/null 2>&1; then
+        shasum -a 256 "$path" | awk '{print $1}'
+    elif command -v sha256 >/dev/null 2>&1; then
+        sha256 -q "$path"
+    elif command -v openssl >/dev/null 2>&1; then
+        openssl dgst -sha256 -r "$path" | awk '{print $1}'
+    else
+        die_local "no supported SHA-256 tool found"
+    fi
+}
+
+validate_digest_format() {
+    local digest=$1
+
+    [[ $digest =~ ^[0-9a-f]{64}$ ]] || die_local \
+        "digest must be 64 lowercase or uppercase hex characters"
+}
+
+validate_existing_output() {
+    local path=$1
+    local actual_digest
+
+    [ ! -e "$path" ] && return 1
+    [ ! -L "$path" ] || die_local "destination must not be a symlink: $path"
+    [ -f "$path" ] || die_local "destination must be a regular file: $path"
+    [ -s "$path" ] || die_local "destination must not be empty: $path"
+
+    actual_digest=$(hash_file_sha256 "$path" | tr '[:upper:]' '[:lower:]')
+    if [ "$actual_digest" = "$expected_digest" ]; then
+        exit 0
+    fi
+    [ "$force" -eq 1 ] || die_local "existing file digest mismatch: $path"
+}
+
+process_arguments() {
+    while getopts ":fho:" opt; do
+        case "$opt" in
+            f)
+                force=1
+                ;;
+            h)
+                show_help
+                exit 0
+                ;;
+            o)
+                outfile=$OPTARG
+                ;;
+            \?)
+                printf 'Unknown option: -%s\n' "$OPTARG" >&2
+                show_help >&2
+                exit 1
+                ;;
+            :)
+                printf 'Option -%s requires an argument.\n' "$OPTARG" >&2
+                show_help >&2
+                exit 1
+                ;;
+        esac
+    done
+    shift $((OPTIND - 1))
+
+    [ $# -ge 2 ] || {
+        show_help >&2
+        exit 1
+    }
+
+    url=$1
+    expected_digest=$(printf '%s' "$2" | tr '[:upper:]' '[:lower:]')
+    shift 2
+
+    if [ $# -gt 0 ] && [ "$1" = "--" ]; then
+        shift
+    fi
+    curl_args=("$@")
+    validate_digest_format "$expected_digest"
+}
+
+main() {
+    local url=
+    local expected_digest=
+    local outdir=
+    local tmpdir=
+    local tmpfile=
+    local actual_digest=
+
+    process_arguments "$@"
+
+    if [ -n "$outfile" ]; then
+        outdir=$(dirname -- "$outfile")
+        [ -d "$outdir" ] || die_local "output directory does not exist: $outdir"
+        validate_existing_output "$outfile" || true
+        tmpdir=$(mktemp -d -p "$outdir" ".fetch-verified.XXXXXX")
+    else
+        tmpdir=$(mktemp -d)
+    fi
+    cleanup_tmpdir=$tmpdir
+    tmpfile="$tmpdir/download"
+
+    if [ "${#curl_args[@]}" -gt 0 ]; then
+        curl -fsSL "${curl_args[@]}" -o "$tmpfile" -- "$url"
+    else
+        curl -fsSL -o "$tmpfile" -- "$url"
+    fi
+
+    [ ! -L "$tmpfile" ] || die_local "curl produced a symlink instead of a file"
+    [ -f "$tmpfile" ] || die_local "curl did not produce a regular file"
+    [ -s "$tmpfile" ] || die_local "curl produced empty output"
+
+    actual_digest=$(hash_file_sha256 "$tmpfile" | tr '[:upper:]' '[:lower:]')
+    if [ "$actual_digest" != "$expected_digest" ]; then
+        printf '%s: digest mismatch for %s\n' "$scriptname" "$url" >&2
+        exit "$verify_exit"
+    fi
+
+    if [ -n "$outfile" ]; then
+        mv -- "$tmpfile" "$outfile"
+    else
+        cat -- "$tmpfile"
+    fi
+}
+
+trap cleanup EXIT
+
+main "$@"

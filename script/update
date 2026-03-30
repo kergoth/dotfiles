@@ -170,11 +170,18 @@ for c in changes:
                     # Step 4: Write lock from pre-resolved data
                     uv run "$sourcedir/scripts/update-git-lock.py" \
                         --apply-resolved "$changes_file"
+                    if [ -f "$sourcedir/scripts/update-fetch-lock.py" ]; then
+                        uv run "$sourcedir/scripts/update-fetch-lock.py"
+                    fi
                     chezmoi apply -R || :
 
                     # Step 5: Build commit message and commit
                     {
-                        echo "Update Git lock"
+                        title="Update Git lock"
+                        if ! (cd "$sourcedir" && git diff --quiet -- home/.chezmoidata/fetch-lock.yml 2>/dev/null); then
+                            title="Update source locks"
+                        fi
+                        echo "$title"
                         echo
                         uv run python3 -c "
 import json, sys
@@ -195,10 +202,12 @@ for c in changes:
                     if [ "$use_jj" -eq 1 ]; then
                         commit_msg=$(cat "$sourcedir/.git/COMMIT_EDITMSG")
                         (cd "$sourcedir" && jj commit -m "$commit_msg" \
-                            home/.chezmoidata/git-lock.yml)
+                            home/.chezmoidata/git-lock.yml \
+                            home/.chezmoidata/fetch-lock.yml)
                     else
                         (cd "$sourcedir" && git commit -F .git/COMMIT_EDITMSG \
-                            home/.chezmoidata/git-lock.yml)
+                            home/.chezmoidata/git-lock.yml \
+                            home/.chezmoidata/fetch-lock.yml)
                     fi
                 else
                     echo >&2 "Skipping Git source update"
