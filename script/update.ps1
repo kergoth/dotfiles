@@ -53,126 +53,28 @@ if ($DryRun) {
     }
 }
 
-function Get-OldOpVersions {
-    param([string]$FilePath)
-    $result = @{}
-    if (-not (Test-Path $FilePath)) { return $result }
-    $content = Get-Content $FilePath -Raw
-    $currentPlatform = $null
-    foreach ($line in ($content -split "`n")) {
-        if ($line -match '^\s{4}(\w+):\s*$') {
-            $currentPlatform = $Matches[1]
-        } elseif ($currentPlatform -and $line -match '^\s{6}version:\s*"([^"]+)"') {
-            $result[$currentPlatform] = $Matches[1]
-            $currentPlatform = $null  # version: always precedes sha256: in each block
-        }
-    }
-    return $result
-}
-
 function Update-OpCliVersions {
-    $url = "https://app-updates.agilebits.com/product_history/CLI2"
-    try {
-        $response = Invoke-WebRequest -Uri $url -UseBasicParsing
-    } catch {
-        Write-Warning "Warning: unable to fetch op CLI version from $url"
-        return
+    $python = Get-Command python3 -ErrorAction SilentlyContinue
+    if (-not $python) {
+        Write-Warning "Warning: python3 not available; skipping op CLI version update"
+        return $null
     }
 
-    $file = Join-Path $repodir "home/.chezmoidata/versions.yml"
-    $oldVersions = Get-OldOpVersions -FilePath $file
-
-    $regex = [regex]'https://cache\.agilebits\.com/dist/1P/op2/pkg/v([^/]+)/op_(linux|freebsd)_(amd64|arm64)_v\1\.zip'
-    $matches = $regex.Matches($response.Content)
-    if ($matches.Count -eq 0) {
-        Write-Warning "Warning: unable to find op CLI links in $url"
-        return
-    }
-
-    $latest = @{}
-    foreach ($m in $matches) {
-        if ($m.Groups[1].Value -match "beta") {
-            continue
-        }
-        $platform = $m.Groups[2].Value
-        $arch = $m.Groups[3].Value
-        $key = "$platform/$arch"
-        if (-not $latest.ContainsKey($key)) {
-            $latest[$key] = @{
-                Version = $m.Groups[1].Value
-                Link = $m.Groups[0].Value
-            }
-        }
-    }
-
-    $platformVersion = @{}
-    foreach ($key in $latest.Keys) {
-        $platform = $key.Split('/')[0]
-        if (-not $platformVersion.ContainsKey($platform)) {
-            $platformVersion[$platform] = $latest[$key].Version
-        }
-    }
-
-    function Get-Sha256 {
-        param([Parameter(Mandatory=$true)][string]$Path)
-        $sha = [System.Security.Cryptography.SHA256]::Create()
-        $stream = [System.IO.File]::OpenRead($Path)
-        try {
-            $hash = $sha.ComputeHash($stream)
-        } finally {
-            $stream.Dispose()
-            $sha.Dispose()
-        }
-        ($hash | ForEach-Object { $_.ToString("x2") }) -join ""
-    }
-
-    $checksums = @{
-        linux = @{}
-        freebsd = @{}
-    }
-
-    foreach ($key in $latest.Keys) {
-        $platform, $arch = $key.Split('/')
-        $link = $latest[$key].Link
-        $tmp = [System.IO.Path]::GetTempFileName()
-        try {
-            Invoke-WebRequest -Uri $link -OutFile $tmp -UseBasicParsing
-            $checksums[$platform][$arch] = Get-Sha256 -Path $tmp
-        } finally {
-            Remove-Item $tmp -Force -ErrorAction SilentlyContinue
-        }
-    }
-
-    $lines = @()
-    $lines += "versions:"
-    $lines += "  op_cli:"
-    foreach ($platform in @("linux", "freebsd")) {
-        if (-not $platformVersion.ContainsKey($platform)) {
-            continue
-        }
-        $lines += "    ${platform}:"
-        $lines += "      version: `"$($platformVersion[$platform])`""
-        $lines += "      sha256:"
-        foreach ($arch in ($checksums[$platform].Keys | Sort-Object)) {
-            $lines += "        ${arch}: `"$($checksums[$platform][$arch])`""
-        }
-    }
-
-    $lines -join "`n" | Out-File -FilePath $file -Encoding utf8
-
-    foreach ($platform in (($oldVersions.Keys + $platformVersion.Keys) | Sort-Object -Unique)) {
-        $oldVer = if ($oldVersions.ContainsKey($platform)) { "v$($oldVersions[$platform])" } else { "(new)" }
-        $newVer = if ($platformVersion.ContainsKey($platform)) { "v$($platformVersion[$platform])" } else { "(removed)" }
-        if ($oldVer -ne $newVer) {
-            Write-Output "op_cli ${platform}: $oldVer → $newVer"
-        }
+    & $python.Source (Join-Path $repodir "scripts/update-op-cli-versions.py")
+    if ($LASTEXITCODE -ne 0) {
+        throw "update-op-cli-versions.py failed with exit code $LASTEXITCODE"
     }
 }
 
 if ($DryRun) {
     Write-Host "Dry run: skipping op CLI version update"
 } else {
-    $opChanges = Update-OpCliVersions
+    try {
+        $opChanges = Update-OpCliVersions
+    } catch {
+        Write-Warning "Warning: op CLI version update failed; skipping"
+        $opChanges = $null
+    }
     if ($opChanges) {
         Write-Host "Updated op CLI versions and checksums"
         $indentedChanges = $opChanges | ForEach-Object { "  $_" }
