@@ -14,6 +14,7 @@
 {{-   end -}}
 {
   "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "DISABLE_AUTOUPDATER": "1"{{ if $uses_musl }},
     "USE_BUILTIN_RIPGREP": "0"{{ end }}{{ if $has_git_bash }},
     "CLAUDE_CODE_GIT_BASH_PATH": "{{ replace $bash `\` `\\` }}"{{ end }}
