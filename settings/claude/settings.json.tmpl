@@ -13,23 +13,23 @@
 {{-     end -}}
 {{-   end -}}
 {
-  "alwaysThinkingEnabled": true,
-  "autoDreamEnabled": true,
-  "effortLevel": "medium",
   "env": {
     "DISABLE_AUTOUPDATER": "1"{{ if $uses_musl }},
     "USE_BUILTIN_RIPGREP": "0"{{ end }}{{ if $has_git_bash }},
     "CLAUDE_CODE_GIT_BASH_PATH": "{{ replace $bash `\` `\\` }}"{{ end }}
   },
-  "model": "sonnet",
   "permissions": {},
+  "model": "sonnet",
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline-command.sh"
+  },
   "sandbox": {
     "enabled": true,
     "autoAllowBashIfSandboxed": true
   },
-  "skipDangerousModePermissionPrompt": true,
-  "statusLine": {
-    "type": "command",
-    "command": "bash ~/.claude/statusline-command.sh"
-  }
+  "alwaysThinkingEnabled": true,
+  "effortLevel": "medium",
+  "autoDreamEnabled": true,
+  "skipDangerousModePermissionPrompt": true
 }
