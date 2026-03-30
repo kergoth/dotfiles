@@ -232,11 +232,15 @@ doas dinitctl enable networkmanager
 
 ### Testing
 
-Container-based tests verify that `setup-root` and `setup-full` work end to end on
-supported Linux distributions. Docker is required.
+The repository has two complementary test entrypoints:
+
+- **`./script/test`**: manual container bring-up and debugging for Linux setup flows.
+- **`./test/run-cram`**: structured Cram regression suites for repeatable scenario coverage.
+
+Both rely on Docker for the container-backed Linux setup tests.
 
 ```console
-# Run all distros
+# Run all distros through the manual container test entrypoint
 ./script/test
 
 # Run a specific distro
@@ -250,12 +254,25 @@ supported Linux distributions. Docker is required.
 
 # Run a command as the test user after setup
 ./script/test -c 'chezmoi data | grep -E "work|personal"' debian
+
+# Run all structured Cram suites
+./test/run-cram
+
+# Run only the container-backed dotfiles scenarios
+./test/run-cram test/cram/container
+
+# Run only the statusline transcript tests
+./test/run-cram test/cram/statusline
 ```
 
 Supported distros: `arch`, `chimera`, `debian`, `fedora`, `ubuntu`.
 
 Pass `GITHUB_TOKEN` in the environment to authenticate private dependency downloads
 during setup.
+
+The container Cram suite currently lives under `test/cram/container/`. These
+tests keep `./script/test` as the human-facing container entrypoint, but define
+named scenarios in Cram with helper scripts for matrix coverage and assertions.
 
 ### Edit dotfiles
 

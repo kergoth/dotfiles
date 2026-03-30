@@ -1,0 +1,11 @@
+#!/bin/sh
+
+set -eu
+
+script_dir=$(cd "$(dirname "$0")" && pwd)
+
+if [ $# -eq 0 ]; then
+    set -- "$script_dir/cram"
+fi
+
+exec uvx cram "$@"

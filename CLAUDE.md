@@ -50,6 +50,11 @@ chezmoi doctor
 ./script/test -C arch   # skip shared nix store/cache volumes
 ./script/test debian ubuntu  # test multiple distros in one run (space-separated)
 
+# Run the structured Cram regression suites
+./test/run-cram                         # all Cram suites under test/cram/
+./test/run-cram test/cram/container     # container-backed dotfiles scenarios
+./test/run-cram test/cram/statusline    # statusline transcript tests
+
 # Env vars for secrets-enabled testing:
 #   DOTFILES_SECRETS=1          Mount host age key; enables chezmoi secret decryption
 #   DOTFILES_PERSONAL=1         Force personal profile (auto-detected from host if unset)
@@ -76,6 +81,9 @@ Scripts form a progression from OS installation to dotfiles application:
 - `script/home-manager-switch [--update-inputs "..."] ["subject"]` — Apply home.nix changes, diff generations, commit all changed files under `home/dot_config/home-manager/`, and switch. Called by `script/update`; also useful standalone when editing `home.nix` directly.
 - `script/test` — Run dotfiles setup in container test environments (Arch, Debian,
   Fedora, Ubuntu, Chimera). Tests `setup-root` + `setup-full` end to end.
+- `test/run-cram` — Run the structured Cram regression suites. Use this for
+  repeatable scenario coverage; it layers on top of the container runner and
+  also includes non-container Cram suites such as statusline tests.
 
 ## Repository Architecture
 
@@ -95,6 +103,10 @@ This is a **chezmoi-managed dotfiles** repository supporting macOS, Linux (Arch,
   - `agents/` - Encrypted data blobs for work-only agent configuration
 - **`test/`** - Test infrastructure
   - `containers/` - Per-distro Dockerfiles and the `run-test` driver script
+  - `cram/` - Structured Cram suites and helpers
+    - `container/` - Container-backed dotfiles scenario tests
+    - `statusline/` - Statusline transcript tests
+  - `run-cram` - Wrapper around `uvx cram`
 
 ### Chezmoi Source Structure (`home/`)
 

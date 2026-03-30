@@ -2,8 +2,8 @@
 # Shared test helpers for statusline tests
 
 # TESTDIR is set by cram to the directory containing the .t file
-# Navigate from test/statusline/ up to repo root
-SCRIPT_DIR="$(cd "$TESTDIR/../.." && pwd)"
+# Navigate from test/cram/statusline/ up to repo root
+SCRIPT_DIR="$(cd "$TESTDIR/../../.." && pwd)"
 STATUSLINE="$SCRIPT_DIR/home/dot_claude/statusline-command.sh"
 
 # Source just the functions from the statusline script (skip main execution)
