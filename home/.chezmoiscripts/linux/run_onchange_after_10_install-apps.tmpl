@@ -99,12 +99,14 @@ ln -sf ~/.local/kitty.app/bin/kitty ~/.local/kitty.app/bin/kitten ~/.local/bin/
 
 {{-   if and .coding .containers (not $devpod) }}
 msg "Installing DevPod CLI"
+tmpdir=$(mktemp -d)
+trap 'rm -rf "$tmpdir"' EXIT
+
 devpod_arch="amd64"
 case "$(uname -m)" in
     aarch64|arm64) devpod_arch="arm64" ;;
 esac
-curl -L -o /tmp/devpod "https://github.com/loft-sh/devpod/releases/latest/download/devpod-linux-$devpod_arch"
-install -c -m 0755 /tmp/devpod "$HOME/.local/bin/devpod"
-rm -f /tmp/devpod
+curl -L -o "$tmpdir/devpod" "https://github.com/loft-sh/devpod/releases/{{ index .git_lock "distrobox" }}/download/devpod-linux-$devpod_arch"
+install -c -m 0755 "$tmpdir/devpod" "$HOME/.local/bin/devpod"
 {{-   end }}
 {{- end }}

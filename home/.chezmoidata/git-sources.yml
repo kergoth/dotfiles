@@ -45,6 +45,9 @@ git_sources:
     repo: https://github.com/casparfriedrich/bitbake-syntax
     ref: master
     review: false
+  devpod:
+    repo: https://github.com/loft-sh/devpod
+    tagged: true
   distrobox:
     repo: https://github.com/89luca89/distrobox
     tagged: true
