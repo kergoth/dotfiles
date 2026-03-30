@@ -78,40 +78,31 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+{{ if or $install_distrobox (and $eget_to_install (not $eget_cmd)) -}}
+tmpdir=$(mktemp -d)
+trap 'rm -rf "$tmpdir"' EXIT
+{{- end }}
+
 {{-       if $install_distrobox }}
 echo >&2 "Installing distrobox"
-tmpdir_distrobox=$(mktemp -d)
-# download-github-release requires jq; jq is guaranteed via Nix/Home Manager or setup-system on Chimera/FreeBSD.
-PATH="$HOME/.nix-profile/bin:$PATH" "$CHEZMOI_WORKING_TREE/scripts/download-github-release" -s -o "$tmpdir_distrobox" 89luca89/distrobox
-tar -xf "$tmpdir_distrobox"/distrobox-*-source.tar.gz -C "$tmpdir_distrobox"
-src_dir=$(find "$tmpdir_distrobox" -maxdepth 1 -type d -name '89luca89-distrobox-*' | head -n1)
-if [ -z "$src_dir" ]; then
-    echo >&2 "Failed to locate distrobox source directory"
-    exit 1
-fi
+curl -fL -o "$tmpdir/distrobox.tar.gz" \
+    https://github.com/89luca89/distrobox/archive/{{ index .git_lock "distrobox" }}.tar.gz
+tar -xzf "$tmpdir/distrobox.tar.gz" -C "$tmpdir"
 mkdir -p "$HOME/.local/bin"
-for tool in distrobox distrobox-assemble distrobox-create distrobox-enter distrobox-ephemeral distrobox-export distrobox-generate-entry distrobox-host-exec distrobox-init distrobox-list distrobox-rm distrobox-stop distrobox-upgrade; do
-    if [ ! -f "$src_dir/$tool" ]; then
-        echo >&2 "Missing distrobox tool: $tool"
-        exit 1
-    fi
-    cp "$src_dir/$tool" "$HOME/.local/bin/$tool"
-    chmod +x "$HOME/.local/bin/$tool"
-done
-rm -rf "$tmpdir_distrobox"
+mv "$tmpdir"/distrobox* "$HOME/.local/bin/"
 {{-       end }}
 
 {{-       if $eget_to_install }}
 {{-         $eget_cmd := includeTemplate "find-tool" (dict "root" . "tool" "eget") -}}
 {{-         if not $eget_cmd }}
 echo >&2 "Installing eget"
-tmpdir=$(mktemp -d)
-trap 'rm -rf "$tmpdir"' EXIT
 mkdir -p "$HOME/.local/bin"
-cd "$tmpdir"
-curl -o eget.sh -fsSL https://zyedidia.github.io/eget.sh
-sh eget.sh
-mv eget "$HOME/.local/bin/"
+curl -o "$tmpdir/eget.sh" -fsSL https://zyedidia.github.io/eget.sh
+(
+    cd "$tmpdir" || exit 1
+    sh eget.sh
+    mv eget "$HOME/.local/bin/"
+}
 {{           $eget_cmd = "$HOME/.local/bin/eget" -}}
 {{-         end }}
 {{-         range $eget_to_install }}

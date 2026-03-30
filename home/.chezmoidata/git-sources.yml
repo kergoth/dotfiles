@@ -45,6 +45,9 @@ git_sources:
     repo: https://github.com/casparfriedrich/bitbake-syntax
     ref: master
     review: false
+  distrobox:
+    repo: https://github.com/89luca89/distrobox
+    tagged: true
   dracula_bbedit:
     repo: https://github.com/dracula/bbedit
     ref: master
