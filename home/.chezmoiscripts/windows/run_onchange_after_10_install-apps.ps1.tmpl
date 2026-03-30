@@ -77,7 +77,7 @@ scoop install transgui
 {{      if not .ephemeral }}
 if (-not (Test-Path "$env:LOCALAPPDATA\Programs\Reader\readwise-reader.exe")) {
     Write-Host "Installing Readwise Reader"
-    $readerRelease = Invoke-RestMethod "https://api.github.com/repos/readwiseio/reader-desktop-releases/releases/latest"
+    $readerRelease = Invoke-RestMethod "https://api.github.com/repos/readwiseio/reader-desktop-releases/releases/tags/{{ index .git_lock "readwise_reader_desktop" }}"
     $readerExeUrl = ($readerRelease.assets | Where-Object { $_.name -match "x64-setup\.exe$" } | Select-Object -First 1).browser_download_url
     $readerSetupPath = Join-Path $env:TEMP "reader-setup.exe"
     Invoke-WebRequest -Uri $readerExeUrl -OutFile $readerSetupPath

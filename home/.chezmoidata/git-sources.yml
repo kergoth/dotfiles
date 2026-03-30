@@ -119,6 +119,9 @@ git_sources:
   vim_profiler:
     repo: https://github.com/bchretien/vim-profiler
     ref: master
+  readwise_reader_desktop:
+    repo: https://github.com/readwiseio/reader-desktop-releases
+    tagged: true
   retroarch:
     repo: https://github.com/libretro/RetroArch
     ref: master

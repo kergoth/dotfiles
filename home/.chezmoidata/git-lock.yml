@@ -29,6 +29,7 @@ git_lock:
   plasma_applet_commandoutput: "b2b5a3f05a5613fd4f57f448c34814f65e18a21f"
   powerlevel10k: "v1.20.0"
   powerlevel10k_media: "145eb9fbc2f42ee408dacd9b22d8e6e0e553f83d"
+  readwise_reader_desktop: "reader-desktop-v0.1.2608"
   retroarch: "31038fc9816783bd477fdaf857012ccbdc70ce27"
   steamtinkerlaunch: "8550ab26a712b7f5f6d0947070181446b9de61fd"
   superpowers: "eafe962b18f6c5dc70fb7c8cc7e83e61f4cdde06"
