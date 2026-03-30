@@ -98,6 +98,9 @@ This is a **chezmoi-managed dotfiles** repository supporting macOS, Linux (Arch,
   - `common.ps1` - PowerShell equivalent
   - `chezmoi-*` - Helper scripts for chezmoi operations
   - `macos/Brewfile*.tmpl` - Homebrew package definitions
+- **`.github/`** - GitHub repository automation and metadata
+  - `workflows/` - GitHub Actions workflows for repo maintenance and validation
+  - `labels.yml` - Declarative GitHub label definitions synced by the labels workflow
 - **`settings/`** - Shared settings files (GnuPG, PowerShell, agent rules, etc.)
   - `agents/rules/` - Private agent rule templates (personal, work) included by `render-agent-rules.md.tmpl`
   - `agents/` - Encrypted data blobs for work-only agent configuration
