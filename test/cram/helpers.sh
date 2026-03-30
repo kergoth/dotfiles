@@ -13,6 +13,10 @@ idempotent_distros() {
     printf '%s\n' debian fedora
 }
 
+replay_distros() {
+    printf '%s\n' debian fedora
+}
+
 secrets_distros() {
     printf '%s\n' fedora
 }
@@ -89,6 +93,12 @@ run_headless_full_scenario() {
 run_idempotent_scenario() {
     distro=$1
     script_path=$(scenario_script_path container-idempotent.sh)
+    run_container_runner "$distro" -c "sh $script_path"
+}
+
+run_replay_scenario() {
+    distro=$1
+    script_path=$(scenario_script_path container-replay.sh)
     run_container_runner "$distro" -c "sh $script_path"
 }
 
