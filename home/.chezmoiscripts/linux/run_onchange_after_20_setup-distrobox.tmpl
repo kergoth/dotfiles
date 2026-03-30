@@ -22,5 +22,7 @@ fi
 
 # Run inside-container setup
 msg "Running distrobox setup"
-distrobox enter ubuntu -- bash "$CHEZMOI_WORKING_TREE/scripts/setup-distrobox-chimera.sh"
+distrobox enter ubuntu -- bash "$CHEZMOI_WORKING_TREE/scripts/setup-distrobox-chimera.sh" \
+    "{{ index .git_lock "zed" }}" \
+    "{{ index .fetch_lock "zed_installer" }}"
 {{- end }}

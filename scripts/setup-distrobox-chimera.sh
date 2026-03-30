@@ -6,7 +6,17 @@
 
 set -euo pipefail
 
+zed_tag=${1:-}
+zed_installer_sha256=${2:-}
+
+if [ -z "$zed_tag" ] || [ -z "$zed_installer_sha256" ]; then
+    echo >&2 "usage: $0 ZED_TAG ZED_INSTALLER_SHA256"
+    exit 2
+fi
+
+zed_version=${zed_tag#v}
 arch=$(dpkg --print-architecture)   # amd64 or arm64
+repo_root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 
 # ---------------------------------------------------------------------------
 # Base packages
@@ -77,7 +87,13 @@ fi
 # ---------------------------------------------------------------------------
 zed_desktop="$HOME/.local/share/applications/dev.zed.Zed.desktop"
 if ! command -v zed >/dev/null 2>&1 || [ ! -f "$zed_desktop" ]; then
-    curl -fsSL https://zed.dev/install.sh | sh
+    tmpdir=$(mktemp -d)
+    trap 'rm -rf "$tmpdir"' EXIT
+    "$repo_root/scripts/fetch-verified" \
+        -o "$tmpdir/zed-install.sh" \
+        "https://raw.githubusercontent.com/zed-industries/zed/$zed_tag/script/install.sh" \
+        "$zed_installer_sha256"
+    ZED_VERSION="$zed_version" sh "$tmpdir/zed-install.sh"
 fi
 
 # ---------------------------------------------------------------------------

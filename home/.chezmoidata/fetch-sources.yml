@@ -1,1 +1,7 @@
 fetch_sources:
+  kitty_installer:
+    url_template: "https://sw.kovidgoyal.net/kitty/installer.sh?version={version_no_v}"
+    version_source: "git_lock.kitty"
+  zed_installer:
+    url_template: "https://raw.githubusercontent.com/zed-industries/zed/{version}/script/install.sh"
+    version_source: "git_lock.zed"

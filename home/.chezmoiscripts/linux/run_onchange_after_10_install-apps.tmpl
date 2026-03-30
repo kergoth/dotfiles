@@ -5,7 +5,11 @@
 {{- $flatpak_apps := dict -}}
 {{- $flatpak_to_install := list -}}
 {{- $need_install := false -}}
+{{- $zed_git_version := "" -}}
+{{- $zed_version := "" -}}
+{{- $zed_installer_sha256 := "" -}}
 {{- $kitty_version := "" -}}
+{{- $kitty_installer_sha256 := "" -}}
 {{- $linux_amd64 := eq .chezmoi.arch "amd64" -}}
 {{- $linux_arm64 := or (eq .chezmoi.arch "arm64") (eq .chezmoi.arch "aarch64") -}}
 {{- if not .headless -}}
@@ -14,10 +18,14 @@
 {{- if and .user_setup (not .headless) (not .steamdeck) (not (env "CONTAINER_ID")) -}}
 {{-   if not (eq .osid "linux-chimera") -}}
 {{-     $zed = includeTemplate "find-tool" (dict "root" . "tool" "zed") -}}
+{{-     $zed_git_version = index .git_lock "zed" -}}
+{{-     $zed_version = $zed_git_version | trimPrefix "v" -}}
+{{-     $zed_installer_sha256 = index .fetch_lock "zed_installer" -}}
 {{-   end -}}
 {{-   if or (eq .osid "linux-debian") (eq .osid "linux-ubuntu") -}}
 {{-     $kitty = includeTemplate "find-tool" (dict "root" . "tool" "kitty") -}}
 {{-     $kitty_version = index .git_lock "kitty" | trimPrefix "v" -}}
+{{-     $kitty_installer_sha256 = index .fetch_lock "kitty_installer" -}}
 {{-   end -}}
 {{-   if $flatpak -}}
 {{-     $_ := set $flatpak_apps "md.obsidian.Obsidian" "md.obsidian.Obsidian" -}}
@@ -78,7 +86,15 @@ flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flath
 
 {{-   if and (not $zed) (not (eq .osid "linux-chimera")) }}
 msg "Installing Zed"
-curl -f https://zed.dev/install.sh | sh
+(
+    tmpdir=$(mktemp -d)
+    trap 'rm -rf "$tmpdir"' EXIT
+    fetch-verified \
+        -o "$tmpdir/zed-installer.sh" \
+        "https://raw.githubusercontent.com/zed-industries/zed/{{ $zed_git_version }}/script/install.sh" \
+        "{{ $zed_installer_sha256 }}"
+    ZED_VERSION="{{ $zed_version }}" sh "$tmpdir/zed-installer.sh"
+)
 {{-   end }}
 
 {{-   range $flatpak_to_install }}
@@ -88,7 +104,15 @@ flatpak install -y --user flathub {{ . }}
 
 {{-   if and (or (eq .osid "linux-debian") (eq .osid "linux-ubuntu")) (not $kitty) }}
 msg "Installing kitty"
-curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin launch=n installer=version-{{ $kitty_version }}
+(
+    tmpdir=$(mktemp -d)
+    trap 'rm -rf "$tmpdir"' EXIT
+    fetch-verified \
+        -o "$tmpdir/kitty-installer.sh" \
+        "https://sw.kovidgoyal.net/kitty/installer.sh?version={{ $kitty_version }}" \
+        "{{ $kitty_installer_sha256 }}"
+    sh "$tmpdir/kitty-installer.sh" launch=n installer=version-{{ $kitty_version }}
+)
 mkdir -p ~/.local/bin ~/.local/share/applications
 cp ~/.local/kitty.app/share/applications/kitty.desktop ~/.local/share/applications/ 2>/dev/null
 cp ~/.local/kitty.app/share/applications/kitty-open.desktop ~/.local/share/applications/ 2>/dev/null

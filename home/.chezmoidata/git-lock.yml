@@ -34,6 +34,7 @@ git_lock:
   superpowers: "eafe962b18f6c5dc70fb7c8cc7e83e61f4cdde06"
   vim_profiler: "d4fda79830528ffb6cce895448ac10b502f9f756"
   wsl_open: "6419bb63845acd0533f30bdc8258f8df5fbb25cb"
+  zed: "v0.229.0"
   zsh_autosuggestions: "85919cd1ffa7d2d5412f6d3fe437ebdbeeec4fc5"
   zsh_bd: "646f06d9b6a840926a671fdc2da196d4eecfc305"
   zsh_completions: "0.36.0"
