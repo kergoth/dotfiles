@@ -78,7 +78,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-{{ if or $install_distrobox (and $eget_to_install (not $eget_cmd)) -}}
+{{ if or $install_distrobox $eget_to_install -}}
 tmpdir=$(mktemp -d)
 trap 'rm -rf "$tmpdir"' EXIT
 {{- end }}
