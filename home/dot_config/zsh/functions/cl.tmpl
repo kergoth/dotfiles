@@ -1,0 +1,4 @@
+{{- $claude := includeTemplate "find-tool" (dict "root" . "tool" "claude") -}}
+{{- if $claude -}}
+claude "$@"
+{{- end -}}
