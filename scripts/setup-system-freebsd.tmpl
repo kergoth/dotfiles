@@ -224,3 +224,8 @@ if ! service sddm onestatus >/dev/null 2>&1; then
     service sddm start || :
 fi
 {{- end }}
+
+{{ if and (not .headless) (not .ephemeral) -}}
+# Setup linuxulator for glibc GUI apps (1Password, Vivaldi)
+bash "$scriptdir/setup-linuxulator-freebsd.sh"
+{{- end }}
