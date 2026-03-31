@@ -18,6 +18,9 @@
 - Fall back to `gh api` only when no subcommand or extension covers the needed operation
 - Reason: subcommands are easier to permission-gate, less brittle, and handle pagination/error cases automatically
 
+## Shell Conventions
+- **JSON in shell pipelines: use `jq`, not inline Python.** Inline `python3 -c` for JSON is brittle and error-prone due to shell quoting. Only fall back to Python when the transformation genuinely exceeds jq's capabilities (complex stateful logic, multi-source joins, etc.).
+
 ## Issue Tracking Conventions
 - Epics / initiatives: outcome-level — why it exists, what done looks like, what's excluded; no implementation details
 - Tasks / stories / enhancements: definition of done, not how to implement
