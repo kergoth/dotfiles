@@ -1,4 +1,6 @@
 fetch_sources:
+  rusage:
+    url_template: "https://cosmo.zip/pub/cosmos/bin/rusage"
   kitty_installer:
     url_template: "https://sw.kovidgoyal.net/kitty/installer.sh?version={version_no_v}"
     version_source: "git_lock.kitty"

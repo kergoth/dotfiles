@@ -122,10 +122,11 @@ Write-Host "Installing cargo tool: {{ . }}"
 {{-   if not $rusage -}}
 
 Write-Host "Installing rusage"
-$rusageUrl = "https://cosmo.zip/pub/cosmos/bin/rusage"
-$rusageDest = Join-Path $env:XDG_BIN_HOME "rusage"
 New-Item -ItemType Directory -Path $env:XDG_BIN_HOME -Force | Out-Null
-Invoke-WebRequest -Uri $rusageUrl -OutFile $rusageDest
+& "$env:CHEZMOI_COMMAND_DIR\scripts\fetch-verified.ps1" `
+    "https://cosmo.zip/pub/cosmos/bin/rusage" `
+    "{{ index .fetch_lock "rusage" }}" `
+    -OutFile (Join-Path $env:XDG_BIN_HOME "rusage")
 {{-   end }}
 
 {{   if $gh_cmd -}}
