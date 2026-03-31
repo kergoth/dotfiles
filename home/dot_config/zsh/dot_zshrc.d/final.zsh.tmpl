@@ -54,12 +54,38 @@ bindkey -M vicmd 'j' history-substring-search-down
 # Finally, make sure the terminal is in application mode, when zle is
 # active. Only then are the values from $terminfo valid.
 if (( ${+terminfo[smkx]} )) && (( ${+terminfo[rmkx]} )); then
-    function zle-line-init () {
+    function _dotfiles_zle_line_init_application_mode () {
         printf '%s' "${terminfo[smkx]}"
     }
-    function zle-line-finish () {
+    function _dotfiles_zle_line_finish_application_mode () {
         printf '%s' "${terminfo[rmkx]}"
     }
-    zle -N zle-line-init
-    zle -N zle-line-finish
+
+    if [[ -v widgets[zle-line-init] ]]; then
+        __dotfiles_preserved_zle_line_init=${widgets[zle-line-init]#user:}
+    fi
+
+    if [[ -z ${__dotfiles_preserved_zle_line_init:-} ]]; then
+        zle -N zle-line-init _dotfiles_zle_line_init_application_mode
+    else
+        function _dotfiles_zle_line_init_wrapped () {
+            _dotfiles_zle_line_init_application_mode "$@"
+            $__dotfiles_preserved_zle_line_init "$@"
+        }
+        zle -N zle-line-init _dotfiles_zle_line_init_wrapped
+    fi
+
+    if [[ -v widgets[zle-line-finish] ]]; then
+        __dotfiles_preserved_zle_line_finish=${widgets[zle-line-finish]#user:}
+    fi
+
+    if [[ -z ${__dotfiles_preserved_zle_line_finish:-} ]]; then
+        zle -N zle-line-finish _dotfiles_zle_line_finish_application_mode
+    else
+        function _dotfiles_zle_line_finish_wrapped () {
+            $__dotfiles_preserved_zle_line_finish "$@"
+            _dotfiles_zle_line_finish_application_mode "$@"
+        }
+        zle -N zle-line-finish _dotfiles_zle_line_finish_wrapped
+    fi
 fi
