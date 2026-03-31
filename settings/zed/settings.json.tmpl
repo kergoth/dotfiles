@@ -20,8 +20,8 @@
 {{   if .secrets -}}
   {{ include (joinPath .chezmoi.workingTree "settings/zed/settings-agent-work.json.age") | decrypt | indent 4 }}
 {{   end -}}
-{{ else -}}
-    "codex": {
+{{ else }}
+    "codex-acp": {
       "type": "registry"
     }
 {{ end -}}
