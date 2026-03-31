@@ -11,7 +11,6 @@ from pathlib import Path
 
 
 CLAUDE_PROJECTS = Path.home() / ".claude" / "projects"
-CLAUDE_HISTORY = Path.home() / ".claude" / "history.jsonl"
 
 
 def cwd_to_slug(cwd: str) -> str:
@@ -55,36 +54,58 @@ def get_search_dirs(
 
 
 def find_matching_files(search_dirs: list[Path], keywords: list[str]) -> list[Path]:
-    """Use rg to find .jsonl files containing any of the keywords.
+    """Use rg to find .jsonl files containing all of the keywords (AND semantics).
 
-    rg is case-insensitive and returns one path per matching file.
+    Runs one rg pass per keyword and intersects the results, so only files
+    containing every keyword are returned. rg is case-insensitive.
     """
-    if not search_dirs:
+    if not search_dirs or not keywords:
         return []
 
-    # Build an alternation pattern: keyword1|keyword2|...
-    # Use re.escape so keywords are treated as literals, not regex operators
-    pattern = "|".join(re.escape(kw) for kw in keywords)
+    dir_args = [str(d) for d in search_dirs]
+    matched: set[str] | None = None
 
-    cmd = [
-        "rg",
-        "--files-with-matches",
-        "--glob", "*.jsonl",
-        "--ignore-case",
-        pattern,
-    ] + [str(d) for d in search_dirs]
+    for kw in keywords:
+        cmd = [
+            "rg",
+            "--files-with-matches",
+            "--glob", "*.jsonl",
+            "--ignore-case",
+            re.escape(kw),
+        ] + dir_args
 
-    try:
-        result = subprocess.run(cmd, capture_output=True, text=True)
-    except FileNotFoundError:
-        print("Error: rg (ripgrep) not found. Install it with: brew install ripgrep", file=sys.stderr)
-        sys.exit(1)
+        try:
+            result = subprocess.run(cmd, capture_output=True, text=True)
+        except FileNotFoundError:
+            print("Error: rg (ripgrep) not found. Install it with: brew install ripgrep", file=sys.stderr)
+            sys.exit(1)
 
-    if result.returncode not in (0, 1):  # 1 = no matches found, not an error
-        print(f"rg error: {result.stderr}", file=sys.stderr)
+        if result.returncode not in (0, 1):  # 1 = no matches found, not an error
+            print(f"rg error: {result.stderr}", file=sys.stderr)
+            return []
+
+        hits = {p for p in result.stdout.splitlines() if p.strip()}
+        matched = hits if matched is None else matched & hits
+
+    if matched is None:
         return []
 
-    return [Path(p) for p in result.stdout.splitlines() if p.strip()]
+    return [Path(p) for p in matched]
+
+
+def find_files_by_session_ids(
+    session_ids: list[str],
+    projects_root: Path = CLAUDE_PROJECTS,
+) -> list[Path]:
+    """Locate JSONL files for specific session IDs by scanning all project dirs."""
+    files = []
+    for sid in session_ids:
+        matches = list(projects_root.glob(f"*/{sid}.jsonl"))
+        if matches:
+            files.extend(matches)
+        else:
+            print(f"Warning: session {sid} not found", file=sys.stderr)
+    return files
 
 
 def extract_text(content) -> str:
@@ -148,14 +169,15 @@ def parse_messages(jsonl_path: Path) -> list[dict]:
 
 
 def get_session_metadata(jsonl_path: Path) -> dict:
-    """Extract session_id, cwd, and first timestamp from a JSONL file.
+    """Extract session_id, cwd, first timestamp, and custom title from a JSONL file.
 
-    Reads only the minimum lines needed — stops once both cwd and
-    first_timestamp are found.
+    Reads the full file to ensure custom-title events (which can appear anywhere)
+    are not missed.
     """
     session_id = jsonl_path.stem
     cwd = ""
     first_timestamp = ""
+    custom_title = ""
 
     try:
         with open(jsonl_path, errors="replace") as f:
@@ -172,9 +194,8 @@ def get_session_metadata(jsonl_path: Path) -> dict:
                     first_timestamp = obj["timestamp"]
                 if not cwd and obj.get("cwd"):
                     cwd = obj["cwd"]
-
-                if first_timestamp and cwd:
-                    break
+                if obj.get("type") == "custom-title":
+                    custom_title = obj.get("customTitle", "")
     except OSError:
         pass
 
@@ -182,46 +203,8 @@ def get_session_metadata(jsonl_path: Path) -> dict:
         "session_id": session_id,
         "cwd": cwd,
         "first_timestamp": first_timestamp,
+        "custom_title": custom_title,
     }
-
-
-def build_session_name_index(history_path: Path = CLAUDE_HISTORY) -> dict[str, str]:
-    """Build a session_id -> display_name mapping from history.jsonl.
-
-    Uses the first non-slash-command entry per session as the display name.
-    Falls back to the first entry of any kind if all entries are slash commands.
-    """
-    if not history_path.exists():
-        return {}
-
-    # first_any[session_id] = first display seen
-    # first_real[session_id] = first non-slash-command display seen
-    first_any: dict[str, str] = {}
-    first_real: dict[str, str] = {}
-
-    try:
-        with open(history_path, errors="replace") as f:
-            for line in f:
-                line = line.strip()
-                if not line:
-                    continue
-                try:
-                    entry = json.loads(line)
-                except json.JSONDecodeError:
-                    continue
-                sid = entry.get("sessionId")
-                display = entry.get("display", "").strip()
-                if not sid or not display:
-                    continue
-                if sid not in first_any:
-                    first_any[sid] = display
-                if sid not in first_real and not display.startswith("/"):
-                    first_real[sid] = display
-    except OSError:
-        return {}
-
-    # Merge: prefer real entry, fall back to any
-    return {sid: first_real.get(sid, first_any[sid]) for sid in first_any}
 
 
 def get_match_contexts(
@@ -246,10 +229,6 @@ def get_match_contexts(
             continue
         if i <= last_window_end:
             # This match is inside the previous context window — extend it.
-            # The matching message is absorbed into context_after without being
-            # recorded as a separate match. Known limitation: Claude sees the
-            # text but not that it was also a keyword hit. Accepted trade-off
-            # for the summarization use case where overlap is rare.
             if contexts:
                 end = min(len(messages), i + context_size + 1)
                 contexts[-1]["context_after"] = messages[i + 1 : end]
@@ -277,8 +256,6 @@ def extract_session_data(
 
     Returns None if the session has no user messages (automated session).
     """
-    # Note: reads the file twice (metadata scan + full parse). Acceptable for
-    # session files up to a few MB; could be merged into one pass if needed.
     metadata = get_session_metadata(jsonl_path)
     messages = parse_messages(jsonl_path)
 
@@ -314,10 +291,11 @@ def extract_session_data(
 
     return {
         "session_id": metadata["session_id"],
-        "session_name": None,  # populated by caller from history index
+        "session_name": metadata["custom_title"] or None,
         "project_dir": metadata["cwd"],
         "first_timestamp": metadata["first_timestamp"],
         "last_timestamp": last_timestamp,
+        "match_count": len(match_contexts),
         "first_exchanges": first_exchanges,
         "last_exchanges": last_exchanges,
         "match_contexts": match_contexts,
@@ -328,7 +306,7 @@ def parse_args():
     parser = argparse.ArgumentParser(
         description="Search Claude Code session history by keyword"
     )
-    parser.add_argument("keywords", nargs="+", help="Keywords to search for")
+    parser.add_argument("keywords", nargs="*", help="Keywords to search for")
     parser.add_argument(
         "--scope",
         choices=["project", "global"],
@@ -359,16 +337,27 @@ def parse_args():
         default=[],
         help="Exclude a session by ID (repeatable)",
     )
+    parser.add_argument(
+        "--session-ids",
+        metavar="SESSION_ID",
+        action="append",
+        default=[],
+        help="Fetch specific sessions by ID, bypassing keyword search (repeatable)",
+    )
     return parser.parse_args()
 
 
 def main():
     args = parse_args()
 
-    search_dirs = get_search_dirs(args.scope, args.cwd)
-    matching_files = find_matching_files(search_dirs, args.keywords)
-
-    name_index = build_session_name_index()
+    if args.session_ids:
+        matching_files = find_files_by_session_ids(args.session_ids)
+    else:
+        if not args.keywords:
+            print("Error: keywords are required unless --session-ids is provided", file=sys.stderr)
+            sys.exit(1)
+        search_dirs = get_search_dirs(args.scope, args.cwd)
+        matching_files = find_matching_files(search_dirs, args.keywords)
 
     results = []
     for jsonl_path in matching_files:
@@ -381,13 +370,14 @@ def main():
             continue
         if data["session_id"] in args.exclude:
             continue
-        data["session_name"] = name_index.get(data["session_id"])
         results.append(data)
 
-    # Sort most-recent-first by last_timestamp
-    results.sort(key=lambda x: x.get("last_timestamp", ""), reverse=True)
+    # Sort by match_count descending (more hits = more likely to be the primary topic),
+    # with last_timestamp as tiebreaker so equally-relevant sessions show newest first.
+    results.sort(key=lambda x: (x.get("match_count", 0), x.get("last_timestamp", "")), reverse=True)
 
-    print(json.dumps(results[: args.max_results], indent=2))
+    total = len(results)
+    print(json.dumps({"total_matching": total, "sessions": results[: args.max_results]}, indent=2))
 
 
 if __name__ == "__main__":
