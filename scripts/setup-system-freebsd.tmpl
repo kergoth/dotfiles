@@ -133,6 +133,11 @@ freebsd_check devel/shfmt shfmt
 freebsd_check www/jira-cli jira
 {{- end }}
 
+# Containers
+{{ if .containers -}}
+freebsd_check sysutils/podman-suite podman
+{{- end }}
+
 # Directly supported by nix home-manager
 freebsd_check textproc/jq jq
 freebsd_check textproc/bat bat
