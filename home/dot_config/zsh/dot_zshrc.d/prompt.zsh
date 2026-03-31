@@ -6,7 +6,15 @@ fi
 
 if (( $+commands[starship] )); then
     export STARSHIP_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/starship-right.toml"
-    eval "$(starship init zsh)"
-else
-    . "$ZDOTDIR/themes/powerlevel10k/powerlevel10k.zsh-theme"
+    if eval "$(starship init zsh)"; then
+        source "$ZDOTDIR/themes/transient-prompt/transient-prompt.zsh-theme"
+        # Starship renders the active prompt and zsh-transient-prompt rewrites accepted prompts.
+        TRANSIENT_PROMPT_PROMPT='$(starship prompt --terminal-width="$COLUMNS" --keymap="${KEYMAP:-}" --status="$STARSHIP_CMD_STATUS" --pipestatus="${STARSHIP_PIPE_STATUS[*]}" --cmd-duration="${STARSHIP_DURATION:-}" --jobs="$STARSHIP_JOBS_COUNT")'
+        TRANSIENT_PROMPT_RPROMPT='$(starship prompt --right --terminal-width="$COLUMNS" --keymap="${KEYMAP:-}" --status="$STARSHIP_CMD_STATUS" --pipestatus="${STARSHIP_PIPE_STATUS[*]}" --cmd-duration="${STARSHIP_DURATION:-}" --jobs="$STARSHIP_JOBS_COUNT")'
+        TRANSIENT_PROMPT_TRANSIENT_PROMPT='$(starship module character)'
+        TRANSIENT_PROMPT_TRANSIENT_RPROMPT=''
+        return
+    fi
 fi
+
+. "$ZDOTDIR/themes/powerlevel10k/powerlevel10k.zsh-theme"

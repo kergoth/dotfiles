@@ -53,6 +53,12 @@ url = {{ printf "https://github.com/nix-community/nix-zsh-completions/archive/re
 exact = true
 stripComponents = 1
 
+[".config/zsh/themes/transient-prompt"]
+type = "archive"
+url = {{ printf "https://github.com/olets/zsh-transient-prompt/archive/refs/tags/%s.tar.gz" (index $lock "zsh_transient_prompt") | toToml }}
+exact = true
+stripComponents = 1
+
 [".config/zsh/plugins/syntax-highlighting"]
 type = "archive"
 url = {{ printf "https://github.com/zsh-users/zsh-syntax-highlighting/archive/%s.tar.gz" (index $lock "zsh_syntax_highlighting") | toToml }}

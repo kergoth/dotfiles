@@ -48,3 +48,4 @@ git_lock:
   zsh_history_substring_search: "v1.1.0"
   zsh_nix_shell: "v0.8.0"
   zsh_syntax_highlighting: "2fc57d63067c18b1100ecdbf684fa5baf49459d1"
+  zsh_transient_prompt: "v1.0.1"
