@@ -1,6 +1,6 @@
 ---
 name: shell-script-style
-description: Apply Christopher Larson's preferred Bash and POSIX shell script style when creating or substantially editing user-facing shell scripts. Use when writing or modifying `.sh` files, shell utilities under `script/` or `scripts/`, shell snippets intended for the user to keep, or any Bash or POSIX sh program that will become part of the maintained codebase. Do not use for temporary test scripts, disposable intermediate artifacts, or scripts written solely for AI-agent execution.
+description: Apply Christopher Larson's preferred Bash and POSIX shell script style when creating or substantially editing user-facing shell scripts. Use when writing or modifying shell utilities under `scripts/` or `script/` (including extensionless shebang executables, pre-commit entry scripts, and CI helpers), `.sh` files, shell snippets intended for the user to keep, or any Bash or POSIX sh program that will become part of the maintained codebase. Do not use for temporary test scripts, disposable intermediate artifacts, or scripts written solely for AI-agent execution.
 ---
 
 # Shell Script Style
@@ -32,7 +32,7 @@ Use this skill to keep user-owned shell scripts aligned with the local shell sty
 
 ## Scope Boundary
 
-Apply this skill when the output is meant to be read, run, or maintained by the user. Do not apply it to:
+Apply this skill when the output is meant to be read, run, or maintained by the user. Scripts committed to a repository under `scripts/`, `.devcontainer/scripts/`, or similar developer-tooling paths — including pre-commit helpers and CI utilities — are user-facing; apply this skill unless they are explicitly disposable or agent-only. Do not apply it to:
 
 - throwaway reproduction scripts
 - temporary test fixtures or harnesses
