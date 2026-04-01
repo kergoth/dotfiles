@@ -97,14 +97,33 @@ def find_files_by_session_ids(
     session_ids: list[str],
     projects_root: Path = CLAUDE_PROJECTS,
 ) -> list[Path]:
-    """Locate JSONL files for specific session IDs by scanning all project dirs."""
+    """Locate JSONL files for specific session IDs or unambiguous prefixes."""
     files = []
+    errors = []
     for sid in session_ids:
+        # Try exact match first
         matches = list(projects_root.glob(f"*/{sid}.jsonl"))
         if matches:
             files.extend(matches)
+            continue
+        # Fall back to prefix match
+        matches = list(projects_root.glob(f"*/{sid}*.jsonl"))
+        if len(matches) == 1:
+            resolved = matches[0].stem
+            print(f"Resolved prefix {sid} -> {resolved}", file=sys.stderr)
+            files.append(matches[0])
+        elif len(matches) > 1:
+            resolved_ids = [m.stem for m in matches]
+            errors.append(
+                f"Ambiguous prefix {sid!r} matches {len(matches)} sessions: "
+                + ", ".join(resolved_ids)
+            )
         else:
-            print(f"Warning: session {sid} not found", file=sys.stderr)
+            errors.append(f"Session {sid} not found")
+    if errors:
+        for err in errors:
+            print(f"Error: {err}", file=sys.stderr)
+        sys.exit(1)
     return files
 
 

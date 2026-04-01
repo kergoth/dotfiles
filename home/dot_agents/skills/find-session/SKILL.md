@@ -85,7 +85,15 @@ Work through these in order — don't skip to keyword changes until you've exhau
 
 ### Step 3a: Get thorough context for the top candidates
 
-After every quick search, run a targeted thorough pass on the top candidates (those with the highest `match_count`, typically the top 2–3) before presenting results or drawing any conclusions. Use `--session-ids` so you only read those files — not all 28 matches:
+After every quick search, run a targeted thorough pass on the top candidates (those with the highest `match_count`, typically the top 2–3) before presenting results or drawing any conclusions. Use `--session-ids` so you only read those files — not all 28 matches.
+
+Extract full session IDs from the quick search output — never truncate and then reconstruct:
+```bash
+# Extract full IDs for the top 3 candidates
+<quick_output> | jq -r '[.sessions[:3] | .[].session_id] | join(" ")'
+```
+
+**WARNING:** Session IDs are UUIDs. If you only extracted a prefix (e.g., first 8 chars), do NOT attempt to reconstruct the full ID — you will hallucinate the suffix. Either re-extract the full ID from the original output, or pass the prefix directly (`--session-ids` supports unambiguous prefixes).
 
 ```bash
 python ~/.claude/skills/find-session/scripts/search_sessions.py \
@@ -122,7 +130,7 @@ The keywords genuinely didn't match. Try variations:
 Check the environment before presenting results:
 
 ```bash
-echo $CLAUDE_CODE_ENTRYPOINT
+printenv CLAUDE_CODE_ENTRYPOINT
 ```
 
 - `cli` → **interactive mode**: can ask follow-up questions
