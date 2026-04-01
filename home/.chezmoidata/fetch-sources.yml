@@ -1,4 +1,6 @@
 fetch_sources:
+  eget_installer:
+    url_template: "https://zyedidia.github.io/eget.sh"
   rusage:
     url_template: "https://cosmo.zip/pub/cosmos/bin/rusage"
   kitty_installer:

@@ -100,7 +100,10 @@ mv "$tmpdir"/distrobox* "$HOME/.local/bin/"
 {{-         if not $eget_cmd }}
 echo >&2 "Installing eget"
 mkdir -p "$HOME/.local/bin"
-curl -o "$tmpdir/eget.sh" -fsSL https://zyedidia.github.io/eget.sh
+fetch-verified \
+    -o "$tmpdir/eget.sh" \
+    "https://zyedidia.github.io/eget.sh" \
+    "{{ index .fetch_lock "eget_installer" }}"
 (
     cd "$tmpdir" || exit 1
     sh eget.sh
