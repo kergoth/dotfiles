@@ -6,6 +6,7 @@
 {{- range $plist := (glob (joinPath .chezmoi.sourceDir "Library/LaunchAgents/com.kergoth*.plist*") | sortAlpha) }}
 # {{ base $plist }}: {{ include $plist | sha256sum }}
 {{- end }}
+# session-env binary: {{ if stat (joinPath .chezmoi.destDir ".local/share/session-env/bin/session-env") }}present{{ else }}missing{{ end }}
 
 set -euo pipefail
 
