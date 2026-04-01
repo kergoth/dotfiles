@@ -1,0 +1,23 @@
+{{- if and (eq .chezmoi.os "linux") .user_setup (not .headless) (not .ephemeral) -}}
+#!/usr/bin/env bash
+# Refresh the desktop activation environment for session-env-backed variables
+#
+# Onchange triggers: Re-run if the autostart entry changes or the session-env
+# binary appears/disappears.
+# session-env.desktop: {{ include (joinPath .chezmoi.sourceDir "dot_config/autostart/session-env.desktop.tmpl") | sha256sum }}
+# session-env binary: {{ if stat (joinPath .chezmoi.destDir ".local/share/session-env/bin/session-env") }}present{{ else }}missing{{ end }}
+
+set -euo pipefail
+
+session_env_bin="$HOME/.local/bin/session-env"
+
+if [ ! -x "$session_env_bin" ]; then
+    exit 0
+fi
+
+if [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ]; then
+    exit 0
+fi
+
+"$session_env_bin" sync dbus
+{{- end -}}
