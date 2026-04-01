@@ -1,0 +1,4 @@
+interface:
+  display_name: "Jujutsu"
+  short_description: "Work safely in Jujutsu repos"
+  default_prompt: "Use $jujutsu to handle version control safely in a repository that contains .jj/."
