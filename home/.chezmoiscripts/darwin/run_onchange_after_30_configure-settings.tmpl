@@ -3,7 +3,6 @@
 {{- $default_tilesize := dig "ui" "global" "macos" "dock_tilesize" 48 . }}
 {{- $dock_tilesize := dig "ui" .hostname "macos" "dock_tilesize" $default_tilesize . }}
 
-scriptdir="$(cd "$(dirname "$0")" && pwd -P)"
 tmpdir="$(mktemp -d -t "${0##*/}.XXXXXX")" || exit 1
 trap 'rm -rf "$tmpdir"' EXIT INT TERM
 
@@ -127,23 +126,8 @@ defaults -currentHost write -g AppleFontSmoothing -int 0
 defaults write -g NSMenuEnableActionImages -bool false || :
 
 {{ if eq .chezmoi.hostname "vaelin" -}}
-    # Select 2x display scaling for better font rendering
-    /usr/bin/python3 -m venv "$tmpdir/venv"
-    (
-    	# shellcheck disable=SC1091
-    	. "$tmpdir/venv/bin/activate"
-
-    	pip install wheel
-    	pip install pyobjc-core pyobjc-framework-Cocoa pyobjc-framework-Quartz
-
-    	site="$(python3 -c 'import site; print(site.getsitepackages()[0])')"
-    	if ! [ -e "$site/display_manager_lib.py" ]; then
-    		mkdir -p "$site"
-    		curl -Lfso "$site/display_manager_lib.py" "https://raw.githubusercontent.com/univ-of-utah-marriott-library-apple/display_manager/stable/display_manager_lib.py"
-    	fi
-
-    	python3 "$scriptdir"/set-resolution-scale-2.py
-    )
+    # Prefer integer-backed scaling on the current main display.
+    "$CHEZMOI_WORKING_TREE/scripts/macos/prefer-integer-display-scaling.py"
 {{- end }}
 
 {{ if and (not .ephemeral) (not (env "CONTAINER_ID")) -}}
