@@ -331,12 +331,10 @@ chezmoi update -R
   - Sync/dotfiles-local
   - Sync/App Settings
   - Library/Fonts
-  - Library/Application Support/Zed/extensions
 
 ### Manual Setup Steps for Windows
 
 - Set up all my Syncthing shares
-  - `AppData/Local/Zed/extensions`
 - Restore from backup:
   - `$USERPROFILE/Apps`
   - Vivaldi: `AppData/Local/Vivaldi/User Data/Default/`
