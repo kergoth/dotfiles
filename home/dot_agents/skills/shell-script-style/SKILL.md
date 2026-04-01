@@ -24,6 +24,7 @@ Use this skill to keep user-owned shell scripts aligned with the local shell sty
 
 - Use `#!/usr/bin/env bash` with `set -euo pipefail` for Bash scripts.
 - Use `#!/bin/sh` with `set -eu` for POSIX `sh` scripts.
+- In Bash scripts use `BASH_SOURCE[0]` (not `$0`) for `scriptdir` and `scriptname`; POSIX `sh` scripts use `$0`.
 - Prefer `main()` plus `process_arguments()` and `usage()` for non-trivial scripts.
 - Prefer `getopts`, support `-h`, and include `-n`, `-v`, and `-q` when the script performs meaningful actions.
 - Use 4-space indentation, avoid dense one-liners, and keep comments minimal.
