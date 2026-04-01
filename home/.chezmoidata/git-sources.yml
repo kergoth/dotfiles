@@ -22,6 +22,9 @@ git_sources:
   anthropic_official_plugins:
     repo: https://github.com/anthropics/claude-plugins-official
     review_note: "The only plugins I install from this marketplace are claude-md-management and skill-creator. State explicitly at the start whether either has code changes. Also review in full: shared infrastructure changes (marketplace.json format/schema, plugin-loading code) and supply-chain risks in marketplace.json (unpinned entries, source changes). For code changes inside other plugins' own files (e.g. telegram/, discord/, math-olympiad/), skip detailed analysis — note the plugin name and one-line summary only if it adds systemic risk."
+  avoid_ai_writing:
+    repo: https://github.com/conorbronsdon/avoid-ai-writing
+    review_note: "I use this as the base layer for AI writing pattern detection. Focus on changes to SKILL.md: vocabulary tier changes (additions, removals, tier reassignments), context profile changes, structural pattern rules, and scoring thresholds. Flag any changes that might conflict with the clean-prose wrapper skill's overrides (em dash rules, technical vocabulary carve-outs)."
   astral:
     repo: https://github.com/astral-sh/claude-code-plugins
     review_note: "This package provides the ruff, ty, and uv agent skills that I actively use. Focus on changes to those three skills and any shared infrastructure. Flag changes that alter how linting, type checking, or package management is recommended or executed, or that add unexpected network calls or file system access."

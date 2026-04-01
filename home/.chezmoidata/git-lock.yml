@@ -3,6 +3,7 @@ git_lock:
   86box_roms: "34445a5683402b8ee6f2b09feba242e04eaaf17d"
   anthropic_official_plugins: "b091cb4179d3b62a6e2a39910461c7ec7165b1ef"
   astral: "f3ce88a7ba830f53afd6d944c1d0278ed318e142"
+  avoid_ai_writing: "6820d7daea32afb411e751bd9688c146cf9353f1"
   bat_extras: "v2024.08.24"
   beanbaginc_dev_goodies: "61fec42ad35352f3c1ada707cb4419879f68bd97"
   bitbake_syntax: "92f657768e8f5544fb631112ea38beee3cde2fe8"

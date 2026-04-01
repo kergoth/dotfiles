@@ -18,6 +18,12 @@ url = {{ printf "https://github.com/astral-sh/claude-code-plugins/archive/%s.tar
 exact = true
 stripComponents = 1
 
+[".agents/external-sources/avoid-ai-writing"]
+type = "archive"
+url = {{ printf "https://github.com/conorbronsdon/avoid-ai-writing/archive/%s.tar.gz" (index $lock "avoid_ai_writing") | toToml }}
+exact = true
+stripComponents = 1
+
 [".agents/external-sources/gh-pr-review"]
 type = "archive"
 url = {{ printf "https://github.com/agynio/gh-pr-review/archive/%s.tar.gz" (index $lock "gh_pr_review_skill") | toToml }}

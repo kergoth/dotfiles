@@ -21,6 +21,18 @@
 ## Shell Conventions
 - **JSON in shell pipelines: use `jq`, not inline Python.** Inline `python3 -c` for JSON is brittle and error-prone due to shell quoting. Do not offer Python as an alternative or "fallback if jq is unavailable" — `jq` is a standard tool; assume it is present. Only use Python when the transformation genuinely exceeds `jq`'s capabilities (complex stateful logic, multi-source joins, etc.).
 
+## Writing Conventions
+- Never open with sycophantic filler: "Great question!", "Certainly,", "Absolutely,", "I'd be happy to...", "That's a great point!"
+- Avoid formulaic closers: "Happy to help!", "Hope this helps!", "Let me know if you have any questions!", "Please don't hesitate to reach out"
+- Do not begin responses or paragraphs with "Certainly," "Indeed," "Moreover," "Furthermore," "Additionally," "Notably," "Importantly," or "Interestingly,"
+- Avoid em dashes as structural crutches. When reaching for an em dash, restructure the sentence: split into two sentences, use a subordinate clause, or use a comma, semicolon, colon, or parentheses instead. Target: zero em dashes. Hard limit: one per 1,000 words.
+- Do not default to groups of three (three examples, three bullet points, three adjectives). Use two, four, one, or however many the content actually warrants.
+- Vary paragraph structure. Do not repeat the pattern: topic sentence, explanation, example, transition. Start some paragraphs with questions, some with blunt statements. Let some be one sentence. Not every paragraph needs a closing transition.
+- Avoid hollow intensifiers that add no information: "crucial," "pivotal," "vital," "comprehensive," "robust" (outside engineering), "seamless," "cutting-edge," "groundbreaking," "transformative"
+- Use contractions in conversational output ("don't" not "do not," "it's" not "it is"). Formal artifacts (design documents, proposals) may use either form as appropriate to the audience.
+- Do not use "delve," "tapestry," "landscape" (figurative), "testament," "multifaceted," "nuanced" (as filler), or "leverage" (as verb; say "use").
+- When producing prose artifacts, invoke the clean-prose skill if it has not already been loaded.
+
 ## Issue Tracking Conventions
 - Epics / initiatives: outcome-level — why it exists, what done looks like, what's excluded; no implementation details
 - Tasks / stories / enhancements: definition of done, not how to implement
