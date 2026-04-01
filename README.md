@@ -348,31 +348,24 @@ chezmoi update -R
 - Run vscode, enable settings sync
 - Remove Edge, Store, Mail from the task bar pins.
 
-### Manual Setup Steps for Session Credentials
+### Manual Setup Steps for Desktop Session Environment
 
-`~/.envrc` is the chezmoi-managed source of truth for shared session variables used by shells, direnv-chained projects, and desktop-launched apps.
+Desktop-launched applications on macOS and Linux generally do not read shell startup files, so they often miss environment variables that are available in terminal sessions. This setup uses `session-env` to inject a small set of shared variables into the desktop session so GUI apps inherit the same basic context, especially `PATH`.
 
-Project-level `.envrc` files are expected to chain back to the home-level file via `source_up` or `source_env ~/.envrc`. If a project-local `.envrc` does not do this, that project is bypassing the shared session environment and should be fixed there rather than worked around in dotfiles.
+In this repo, the managed defaults currently provide `PATH` and `EMAIL`.
 
-#### macOS
+Terminals launched from the desktop environment inherit those variables automatically, so nothing special is needed there beyond the desktop-session injection itself.
 
-```bash
-set-credential GITHUB_TOKEN "<paste-token-here>"
-set-credential CLAUDE_CODE_OAUTH_TOKEN "<paste-token-here>"
-```
+The home-level `~/.envrc` is a `direnv` bridge for shell entry points that bypass the desktop session, especially SSH. In those cases, it sources `~/.session-env` so direnv can recreate the same baseline environment in CLI sessions that did not inherit it from the desktop login.
 
-#### KDE Plasma (Linux and FreeBSD)
+Project-level `.envrc` files are expected to chain back to the home-level file via `source_up` or `source_env ~/.envrc`. If a project-local `.envrc` does not do this, that project is bypassing the shared home-session baseline and should be fixed there rather than worked around in dotfiles.
 
-```bash
-set-credential GITHUB_TOKEN "<paste-token-here>"
-set-credential CLAUDE_CODE_OAUTH_TOKEN "<paste-token-here>"
-```
+To add more variables to this mechanism without changing the managed defaults, add `export NAME=value` lines to `~/.session-env.local`. Use that for machine-local additions that should be visible to desktop apps and to shell sessions restored via direnv. If you want to change the managed defaults themselves, edit [`home/private_dot_session-env.tmpl`](/Users/kergoth/.dotfiles/home/private_dot_session-env.tmpl) in the dotfiles source.
 
-- `gh auth login` is a valid alternative source for `GITHUB_TOKEN`, but `CLAUDE_CODE_OAUTH_TOKEN` still needs to come from the platform keychain for this initial implementation.
-- `claude setup-token` can be used as a one-time interactive way to obtain the Claude token value before storing it in the keychain, but it is not the runtime lookup mechanism used by `get-credential`.
-- Remove a stored value with `delete-credential NAME`.
-- On macOS, values are refreshed during `chezmoi apply` or by manually running `~/.local/bin/session-env-sync launchctl`.
-- On KDE Plasma, values are refreshed on the next login or by manually running `~/.local/bin/session-env-sync dbus`.
+This mechanism is best suited to non-secret session context. Avoid broadly exporting credentials into the desktop session, since that makes them available to every GUI app and CLI tool in the session. For secrets, prefer project-local `.envrc`, app- or tool-specific login flows, or the platform keychain.
+
+- On macOS, values are refreshed during `chezmoi apply` or by manually running `~/.local/bin/session-env sync launchctl`.
+- On KDE Plasma, values are refreshed on the next login or by manually running `~/.local/bin/session-env sync dbus`.
 
 ## What's Included
 
