@@ -1,14 +1,12 @@
-{{- if and .user_setup (not .ephemeral) (not .steamdeck) (not (env "CONTAINER_ID")) -}}
+{{- if and .user_setup (not .ephemeral) (not (env "CONTAINER_ID")) (not .steamdeck) -}}
 {{-   $devpod := includeTemplate "find-tool" (dict "root" . "tool" "devpod") -}}
 {{-   if $devpod -}}
 #!/usr/bin/env bash
 set -euo pipefail
 
-# shellcheck source=../../../scripts/common.sh
-. "$CHEZMOI_WORKING_TREE/scripts/common.sh" || exit 1
+#   configure-devpod.sh hash: {{ include (joinPath .chezmoi.workingTree "scripts/configure-devpod.sh") | sha256sum }}
 
-# Configure DevPod
-devpod_configure \
+"$CHEZMOI_WORKING_TREE/scripts/configure-devpod.sh" \
     "https://github.com/kergoth/dotfiles" \
     "script/setup" \
     "$HOME/.ssh/config.d/devpod" \

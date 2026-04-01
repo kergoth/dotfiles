@@ -3,12 +3,6 @@
 {{- $default_tilesize := dig "ui" "global" "macos" "dock_tilesize" 48 . }}
 {{- $dock_tilesize := dig "ui" .hostname "macos" "dock_tilesize" $default_tilesize . }}
 
-tmpdir="$(mktemp -d -t "${0##*/}.XXXXXX")" || exit 1
-trap 'rm -rf "$tmpdir"' EXIT INT TERM
-
-# shellcheck source=../../../scripts/common.sh
-. "$CHEZMOI_WORKING_TREE/scripts/common.sh" || exit 1
-
 # Expose hidden files and Library folder in Finder:
 defaults write com.apple.finder AppleShowAllFiles -bool true
 chflags nohidden ~/Library
@@ -141,17 +135,6 @@ fi
 if ! DOCKER_HOST= docker context ls --format json | grep colima | grep -F '"Current":true' >/dev/null; then
     DOCKER_HOST= docker context use colima
 fi
-{{-   end }}
-
-{{   $devpod := includeTemplate "find-tool" (dict "root" . "tool" "devpod") -}}
-{{   if $devpod -}}
-# Configure DevPod
-devpod_configure \
-    "https://github.com/kergoth/dotfiles" \
-    "script/setup" \
-    "$HOME/.ssh/config.d/devpod" \
-    "docker" \
-    "zed" || :
 {{-   end }}
 {{- end }}
 

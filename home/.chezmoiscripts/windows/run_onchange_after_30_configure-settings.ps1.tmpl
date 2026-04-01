@@ -37,8 +37,9 @@ if (Test-Path "C:\Program Files (x86)\GnuPG\bin\gpg.exe") {
 
 {{-   $devpod := includeTemplate "find-tool" (dict "root" . "tool" "devpod") }}
 {{-   if $devpod }}
+#   configure-devpod.ps1 hash: {{ include (joinPath .chezmoi.workingTree "scripts/configure-devpod.ps1") | sha256sum }}
 # Configure DevPod
-Set-DevPodConfiguration `
+& "$env:CHEZMOI_COMMAND_DIR\scripts\configure-devpod.ps1" `
     -DotfilesUrl "https://github.com/kergoth/dotfiles" `
     -DotfilesScript "script/setup" `
     -SshConfigPath "$env:USERPROFILE\.ssh\config.d\devpod" `
