@@ -254,52 +254,6 @@ chezmoi update -R
 ./script/update
 ```
 
-## Manual Setup Steps
-
-### Manual Setup Steps for macOS
-
-- `./scripts/extras/enable-filevault`
-- System Settings > Lock Screen
-  - Set “Require password after screen saver begins or display is turned off” to after 5 seconds or less.
-
-- System Settings > Privacy & Security > Security
-  - Set “Allow applications downloaded from App Store and identified developers” at most.
-
-- System Settings > Privacy & Security > Full Disk Access
-  - Add Terminal, iTerm, and any other terminal emulators you use.
-  - Add VSCode, and any other editors you use.
-
-- Run vscode, enable settings sync
-- Run vivaldi, enable sync
-- Run deliveries, click yes to import from iCloud
-- Run musicharbor, click yes to import from iCloud
-- Run appcleaner, preferences, enable smartdelete
-- Run alfred, preferences, advanced, enable sync to `~/Sync/App Settings/Alfred`
-- Safari
-  - Change the default scale to 85%
-  - Add site settings icon
-  - Add cloud tabs icon
-  - Rearrange icons
-
-- Syncthing Shares
-  - Sync/dotfiles-local
-  - Sync/App Settings
-  - Library/Fonts
-
-### Manual Setup Steps for Windows
-
-- Set up all my Syncthing shares
-- Restore from backup:
-  - `$USERPROFILE/Apps`
-  - Vivaldi: `AppData/Local/Vivaldi/User Data/Default/`
-  - archwsl disk image
-
-- Run QuickLook, right click its icon, click start at login
-- Create link to CapsLockCtrlEscape.exe in Startup (win-r -> shell:startup)
-- Install Fonts from Sync/Fonts
-- Run vscode, enable settings sync
-- Remove Edge, Store, Mail from the task bar pins.
-
 ## Local Configuration
 
 These files are not tracked in the repository and allow per-machine customization without modifying managed dotfiles.
