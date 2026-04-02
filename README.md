@@ -36,31 +36,8 @@ The repository manages CLI tools, GUI applications, shell plugins and configurat
 
 - **macOS**: Full CLI + GUI coverage (Nix, Homebrew)
 - **Windows**: Full CLI + GUI coverage (Scoop, winget, WSL)
-- **Linux**: Full CLI coverage. GUI apps vary by distro. Tested on Arch, Ubuntu, Debian, Fedora, Chimera Linux, and SteamOS. Most supported Linux distros use Nix. Chimera Linux uses alternate paths for some tooling and GUI apps. See [Platform Notes](#platform-notes).
-- **FreeBSD**: Full CLI coverage. Less testing. Nix itself works, but nixpkgs coverage is currently too limited for this setup. See [Platform Notes](#platform-notes).
-
-## Platform Notes
-
-### FreeBSD
-
-Nix itself works on FreeBSD, but nixpkgs coverage is currently too limited for
-this setup. For now, package installation relies primarily on native packages
-and language-specific package managers.
-
-For GUI apps without native FreeBSD support, linuxulator is the best approach
-(see issue #68). Like the Chimera Linux distrobox approach, it uses a Linux
-userspace to cover gaps where native packaging is absent.
-
-### Chimera Linux
-
-Chimera Linux does not follow the standard Nix-driven path used on the other
-supported Linux distros.
-
-Its musl libc, BSD userland, and package availability gaps require alternate
-installation paths for some tools and GUI apps.
-
-Where native packaging is insufficient, this setup falls back to Flatpak and an
-Ubuntu distrobox for glibc-only GUI applications.
+- **Linux**: Full CLI coverage. GUI apps vary by distro. Tested on Arch, Ubuntu, Debian, Fedora, Chimera Linux, and SteamOS. Most supported Linux distros use Nix. Chimera Linux does not follow the standard Nix-driven path used elsewhere: its musl libc, BSD userland, and package availability gaps require alternate installation paths for some tools and GUI apps. Where native packaging is insufficient, this setup falls back to Flatpak and an Ubuntu distrobox for glibc-only GUI applications.
+- **FreeBSD**: Full CLI coverage. Less testing. Nix itself works, but nixpkgs coverage is currently too limited for this setup, so package installation relies primarily on native packages and language-specific package managers. For GUI apps without native FreeBSD support, linuxulator is the best approach (see issue #68). Like the Chimera Linux distrobox approach, it uses a Linux userspace to cover gaps where native packaging is absent.
 
 ## Prerequisites
 
