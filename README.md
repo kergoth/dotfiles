@@ -300,25 +300,6 @@ chezmoi update -R
 - Run vscode, enable settings sync
 - Remove Edge, Store, Mail from the task bar pins.
 
-### Manual Setup Steps for Desktop Session Environment
-
-Desktop-launched applications on macOS and Linux generally do not read shell startup files, so they often miss environment variables that are available in terminal sessions. This setup uses `session-env` to inject a small set of shared variables into the desktop session so GUI apps inherit the same basic context, especially `PATH`.
-
-In this repo, the managed defaults currently provide `PATH` and `EMAIL`.
-
-Terminals launched from the desktop environment inherit those variables automatically, so nothing special is needed there beyond the desktop-session injection itself.
-
-The home-level `~/.envrc` is a `direnv` bridge for shell entry points that bypass the desktop session, especially SSH. In those cases, it sources `~/.session-env` so direnv can recreate the same baseline environment in CLI sessions that did not inherit it from the desktop login.
-
-Project-level `.envrc` files are expected to chain back to the home-level file via `source_up` or `source_env ~/.envrc`. If a project-local `.envrc` does not do this, that project is bypassing the shared home-session baseline and should be fixed there rather than worked around in dotfiles.
-
-To add more variables to this mechanism without changing the managed defaults, add `export NAME=value` lines to `~/.session-env.local`. Use that for machine-local additions that should be visible to desktop apps and to shell sessions restored via direnv. If you want to change the managed defaults themselves, edit [`home/private_dot_session-env.tmpl`](home/private_dot_session-env.tmpl) in the dotfiles source.
-
-This mechanism is best suited to non-secret session context. Avoid broadly exporting credentials into the desktop session, since that makes them available to every GUI app and CLI tool in the session. For secrets, prefer project-local `.envrc`, app- or tool-specific login flows, or the platform keychain.
-
-- On macOS, values are refreshed during `chezmoi apply` or by manually running `~/.local/bin/session-env sync launchctl`.
-- On KDE Plasma, values are refreshed on the next login or by manually running `~/.local/bin/session-env sync dbus`.
-
 ## Local Configuration
 
 These files are not tracked in the repository and allow per-machine customization without modifying managed dotfiles.
@@ -351,6 +332,10 @@ These files are not tracked in the repository and allow per-machine customizatio
 
 - **Files in `scripts/macos/Brewfile.d/`** — Each file in this directory is processed as an additional Brewfile during `chezmoi apply`. Use to extend the Homebrew package list with machine-specific formulae or casks.
 - **Files in `scripts/macos/Brewfile-admin.d/`** — Each file is processed as an additional Brewfile during `setup-system`. Use to extend the admin Homebrew package list (for packages requiring the shared admin Homebrew prefix).
+
+### Desktop Session Environment
+
+To add more environment variables to the desktop session environment, add `export NAME=value` lines to `~/.session-env.local`. Use that for machine-local additions that should be visible to desktop apps and to shell sessions restored via direnv. Avoid putting secrets here, since it will make them available to every GUI app and CLI tool in the session. For secrets, prefer project-local `.envrc`, app- or tool-specific login flows, or the platform keychain.
 
 ### Notes
 
@@ -451,7 +436,7 @@ MCP server configuration is agent-specific.
 - **vipe** ([source](https://github.com/madx/moreutils)): Edit pipe content in your text editor mid-pipeline. This is a third-party script reimplementation of a tool from [moreutils by Joey Hess](https://joeyh.name/code/moreutils/).
 - **[wsl-open](https://github.com/4U6U57/wsl-open)**: Open files and URLs from WSL in Windows default applications.
 
-## System & Desktop Baseline
+## System & Desktop Configuration
 
 - **Desktop environment**: KDE Plasma on Linux and FreeBSD. _Conditional: non-headless._
 - **Display manager**: SDDM on Linux and FreeBSD. _Conditional: non-headless. init present to enable/start._
@@ -481,6 +466,16 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 - **Flatpak + Flathub**: All supported Linux distros. _Conditional: non-headless._
 - **Tailscale**: All supported Linux distros. Uses system packages when available, upstream installer otherwise. _Conditional: personal, non-ephemeral._
 - **Container runtime**: Chimera only. Installs podman and podman-compose. _Conditional: containers flag._
+
+### Desktop Session Environment
+
+Desktop-launched applications on macOS and Linux do not read shell startup files, so they often miss environment variables that are available in terminal sessions. This setup uses `session-env` to inject a small set of shared variables into the desktop session so GUI apps inherit the same basic context, especially `PATH`.
+
+In this repo, the managed defaults currently provide `PATH` and `EMAIL`.
+
+Terminals launched from the desktop environment inherit those variables automatically, so nothing special is needed there beyond the desktop-session injection itself.
+
+The home-level `~/.envrc` is a `direnv` bridge for shell entry points that bypass the desktop session, especially SSH. In those cases, it sources `~/.session-env` so direnv can recreate the same baseline environment in CLI sessions that did not inherit it from the desktop login.
 
 ## Installed Software
 
