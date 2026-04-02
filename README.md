@@ -474,6 +474,7 @@ The home-level `~/.envrc` is a `direnv` bridge for shell entry points that bypas
 - **[git-crypt](https://github.com/AGWA/git-crypt)** ([Open-Source](https://github.com/AGWA/git-crypt)): Transparent file encryption in git. _Conditional: work._
 - **[git-imerge](https://github.com/mhagger/git-imerge)**: Incremental merge for git.
 - **[git-revise](https://github.com/mystor/git-revise)**: A handy tool for doing efficient in-memory commit rebases & fixups.
+- **[glow](https://github.com/charmbracelet/glow)**: Renders markdown in the terminal.
 - **[google-cloud-sdk](https://cloud.google.com/sdk)**: Tools for the Google Cloud Platform. _Conditional: work._
 - **[jira-cli](https://github.com/ankitpokhrel/jira-cli)** (_Only on Work machines_): Feature-rich interactive Jira command line.
 - **[jujutsu](https://github.com/jj-vcs/jj)** ([Open-Source](https://github.com/jj-vcs/jj)): Git-compatible VCS that is both simple and powerful.

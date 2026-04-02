@@ -1,0 +1,26 @@
+if ! (( $+commands[glow] )); then
+    echo >&2 "Error: glow not found"
+    return 1
+fi
+
+local config="${XDG_CONFIG_HOME:-$HOME/.config}/glow/glow.yml"
+local usable_buffer=2
+local configured_width cols usable width
+
+configured_width="$(
+awk -F ': *' '
+    $1 == "width" {
+    gsub(/[[:space:]]+$/, "", $2)
+    print $2
+    exit
+    }
+' "$config" 2>/dev/null
+)"
+
+[[ "$configured_width" =~ ^[0-9]+$ ]] || configured_width=80
+
+cols="${COLUMNS:-$(tput cols 2>/dev/null || echo 80)}"
+usable=$(( cols > "$usable_buffer" ? cols - "$usable_buffer" : cols ))
+width=$(( usable < configured_width ? usable : configured_width ))
+
+command glow -w "$width" "$@"

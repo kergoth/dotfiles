@@ -1,5 +1,11 @@
-if [[ -t 1 ]] && [[ -t 0 ]] && (( $+commands[bat] )); then
-    bat "$@"
-else
-    command cat "$@"
+if [[ -t 1 ]] && [[ -t 0 ]]; then
+    if (( $+commands[glow] )) && (( ${@[(I)*.md]} )); then
+        glow "$@"
+        return $?
+    elif (( $+commands[bat] )); then
+        bat "$@"
+        return $?
+    fi
 fi
+
+command cat "$@"
