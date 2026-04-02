@@ -367,9 +367,7 @@ This mechanism is best suited to non-secret session context. Avoid broadly expor
 
 ## What's Included
 
-### Dotfiles
-
-#### Zsh Plugins
+### Zsh Plugins
 
 - **[fzf-tab](https://github.com/Aloxaf/fzf-tab)**: Replace zsh's default completion selection menu with fzf.
 - **[nix-zsh-completions](https://github.com/nix-community/nix-zsh-completions)**: ZSH Completions for Nix.
@@ -446,7 +444,18 @@ MCP server configuration is agent-specific.
 - **[iA-Fonts](https://github.com/iaolo/iA-Fonts)**: iA Writer Mono, Duo, and Quattro.
 - **[MesloLGS NF](https://github.com/romkatv/powerlevel10k/blob/master/font.md)**: Meslo Nerd Font patched for Powerlevel10k.
 
-### System & Desktop Baseline
+### Third-Party Scripts
+
+- **git-alias** ([source](https://github.com/tj/git-extras)): Manage git command aliases.
+- **[git-attic](https://chneukirchen.org/dotfiles/bin/git-attic)**: List deleted files from git history with their deletion details.
+- **git-j** ([source](https://github.com/beanbaginc/dev-goodies)): Jump between git branches with history tracking.
+- **git-rebase-chain** ([source](https://github.com/beanbaginc/dev-goodies)): Rebase a stack of branches from one base to another.
+- **ifne** ([source](https://github.com/fumiyas/home-commands)): Run a command only if standard input is not empty. This is a third-party script reimplementation of a tool from [moreutils by Joey Hess](https://joeyh.name/code/moreutils/).
+- **linux-bundle-clone** ([source](https://git.kernel.org/pub/scm/linux/kernel/git/mricon/korg-helpers.git)): Clone Linux kernel repositories using CDN-hosted bundles.
+- **vipe** ([source](https://github.com/madx/moreutils)): Edit pipe content in your text editor mid-pipeline. This is a third-party script reimplementation of a tool from [moreutils by Joey Hess](https://joeyh.name/code/moreutils/).
+- **[wsl-open](https://github.com/4U6U57/wsl-open)**: Open files and URLs from WSL in Windows default applications.
+
+## System & Desktop Baseline
 
 - **Desktop environment**: KDE Plasma on Linux and FreeBSD. _Conditional: non-headless._
 - **Display manager**: SDDM on Linux and FreeBSD. _Conditional: non-headless. init present to enable/start._
@@ -457,7 +466,7 @@ MCP server configuration is agent-specific.
 - **Optional system services**: Tailscale, container runtime. _Conditional: personal, non-ephemeral for Tailscale. containers flag for container runtime._
 - **OS exceptions/notes**: Service enablement is skipped for WSL2/containers/ephemeral systems.
 
-#### Implementation Notes (Current State)
+### Implementation Notes (Current State)
 
 Component-level summary derived from `os-install`, `setup-root`, and `setup-system-*` scripts.
 
@@ -476,6 +485,8 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 - **Flatpak + Flathub**: All supported Linux distros. _Conditional: non-headless._
 - **Tailscale**: All supported Linux distros. Uses system packages when available, upstream installer otherwise. _Conditional: personal, non-ephemeral._
 - **Container runtime**: Chimera only. Installs podman and podman-compose. _Conditional: containers flag._
+
+## Installed Software
 
 ### Installed CLI Software
 
@@ -613,17 +624,6 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 #### Powershell Modules on Windows only
 
 - **[Microsoft.WinGet.Client](https://www.powershellgallery.com/packages/Microsoft.WinGet.Client)**: PowerShell Module for the Windows Package Manager Client.
-
-### Included Third-Party Scripts
-
-- **git-alias** ([source](https://github.com/tj/git-extras)): Manage git command aliases.
-- **[git-attic](https://chneukirchen.org/dotfiles/bin/git-attic)**: List deleted files from git history with their deletion details.
-- **git-j** ([source](https://github.com/beanbaginc/dev-goodies)): Jump between git branches with history tracking.
-- **git-rebase-chain** ([source](https://github.com/beanbaginc/dev-goodies)): Rebase a stack of branches from one base to another.
-- **ifne** ([source](https://github.com/fumiyas/home-commands)): Run a command only if standard input is not empty. This is a third-party script reimplementation of a tool from [moreutils by Joey Hess](https://joeyh.name/code/moreutils/).
-- **linux-bundle-clone** ([source](https://git.kernel.org/pub/scm/linux/kernel/git/mricon/korg-helpers.git)): Clone Linux kernel repositories using CDN-hosted bundles.
-- **vipe** ([source](https://github.com/madx/moreutils)): Edit pipe content in your text editor mid-pipeline. This is a third-party script reimplementation of a tool from [moreutils by Joey Hess](https://joeyh.name/code/moreutils/).
-- **[wsl-open](https://github.com/4U6U57/wsl-open)**: Open files and URLs from WSL in Windows default applications.
 
 ### Installed GUI Software
 
