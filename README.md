@@ -365,6 +365,48 @@ This mechanism is best suited to non-secret session context. Avoid broadly expor
 - On macOS, values are refreshed during `chezmoi apply` or by manually running `~/.local/bin/session-env sync launchctl`.
 - On KDE Plasma, values are refreshed on the next login or by manually running `~/.local/bin/session-env sync dbus`.
 
+## Local Configuration
+
+These files are not tracked in the repository and allow per-machine customization without modifying managed dotfiles.
+
+### Shell (Zsh)
+
+- **`~/.zshenv.local`** — Sourced at the end of `.zshenv`. Use for early environment variable overrides that need to be set in all shell types (interactive, non-interactive, login, non-login).
+- **`~/.zprofile.local`** — Sourced at the end of `.zprofile`. Use for login-shell-specific overrides such as PATH modifications or environment setup that only applies to login shells.
+- **`~/.envrc.local`** — Sourced from the managed `~/.envrc`. Use for machine-specific session variables or PATH additions that should participate in direnv and desktop-session environment injection without editing the shared dotfiles.
+- **`~/.zshrc.local`** or **`~/.localrc`** — Sourced at the end of `.zshrc`. Use for interactive shell customizations such as aliases, functions, or prompt tweaks specific to this machine.
+- **New `.zsh` files in `~/.config/zsh/.zshrc.d/`** — Any `.zsh` file placed here is automatically sourced by `.zshrc`. Files are loaded in glob order, with special handling for `path.zsh` (loaded first), `early.zsh`, `completion.zsh`, and `final.zsh`. Unmanaged files in this directory coexist with chezmoi-managed ones.
+
+### Git
+
+- **`~/.gitconfig.local`** — Included by the main git config via `[include]`. Use for per-machine settings such as `user.email`, `user.signingkey`, credential helpers, or work-specific overrides.
+
+### Tmux
+
+- **`~/.tmux.conf.local`** — Sourced at the end of the tmux configuration if the file exists. Use for per-machine tmux overrides such as different key bindings, status bar customization, or display settings.
+
+### SSH
+
+- **Files in `~/.ssh/config.d/`** — All files in this directory are included by the SSH config via `Include ~/.ssh/config.d/*`. Use for per-machine host definitions, jump host configurations, or other SSH settings.
+
+### Nix / Home Manager
+
+- **`~/.config/home-manager/local.nix`** — Optionally imported by `home.nix` if the file exists. Use to install additional Nix packages, enable or disable Home Manager programs, or override settings from the main configuration.
+
+### Homebrew (macOS)
+
+- **Files in `scripts/macos/Brewfile.d/`** — Each file in this directory is processed as an additional Brewfile during `chezmoi apply`. Use to extend the Homebrew package list with machine-specific formulae or casks.
+- **Files in `scripts/macos/Brewfile-admin.d/`** — Each file is processed as an additional Brewfile during `setup-system`. Use to extend the admin Homebrew package list (for packages requiring the shared admin Homebrew prefix).
+
+### Notes
+
+- `.config/git/config` is not my main configuration, but is instead a small file
+  which includes my main configuration. This allows for automatic git
+  configuration changes such as vscode's change to credential.manager to be
+  obeyed without it altering my stored git configuration. The downside to this
+  is that these changes will not be highly visible. I may change this back, or
+  keep the including file but track it so the changes are visible.
+
 ## What's Included
 
 ### Zsh Plugins
@@ -797,382 +839,13 @@ Component-level summary derived from `os-install`, `setup-root`, and `setup-syst
 - **[Deck Settings](https://github.com/davocarli/sharedeck-y)**: A Decky Plugin for browsing recommended Steam Deck game settings from [ShareDeck](https://sharedeck.games/) and [SteamDeckHQ](https://steamdeckhq.com/).
 - [GOG Extension](https://www.patreon.com/junkstore/shop/gog-extension-302140) for the [Junk-Store](https://github.com/ebenbruyns/junkstore) Decky Plugin
 
-## Apps I install on an as-needed basis
+## As-Needed Software
 
-### As needed CLI Software
-
-- **[asciinema](https://asciinema.org/)**]: Recording terminal sessions and sharing them on the web. Available via brew, nix, and python.
-- **[aria2](https://github.com/aria2/aria2)**: A lightweight multi-protocol & multi-source, cross platform download utility operated in command-line. It supports HTTP/HTTPS, FTP, SFTP, BitTorrent and Metalink. Available via brew, nix, and scoop.
-- **[broot](https://github.com/Canop/broot)**: A new way to see and navigate directory trees. Available via brew, nix, scoop, and cargo.
-- **[chars](https://github.com/antifuchs/chars)**. Tool to display names and codes for unicode codepoints. Available via brew, nix, and cargo.
-- **[csview](https://github.com/wfxr/csview)**: 📠 Pretty and fast csv viewer for cli with cjk/emoji support. Available via brew, nix, scoop, and cargo.
-- **[csvkit](https://github.com/wireservice/csvkit)**: A suite of utilities for converting to and working with CSV. Available via brew, nix, and python.
-- **[dasel](https://github.com/TomWright/dasel)**: Select, put and delete data from JSON, TOML, YAML, XML and CSV files with a single tool. Available via brew, nix, scoop, and go.
-- **[dirdiff](https://github.com/OCamlPro/dirdiff)**: Efficiently compute the differences between two directories. Available via cargo as `dirdiff-ocamlpro`.
-- **[dog](https://github.com/ogham/dog)**: A command-line DNS client. Available via brew as `dog`, nix as `dogdns`, and cargo from the source.
-- **[doxx](https://github.com/bgreenwell/doxx)**: Expose the contents of .docx files without leaving your terminal. Available via cargo from the source.
-- **[entr](https://github.com/eradman/entr)**: Run arbitrary commands when files change. Available via brew and nix.
-- **[eva](https://github.com/nerdypepper/eva)**: A simple calculator REPL, similar to bc. Available via brew, nix, and cargo.
-- **[fast](https://github.com/ddo/fast)**: Minimal zero-dependency utility for testing your internet download speed from terminal. Available via nix as `fast-cli` and go.
-- **[ffmpeg](https://ffmpeg.org)**: A complete, cross-platform solution to record, convert and stream audio and video. Available via brew, nix, and scoop.
-- **[flint](https://github.com/pengwynn/flint)**: Check your project for common sources of contributor friction. Available via brew as `flint-checker` and go.
-- **[git-filter-repo](https://github.com/newren/git-filter-repo)**: Quickly rewrite git repository history (filter-branch replacement).
-- **[glab](https://gitlab.com/gitlab-org/cli)**: A GitLab CLI tool bringing GitLab to your command line. Available via system packages (Arch: `glab`, FreeBSD: `glab`), Nix, Homebrew, MacPorts, scoop, winget (`GLab.GLab`), and eget.
-- **[go](https://go.dev)**: An open source programming language supported by Google
-- **[hexyl](https://github.com/sharkdp/hexyl)**: A simple hex viewer for the terminal. Available via brew, nix, and cargo.
-- **[htop](https://htop.dev)**: An interactive process viewer. Available via brew and nix.
-- **[httpie](https://github.com/httpie/httpie)**: A command-line HTTP client. Available via brew, nix, and python.
-- **[huniq](https://github.com/koraa/huniq)**: Command line utility to remove duplicates from the given input. Available via nix and cargo. Uses less memory than awk/uniq-seen. Rarely needed.
-- **[hyperfine](https://github.com/sharkdp/hyperfine)**: A command-line benchmarking tool. Available via brew, nix, and cargo.
-- **[jc](https://github.com/kellyjonbrazil/jc)**: CLI tool and python library that converts the output of popular command-line tools, file-types, and common strings to JSON, YAML, or Dictionaries. Available via brew, nix, scoop, and pypi.
-- **[petname](https://github.com/dustinkirkland/petname)**: Generate human readable random names. Available via pypi and cargo.
-- **[procs](https://github.com/dalance/procs)**: A modern replacement for ps written in Rust. Available via brew, nix, scoop, and cargo.
-- **[pup](https://github.com/ericchiang/pup)**: A command line tool for processing HTML. Available via brew, nix, and go.
-- **[qemu](https://www.qemu.org)**: A generic and open source machine emulator and virtualizer. Available via brew, nix, scoop, FreeBSD Ports, winget (as SoftwareFreedomConservancy.QEMU), apk on chimera linux.
-- **[rclone](https://github.com/rclone/rclone)**: Rsync for cloud storage. Available via brew, nix, and scoop.
-- **[rust](https://www.rust-lang.org)**: A multi-paradigm, general-purpose programming language.
-- **[titlecase](https://github.com/wezm/titlecase)**: A small tool that capitalizes English text. Available via cargo.
-- **[vivid](https://github.com/sharkdp/vivid)**: A generator for the LS_COLORS environment variable. Available via brew, nix, and cargo.
-- **[yt-dlp](https://github.com/yt-dlp/yt-dlp)**: A feature-rich command-line audio/video downloader. Available via brew, nix, scoop, winget, pacman, FreeBSD ports, pip/uv, and release binaries. Often requires `ffmpeg` and `deno` binaries.
-  - The release binary can quickly be installed with eget: `eget --upgrade-only --asset='^zip' --to=~/.local/bin/yt-dlp yt-dlp/yt-dlp`
-
-#### On my NAS, to download what I own
-
-- **[lgogdownloader](https://github.com/Sude-/lgogdownloader)**: Unofficial downloader for GOG.com. Available via brew and nix.
-
-#### To deal with icons and images
-
-- **[icoutils](https://www.nongnu.org/icoutils/)**: A set of command-line programs for extracting and converting images in Microsoft Windows(R) icon and cursor files. Available via brew and nix.
-- **[imagemagick](https://imagemagick.org)**: Create, edit, compose, or convert digital images. Available via brew, nix, and scoop.
-
-#### For [beets](https://beets.io)
-
-- **[mp3val](https://mp3val.sourceforge.net)**: A small, high-speed, free software tool for checking MPEG audio files' integrity. Available via brew and nix. Also available as direct binary download for Windows.
-- **[par2cmdline](https://github.com/Parchive/par2cmdline)**: Available via brew as `par2`, nix, and scoop.
-
-#### As Needed CLI Software for macOS
-
-- **[makeicns](http://www.amnoid.de/icns/makeicns.html)**: Create icns files from the command line. Available via brew.
-- **[Mole](https://github.com/tw93/Mole)**: All-in-one macOS system optimization tool for cleanup, uninstalling apps, disk analysis, and system monitoring. Available via brew as `mole`.
-- **[mist-cli](https://github.com/ninxsoft/mist-cli)**: Mac command-line tool that automatically downloads macOS Firmwares / Installers. Available via brew.
-- **[terminal-notifier](https://github.com/julienXX/terminal-notifier)**: A command-line tool to send macOS User Notifications. Available via brew and nix.
-
-#### As Needed CLI Software for Windows
-
-- **[Build Tools for Visual Studio 2022](https://visualstudio.microsoft.com/downloads/)**: These Build Tools allow you to build Visual Studio projects from a command-line interface.
-
-### As Needed GUI Software
-
-- **[86Box](https://86box.net/)**: Emulator for vintage IBM PC and compatibles. Available via brew as `86box` and direct download.
-- **[Battle.net](https://us.shop.battle.net/en-us?from=root)**: Blizzard games client. Available via brew as `battle-net`.
-- **[CPDT (Cross Platform Disk Test)](https://www.magesw.com/cpdt/)**: A disk benchmarking tool for Windows, macOS, and Linux. Available via direct download.
-- **[czkawka](https://github.com/qarmin/czkawka)**: Multi functional app to find duplicates, empty folders, similar images etc.
-- **[dupeGuru](https://dupeguru.voltaicideas.net)**: A cross-platform GUI tool to find duplicate files in a system.
-- **[Eddie](https://eddie.website/)** ([Open-Source](https://github.com/AirVPN/Eddie)): VPN client for AirVPN with OpenVPN and WireGuard support. Available via brew as `eddie` and winget as `AirVPN.Eddie`.
-- **[HandBrake](https://handbrake.fr/)**: The open source video transcoder. Available via brew as `handbrake` and winget as `HandBrake.HandBrake`.
-- **[jDownloader](https://jdownloader.org)**: A download management tool. Available via brew as `jdownloader`.
-- **[Kegworks](https://github.com/Kegworks-App/Kegworks)**: A user-friendly tool used to make wine wrapped ports of Windows software for macOS. Formerly Wineskin Winery.
-- **[LocalSend](https://localsend.org)**: Share files to nearby devices. Available via brew as `localsend`, winget as `LocalSend.LocalSend`, and scoop as `localsend`.
-- **[Malwarebytes](https://www.malwarebytes.com)**: Warns about malware, adware and spyware.
-- **[Ollama](https://ollama.com)**: Get up and running with large language models locally. Available via brew as `ollama`.
-- **[Steam](https://store.steampowered.com)**: A digital distribution platform. Available via brew, nix, and winget as `Valve.Steam`.
-- **[Subler](https://subler.org)**: A macOS app to mux and tag mp4 files. Available via brew as `subler`.
-- **[SyncTERM](https://syncterm.bbsdev.net/)**: BBS terminal program. Available via brew as `syncterm` and direct download for Windows.
-- **[Transmission](https://transmissionbt.com)**: A Fast, Easy and Free Bittorrent Client for macOS, Windows and Linux.
-- **[Video Duplicate Finder](https://github.com/0x90d/videoduplicatefinder)**: Cross-platform software to find duplicated video (and image) files on hard disk based on similiarity.
-
-#### As Needed GUI Software for Windows and macOS
-
-- **[SD Card Formatter](https://www.sdcard.org/downloads/formatter/)**: Official SD Memory Card Formatter from the SD Association for formatting SD/SDHC/SDXC cards.
-
-#### As Needed GUI Software for macOS
-
-- **[Adapter](https://macroplant.com/adapter)**: Convert Video, Audio and Images. Available via brew as `adapter`.
-- **[Mist](https://github.com/ninxsoft/Mist)**: Utility that automatically downloads macOS firmwares and installers. Available via brew as `mist` (cask).
-- **[AmorphousDiskMark](https://katsurashareware.com/amorphousdiskmark/)**: Disk benchmark utility. Available via brew as `amorphousdiskmark`.
-- **[AnyToISO](https://www.crystalidea.com/anytoiso)**: Convert CD/DVD images to ISO format or extract files from them. Available via brew as `anytoiso`.
-- **[Apple Configurator](https://support.apple.com/apple-configurator)**: Configure and deploy iPhone, iPad, and Apple TV. Available via Mac App Store.
-- **[Audio Overload](https://www.bannister.org/software/ao.htm)**: Emulator for retro video game music. Available via Mac App Store (via mas as id `1512000244`).
-- **[Blackmagic Disk Speed Test](https://apps.apple.com/us/app/blackmagic-disk-speed-test/id425264550)**: Test your disk performance. Available via Mac App Store.
-- **[Burn](https://burn-osx.sourceforge.io/Pages/English/home.html)**: Simple but advanced burning for Mac OS X. Optional, as disk images can be burned with Finder or hdiutil. Available via brew as `burn`.
-- **[Byword](https://bywordapp.com)**: Markdown editor. Available via Mac App Store.
-- **[DeltaPatcher](https://github.com/marco-calautti/DeltaPatcher)**: GUI and CLI application for creating and applying BPS, IPS, UPS, and xdelta3 binary patches. Available via brew as `deltapatcher`.
-- **[Exporter](https://apps.apple.com/us/app/exporter/id1099120373)**: Export Apple Notes to various formats. Available via Mac App Store.
-- **[Fluid](https://fluidapp.com)**: Turn Your Favorite Web Apps into Real Mac Apps. Available via brew as `fluid`.
-- **[Gemini 2](https://macpaw.com/gemini)**: The intelligent duplicate file finder. Available via brew as `gemini`.
-- **[Kindle](https://www.amazon.com/kindle-dbs/fd/kcp)**: Read Kindle books on your Mac. Available via brew as `kindle`.
-- **[KnockKnock](https://objective-see.org/products/knockknock.html)**: See what's persistently installed on your Mac.
-- **[Marked 2](https://marked2app.com)**: Markdown previewer. Available via brew as `marked`.
-- **[MuffinTerm](https://apps.apple.com/us/app/muffinterm/id1583236494)**: A terminal emulator for macOS crafted for the classic BBS experience.
-- **[Numbers](https://www.apple.com/numbers/)**: Create impressive spreadsheets. Available via Mac App Store.
-- **[Onyx](https://www.titanium-software.fr/en/onyx.html)**: Verify system files structure, run miscellaneous maintenance and more. Available via brew as `onyx`.
-- **[Pages](https://www.apple.com/pages/)**: Documents that stand apart. Available via Mac App Store.
-- **[PhotoSweeper](https://overmacs.com)**: A fast & powerful duplicate photos cleaner for Mac. Available via brew as `photosweeper-x`.
-- **[Pixelmator Classic](https://www.pixelmator.com/mac/)**: Powerful, full-featured image editor for Mac. Available via Mac App Store.
-- **[Platypus](https://sveinbjorn.org/platypus)**: Create native Mac applications from command line scripts. Available via brew as `platypus`.
-- **[Pocket Sync](https://github.com/neil-morrison44/pocket-sync)**: Manage your Analogue Pocket's games, saves, and more. Available via brew as `pocket-sync`.
-- **[SiteSucker](https://ricks-apps.com/osx/sitesucker/)**: Download websites from the Internet. Available via Mac App Store.
-- **[TaskExplorer](https://objective-see.org/products/taskexplorer.html)**: Explore all the tasks (processes) running on your Mac with TaskExplorer.
-- **[TestFlight](https://developer.apple.com/testflight/)**: Test beta versions of apps. Available via Mac App Store.
-- **[UTM](https://mac.getutm.app/)** ([Open-Source](https://github.com/utmapp/UTM)): Virtual machine manager for macOS. Available via brew as `utm` and Mac App Store.
-- **[XLD](https://tmkk.undo.jp/xld/index_e.html)**: Lossless audio decoder.
-
-#### As Needed GUI Software for Windows
-
-- **[Autoruns](https://learn.microsoft.com/en-us/sysinternals/downloads/autoruns)** (from [Sysinternals](https://learn.microsoft.com/en-us/sysinternals/)): See what programs are configured to startup automatically when your system boots and you login.
-- **[BleachBit](https://www.bleachbit.org)**: Clean Your System and Free Disk Space. Available via winget as `BleachBit.BleachBit`.
-- **[Exact Audio Copy](https://www.exactaudiocopy.de)**: Audio grabber for audio CDs using standard CD and DVD-ROM drives
-- **[foobar2000](https://www.foobar2000.org)**: Advanced freeware audio player. Available via winget as `PeterPawlowski.foobar2000` and scoop as `foobar2000`.
-- **[ImDisk](https://sourceforge.net/projects/imdisk-toolkit/)**: Mount image files of hard drive, cd-rom or floppy.
-- **[ImgBurn](https://www.imgburn.com)**: A lightweight CD / DVD / HD DVD / Blu-ray burning application. Available via winget as `LIGHTNINGUK.ImgBurn`.
-- **[OSFMount](https://www.osforensics.com/tools/mount-disk-images.html)**: Mount raw and other disk image files as virtual drives (forensic-style, typically read-only). Available via winget as `PassmarkSoftware.OSFMount`.
-- **[Paint.NET](https://getpaint.net)**: Free image and photo editing software for Windows. Available via scoop as `paint.net` and winget as `dotPDNLLC.paintdotnet`.
-- **[Process Explorer](https://learn.microsoft.com/en-us/sysinternals/downloads/process-explorer)** (from [Sysinternals](https://learn.microsoft.com/en-us/sysinternals/)): Find out what files, registry keys and other objects processes have open, which DLLs they have loaded, and more.
-- **[WinCDEmu](https://wincdemu.sysprogs.org/)**: Open-source CD/DVD/BD emulator for mounting optical disc images (ISO, CUE/BIN, MDF/MDS, NRG, CCD/IMG). Available via scoop as `extras/wincdemu`.
-- **[WinImage](https://www.winimage.com/winimage.htm)**: A fully-fledged disk-imaging suite for easy creation, reading and editing of many image formats and fileystems.
-- **[WinSCP](https://winscp.net/)**: A popular SFTP client and FTP client for Microsoft Windows. Available via scoop, and winget as `WinSCP.WinSCP`.
-
-#### As Needed GUI Software for Windows and Linux
-
-- **[HexChat](https://hexchat.github.io)**: An IRC client based on XChat. Available via brew, nix, scoop, and winget as `HexChat.HexChat`.
+Software I install occasionally as needed rather than on every machine. See [docs/as-needed.md](docs/as-needed.md) for the full list.
 
 ## Formerly-Used
 
-### Formerly-Used Services
-
-- **[Instapaper](https://www.instapaper.com)**: A service for saving web pages for later reading.
-- **[IRCCloud](https://www.irccloud.com/)**: IRC client. When I do use IRC, I just use a local client on an as-needed basis.
-
-### Formerly-Used Fonts
-
-- [Monaspace](https://github.com/githubnext/monaspace)
-- [Recursive](https://www.recursive.design) Code
-- [Fira Code](https://github.com/tonsky/FiraCode)
-- [Input](https://input.djr.com) Mono Narrow
-- **[Inconsolata](https://levien.com/type/myfonts/inconsolata.html)**: See also [Google Fonts](https://fonts.google.com/specimen/Inconsolata)
-- [Terminus](https://terminus-font.sourceforge.net)
-- [DejaVu](https://dejavu-fonts.github.io) Sans Mono
-- [Leonine Sans Mono](https://www.leonerd.org.uk/hacks/hints/leoninesansmono.html)
-- **[Bitstream Vera](https://web.archive.org/web/20210314185159/https://www.gnome.org/fonts/)** Sans Mono: See [download](https://download.gnome.org/sources/ttf-bitstream-vera/1.10/)
-- [Envy Code R](https://damieng.com/blog/2008/05/26/envy-code-r-preview-7-coding-font-released) (Occasional Use)
-
-### Formerly-Used CLI Software
-
-- **[repo](https://gerrit.googlesource.com/git-repo)**: Google's tool for managing multi-repository projects. Superceded by tools like **kas** in my workflows.
-- **[pipx](https://pypi.org/project/pipx/)**: Install and run python applications in isolated environments. Superceded by **uv tool** in my workflows.
-- **[git-branchless](https://github.com/arxanas/git-branchless)**: High-velocity, monorepo-scale workflow for Git. I rarely used this, and there are other options for this workflow.
-- **[sapling](https://sapling-scm.com)**: A Scalable, User-Friendly Source Control System. Evaluated but not actively used in my workflows.
-- **[GNU Screen](https://www.gnu.org/software/screen)**: A terminal multiplexer. Replaced by tmux.
-- **[Bitlbee](https://www.bitlbee.org)**: An IRC to other chat networks gateway.
-- **[Centericq](https://en.wikipedia.org/wiki/Centericq)**: A text mode menu- and window-driven instant messaging interface.
-- **[weechat](https://weechat.org)**: A fast, light and extensible chat client.
-- **[irssi](https://irssi.org)**: A modular chat client that is most commonly known for its text mode user interface.
-- **[EPIC](https://www.epicsol.org)**: The Enhanced Programmable IRC-II Client.
-- **[BitchX](https://bitchx.sourceforge.net)**: An IRC client.
-- **[ircii](http://www.eterna23.net/ircii/)**: A terminal-based IRC and ICB client.
-- **[abduco](https://www.brain-dump.org/projects/abduco)**: Session manager.
-- **[dvtm](https://www.brain-dump.org/projects/dvtm)**: Dynamic virtual terminal manager.
-- **[dtach](https://dtach.sourceforge.io)**: Emulates the detach feature of screen.
-- **[asdf](https://asdf-vm.com)**: Version manager.
-- **[pyenv](https://github.com/pyenv/pyenv)**: Python version manager.
-
-### Formerly-Used GUI Software
-
-- **[BBEdit](https://www.barebones.com/products/bbedit/)**: A professional HTML and text editor for macOS.
-- **[Mozilla Firefox](https://www.mozilla.org/en-US/firefox/new/)**: A web browser.
-- **[Google Chrome](https://www.google.com/chrome/)**: A web browser.
-- **[Tor Browser](https://www.torproject.org)**: Anonymity Online.
-- **[Mozilla Thunderbird](https://www.thunderbird.net)**: Email client.
-- **[Opera Browser](https://www.opera.com)**: Web browser.
-- **[Chromium](https://www.chromium.org)**: Web browser.
-- **[Resilio Sync](https://www.resilio.com)**: File synchronization. Formerly **BitTorrent Sync**.
-- **[SpiderOak](https://spideroak.com)**: File synchronization.
-- **[Dropbox](https://www.dropbox.com)**: File synchronization.
-- **[Pidgin](https://pidgin.im)**: A chat client.
-- **[XChat](https://xchat.org)**: IRC chat client.
-- **[Clementine](https://www.clementine-player.org)**: Music player.
-- VMWare Player
-- VMWare Workstation
-- **[VirtualBox](https://www.virtualbox.org)**: Powerful x86 and AMD64/Intel64 virtualization software for creating and managing virtual machines.
-- **[Vagrant](https://www.vagrantup.com)**: Tool for building and managing virtual machines.
-- **[Sublime Text](https://www.sublimetext.com)**: Text editor.
-- **[Visual Studio Code](https://code.visualstudio.com)** ([Open-Source](https://github.com/Microsoft/vscode)): Open-source code editor. Replaced by **Zed**.
-- **[Alacritty](https://alacritty.org)**: Terminal emulator.
-- **[Bear](https://bear.app)**: A beautiful, flexible writing app for crafting notes and prose.
-- **[Simplenote](https://simplenote.com)**: An easy way to keep notes, lists, ideas, and more.
-- **[Workflowy](https://workflowy.com)**: Organize your brain.
-- **[EverNote](https://evernote.com)**: A note-taking app.
-- **[LibreWolf](https://librewolf.net)**: A privacy-focused web browser.
-- **[Zen Browser](https://www.zenbrowser.com)**: Beautifully designed, privacy-focused web browser.
-
-### Formerly-Used macOS Software
-
-- **[AppCleaner](https://freemacsoft.net/appcleaner/)**: A small application which allows you to thoroughly uninstall unwanted apps.
-  Now that I primarily use ForkLift, which has its own version of this, I no longer need the standalone version.
-- **[Bartender](https://www.macbartender.com)**: Organize your menu bar icons. Replaced by Hidden bar, then Ice.
-- [CleanMyDrive 2](https://apps.apple.com/us/app/cleanmydrive-2/id523620159?mt=12&uo=4&at=10l4tL)
-- **[Colloquy](https://colloquy.app)** ([Source](https://github.com/colloquy/colloquy)): An advanced IRC, SILC & ICB client.
-- **[DevDocs for macOS](https://github.com/dteoh/devdocs-macos)** (Open-Source): An unofficial [DevDocs API Documentation](https://devdocs.io/) viewer for macOS.
-  Deprecated in homebrew due to gatekeeper.
-- **[f.lux](https://justgetflux.com)**: Software to make your life better. Replaced by macOS Night Shift.
-- **[FlyCut](https://apps.apple.com/us/app/flycut-clipboard-manager/id442160987?mt=12&uo=4&at=10l4tL)**: Clipboard manager.
-- **[GoodLinks](https://apps.apple.com/us/app/goodlinks/id1474335294?uo=4&at=10l4tL)**: Save links, read later. Replaced by **Readwise Reader**.
-- **[Hidden Bar](https://apps.apple.com/us/app/hidden-bar/id1452453066?mt=12&uo=4&at=10l4tL)** ([Open-Source](https://github.com/dwarvesf/hidden)): Hide menubar items. Replaced by **Ice**.
-- **[Itsycal for Mac](https://www.mowglii.com/itsycal/)**: A tiny menu bar calendar. I mostly just click on the date/time and see the calendar widget in the notification panel now.
-- **[Jumpcut](https://jumpcut.sourceforge.io)**: Clipboard manager.
-- [LilyView](https://apps.apple.com/us/app/lilyview/id529490330?mt=12&uo=4&at=10l4tL)
-- **[LimeChat](http://limechat.net/mac/)** ([Open-Source](http://github.com/psychs/limechat)): An IRC client for Mac OS X.
-- **[MacDown](https://macdown.uranusjr.com)**: Markdown editor.
-- **[MacVim](https://macvim-dev.github.io/macvim)**: Vim - the text editor - for macOS
-- **[Magnet](https://magnet.crowdcafe.com)**: Organize your workspace. Replaced by Rectangle.
-- **[Orion Browser](https://www.orionbrowser.com)**: A fast, secure, and private browser.
-- **[QLColorCode](https://github.com/anthonygelibert/QLColorCode)** (Open-Source): QuickLook plugin for syntax highlighting source code. No longer maintained.
-- **[qlImageSize](https://github.com/Nyx0uf/qlImageSize)** (Open-Source): QuickLook plugin to display image size and resolution. No longer needed.
-- **[QLMarkDown](https://github.com/toland/qlmarkdown)** (Open-Source): QuickLook plugin for Markdown files. No longer maintained.
-- **[QLPrettyPatch](https://github.com/atnan/QLPrettyPatch)** (Open-Source): QuickLook plugin for patch files. No longer maintained.
-- **[QLStephen](https://github.com/whomwah/qlstephen)** (Open-Source): QuickLook plugin for plain text files without extensions. No longer maintained.
-- **[quicklook-csv](https://github.com/p2/quicklook-csv)** (Open-Source): QuickLook plugin for CSV files. No longer maintained.
-- **[QuickLookASE](https://github.com/rsodre/QuickLookASE)** (Open-Source): QuickLook plugin for Adobe ASE Color Swatches. No longer needed.
-- **[QuickLookJSON](http://www.sagtau.com/quicklookjson.html)**: QuickLook plugin for JSON files. No longer maintained.
-- **[QuickSilver](https://qsapp.com)**: Launcher.
-- **[SwiftDefaultApps](https://github.com/Lord-Kamina/SwiftDefaultApps)** (Open-Source): A preference pane to view and change default application associations. Last release in 2019.
-- **[Textual](https://www.codeux.com/textual/)**: Application for interacting with Internet Relay Chat (IRC) chatrooms. Available via brew.
-- **[TotalFinder](https://totalfinder.binaryage.com)**: Finder enhancement.
-- **[UnPlugged](https://apps.apple.com/us/app/unplugged/id423123087?mt=12&uo=4&at=10l4tL)**: Notifications for power plug/unplug as well as battery discharging at percentages.
-- **[WebPQuickLook](https://github.com/emin/WebPQuickLook)** (Open-Source): QuickLook plugin for WebP image files. No longer needed.
-- **[Wineskin Winery](https://github.com/Gcenx/WineskinServer)**: A user-friendly tool used to make ports of Microsoft Windows software to macOS. Replaced by **Kegworks**.
-- **[WhatsYourSign](https://objective-see.org/products/whatsyoursign.html)**: Add a menu item to Finder to display a file's cryptographic information.
-
-### Formerly-Used Linux Software
-
-- **[Gnome Evolution](https://gitlab.gnome.org/GNOME/evolution/-/wikis/home)**: Email client.
-- **[i3 window manager](https://i3wm.org)**: Tiling window manager.
-- **[awesome window manager](https://awesomewm.org)**: Tiling window manager.
-- **[suckless terminal](https://st.suckless.org)**: Terminal emulator.
-- **[rxvt-unicode](https://software.schmorp.de/pkg/rxvt-unicode.html)**: Terminal emulator. I still use this on Linux desktops, but don't often use Linux desktops anymore, and I may end up switching to alacritty, kitty, etc.
-
-### Formerly-Used Windows Software
-
-- **[Rufus](https://rufus.ie/)** ([Open-Source](https://github.com/pbatard/rufus)): Create bootable USB flash drives. Replaced by **Raspberry Pi Imager**.
-- **[PuTTY](https://www.chiark.greenend.org.uk/~sgtatham/putty/)** ([Open-Source](https://git.tartarus.org/?p=simon/putty.git)): SSH and Telnet client. Replaced by Windows Terminal's built-in SSH.
-- **[ACDSee](https://en.wikipedia.org/wiki/ACDSee)**. Loved this as an ultralight image viewer in the past, but it grew bloated over time, so was replaced by Irfan View or XnView, as needed.
-- **[Winamp](https://en.wikipedia.org/wiki/Winamp)**: This was the way before I switched to foobar2000 long ago.
-- **[ConEMU](https://conemu.github.io)**: Terminal emulator.
-- **[Console2](https://sourceforge.net/projects/console/)**: Terminal emulator.
-- [Central Point PC Tools](<https://en.wikipedia.org/wiki/PC_Tools_(software)>) for DOS and Windows
-- **[K-Meleon](http://kmeleonbrowser.org)**: Lightweight web browser.
-- [Powerdesk](https://www.vcom.com/power-desk-pro)
-- [WinRAR](https://www.rarlab.com)
-- [WinZip](https://winzip.com/)
-- [K-Lite Codec Pack](https://codecguide.com)
-- [Windows Media Player Classic](https://en.wikipedia.org/wiki/Media_Player_Classic)
-- [Foxit Reader](https://www.foxit.com/pdf-reader/)
-- [HWiNFO](https://www.hwinfo.com/)
-- [Daemon Tools](https://www.daemon-tools.cc/home)
-- [Alcohol 52%](http://www.alcohol-soft.com/install.php?pid=Alcohol52_FE__2.0.3.6850&SFA=1)
-- **[Alcohol 120%](http://www.alcohol-soft.com/)**: CD/DVD burning software.
-- [CloneCD](https://en.wikipedia.org/wiki/CloneCD)
-- [Nero Burning ROM](https://en.wikipedia.org/wiki/Nero_Burning_ROM)
-- [CDBurnerXP](https://cdburnerxp.se/)
-- [Clover](http://en.ejie.me)
-- **[QTTabBar](https://qttabbar.wikidot.com)** ([Open-Source](https://github.com/indiff/qttabbar)): Windows Explorer tabbed browsing.
-- **[TweakUI](https://en.wikipedia.org/wiki/TweakUI)**: Windows system settings. From the Windows 95 and Windows XP PowerToys from Microsoft.
-- **[Eudora](<https://en.wikipedia.org/wiki/Eudora_(email_client)**>): Email client.
-- **[pine](<https://en.wikipedia.org/wiki/Pine_(email_client)**>): Email client.
-- **[mutt](<https://en.wikipedia.org/wiki/Mutt_(email_client)**>): Email client.
-- nlite
-- vlite
-- ninite
-
-#### Formerly-Used in Windows 3.x
-
-- Bitstream MakeUp for Windows: Typographic special effects for desktop publishing.
-- **[Timeworks Publish-It!](https://en.wikipedia.org/wiki/Timeworks_Publisher#Publish-It!)**: Desktop publishing.
-
-#### Formerly-Used in Windows 95/98
-
-- **[McAfee Nuts & Bolts](https://archive.org/details/mc-afee-nuts-and-bolts-98-1999-02-english-cd)**: Utility suite.
-
-### Formerly-Used DOS Software
-
-- [Mace Utilities](https://winworldpc.com/product/mace-utilities) from Paul Mace Software, for DOS. I used this much less than the others.
-- PFS Professional Write
-- [PFS Professional File](https://winworldpc.com/product/pfs-professional-file/20)
-- Quicken for DOS
-- [Norton Utilities](http://symantec.com/norton/norton-utilities) for DOS
-  - Norton Disk Doctor
-  - Norton Speed Disk
-- PC Tools
-  - PC Shell
-- Norton Ghost
-- PKUnzip/Zip (pkz204g), Arc, Arj, etc
-- Paragon Partition Manager for DOS
-- Partition Magic
-
-### Browser Extensions
-
-For comprehensive browser extension snapshots, see [docs/browser-extensions.md](docs/browser-extensions.md).
-
-#### Safari Extensions
-
-- **[AdGuard for Safari](https://apps.apple.com/us/app/adguard-for-safari/id1440147259?mt=12&uo=4&at=10l4tL)** ([Open-Source](https://github.com/AdguardTeam/AdguardForSafari)): Replaced with uBlock Origin Lite for more efficient ad blocking.
-- **[PiPer](https://apps.apple.com/us/app/piper/id1421915518?mt=12&uo=4&at=10l4tL)** ([Open-Source](https://github.com/amarcu5/PiPer)): Picture-in-Picture for Safari. No longer needed.
-- **[Privacy Redirect](https://apps.apple.com/us/app/privacy-redirect/id1578144015?uo=4&at=10l4tL)** ([Open-Source](https://github.com/smmr-software/privacy-redirect-safari)): No longer needed.
-- **[Refined GitHub](https://apps.apple.com/us/app/refined-github/id1519867270?mt=12&uo=4&at=10l4tL)**: GitHub interface improvements. Removed in favor of userscript.
-- **[SingleFile](https://apps.apple.com/us/app/singlefile/id1609752330?uo=4&at=10l4tL)** ([Open-Source](https://github.com/gildas-lormeau/SingleFile)): Save a complete web page into a single HTML file. No longer needed.
-- **[Shut Up](https://apps.apple.com/us/app/shut-up-comment-blocker/id1015043880?uo=4&at=10l4tL)**: Comment blocker. No longer needed.
-- **[Social Fixer for Facebook](https://apps.apple.com/app/social-fixer-for-facebook/id1562017526)**: Replaced with userscript version.
-- **[Toolkit for YNAB](https://apps.apple.com/us/app/toolkit-for-ynab/id1592912837?mt=12&uo=4&at=10l4tL)** ([Open-Source](https://github.com/toolkit-for-ynab/toolkit-for-ynab)): YNAB enhancements. No longer needed.
-- [uBlacklist for Safari](https://apps.apple.com/us/app/ublacklist-for-safari/id1547912640?uo=4&at=10l4tL) ([Open-Source](https://github.com/HoneyLuka/uBlacklist/tree/safari-port/safari-project))
-- **[Userscripts](https://apps.apple.com/us/app/userscripts/id1463298887?uo=4&at=10l4tL)** ([Open-Source](https://github.com/quoid/userscripts)): Temporarily replaced with Tampermonkey Classic while waiting for updates. Will switch back in the future.
-
-### Intentionally Avoided Software
-
-Software that I've used in the past but now actively avoid due to specific issues or problems.
-
-- **[Balena Etcher](https://www.balena.io/etcher/)**: USB/SD card imaging tool. Caused frequent corruption on SD cards, so I avoid it and use other tools like `dd` or Raspberry Pi Imager instead.
-
-## Implementation Notes
-
-- .config/git/config is not my main configuration, but is instead a small file
-  which includes my main configuration. This allows for automatic git
-  configuration changes such as vscode's change to credential.manager to be
-  obeyed without it altering my stored git configuration. The downside to this
-  is that these changes will not be highly visible. I may change this back, or
-  keep the including file but track it so the changes are visible.
-
-## Local Configuration
-
-These files are not tracked in the repository and allow per-machine customization without modifying managed dotfiles.
-
-### Shell (Zsh)
-
-- **`~/.zshenv.local`** — Sourced at the end of `.zshenv`. Use for early environment variable overrides that need to be set in all shell types (interactive, non-interactive, login, non-login).
-- **`~/.zprofile.local`** — Sourced at the end of `.zprofile`. Use for login-shell-specific overrides such as PATH modifications or environment setup that only applies to login shells.
-- **`~/.envrc.local`** — Sourced from the managed `~/.envrc`. Use for machine-specific session variables or PATH additions that should participate in direnv and desktop-session environment injection without editing the shared dotfiles.
-- **`~/.zshrc.local`** or **`~/.localrc`** — Sourced at the end of `.zshrc`. Use for interactive shell customizations such as aliases, functions, or prompt tweaks specific to this machine.
-- **New `.zsh` files in `~/.config/zsh/.zshrc.d/`** — Any `.zsh` file placed here is automatically sourced by `.zshrc`. Files are loaded in glob order, with special handling for `path.zsh` (loaded first), `early.zsh`, `completion.zsh`, and `final.zsh`. Unmanaged files in this directory coexist with chezmoi-managed ones.
-
-### Git
-
-- **`~/.gitconfig.local`** — Included by the main git config via `[include]`. Use for per-machine settings such as `user.email`, `user.signingkey`, credential helpers, or work-specific overrides.
-
-### Tmux
-
-- **`~/.tmux.conf.local`** — Sourced at the end of the tmux configuration if the file exists. Use for per-machine tmux overrides such as different key bindings, status bar customization, or display settings.
-
-### SSH
-
-- **Files in `~/.ssh/config.d/`** — All files in this directory are included by the SSH config via `Include ~/.ssh/config.d/*`. Use for per-machine host definitions, jump host configurations, or other SSH settings.
-
-### Nix / Home Manager
-
-- **`~/.config/home-manager/local.nix`** — Optionally imported by `home.nix` if the file exists. Use to install additional Nix packages, enable or disable Home Manager programs, or override settings from the main configuration.
-
-### Homebrew (macOS)
-
-- **Files in `scripts/macos/Brewfile.d/`** — Each file in this directory is processed as an additional Brewfile during `chezmoi apply`. Use to extend the Homebrew package list with machine-specific formulae or casks.
-- **Files in `scripts/macos/Brewfile-admin.d/`** — Each file is processed as an additional Brewfile during `setup-system`. Use to extend the admin Homebrew package list (for packages requiring the shared admin Homebrew prefix).
+Software I've used in the past but no longer use. See [docs/formerly-used.md](docs/formerly-used.md) for the full historical list.
 
 ## Reference
 
