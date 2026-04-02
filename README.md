@@ -400,16 +400,16 @@ Skills live in `~/.agents/skills/` and are available to all agent tools (Claude 
   Improve prose quality and reduce AI writing patterns in written artifacts
 
 - **[Cram](home/dot_agents/skills/cram/SKILL.md)**
-  Write, read, and debug cram functional tests (.t files)
+  Write, read, and debug [cram](https://bitheap.org/cram/) functional tests (.t files)
 
 - **[Find Session](home/dot_agents/skills/find-session/SKILL.md)**
   Find and resume past Claude Code conversations by keyword search
 
 - **[Jujutsu](home/dot_agents/skills/jujutsu/SKILL.md)**
-  Version control for Jujutsu (jj) repositories
+  Version control for [Jujutsu (jj)](https://github.com/jj-vcs/jj) repositories
 
 - **[Obsidian CLI](home/dot_agents/skills/obsidian-cli/SKILL.md)**
-  Work with the Obsidian CLI
+  Work with the [Obsidian](https://obsidian.md) CLI
 
 - **[Shell Script Style](home/dot_agents/skills/shell-script-style/SKILL.md)**
   Apply personal Bash/POSIX shell script style conventions
@@ -422,9 +422,9 @@ Skills live in `~/.agents/skills/` and are available to all agent tools (Claude 
 
 - **[Astral](https://github.com/astral-sh/claude-code-plugins/tree/main/plugins/astral/skills)**
   Python tooling skills. Also installed as a Claude Code plugin for `ty` LSP integration.
-  - **[ruff](https://github.com/astral-sh/claude-code-plugins/tree/main/plugins/astral/skills/ruff)** — Linting and formatting Python code with ruff
-  - **[ty](https://github.com/astral-sh/claude-code-plugins/tree/main/plugins/astral/skills/ty)** — Type checking Python code with ty
-  - **[uv](https://github.com/astral-sh/claude-code-plugins/tree/main/plugins/astral/skills/uv)** — Managing Python projects, packages, and tools with uv
+  - **ruff** — Linting and formatting Python code with ruff
+  - **ty** — Type checking Python code with ty
+  - **uv** — Managing Python projects, packages, and tools with uv
 
 - **[avoid-ai-writing](https://github.com/conorbronsdon/avoid-ai-writing)**
   Vocabulary and structural pattern detection for reducing AI writing patterns. Used as the base layer for the clean-prose skill.
