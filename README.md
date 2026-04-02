@@ -386,19 +386,27 @@ This mechanism is best suited to non-secret session context. Avoid broadly expor
 
 ### Agent Additions
 
-#### Shared Rules & Skills
+#### Rules
 
-- Shared always-loaded agent context is rendered from repo-managed rules into `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, and `~/.cursor/rules/agent-rules.mdc`
-- Shared skills live under `~/.agents/skills` and are consumed by Claude Code, Codex, and Cursor
-- Third-party portable skill content is fetched into an isolated pinned cache and selectively linked into the shared skill tree
-- Subagent configs (Claude Code only) live under `~/.agents/agents` and are symlinked to `~/.claude/agents`; first-party configs come from `home/dot_agents/agents/`
+Rules are rendered from repo-managed templates into always-loaded context files for each agent tool: `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, and `~/.cursor/rules/agent-rules.mdc`.
 
-#### Shared Skills
+#### Skills
+
+Skills live in `~/.agents/skills/` and are available to all agent tools (Claude Code, Codex, Cursor) unless noted otherwise.
 
 ##### First-Party
 
 - **[Clean Prose](home/dot_agents/skills/clean-prose/SKILL.md)**
   Improve prose quality and reduce AI writing patterns in written artifacts
+
+- **[Cram](home/dot_agents/skills/cram/SKILL.md)**
+  Write, read, and debug cram functional tests (.t files)
+
+- **[Find Session](home/dot_agents/skills/find-session/SKILL.md)**
+  Find and resume past Claude Code conversations by keyword search
+
+- **[Jujutsu](home/dot_agents/skills/jujutsu/SKILL.md)**
+  Version control for Jujutsu (jj) repositories
 
 - **[Obsidian CLI](home/dot_agents/skills/obsidian-cli/SKILL.md)**
   Work with the Obsidian CLI
@@ -409,31 +417,48 @@ This mechanism is best suited to non-secret session context. Avoid broadly expor
 ##### External
 
 - **[Anthropic Official Plugins](https://github.com/anthropics/claude-plugins-official/tree/main/plugins)**
-  CLAUDE.md maintenance and skill authoring (claude-md-improver, skill-creator)
+  - **[claude-md-improver](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/claude-md-management)** — Audit and improve CLAUDE.md files
+  - **[skill-creator](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/skill-creator)** — Create and refine skills
 
-- **[Astral Skills](https://github.com/astral-sh/claude-code-plugins/tree/main/plugins/astral/skills)**
-  Skills for working with Python using Astral tools (ruff, ty, uv)
+- **[Astral](https://github.com/astral-sh/claude-code-plugins/tree/main/plugins/astral/skills)**
+  Python tooling skills. Also installed as a Claude Code plugin for `ty` LSP integration.
+  - **[ruff](https://github.com/astral-sh/claude-code-plugins/tree/main/plugins/astral/skills/ruff)** — Linting and formatting Python code with ruff
+  - **[ty](https://github.com/astral-sh/claude-code-plugins/tree/main/plugins/astral/skills/ty)** — Type checking Python code with ty
+  - **[uv](https://github.com/astral-sh/claude-code-plugins/tree/main/plugins/astral/skills/uv)** — Managing Python projects, packages, and tools with uv
 
 - **[avoid-ai-writing](https://github.com/conorbronsdon/avoid-ai-writing)**
   Vocabulary and structural pattern detection for reducing AI writing patterns. Used as the base layer for the clean-prose skill.
 
 - **[gh-pr-review](https://github.com/agynio/gh-pr-review)**
-  Shared skill for GitHub PR review threads and inline review comments, with structured terminal workflows and explicit safety guardrails for write operations
+  GitHub PR review threads and inline review comments with structured terminal workflows
 
-- **[Superpowers Skills](https://github.com/obra/superpowers/tree/main/skills)**
-  Core skills library for Claude Code: TDD, debugging, collaboration patterns, and proven techniques — all except writing-skills
-
-### Claude Code Additions
+- **[Superpowers](https://github.com/obra/superpowers/tree/main/skills)**
+  Core workflow skills for agentic coding.
+  - **brainstorming** — Explore intent, requirements, and design before implementation
+  - **dispatching-parallel-agents** — Coordinate independent tasks across multiple agents
+  - **executing-plans** — Execute written implementation plans with review checkpoints
+  - **finishing-a-development-branch** — Structured options for merging, PRs, or cleanup when work is complete
+  - **receiving-code-review** — Process review feedback with technical rigor, not blind agreement
+  - **requesting-code-review** — Verify work meets requirements before merging
+  - **subagent-driven-development** — Execute implementation plans with independent in-session tasks
+  - **systematic-debugging** — Structured approach to bugs and test failures before proposing fixes
+  - **test-driven-development** — Write tests before implementation code
+  - **using-git-worktrees** — Isolate feature work in git worktrees
+  - **using-superpowers** — Session entry point: establishes skill discovery and invocation discipline
+  - **verification-before-completion** — Require evidence before claiming work is done
+  - **writing-plans** — Plan multi-step tasks before touching code
 
 #### MCP Servers
 
-- **[GitHub](https://github.com/github/github-mcp-server)**
-  GitHub-aware context and operations for Claude Code
+MCP server configuration is agent-specific.
 
-#### Plugins
+##### Claude Code
 
-- **[Astral](https://github.com/astral-sh/claude-code-plugins)**
-  Retained as a Claude-native integration for Astral tooling, including `ty` LSP support
+- **[GitHub](https://github.com/github/github-mcp-server)** — GitHub-aware context and operations
+
+##### Codex
+
+- **[GitHub](https://github.com/github/github-mcp-server)** — GitHub-aware context and operations. _Conditional: non-work machines._
 
 ### Fonts
 
@@ -1174,6 +1199,20 @@ These files are not tracked in the repository and allow per-machine customizatio
 
 - [Handle different file locations on different systems with the same contents](https://www.chezmoi.io/user-guide/manage-machine-to-machine-differences/#handle-different-file-locations-on-different-systems-with-the-same-contents)
 - [Use completely different dotfiles on different machines](https://www.chezmoi.io/user-guide/manage-machine-to-machine-differences/#use-completely-different-dotfiles-on-different-machines)
+
+## Agent Architecture
+
+### Rules Pipeline
+
+Rule templates in `home/dot_agents/rules/*.md.tmpl` are sorted alphabetically and rendered into always-loaded context files per tool: `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, and `~/.cursor/rules/agent-rules.mdc`. Templates can branch on an `agent` parameter for tool-specific guidance.
+
+### Skills
+
+First-party skills are directories under `home/dot_agents/skills/`. External skills are fetched as chezmoi externals into `~/.agents/external-sources/` and linked into `~/.agents/skills/` via `symlink_*` files in `home/dot_agents/skills/`. All agent tools symlink their skills directory to `~/.agents/skills/`.
+
+### Subagent Configs (Claude Code)
+
+Subagent config files (Markdown with YAML frontmatter) live under `~/.agents/agents/` and are symlinked to `~/.claude/agents/`. First-party configs come from `home/dot_agents/agents/`. Claude Code discovers agents recursively, so additional configs can live in subdirectories without conflicting with first-party entries.
 
 ## Help
 
