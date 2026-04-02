@@ -732,16 +732,6 @@ The home-level `~/.envrc` is a `direnv` bridge for shell entry points that bypas
 - **[pkgx](https://pkgx.sh)**: A blazingly fast, standalone, cross‐platform binary that runs anything.
 - **[rclone](https://github.com/rclone/rclone)**: Rsync for cloud storage.
 
-#### Installed Decky Plugins on the Steam Deck
-
-- **[NonSteamLaunchers](https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck)**: A Decky Plugin for the integration of Non-Steam launchers and the games installed with them.
-
-#### Installed Decky Plugins on the Steam Deck via ROM Library, not this setup
-
-- **[Bash Shortcuts](https://github.com/SDH-Stewardship/bash-shortcuts)**: A Steam Deck plugin for creating custom shortcuts that can be launched from the Quick Access Menu.
-- **[Deck Settings](https://github.com/davocarli/sharedeck-y)**: A Decky Plugin for browsing recommended Steam Deck game settings from [ShareDeck](https://sharedeck.games/) and [SteamDeckHQ](https://steamdeckhq.com/).
-- [GOG Extension](https://www.patreon.com/junkstore/shop/gog-extension-302140) for the [Junk-Store](https://github.com/ebenbruyns/junkstore) Decky Plugin
-
 ## Reference
 
 ### Additional Documentation
