@@ -4,7 +4,7 @@
 
 Personal dotfiles and system setup, managed with [chezmoi] and [Nix Home Manager][home-manager]. This repository covers application configuration, shell customization, package installation, and system-level setup across macOS, Linux, FreeBSD, and Windows. All machine-specific differences and optional feature flags are handled through chezmoi's template system.
 
-**A note on scope:** This setup has evolved over many years to cover a wide range of platforms, package managers, and personal preferences. It is not intended as a starter template, as adopting it wholesale would likely be more complex than most people need. That said, it may be useful as a reference for specific patterns, such as chezmoi templating, Home Manager integration, multi-platform handling, age-encrypted secrets, and so on.
+**A note on scope:** This setup has evolved over many years to cover a wide range of platforms, package managers, and personal preferences. It is not intended as a starter template, as adopting it wholesale would likely be more complex than most people need. It may still be useful as a reference for specific patterns, such as chezmoi templating, Home Manager integration, multi-platform handling, and age-encrypted secrets.
 
 ## How It Works
 
@@ -26,7 +26,7 @@ The setup scripts form a progression from OS installation to day-to-day dotfiles
 
 ### Customization
 
-Chezmoi templates drive per-machine configuration. Flags in `~/.config/chezmoi/chezmoi.toml` control what gets installed and configured — for example, whether the machine is a work system, has a container runtime, or is headless. Sensitive files are encrypted with age, with the key bootstrapped from 1Password on first setup if not placed manually.
+Chezmoi templates drive per-machine configuration. Flags in `~/.config/chezmoi/chezmoi.toml` control what gets installed and configured: for example, whether the machine is a work system, has a container runtime, or is headless. Sensitive files are encrypted with age, with the key bootstrapped from 1Password on first setup if not placed manually.
 
 ### What's Included
 
@@ -358,7 +358,7 @@ The home-level `~/.envrc` is a `direnv` bridge for shell entry points that bypas
 
 Project-level `.envrc` files are expected to chain back to the home-level file via `source_up` or `source_env ~/.envrc`. If a project-local `.envrc` does not do this, that project is bypassing the shared home-session baseline and should be fixed there rather than worked around in dotfiles.
 
-To add more variables to this mechanism without changing the managed defaults, add `export NAME=value` lines to `~/.session-env.local`. Use that for machine-local additions that should be visible to desktop apps and to shell sessions restored via direnv. If you want to change the managed defaults themselves, edit [`home/private_dot_session-env.tmpl`](/Users/kergoth/.dotfiles/home/private_dot_session-env.tmpl) in the dotfiles source.
+To add more variables to this mechanism without changing the managed defaults, add `export NAME=value` lines to `~/.session-env.local`. Use that for machine-local additions that should be visible to desktop apps and to shell sessions restored via direnv. If you want to change the managed defaults themselves, edit [`home/private_dot_session-env.tmpl`](home/private_dot_session-env.tmpl) in the dotfiles source.
 
 This mechanism is best suited to non-secret session context. Avoid broadly exporting credentials into the desktop session, since that makes them available to every GUI app and CLI tool in the session. For secrets, prefer project-local `.envrc`, app- or tool-specific login flows, or the platform keychain.
 
