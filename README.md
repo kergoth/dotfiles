@@ -2,6 +2,16 @@
 
 [![BlueOak 1.0.0 License](https://img.shields.io/badge/License-BlueOak%201.0.0-2D6B79.svg)](https://spdx.org/licenses/BlueOak-1.0.0.html)
 
+<p align="center">
+    <img src="https://img.shields.io/badge/mac%20os-000000?style=for-the-badge&logo=macos&logoColor=F0F0F0" alt="macOS" />
+    <img src="https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Windows" />
+    <img src="https://img.shields.io/badge/Debian-D70A53?style=for-the-badge&logo=debian&logoColor=white" alt="Debian" />
+    <img src="https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white" alt="Ubuntu" />
+    <img src="https://img.shields.io/badge/Fedora-294172?style=for-the-badge&logo=fedora&logoColor=white" alt="Fedora" />
+    <img src="https://img.shields.io/badge/Chimera%20Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black" alt="Chimera Linux" />
+    <img src="https://img.shields.io/badge/-FreeBSD-%23870000?style=for-the-badge&logo=freebsd&logoColor=white" alt="FreeBSD" />
+</p>
+
 Personal dotfiles and system setup, managed with [chezmoi] and [Nix Home Manager][home-manager]. This repository covers application configuration, shell customization, package installation, and system-level setup across macOS, Linux, FreeBSD, and Windows. All machine-specific differences and optional feature flags are handled through chezmoi's template system.
 
 **A note on scope:** This setup has evolved over many years to cover a wide range of platforms, package managers, and personal preferences. It is not intended as a starter template, as adopting it wholesale would likely be more complex than most people need. It may still be useful as a reference for specific patterns, such as chezmoi templating, Home Manager integration, multi-platform handling, and age-encrypted secrets.
