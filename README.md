@@ -1,6 +1,10 @@
 # Kergoth's Dotfiles and Setup Scripts
 
-[![BlueOak 1.0.0 License](https://img.shields.io/badge/License-BlueOak%201.0.0-2D6B79.svg)](https://spdx.org/licenses/BlueOak-1.0.0.html)
+<p align="center">
+    <a href="https://spdx.org/licenses/BlueOak-1.0.0.html">
+        <img src="https://img.shields.io/badge/License-BlueOak%201.0.0-2D6B79.svg" alt="BlueOak 1.0.0 License" />
+    </a>
+</p>
 
 <p align="center">
     <img src="https://img.shields.io/badge/mac%20os-000000?logo=macos&logoColor=F0F0F0" alt="macOS" />
