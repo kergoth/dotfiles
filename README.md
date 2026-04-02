@@ -742,15 +742,12 @@ The home-level `~/.envrc` is a `direnv` bridge for shell entry points that bypas
 - **[Deck Settings](https://github.com/davocarli/sharedeck-y)**: A Decky Plugin for browsing recommended Steam Deck game settings from [ShareDeck](https://sharedeck.games/) and [SteamDeckHQ](https://steamdeckhq.com/).
 - [GOG Extension](https://www.patreon.com/junkstore/shop/gog-extension-302140) for the [Junk-Store](https://github.com/ebenbruyns/junkstore) Decky Plugin
 
-## As-Needed Software
-
-Software I install occasionally as needed rather than on every machine. See [docs/as-needed.md](docs/as-needed.md) for the full list.
-
-## Formerly-Used
-
-Software I've used in the past but no longer use. See [docs/formerly-used.md](docs/formerly-used.md) for the full historical list.
-
 ## Reference
+
+### Additional Documentation
+
+- **[As-Needed Software]((docs/as-needed.md)**: Software I install occasionally as needed rather than on every machine, with details on how they can be installed.
+- **[Formerly-Used Software](docs/formerly-used.md)**: Software I've used in the past but no longer use, with details on why I stopped using them.
 
 ### Chezmoi Usage
 
