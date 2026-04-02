@@ -397,6 +397,9 @@ This mechanism is best suited to non-secret session context. Avoid broadly expor
 
 ##### First-Party
 
+- **[Clean Prose](home/dot_agents/skills/clean-prose/SKILL.md)**
+  Improve prose quality and reduce AI writing patterns in written artifacts
+
 - **[Obsidian CLI](home/dot_agents/skills/obsidian-cli/SKILL.md)**
   Work with the Obsidian CLI
 
@@ -410,6 +413,9 @@ This mechanism is best suited to non-secret session context. Avoid broadly expor
 
 - **[Astral Skills](https://github.com/astral-sh/claude-code-plugins/tree/main/plugins/astral/skills)**
   Skills for working with Python using Astral tools (ruff, ty, uv)
+
+- **[avoid-ai-writing](https://github.com/conorbronsdon/avoid-ai-writing)**
+  Vocabulary and structural pattern detection for reducing AI writing patterns. Used as the base layer for the clean-prose skill.
 
 - **[gh-pr-review](https://github.com/agynio/gh-pr-review)**
   Shared skill for GitHub PR review threads and inline review comments, with structured terminal workflows and explicit safety guardrails for write operations
