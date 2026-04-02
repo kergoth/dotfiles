@@ -396,38 +396,38 @@ Skills live in `~/.agents/skills/` and are available to all agent tools (Claude 
 
 ##### First-Party
 
-- [Clean Prose](home/dot_agents/skills/clean-prose/SKILL.md): Improve prose quality and reduce AI writing patterns in written artifacts.
-- [Cram](home/dot_agents/skills/cram/SKILL.md): Write, read, and debug [cram](https://bitheap.org/cram/) functional tests (.t files).
-- [Find Session](home/dot_agents/skills/find-session/SKILL.md): Find and resume past Claude Code conversations by keyword search.
-- [Jujutsu](home/dot_agents/skills/jujutsu/SKILL.md): Version control for [Jujutsu (jj)](https://github.com/jj-vcs/jj) repositories.
-- [Obsidian CLI](home/dot_agents/skills/obsidian-cli/SKILL.md): Work with the [Obsidian](https://obsidian.md) CLI.
-- [Shell Script Style](home/dot_agents/skills/shell-script-style/SKILL.md): Apply personal Bash/POSIX shell script style conventions.
+- **[Clean Prose](home/dot_agents/skills/clean-prose/SKILL.md)**: Improve prose quality and reduce AI writing patterns in written artifacts.
+- **[Cram](home/dot_agents/skills/cram/SKILL.md)**: Write, read, and debug [cram](https://bitheap.org/cram/) functional tests (.t files).
+- **[Find Session](home/dot_agents/skills/find-session/SKILL.md)**: Find and resume past Claude Code conversations by keyword search.
+- **[Jujutsu](home/dot_agents/skills/jujutsu/SKILL.md)**: Version control for [Jujutsu (jj)](https://github.com/jj-vcs/jj) repositories.
+- **[Obsidian CLI](home/dot_agents/skills/obsidian-cli/SKILL.md)**: Work with the [Obsidian](https://obsidian.md) CLI.
+- **[Shell Script Style](home/dot_agents/skills/shell-script-style/SKILL.md)**: Apply personal Bash/POSIX shell script style conventions.
 
 ##### External
 
-- [Anthropic Official Plugins](https://github.com/anthropics/claude-plugins-official/tree/main/plugins): CLAUDE.md maintenance and skill authoring.
-  - [claude-md-improver](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/claude-md-management): Audit and improve CLAUDE.md files.
-  - [skill-creator](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/skill-creator): Create and refine skills.
-- [Astral](https://github.com/astral-sh/claude-code-plugins/tree/main/plugins/astral/skills): Python tooling skills. Also installed as a Claude Code plugin for `ty` LSP integration.
-  - ruff: Linting and formatting Python code.
-  - ty: Type checking Python code.
-  - uv: Managing Python projects, packages, and tools.
-- [avoid-ai-writing](https://github.com/conorbronsdon/avoid-ai-writing): Vocabulary and structural pattern detection for reducing AI writing patterns. Used as the base layer for the clean-prose skill.
-- [gh-pr-review](https://github.com/agynio/gh-pr-review): GitHub PR review threads and inline review comments with structured terminal workflows.
-- [Superpowers](https://github.com/obra/superpowers/tree/main/skills): Core workflow skills for agentic coding.
-  - brainstorming: Explore intent, requirements, and design before implementation.
-  - dispatching-parallel-agents: Coordinate independent tasks across multiple agents.
-  - executing-plans: Execute written implementation plans with review checkpoints.
-  - finishing-a-development-branch: Structured options for merging, PRs, or cleanup when work is complete.
-  - receiving-code-review: Process review feedback with technical rigor, not blind agreement.
-  - requesting-code-review: Verify work meets requirements before merging.
-  - subagent-driven-development: Execute implementation plans with independent in-session tasks.
-  - systematic-debugging: Structured approach to bugs and test failures before proposing fixes.
-  - test-driven-development: Write tests before implementation code.
-  - using-git-worktrees: Isolate feature work in git worktrees.
-  - using-superpowers: Session entry point; establishes skill discovery and invocation discipline.
-  - verification-before-completion: Require evidence before claiming work is done.
-  - writing-plans: Plan multi-step tasks before touching code.
+- **[Anthropic Official Plugins](https://github.com/anthropics/claude-plugins-official/tree/main/plugins)**: CLAUDE.md maintenance and skill authoring.
+  - **[claude-md-improver](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/claude-md-management)**: Audit and improve CLAUDE.md files.
+  - **[skill-creator](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/skill-creator)**: Create and refine skills.
+- **[Astral](https://github.com/astral-sh/claude-code-plugins/tree/main/plugins/astral/skills)**: Python tooling skills. Also installed as a Claude Code plugin for `ty` LSP integration.
+  - **ruff**: Linting and formatting Python code.
+  - **ty**: Type checking Python code.
+  - **uv**: Managing Python projects, packages, and tools.
+- **[avoid-ai-writing](https://github.com/conorbronsdon/avoid-ai-writing)**: Vocabulary and structural pattern detection for reducing AI writing patterns. Used as the base layer for the clean-prose skill.
+- **[gh-pr-review](https://github.com/agynio/gh-pr-review)**: GitHub PR review threads and inline review comments with structured terminal workflows.
+- **[Superpowers](https://github.com/obra/superpowers/tree/main/skills)**: Core workflow skills for agentic coding.
+  - **brainstorming**: Explore intent, requirements, and design before implementation.
+  - **dispatching-parallel-agents**: Coordinate independent tasks across multiple agents.
+  - **executing-plans**: Execute written implementation plans with review checkpoints.
+  - **finishing-a-development-branch**: Structured options for merging, PRs, or cleanup when work is complete.
+  - **receiving-code-review**: Process review feedback with technical rigor, not blind agreement.
+  - **requesting-code-review**: Verify work meets requirements before merging.
+  - **subagent-driven-development**: Execute implementation plans with independent in-session tasks.
+  - **systematic-debugging**: Structured approach to bugs and test failures before proposing fixes.
+  - **test-driven-development**: Write tests before implementation code.
+  - **using-git-worktrees**: Isolate feature work in git worktrees.
+  - **using-superpowers**: Session entry point; establishes skill discovery and invocation discipline.
+  - **verification-before-completion**: Require evidence before claiming work is done.
+  - **writing-plans**: Plan multi-step tasks before touching code.
 
 #### MCP Servers
 
@@ -435,11 +435,11 @@ MCP server configuration is agent-specific.
 
 ##### Claude Code
 
-- [GitHub](https://github.com/github/github-mcp-server): GitHub-aware context and operations.
+- **[GitHub](https://github.com/github/github-mcp-server)**: GitHub-aware context and operations.
 
 ##### Codex
 
-- [GitHub](https://github.com/github/github-mcp-server): GitHub-aware context and operations. _Conditional: non-work machines._
+- **[GitHub](https://github.com/github/github-mcp-server)**: GitHub-aware context and operations. _Conditional: non-work machines._
 
 ### Fonts
 
