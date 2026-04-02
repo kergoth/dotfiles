@@ -838,16 +838,6 @@ Please adhere to this project's [Code of Conduct](CODE_OF_CONDUCT.md) and follow
 
 Distributed under the terms of the [Blue Oak Model License 1.0.0](LICENSE.md) license.
 
-## See Also
-
-### Superseded Projects
-
-- [dotfiles-chezmoi](https://github.com/kergoth/dotfiles-chezmoi)
-- [system-setup](https://github.com/kergoth/system-setup)
-- [mac-setup](https://github.com/kergoth/mac-setup)
-- [win-setup](https://github.com/kergoth/win-setup)
-- [dotfiles/system-setup](https://github.com/kergoth/dotfiles/tree/d9bdcb2187ea66847a21ebd6591c0f1ec1a3f0a5/system-setup)
-- [arch-setup](https://github.com/kergoth/kergoth-arch-setup)
 
 [chezmoi]: https://www.chezmoi.io/
 [home-manager]: https://nix-community.github.io/home-manager/
