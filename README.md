@@ -25,13 +25,13 @@
 
 Personal dotfiles and system setup, managed with [chezmoi] and [Nix Home Manager][home-manager]. This repository covers application configuration, shell customization, package installation, and system-level setup across macOS, Linux, FreeBSD, and Windows. All machine-specific differences and optional feature flags are handled through chezmoi's template system.
 
-**A note on scope:** This setup has evolved over many years to cover a wide range of platforms, package managers, and personal preferences. It is not intended as a starter template, as adopting it wholesale would likely be more complex than most people need. It may still be useful as a reference for specific patterns, such as chezmoi templating, Home Manager integration, multi-platform handling, and age-encrypted secrets.
-
 ## How It Works
 
 ### Core Tooling
 
 [Chezmoi][chezmoi] manages dotfiles: it templates configuration files, applies them to `$HOME`, handles encrypted secrets via [age], and runs setup scripts as part of the apply process. [Nix Home Manager][home-manager] provides the primary method of declarative, reproducible package management at the user level where Nix and nixpkgs are viable, supplemented by [Homebrew] on macOS, [Scoop] on Windows, and language-specific package managers as needed. Where that path is unavailable or incomplete, the setup falls back to system package managers and other installation methods. See [Platform Notes](#platform-notes) for FreeBSD and Chimera Linux.
+
+**A note on scope:** This is not intended as a starter template, as adopting it wholesale would likely be more complex than most people need.
 
 ### Setup Entry Points
 
