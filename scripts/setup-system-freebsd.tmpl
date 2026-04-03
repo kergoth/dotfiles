@@ -137,6 +137,7 @@ freebsd_check www/jira-cli jira
 # Containers
 {{ if .containers -}}
 freebsd_check sysutils/podman-suite podman
+freebsd_check sysutils/podman-compose podman-compose
 {{- end }}
 
 # Directly supported by nix home-manager

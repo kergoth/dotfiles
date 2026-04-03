@@ -367,6 +367,9 @@ Installed software varies by platform based on package availability and platform
 - **[go](https://go.dev)**: An open source programming language supported by Google
   - Installed so we can `go install` various tools.
 
+- **[podman](https://podman.io)**: A daemonless container engine for developing, managing, and running OCI Containers. _Conditional: containers flag._
+- **[podman-compose](https://github.com/containers/podman-compose)**: A script to run docker-compose.yml using podman. _Conditional: containers flag._
+
 - **[rust](https://www.rust-lang.org)**: A multi-paradigm, general-purpose programming language.
   - Installed so we can `cargo install` various tools.
 
@@ -400,9 +403,9 @@ Installed software varies by platform based on package availability and platform
 
 ##### CLI Software on Chimera Linux
 
-- **[podman](https://podman.io)**: A daemonless container engine for developing, managing, and running OCI Containers. _Conditional: This is installed when the containers flag is enabled._
-- **[podman-compose](https://github.com/containers/podman-compose)**: A script to run docker-compose.yml using podman. _Conditional: This is installed when the containers flag is enabled._
-  - Note: Chimera Linux uses podman instead of docker due to potential compatibility issues with docker on its BSD userland.
+- **[podman](https://podman.io)**: A daemonless container engine for developing, managing, and running OCI Containers. _Conditional: containers flag._
+- **[podman-compose](https://github.com/containers/podman-compose)**: A script to run docker-compose.yml using podman. _Conditional: containers flag._
+  - Note: Chimera Linux and FreeBSD use podman instead of docker due to potential compatibility issues with docker on their BSD userland.
 
 #### CLI Software on Windows
 
