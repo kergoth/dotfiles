@@ -8,7 +8,7 @@
 
 <p align="center">
     <a href="https://www.apple.com/macos/">
-        <img src="https://img.shields.io/badge/mac%20os-000000?logo=macos&logoColor=F0F0F0" alt="macOS" /></a>
+        <img src="https://img.shields.io/badge/macOS-000000?logo=macos&logoColor=F0F0F0" alt="macOS" /></a>
     <a href="https://www.microsoft.com/windows/">
         <img src="https://img.shields.io/badge/Windows-0078D6?logo=windows&logoColor=white" alt="Windows" /></a>
     <a href="https://www.debian.org/">
