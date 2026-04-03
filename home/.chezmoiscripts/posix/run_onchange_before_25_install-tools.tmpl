@@ -27,9 +27,6 @@
 {{-         $_ := set $eget_tools "jira" "ankitpokhrel/jira-cli" -}}
 {{-       end -}}
 {{-     end -}}
-{{-     if .steamdeck -}}
-{{-       $_ := set $eget_tools "rclone" "--asset=zip rclone/rclone" -}}
-{{-     end -}}
 {{-     $eget_to_install := list -}}
 {{-     if $eget_tools -}}
 {{-       $eget_to_install = includeTemplate "packagesForMissingTools" (dict "root" . "packages" $eget_tools) | fromJson -}}

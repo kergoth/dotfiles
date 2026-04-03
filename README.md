@@ -566,10 +566,6 @@ Installed software varies by platform based on package availability and platform
 - **[Windows Firewall Control](https://www.binisoft.org/wfc)**: Managing Windows Firewall is now easier than ever.
 - [Windows Terminal](https://apps.microsoft.com/store/detail/9N0DX20HK701?hl=en-us&gl=US) ([Open-Source](https://github.com/microsoft/terminal))
 
-#### Installed CLI Software on the Steam Deck
-
-- **[rclone](https://github.com/rclone/rclone)**: Rsync for cloud storage.
-
 ## Additional Docs
 
 - **[As-Needed Software](docs/as-needed.md)**: Software I install occasionally as needed rather than on every machine, with details on how they can be installed.
