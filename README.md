@@ -49,10 +49,6 @@ The setup scripts form a progression from OS installation to day-to-day dotfiles
 
 Chezmoi templates drive per-machine configuration. Flags in `~/.config/chezmoi/chezmoi.toml` control what gets installed and configured: for example, whether the machine is a work system, has a container runtime, or is headless. Sensitive files are encrypted with age, with the key bootstrapped from 1Password on first setup if not placed manually.
 
-## Prerequisites
-
-- (On macOS) The user with admin privileges must have signed into the Mac App Store to allow `setup-system` to succeed.
-
 ## Usage
 
 ### Bootstrap (Optional)
@@ -76,7 +72,7 @@ git clone https://github.com/kergoth/dotfiles .dotfiles
 
 ### System Setup
 
-**Run this before dotfiles setup** if you need system-level packages, Nix, or other prerequisites. This script is run by a non-root user with sudo/doas access.
+**Run this before dotfiles setup** if you need system-level packages, Nix, or other prerequisites. This script is run by a non-root user with sudo/doas access. To complete this on macOS, your admin user must have signed into the Mac App Store.
 
 ```console
 ./script/setup-system
