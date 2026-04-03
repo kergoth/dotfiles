@@ -574,6 +574,7 @@ Installed software varies by platform based on package availability and platform
 
 - **[As-Needed Software](docs/as-needed.md)**: Software I install occasionally as needed rather than on every machine, with details on how they can be installed.
 - **[Formerly-Used Software](docs/formerly-used.md)**: Software I've used in the past but no longer use, with details on why I stopped using them.
+- **[Operating System Installation](docs/os-installation.md)**: Step-by-step instructions for certain operating system installations using the included `os-install` and `setup-root` scripts.
 
 ## Contributing & Support
 
