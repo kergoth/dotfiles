@@ -698,7 +698,7 @@ Installed software varies by platform based on package availability and platform
 
 ## Additional Docs
 
-- **[As-Needed Software]((docs/as-needed.md)**: Software I install occasionally as needed rather than on every machine, with details on how they can be installed.
+- **[As-Needed Software](docs/as-needed.md)**: Software I install occasionally as needed rather than on every machine, with details on how they can be installed.
 - **[Formerly-Used Software](docs/formerly-used.md)**: Software I've used in the past but no longer use, with details on why I stopped using them.
 
 ## Help
