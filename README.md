@@ -27,9 +27,9 @@ Personal dotfiles and system setup, managed with [chezmoi] and [Nix Home Manager
 
 ## How It Works
 
-### Core Tooling
-
 [Chezmoi][chezmoi] manages dotfiles: it templates configuration files, applies them to `$HOME`, handles encrypted secrets via [age], and runs setup scripts as part of the apply process. [Nix Home Manager][home-manager] provides the primary method of declarative, reproducible package management at the user level where Nix and nixpkgs are viable, supplemented by [Homebrew] on macOS, [Scoop] on Windows, and language-specific package managers as needed. Where that path is unavailable or incomplete, the setup falls back to system package managers and other installation methods. See [Platform Notes](#platform-notes) for FreeBSD and Chimera Linux.
+
+Chezmoi templates drive per-machine configuration. Flags in `~/.config/chezmoi/chezmoi.toml` control what gets installed and configured: for example, whether the machine is a work system, has a container runtime, or is headless. Sensitive files are encrypted with age, with the key bootstrapped from 1Password on first setup if not placed manually.
 
 **A note on scope:** This is not intended as a starter template, as adopting it wholesale would likely be more complex than most people need.
 
@@ -44,10 +44,6 @@ The setup scripts form a progression from OS installation to day-to-day dotfiles
 - **`setup-system`**: Installs system-level packages, Nix, and other prerequisites. Run by a non-root user with sudo/doas access.
 - **`setup`** / `chezmoi apply`: Applies dotfiles and runs chezmoi scripts for user-level package installation, application configuration, and shell setup.
 - **`setup-full`**: Runs `setup-system` then `setup`.
-
-### Customization
-
-Chezmoi templates drive per-machine configuration. Flags in `~/.config/chezmoi/chezmoi.toml` control what gets installed and configured: for example, whether the machine is a work system, has a container runtime, or is headless. Sensitive files are encrypted with age, with the key bootstrapped from 1Password on first setup if not placed manually.
 
 ## Usage
 
