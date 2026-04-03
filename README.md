@@ -49,17 +49,6 @@ The setup scripts form a progression from OS installation to day-to-day dotfiles
 
 Chezmoi templates drive per-machine configuration. Flags in `~/.config/chezmoi/chezmoi.toml` control what gets installed and configured: for example, whether the machine is a work system, has a container runtime, or is headless. Sensitive files are encrypted with age, with the key bootstrapped from 1Password on first setup if not placed manually.
 
-### What's Included
-
-The repository manages CLI tools, GUI applications, shell plugins and configuration (zsh), fonts, browser extensions, and platform-specific settings. See the detailed [What's Included](#whats-included) section below for the full inventory.
-
-## Supported Platforms
-
-- **macOS**: Full CLI + GUI coverage (Nix, Homebrew)
-- **Windows**: Full CLI + GUI coverage (Scoop, winget, WSL)
-- **Linux**: Full CLI coverage. GUI apps vary by distro. Tested on Arch, Ubuntu, Debian, Fedora, Chimera Linux, and SteamOS. Most supported Linux distros use Nix. Chimera Linux does not follow the standard Nix-driven path used elsewhere: its musl libc, BSD userland, and package availability gaps require alternate installation paths for some tools and GUI apps. Where native packaging is insufficient, this setup falls back to Flatpak and an Ubuntu distrobox for glibc-only GUI applications.
-- **FreeBSD**: Full CLI coverage. Less testing. Nix itself works, but nixpkgs coverage is currently too limited for this setup, so package installation relies primarily on native packages and language-specific package managers. For GUI apps without native FreeBSD support, linuxulator is the best approach (see issue #68). Like the Chimera Linux distrobox approach, it uses a Linux userspace to cover gaps where native packaging is absent.
-
 ## Prerequisites
 
 - (On macOS) The user with admin privileges must have signed into the Mac App Store to allow `setup-system` to succeed.
@@ -439,6 +428,8 @@ Terminals launched from the desktop environment inherit those variables automati
 The home-level `~/.envrc` is a `direnv` bridge for shell entry points that bypass the desktop session, especially SSH. In those cases, it sources `~/.session-env` so direnv can recreate the same baseline environment in CLI sessions that did not inherit it from the desktop login.
 
 ## Installed Software
+
+Installed software varies by platform based on package availability and platform-specific tools, but the general approach is consistent: use Nix and nixpkgs where possible, with Homebrew on macOS, Scoop on Windows, and native packages or language-specific package managers as fallbacks. For GUI apps on Linux, Flatpak is preferred. On Chimera Linux, where native packaging and flatpak is insufficient, this setup falls back to an Ubuntu distrobox for glibc-only GUI applications. On FreeBSD, for GUI apps without native support, Linuxulator is used to run Linux userspace applications.
 
 ### Installed CLI Software
 
