@@ -278,7 +278,7 @@ These files are not tracked in the repository and allow per-machine customizatio
 
 ### Desktop Session Environment
 
-To add more environment variables to the desktop session environment, add `export NAME=value` lines to `~/.session-env.local`. Use that for machine-local additions that should be visible to desktop apps and to shell sessions restored via direnv. Avoid putting secrets here, since it will make them available to every GUI app and CLI tool in the session. For secrets, prefer project-local `.envrc`, app- or tool-specific login flows, or the platform keychain.
+- `~/.session-env.local` — This file is sourced by the session-env script, which injects its variables into the environment of GUI applications and shell sessions restored via direnv. Use this for machine-local environment variable additions that should be visible to desktop apps and CLI tools alike. Avoid putting secrets here, since it will make them available to every GUI app and CLI tool in the session. For secrets, prefer project-local `.envrc`, app- or tool-specific login flows, or the platform keychain.
 
 ### Notes
 
