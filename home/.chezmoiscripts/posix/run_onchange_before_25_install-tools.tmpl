@@ -28,7 +28,7 @@
 {{-       end -}}
 {{-     end -}}
 {{-     if .steamdeck -}}
-{{-       $_ := set $eget_tools "rclone" "rclone/rclone" -}}
+{{-       $_ := set $eget_tools "rclone" "--asset=zip rclone/rclone" -}}
 {{-     end -}}
 {{-     $eget_to_install := list -}}
 {{-     if $eget_tools -}}
