@@ -368,11 +368,17 @@ MCP server configuration is agent-specific.
 
 ##### Claude Code
 
+- **[DeepWiki](https://deepwiki.com)**: Query documentation and knowledge from GitHub repositories.
 - **[GitHub](https://github.com/github/github-mcp-server)**: GitHub-aware context and operations.
 
 ##### Codex
 
+- **[DeepWiki](https://deepwiki.com)**: Query documentation and knowledge from GitHub repositories. _Conditional: personal machines._
 - **[GitHub](https://github.com/github/github-mcp-server)**: GitHub-aware context and operations. _Conditional: non-work machines._
+
+##### Cursor
+
+- **[DeepWiki](https://deepwiki.com)**: Query documentation and knowledge from GitHub repositories. _Conditional: work machines._
 
 ### Fonts
 
