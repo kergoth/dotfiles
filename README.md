@@ -691,15 +691,11 @@ Installed software varies by platform based on package availability and platform
 - **[As-Needed Software](docs/as-needed.md)**: Software I install occasionally as needed rather than on every machine, with details on how they can be installed.
 - **[Formerly-Used Software](docs/formerly-used.md)**: Software I've used in the past but no longer use, with details on why I stopped using them.
 
-## Help
+## Contributing & Support
 
-Questions and comments are always welcome, please open an issue.
+Questions, comments, feedback, and contributions are always welcome, please open an issue.
 
-## Contributing
-
-Contributions of all kinds, including feedback, are always welcome!
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for ways to get started.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for ways to get started contributing to this project.
 
 Please adhere to this project's [Code of Conduct](CODE_OF_CONDUCT.md) and follow [The Ethical Source Principles](https://ethicalsource.dev/principles/).
 
