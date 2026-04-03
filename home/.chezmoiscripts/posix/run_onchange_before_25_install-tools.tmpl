@@ -86,7 +86,7 @@ tmpdir=$(mktemp -d)
 trap 'rm -rf "$tmpdir"' EXIT
 {{- end }}
 
-{{-       if $install_distrobox }}
+{{       if $install_distrobox -}}
 echo >&2 "Installing distrobox"
 curl -fL -o "$tmpdir/distrobox.tar.gz" \
     https://github.com/89luca89/distrobox/archive/{{ index .git_lock "distrobox" }}.tar.gz
@@ -95,9 +95,9 @@ mkdir -p "$HOME/.local/bin"
 mv "$tmpdir"/distrobox* "$HOME/.local/bin/"
 {{-       end }}
 
-{{-       if $eget_to_install }}
-{{-         $eget_cmd := includeTemplate "find-tool" (dict "root" . "tool" "eget") -}}
-{{-         if not $eget_cmd }}
+{{       if $eget_to_install }}
+{{         $eget_cmd := includeTemplate "find-tool" (dict "root" . "tool" "eget") -}}
+{{         if not $eget_cmd }}
 echo >&2 "Installing eget"
 mkdir -p "$HOME/.local/bin"
 fetch-verified \
@@ -110,25 +110,25 @@ fetch-verified \
     mv eget "$HOME/.local/bin/"
 )
 {{           $eget_cmd = "$HOME/.local/bin/eget" -}}
-{{-         end }}
-{{-         range $eget_to_install }}
+{{         end }}
+{{         range $eget_to_install }}
 echo >&2 "Installing {{ . }}"
 "{{ $eget_cmd }}" --to="$HOME/.local/bin" {{ . }}
-{{-         end }}
-{{-       end }}
+{{         end }}
+{{       end }}
 
-{{-       if $install_cargo_tools }}
-{{-         range $cargo_to_install }}
+{{       if $install_cargo_tools }}
+{{         range $cargo_to_install }}
 echo >&2 "Installing {{ . }}"
 "{{ $cargo }}" install --locked {{ . }}
-{{-         end }}
-{{-       end }}
+{{         end }}
+{{       end }}
 
-{{-       if $install_uv_tools }}
-{{-         range $uv_to_install }}
+{{       if $install_uv_tools }}
+{{         range $uv_to_install }}
 "{{ $uv }}" tool install {{ . }}
-{{-         end }}
-{{-       end }}
+{{         end }}
+{{       end }}
 
 need_claude_install=0
 current_claude_version=""
@@ -139,32 +139,34 @@ if [ "$current_claude_version" != "{{ $claude_version }}" ]; then
     need_claude_install=1
 fi
 
-{{-       if and (eq .chezmoi.os "darwin") $claude }}
+{{       if and (eq .chezmoi.os "darwin") $claude }}
 if command -v brew >/dev/null 2>&1 && brew list --cask claude-code >/dev/null 2>&1; then
     echo >&2 "Removing legacy Homebrew Claude Code install"
     brew uninstall --cask claude-code
     need_claude_install=1
     hash -r
 fi
-{{-       end }}
+{{       end }}
 
-{{-       if and (eq .chezmoi.os "linux") $claude }}
+{{       if and (eq .chezmoi.os "linux") $claude }}
 if command -v npm >/dev/null 2>&1 && npm list -g @anthropic-ai/claude-code >/dev/null 2>&1; then
     echo >&2 "Removing legacy npm Claude Code install"
     npm uninstall -g @anthropic-ai/claude-code || true
     need_claude_install=1
     hash -r
 fi
-{{-       end }}
+{{       end }}
 
-{{-       if or (eq .chezmoi.os "darwin") (eq .chezmoi.os "linux") }}
+{{       if not .steamdeck }}
+{{         if or (eq .chezmoi.os "darwin") (eq .chezmoi.os "linux") }}
 if [ "$need_claude_install" -eq 1 ]; then
     echo >&2 "Installing Claude Code {{ $claude_version }} via official installer"
     curl -fsSL https://claude.ai/install.sh | bash -s {{ $claude_version }}
 fi
-{{-       end }}
+{{         end }}
+{{       end }}
 
-{{-       if eq .chezmoi.os "freebsd" }}
+{{       if eq .chezmoi.os "freebsd" }}
 if [ "$need_claude_install" -eq 1 ]; then
     echo >&2 "Installing Claude Code {{ $claude_version }} via pinned npm package"
     if ! command -v npm >/dev/null 2>&1; then
@@ -177,21 +179,21 @@ if [ "$need_claude_install" -eq 1 ]; then
     export NPM_CONFIG_AUDIT=false
     "{{ $npm }}" install -g @anthropic-ai/claude-code@{{ $claude_version }}
 fi
-{{-       end }}
+{{       end }}
 
-{{-       if $install_npm_tools }}
+{{       if $install_npm_tools }}
 # TODO: this duplicates what's already in npmrc, either move this to after_,
 # or force early application like we do with the home-manager files.
 export NPM_CONFIG_PREFIX="$HOME/.local"
 export NPM_CONFIG_CACHE="$HOME/.cache/npm"
 export NPM_CONFIG_FUND=false
 export NPM_CONFIG_AUDIT=false
-{{-         range $npm_to_install }}
+{{         range $npm_to_install }}
 "{{ $npm }}" install -g {{ . }}
-{{-         end }}
-{{-       end }}
+{{         end }}
+{{       end }}
 
-{{-       if $install_rusage }}
+{{       if $install_rusage }}
 echo >&2 "Installing rusage"
 mkdir -p "$HOME/.local/bin"
 fetch-verified \
@@ -199,7 +201,7 @@ fetch-verified \
     "https://cosmo.zip/pub/cosmos/bin/rusage" \
     "{{ index .fetch_lock "rusage" }}"
 chmod +x "$HOME/.local/bin/rusage"
-{{-       end }}
+{{       end }}
 
 {{   if $gh_cmd -}}
 {{     if and $chezmoiGithubTokenPath (stat $chezmoiGithubTokenPath) -}}
@@ -207,5 +209,5 @@ export GH_TOKEN="$(cat {{ $chezmoiGithubTokenPath }})"
 {{     end -}}
 echo >&2 "Installing gh extensions"
 {{ $gh_cmd }} extension install --pin {{ index $lock "gh_pr_review" }} agynio/gh-pr-review
-{{-   end }}
-{{- end -}}
+{{   end }}
+{{ end -}}
