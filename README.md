@@ -696,31 +696,10 @@ Installed software varies by platform based on package availability and platform
 
 - **[rclone](https://github.com/rclone/rclone)**: Rsync for cloud storage.
 
-## Reference
-
-### Additional Documentation
+## Additional Docs
 
 - **[As-Needed Software]((docs/as-needed.md)**: Software I install occasionally as needed rather than on every machine, with details on how they can be installed.
 - **[Formerly-Used Software](docs/formerly-used.md)**: Software I've used in the past but no longer use, with details on why I stopped using them.
-
-### Chezmoi Usage
-
-- [Handle different file locations on different systems with the same contents](https://www.chezmoi.io/user-guide/manage-machine-to-machine-differences/#handle-different-file-locations-on-different-systems-with-the-same-contents)
-- [Use completely different dotfiles on different machines](https://www.chezmoi.io/user-guide/manage-machine-to-machine-differences/#use-completely-different-dotfiles-on-different-machines)
-
-## Agent Architecture
-
-### Rules Pipeline
-
-Rule templates in `home/dot_agents/rules/*.md.tmpl` are sorted alphabetically and rendered into always-loaded context files per tool: `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, and `~/.cursor/rules/agent-rules.mdc`. Templates can branch on an `agent` parameter for tool-specific guidance.
-
-### Skills
-
-First-party skills are directories under `home/dot_agents/skills/`. External skills are fetched as chezmoi externals into `~/.agents/external-sources/` and linked into `~/.agents/skills/` via `symlink_*` files in `home/dot_agents/skills/`. All agent tools symlink their skills directory to `~/.agents/skills/`.
-
-### Subagent Configs (Claude Code)
-
-Subagent config files (Markdown with YAML frontmatter) live under `~/.agents/agents/` and are symlinked to `~/.claude/agents/`. First-party configs come from `home/dot_agents/agents/`. Claude Code discovers agents recursively, so additional configs can live in subdirectories without conflicting with first-party entries.
 
 ## Help
 
