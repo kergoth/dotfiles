@@ -227,12 +227,6 @@ This step is implicitly done by the setup script. To run it manually, for exampl
 chezmoi apply
 ```
 
-### Update the dotfiles, including external files
-
-```console
-chezmoi update -R
-```
-
 ### Update the dotfiles, external files, and home directory packages
 
 ```console
