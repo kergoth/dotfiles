@@ -721,23 +721,8 @@ The home-level `~/.envrc` is a `direnv` bridge for shell entry points that bypas
 - **[Windows Firewall Control](https://www.binisoft.org/wfc)**: Managing Windows Firewall is now easier than ever.
 - [Windows Terminal](https://apps.microsoft.com/store/detail/9N0DX20HK701?hl=en-us&gl=US) ([Open-Source](https://github.com/microsoft/terminal))
 
-### Installed Software on the Steam Deck
-
-- **[Decky Loader](https://decky.xyz/)**: A plugin loader for the Steam Deck.
-- **[CryoUtilities](https://github.com/CryoByte33/steam-deck-utilities)**: A utility to improve performance and help manage storage on Steam Deck.
-- **[EmuDeck](https://www.emudeck.com)**: Emulation made easy on steamOS.
-- **[Shortix](https://github.com/Jannomag/shortix)**: A script that creates human readable symlinks for Proton game prefix.
-- **[SteamDeckGyroDSU](https://github.com/kmicki/SteamDeckGyroDSU)**: DSU (cemuhook protocol) server for motion data running on Steam Deck.
-- **[Firefox](https://www.mozilla.org/en-US/firefox/)**: A fast, private, and secure web browser.
-- **[Flatseal](https://flathub.org/apps/com.github.tchx84.Flatseal)**: Manage Flatpak permissions.
-- **[Protontricks](https://github.com/Matoking/protontricks)**: A wrapper that does winetricks things for Proton enabled games.
-- **[Ludusavi](https://github.com/mtkennerly/ludusavi)**: Backup tool for PC game saves.
-- **[Google Chrome](https://www.google.com/chrome/)**: A fast, secure, and free web browser.
-  - Only installed to use Kiosk mode for site-specific browsers from Game Mode, which I automatically set up via Steam ROM Manager from my ROM Library setup.
-
 #### Installed CLI Software on the Steam Deck
 
-- **[pkgx](https://pkgx.sh)**: A blazingly fast, standalone, cross‐platform binary that runs anything.
 - **[rclone](https://github.com/rclone/rclone)**: Rsync for cloud storage.
 
 ## Reference
