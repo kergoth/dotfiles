@@ -1,0 +1,18 @@
+{{- $github_token := or (env "GITHUB_PERSONAL_ACCESS_TOKEN") (env "GITHUB_TOKEN") -}}
+{{- if .work -}}
+{
+  "mcpServers": {
+    "deepwiki": {
+      "url": "https://mcp.deepwiki.com/mcp",
+      "type": "http"
+    }{{ if $github_token }},
+    "github": {
+      "url": "https://api.githubcopilot.com/mcp",
+      "type": "http",
+      "headers": {
+        "Authorization": "Bearer {{ $github_token }}"
+      }
+    }{{ end }}
+  }
+}
+{{- end -}}

@@ -379,6 +379,7 @@ MCP server configuration is agent-specific.
 ##### Cursor
 
 - **[DeepWiki](https://deepwiki.com)**: Query documentation and knowledge from GitHub repositories. _Conditional: work machines._
+- **[GitHub](https://github.com/github/github-mcp-server)**: GitHub-aware context and operations. _Conditional: work machines with GitHub token._
 
 ### Fonts
 
