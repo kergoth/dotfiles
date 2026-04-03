@@ -29,4 +29,10 @@ if [[ "$OSTYPE" = "WSL" ]]; then
     if [[ -e /mnt/wslg/runtime-dir/runtime-0 ]] && ! [[ -e "$runtime_socket" ]]; then
         ln -sf /mnt/wslg/runtime-dir/runtime-0 "$runtime_socket"
     fi
+
+    # Tell Windows Terminal the current working directory so "open tab here" works.
+    keep_current_path() {
+        printf "\e]9;9;%s\e\\" "$(wslpath -m "$PWD")"
+    }
+    precmd_functions+=(keep_current_path)
 fi

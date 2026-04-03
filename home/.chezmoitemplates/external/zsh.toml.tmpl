@@ -59,13 +59,6 @@ url = {{ printf "https://github.com/zsh-users/zsh-syntax-highlighting/archive/%s
 exact = true
 stripComponents = 1
 
-{{ if .wsl2 -}}
-[".config/zsh/plugins/windows-terminal-zsh-integration"]
-type = "archive"
-url = {{ printf "https://github.com/romkatv/windows-terminal-zsh-integration/archive/%s.tar.gz" (index $lock "zsh_windows_terminal_integration") | toToml }}
-exact = true
-stripComponents = 1
-{{- end }}
 
 [".config/zsh/plugins/zbell/zbell.plugin.sh"]
 type = "file"
