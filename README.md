@@ -397,26 +397,6 @@ MCP server configuration is agent-specific.
 - **Optional system services**: Tailscale, container runtime. _Conditional: personal, non-ephemeral for Tailscale. containers flag for container runtime._
 - **OS exceptions/notes**: Service enablement is skipped for WSL2/containers/ephemeral systems.
 
-### Implementation Notes (Current State)
-
-Component-level summary derived from `os-install`, `setup-root`, and `setup-system-*` scripts.
-
-- **OS install layout**: Arch and Chimera only. GPT + EFI + swap with Btrfs root subvolumes. Arch includes @snapshots, @var/cache/pacman/pkg, @var/abs. Chimera uses @home, @srv, @var/log, @var/tmp.
-- **Bootloader**: Arch installs GRUB by default. Syslinux is optional. Chimera installs GRUB.
-- **Root bootstrap (user + privilege)**: All setup-root scripts create a user. Arch configures sudo for wheel (NOPASSWD in containers). Chimera and FreeBSD use doas. Debian/Ubuntu/Fedora use sudo.
-- **Root bootstrap (base prereqs)**: Debian/Ubuntu/Fedora install bash, ca-certificates, curl, git, unzip. Chimera installs bash, git, unzip, curl. Arch relies on base packages from install media.
-- **KDE Plasma**: All supported Linux distros and FreeBSD. _Conditional: non-headless._
-- **SDDM**: All supported Linux distros and FreeBSD. _Conditional: init present, not ephemeral, not wsl2._
-- **kitty**: Arch, Chimera, Fedora, FreeBSD via native package manager. Debian/Ubuntu via upstream binary installer (`~/.local/kitty.app/`). macOS via Homebrew. _Conditional: non-headless._
-- **Okular**: All supported Linux distros and FreeBSD via native package managers. _Conditional: non-headless._
-- **mDNS/Avahi**: Arch only. Installs avahi + nss-mdns. _Conditional: init present to enable avahi-daemon._
-- **SSH server**: Arch only. Installs openssh. _Conditional: init present, not ephemeral, not wsl2 to enable sshd._
-- **Bluetooth**: Chimera only. Installs bluez. _Conditional: init present, not ephemeral, not wsl2 to enable bluetoothd._
-- **Audio stack**: Chimera only. Installs pipewire. _Conditional: init present, not ephemeral, not wsl2 to enable services._
-- **Flatpak + Flathub**: All supported Linux distros. _Conditional: non-headless._
-- **Tailscale**: All supported Linux distros. Uses system packages when available, upstream installer otherwise. _Conditional: personal, non-ephemeral._
-- **Container runtime**: Chimera only. Installs podman and podman-compose. _Conditional: containers flag._
-
 ### Desktop Session Environment
 
 Desktop-launched applications on macOS and Linux do not read shell startup files, so they often miss environment variables that are available in terminal sessions. This setup uses `session-env` to inject a small set of shared variables into the desktop session so GUI apps inherit the same basic context, especially `PATH`.
