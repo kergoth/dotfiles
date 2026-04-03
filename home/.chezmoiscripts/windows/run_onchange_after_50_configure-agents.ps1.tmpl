@@ -217,14 +217,14 @@ function Add-Marketplace {
     }
 }
 
-{{ if $github_token -}}
-$githubMcpJson = '{"type":"http","url":"https://api.githubcopilot.com/mcp","headers":{"Authorization":"Bearer {{ $github_token }}"}}'
-Add-McpJson -Name github -Json $githubMcpJson -Scope user
-{{- end }}
-
 Add-Marketplace astral-sh/claude-code-plugins
 Install-Plugin -Name astral@astral-sh -Scope user
 
 Add-Marketplace anthropics/claude-plugins-official
 Install-Plugin -Name superpowers@claude-plugins-official -Scope user
+
+{{   if $github_token -}}
+$githubMcpJson = '{"type":"http","url":"https://api.githubcopilot.com/mcp","headers":{"Authorization":"Bearer {{ $github_token }}"}}'
+Add-McpJson -Name github -Json $githubMcpJson -Scope user
+{{-   end }}
 {{- end }}
