@@ -84,6 +84,8 @@ codex_add_mcp_server github --url https://api.githubcopilot.com/mcp/ --bearer-to
 {{- end }}
 
 {{   if $claude -}}
+claude_add_mcp_server deepwiki --scope user --transport http https://mcp.deepwiki.com/mcp
+
 add_marketplace astral-sh/claude-code-plugins
 install_plugin astral@astral-sh --scope user
 
