@@ -17,7 +17,7 @@ claude_add_mcp_server() {
         return 0
     fi
 {{- end }}
-    claude mcp add "$@" "$name" || { echo "Failed to add MCP server: $name" >&2; return 1; }
+    claude mcp add "$name" "$@" || { echo "Failed to add MCP server: $name" >&2; return 1; }
 }
 
 codex_has_mcp_server() {

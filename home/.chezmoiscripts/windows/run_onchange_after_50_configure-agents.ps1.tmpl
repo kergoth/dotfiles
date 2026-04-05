@@ -79,7 +79,7 @@ function Add-McpServer {
         if (-not [string]::IsNullOrWhiteSpace($Transport)) {
             $args += @('--transport', $Transport)
         }
-        & claude mcp add @args $Url $Name
+        & claude mcp add @args $Name $Url
         if ($LASTEXITCODE -ne 0) {
             throw "claude mcp add failed with exit code $LASTEXITCODE"
         }
