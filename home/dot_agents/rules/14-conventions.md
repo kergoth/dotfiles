@@ -12,6 +12,7 @@
 - Never use bare autolinks (`<http://...>`) or plain unlinked URLs in these contexts - these are the antipattern to avoid
 - Plan files, design documents, and conversational responses may use autolinks or bare URLs
 - Use descriptive link text that explains the destination; avoid generic text like `[here]`, `[this]`, or `[link]`
+- In structured lists, use indented continuation for elaboration that goes beyond a one-sentence definition. The inline portion should answer "what is it"; continuation handles caveats, structure, deployment details, or anything that would otherwise stretch the bullet into a run-on.
 
 ## GitHub CLI Conventions
 - Prefer explicit `gh` subcommands (`gh pr view`, `gh issue list`) and installed extensions (`gh pr-review`) over raw `gh api` or `gh api graphql` calls
