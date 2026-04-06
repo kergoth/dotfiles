@@ -19,7 +19,11 @@
     "USE_BUILTIN_RIPGREP": "0"{{ end }}{{ if $has_git_bash }},
     "CLAUDE_CODE_GIT_BASH_PATH": "{{ replace $bash `\` `\\` }}"{{ end }}
   },
-  "permissions": {},
+  "permissions": {
+    "allow": [
+      "Bash(python ~/.claude/skills/find-session/scripts/search_sessions.py:*)"
+    ]
+  },
   "model": "sonnet",
   "outputStyle": "Direct Explanatory",
   "statusLine": {
