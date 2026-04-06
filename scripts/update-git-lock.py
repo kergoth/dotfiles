@@ -286,6 +286,7 @@ def main() -> int:
     unknown = [eid for eid in selected if eid not in sources]
     if unknown:
         raise SystemExit(f"unknown git source ids: {', '.join(sorted(unknown))}")
+    selected = [eid for eid in selected if sources[eid].get("update", True)]
 
     stale_locks = find_stale_lock_entries(old_locks, sources)
     for eid in stale_locks:
