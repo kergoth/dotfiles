@@ -79,6 +79,17 @@
 {{/* determine whether to prompt interactively */}}
 {{- $prompt := or (has "--prompt" .chezmoi.args) (has "--prompt=true" .chezmoi.args) -}}
 
+{{- $secrets := false -}}
+
+{{- $dotfiles_secrets := (env "DOTFILES_SECRETS") -}}
+{{- if ne $dotfiles_secrets "" -}}
+{{-   $secrets = has (lower $dotfiles_secrets) (list "1" "true" "yes" "on") -}}
+{{- else -}}
+{{-   if and (or $personal $work) (not $ephemeral) -}}
+{{-     $secrets = true -}}
+{{-   end -}}
+{{- end -}}
+
 {{/* set defaults based on context */}}
 {{- if not $ephemeral -}}
 {{-   if eq $hostname "asano" -}}
@@ -148,8 +159,6 @@
 {{-   end -}}
 {{- end -}}
 
-{{- $secrets := false -}}
-
 {{/* prompt for overrides */}}
 {{- if and $interactive $prompt -}}
 {{-   if $steamdeck -}}
@@ -199,15 +208,6 @@
 {{-   $email = "chris.larson@pano.ai" -}}
 {{/*  I don't use a split-user setup at work */}}
 {{-   $macos_split_user = false -}}
-{{- end -}}
-
-{{- $dotfiles_secrets := (env "DOTFILES_SECRETS") -}}
-{{- if ne $dotfiles_secrets "" -}}
-{{-   $secrets = has (lower $dotfiles_secrets) (list "1" "true" "yes" "on") -}}
-{{- else -}}
-{{-   if and (or $personal $work) (not $ephemeral) -}}
-{{-     $secrets = true -}}
-{{-   end -}}
 {{- end -}}
 
 {{- $personal_key := "934796281287D8BD66EF26F4BCC304A4E9BFE3CF" }}
