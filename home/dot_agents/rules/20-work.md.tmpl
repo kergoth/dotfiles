@@ -1,5 +1,5 @@
 {{- if and .work .secrets -}}
 ---
 
-{{ includeTemplate (joinPath .chezmoi.workingTree "settings/agents/rules/work.md.tmpl") . -}}
+{{ include (joinPath .chezmoi.workingTree "settings/agents/rules/work.md.age") | decrypt -}}
 {{- end -}}
