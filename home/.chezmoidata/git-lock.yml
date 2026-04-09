@@ -31,7 +31,7 @@ git_lock:
   powerlevel10k: "v1.20.0"
   powerlevel10k_media: "145eb9fbc2f42ee408dacd9b22d8e6e0e553f83d"
   readwise_reader_desktop: "reader-desktop-v0.1.2631"
-  retroarch: "1be230948f9d28921404c10926020ea06675cc6e"
+  retroarch: "68310184e13c463f0cfa1e1671e46fd2f6f43b7f"
   steamtinkerlaunch: "8550ab26a712b7f5f6d0947070181446b9de61fd"
   superpowers: "917e5f53b16b115b70a3a355ed5f4993b9f8b73d"
   vim_profiler: "d4fda79830528ffb6cce895448ac10b502f9f756"
