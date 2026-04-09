@@ -1,0 +1,9 @@
+{{- $claude := includeTemplate "find-tool" (dict "root" . "tool" "claude") -}}
+{{- if $claude -}}
+# Launch claude in my dotfiles
+# Usage: dcl [<claude-args>...]
+(
+    cd ~/.dotfiles || exit 1
+    claude "$@"
+)
+{{- end -}}
