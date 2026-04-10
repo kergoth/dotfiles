@@ -327,8 +327,11 @@ def main() -> int:
     for eid in selected:
         entry = sources[eid]
         if entry.get("tagged"):
+            repo = entry.get("repo")
+            if not repo:
+                continue
             new_locks[eid] = resolve_latest_tag(
-                entry["repo"], eid, entry.get("tag_pattern"), entry.get("tag_source")
+                repo, eid, entry.get("tag_pattern"), entry.get("tag_source")
             )
         else:
             new_locks[eid] = resolve_ref(entry["repo"], entry.get("ref", "main"))
