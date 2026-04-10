@@ -15,6 +15,9 @@
 {
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING" : "1",
+    "CLAUDE_CODE_DISABLE_1M_CONTEXT" : "1",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL" : "claude-opus-4-5-20251101",
     "DISABLE_AUTOUPDATER": "1"{{ if $uses_musl }},
     "USE_BUILTIN_RIPGREP": "0"{{ end }}{{ if $has_git_bash }},
     "CLAUDE_CODE_GIT_BASH_PATH": "{{ replace $bash `\` `\\` }}"{{ end }}
@@ -32,7 +35,13 @@
   },
   "sandbox": {
     "enabled": true,
-    "autoAllowBashIfSandboxed": true
+    "autoAllowBashIfSandboxed": true,
+    "network": {
+      "allowedDomains": [
+        "api.github.com",
+        "raw.githubusercontent.com"
+      ]
+    }
   },
   "alwaysThinkingEnabled": true,
   "effortLevel": "medium",
