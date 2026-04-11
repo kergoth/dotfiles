@@ -81,10 +81,17 @@ codex_add_mcp_server deepwiki --url https://mcp.deepwiki.com/mcp
 {{   if $github_token -}}
 codex_add_mcp_server github --url https://api.githubcopilot.com/mcp/ --bearer-token-env-var GITHUB_TOKEN
 {{-   end }}
+{{   if and .personal ( not .ephemeral ) -}}
+codex_add_mcp_server readwise --url https://mcp2.readwise.io/mcp
+{{-   end }}
 {{- end }}
 
 {{   if $claude -}}
 claude_add_mcp_server deepwiki --scope user --transport http https://mcp.deepwiki.com/mcp
+
+{{   if and .personal ( not .ephemeral ) -}}
+claude_add_mcp_server readwise --scope user --transport http https://mcp2.readwise.io/mcp
+{{-   end }}
 
 add_marketplace astral-sh/claude-code-plugins
 install_plugin astral@astral-sh --scope user

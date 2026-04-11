@@ -233,16 +233,19 @@ MCP server configuration is agent-specific.
 
 - **[DeepWiki](https://deepwiki.com)**: Query documentation and knowledge from GitHub repositories.
 - **[GitHub](https://github.com/github/github-mcp-server)**: GitHub-aware context and operations.
+- **[Readwise](https://docs.readwise.io/readwise/guides/mcp)**: Search and retrieve highlights from Readwise. _Conditional: personal machines, not ephemeral._
 
 ##### Codex
 
 - **[DeepWiki](https://deepwiki.com)**: Query documentation and knowledge from GitHub repositories. _Conditional: personal machines._
 - **[GitHub](https://github.com/github/github-mcp-server)**: GitHub-aware context and operations. _Conditional: non-work machines._
+- **[Readwise](https://docs.readwise.io/readwise/guides/mcp)**: Search and retrieve highlights from Readwise. _Conditional: personal machines, not ephemeral._
 
 ##### Cursor
 
 - **[DeepWiki](https://deepwiki.com)**: Query documentation and knowledge from GitHub repositories. _Conditional: work machines._
 - **[GitHub](https://github.com/github/github-mcp-server)**: GitHub-aware context and operations. _Conditional: work machines with GitHub token._
+- **[Readwise](https://docs.readwise.io/readwise/guides/mcp)**: Search and retrieve highlights from Readwise. _Conditional: personal machines, not ephemeral._
 
 ### Fonts
 

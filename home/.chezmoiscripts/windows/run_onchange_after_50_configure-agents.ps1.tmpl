@@ -218,6 +218,9 @@ function Add-Marketplace {
 }
 
 Add-McpServer -Name deepwiki -Url https://mcp.deepwiki.com/mcp -Transport http -Scope user
+{{- if and .personal ( not .ephemeral ) }}
+Add-McpServer -Name readwise -Url https://mcp2.readwise.io/mcp -Transport http -Scope user
+{{- end }}
 
 Add-Marketplace astral-sh/claude-code-plugins
 Install-Plugin -Name astral@astral-sh -Scope user

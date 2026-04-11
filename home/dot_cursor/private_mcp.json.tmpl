@@ -1,18 +1,30 @@
 {{- $github_token := or (env "GITHUB_PERSONAL_ACCESS_TOKEN") (env "GITHUB_TOKEN") -}}
-{{- if .work -}}
+{{- if or .work ( and .personal ( not .ephemeral ) ) -}}
 {
   "mcpServers": {
+{{- if .work }}
     "deepwiki": {
       "url": "https://mcp.deepwiki.com/mcp",
       "type": "http"
-    }{{ if $github_token }},
+    }{{ if or (and $github_token .work) (and .personal (not .ephemeral)) }},
+{{- end }}
+{{- end }}
+{{- if and .personal ( not .ephemeral ) }}
+    "readwise": {
+      "url": "https://mcp2.readwise.io/mcp",
+      "type": "http"
+    }{{ if and $github_token .work }},
+{{- end }}
+{{- end }}
+{{- if and $github_token .work }}
     "github": {
       "url": "https://api.githubcopilot.com/mcp",
       "type": "http",
       "headers": {
         "Authorization": "Bearer {{ $github_token }}"
       }
-    }{{ end }}
+    }
+{{- end }}
   }
 }
 {{- end -}}
