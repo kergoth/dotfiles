@@ -211,6 +211,7 @@ Skills live in `~/.agents/skills/` and are available to all agent tools (Claude 
 - **[avoid-ai-writing](https://github.com/conorbronsdon/avoid-ai-writing)**: Vocabulary and structural pattern detection for reducing AI writing patterns. Used as the base layer for the clean-prose skill.
 - **[gh-pr-review](https://github.com/agynio/gh-pr-review)**: GitHub PR review threads and inline review comments with structured terminal workflows.
 - **[Readwise Skills](https://github.com/readwiseio/readwise-skills/tree/main/skills)**: Readwise Reader workflows.
+  - **build-persona**: Build a reading profile from library history; personalizes quiz and feed-catchup output.
   - **feed-catchup**: Batch-process RSS feeds and newsletters to surface valuable content.
   - **quiz**: Self-assessment on recently read content with grading.
   - **reader-recap**: Conversational briefing on recent reading activity.
