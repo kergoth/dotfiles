@@ -214,7 +214,6 @@ Skills live in `~/.agents/skills/` and are available to all agent tools (Claude 
   - **feed-catchup**: Batch-process RSS feeds and newsletters to surface valuable content.
   - **quiz**: Self-assessment on recently read content with grading.
   - **reader-recap**: Conversational briefing on recent reading activity.
-  - **triage**: Guided inbox review, one article at a time.
 - **[Superpowers](https://github.com/obra/superpowers/tree/main/skills)**: Core workflow skills for agentic coding.
   - **brainstorming**: Explore intent, requirements, and design before implementation.
   - **dispatching-parallel-agents**: Coordinate independent tasks across multiple agents.
