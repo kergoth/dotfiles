@@ -57,7 +57,21 @@
 - Use vault's PARA structure for placement; use Obsidian-compatible formatting (YAML frontmatter, wikilinks, Dataview metadata)
 - General technical learnings go in `02_Areas/Technical Skills/Shared/` (synced to work machines - only generic knowledge or references to published open-source work; no private/unpublished personal project code or details)
 
-## Plan Verification
+## Agent Planning
+
+### Plan Creation
+- Keep plan files around 500 lines max. Smaller plans mean better outcomes.
+- Break large plans into logical chunks.
+
+### Plan Execution
+- Insert a spec review checkpoint between logical groups of tasks. Don't batch all tasks without stopping to verify progress against the spec.
+{{- if eq $agent "claude" }}
+- Use `TaskCreate` to create visible tasks so I can follow along with progress.
+{{- else }}
+- Create visible tasks so I can follow along with progress.
+{{- end }}
+
+### Plan Verification
 - Track verification and manual steps explicitly so they remain visible throughout the session
 - During implementation, surface manual or human-only blockers explicitly - do not silently skip them or proceed without input
 - At completion, summarize any remaining uncompleted verification steps in a single message - do not prompt individually for each one
