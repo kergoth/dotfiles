@@ -59,7 +59,15 @@
 
 ## Agent Planning
 
+### Spec Authoring
+- Do not silently resolve open questions during brainstorming — surface them to the user explicitly before writing the spec document
+- After spec self-review, before asking for user review: list every decision made to fill a gap not directly answered by the user, and confirm each one before proceeding
+- "Fix TBDs" in self-review means ask the user, not decide yourself
+- Open questions requiring user input cannot be deferred to writing-plans or the executing agent
+- If unconfirmed decisions remain when the user approves the spec, do not proceed to writing-plans — remind the user of each outstanding item explicitly before moving forward
+
 ### Plan Creation
+- Before writing the plan, check the spec for any agent-resolved decisions not confirmed by the user or remaining open questions — surface them and get confirmation before proceeding
 - Keep plan files around 500 lines max. Smaller plans mean better outcomes.
 - Break large plans into logical chunks.
 
