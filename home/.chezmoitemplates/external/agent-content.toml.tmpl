@@ -29,3 +29,9 @@ type = "archive"
 url = {{ printf "https://github.com/agynio/gh-pr-review/archive/%s.tar.gz" (index $lock "gh_pr_review_skill") | toToml }}
 exact = true
 stripComponents = 1
+
+[".agents/external-sources/readwise_skills"]
+type = "archive"
+url = {{ printf "https://github.com/readwiseio/readwise-skills/archive/%s.tar.gz" (index $lock "readwise_skills") | toToml }}
+exact = true
+stripComponents = 1

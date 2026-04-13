@@ -210,6 +210,11 @@ Skills live in `~/.agents/skills/` and are available to all agent tools (Claude 
   - **uv**: Managing Python projects, packages, and tools.
 - **[avoid-ai-writing](https://github.com/conorbronsdon/avoid-ai-writing)**: Vocabulary and structural pattern detection for reducing AI writing patterns. Used as the base layer for the clean-prose skill.
 - **[gh-pr-review](https://github.com/agynio/gh-pr-review)**: GitHub PR review threads and inline review comments with structured terminal workflows.
+- **[Readwise Skills](https://github.com/readwiseio/readwise-skills/tree/main/skills)**: Readwise Reader workflows.
+  - **feed-catchup**: Batch-process RSS feeds and newsletters to surface valuable content.
+  - **quiz**: Self-assessment on recently read content with grading.
+  - **reader-recap**: Conversational briefing on recent reading activity.
+  - **triage**: Guided inbox review, one article at a time.
 - **[Superpowers](https://github.com/obra/superpowers/tree/main/skills)**: Core workflow skills for agentic coding.
   - **brainstorming**: Explore intent, requirements, and design before implementation.
   - **dispatching-parallel-agents**: Coordinate independent tasks across multiple agents.
@@ -233,19 +238,19 @@ MCP server configuration is agent-specific.
 
 - **[DeepWiki](https://deepwiki.com)**: Query documentation and knowledge from GitHub repositories.
 - **[GitHub](https://github.com/github/github-mcp-server)**: GitHub-aware context and operations.
-- **[Readwise](https://docs.readwise.io/readwise/guides/mcp)**: Search and retrieve highlights from Readwise. _Conditional: personal machines, not ephemeral._
+- **[Readwise](https://docs.readwise.io/readwise/guides/mcp)**: Search and retrieve highlights from Readwise; powers the Readwise Skills. _Conditional: personal machines, not ephemeral._
 
 ##### Codex
 
 - **[DeepWiki](https://deepwiki.com)**: Query documentation and knowledge from GitHub repositories. _Conditional: personal machines._
 - **[GitHub](https://github.com/github/github-mcp-server)**: GitHub-aware context and operations. _Conditional: non-work machines._
-- **[Readwise](https://docs.readwise.io/readwise/guides/mcp)**: Search and retrieve highlights from Readwise. _Conditional: personal machines, not ephemeral._
+- **[Readwise](https://docs.readwise.io/readwise/guides/mcp)**: Search and retrieve highlights from Readwise; powers the Readwise Skills. _Conditional: personal machines, not ephemeral._
 
 ##### Cursor
 
 - **[DeepWiki](https://deepwiki.com)**: Query documentation and knowledge from GitHub repositories. _Conditional: work machines._
 - **[GitHub](https://github.com/github/github-mcp-server)**: GitHub-aware context and operations. _Conditional: work machines with GitHub token._
-- **[Readwise](https://docs.readwise.io/readwise/guides/mcp)**: Search and retrieve highlights from Readwise. _Conditional: personal machines, not ephemeral._
+- **[Readwise](https://docs.readwise.io/readwise/guides/mcp)**: Search and retrieve highlights from Readwise; powers the Readwise Skills. _Conditional: personal machines, not ephemeral._
 
 ### Fonts
 
