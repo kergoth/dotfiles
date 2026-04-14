@@ -157,7 +157,10 @@ Chezmoi run scripts follow this pattern:
 
 - `run_onchange_before_*` - Run before dotfiles, when content changes
 - `run_onchange_after_*` - Run after dotfiles, when content changes
+- `run_once_*` - Run once per machine (tracks state in chezmoi)
 - Numbered prefixes (00_, 10_, 20_, etc.) control execution order
+
+**Timing rule:** CLI tools use `before_` (dotfiles may detect them via `find-tool`); GUI apps use `after_` (don't delay dotfiles for large installs). See `docs/contributing-software.md` for full timing guidance.
 
 ### External Dependencies
 
@@ -246,6 +249,44 @@ uv_check <pkg>             # Install Python tool via uv
 cargo_check <pkg>          # Install Rust tool via cargo
 ```
 
+## Troubleshooting
+
+**Template errors during `chezmoi apply`:**
+```bash
+# Render a template to see exact output (catches syntax errors, missing vars)
+scripts/chezmoi-execute-template home/.chezmoiscripts/linux/run_onchange_after_10_install-apps.tmpl
+
+# For managed files, use chezmoi's built-in command
+chezmoi cat --source-path ~/.config/zsh/.zshrc
+```
+
+**Find where a variable is set:**
+```bash
+chezmoi data | grep -A2 'ephemeral'  # Check current value and source
+# Variables come from: .chezmoi.toml.tmpl, .chezmoidata/*.yml, or environment
+```
+
+**Script fails during apply:**
+```bash
+# Re-run a non-templated script manually with verbose output
+bash -x "$(chezmoi source-path)/home/.chezmoiscripts/posix/run_onchange_after_50_setup-shell"
+
+# Render and run a templated script with debug output
+scripts/chezmoi-execute-template home/.chezmoiscripts/posix/run_onchange_before_25_install-tools.tmpl | bash -x
+
+# Check if script is being skipped (content hash unchanged)
+chezmoi status | grep run_onchange
+```
+
+**External dependency fails to download:**
+```bash
+# Check what externals chezmoi would fetch
+chezmoi managed --include=externals
+
+# Force re-fetch of externals
+chezmoi apply --refresh-externals
+```
+
 ## Adding Software to This Repository
 
 **See `docs/contributing-software.md` for comprehensive documentation on adding software.**
@@ -273,14 +314,6 @@ See `docs/contributing-software.md` for platform-specific file paths to check.
 - **Windows**: Uses Scoop and winget, PowerShell scripts (`.ps1.tmpl`). `Install-Scoop-IfNotPresent` is a legacy winget-compat shim being phased out — new GUI app installs use `find-tool` in the template header + bare `scoop install` in the body (see `run_onchange_before_25_install-tools.ps1.tmpl` for the pattern).
 - **FreeBSD**: pkg/ports for tool installation
 
-## README Documentation Patterns
+## README Documentation
 
-### Entry Formatting
-
-- **Installed CLI/GUI Software**: `- [Name](url) ([Open-Source](repo)): Description.` — no "Available via" notes
-- **Conditional entries**: Append `_Conditional: flag description._` in italics
-- **As-needed Software**: Include `Available via brew, nix, scoop, ...` for manual install guidance
-- **Formerly-Used entries**: No conditional notes or install instructions; add replacement note if applicable
-- **Third-Party Scripts section**: `- **name** ([source](url)): Description.` — bold name, source link in parens
-- Entries within sections are ordered **alphabetically**
-- Platform-specific subsections nest under the main section (e.g., `#### CLI Software on macOS`)
+See `docs/contributing-software.md` for entry formatting, section selection, and verification checklist.
