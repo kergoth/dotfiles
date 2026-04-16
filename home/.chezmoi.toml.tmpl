@@ -61,16 +61,22 @@
 {{-   $headless = $prior_headless -}}
 {{- end -}}
 
+{{/* allow env vars to override ephemeral/headless before hostname detection */}}
+{{- $dotfiles_ephemeral := (env "DOTFILES_EPHEMERAL") -}}
+{{- if ne $dotfiles_ephemeral "" -}}
+{{-   $ephemeral = has (lower $dotfiles_ephemeral) (list "1" "true" "yes" "on") -}}
+{{- end -}}
+{{- $dotfiles_headless := (env "DOTFILES_HEADLESS") -}}
+{{- if ne $dotfiles_headless "" -}}
+{{-   $headless = has (lower $dotfiles_headless) (list "1" "true" "yes" "on") -}}
+{{- end -}}
+
 {{- $devpod := env "DEVPOD" | not | not -}}
 {{- $has_devpod_gpg := stat (joinPath (printf "%s" .chezmoi.destDir) ".gnupg/S.gpg-agent") -}}
 {{- $skip_gpg := and $devpod $has_devpod_gpg | not | not -}}
 {{- $skip_gpg_secret_import := false -}}
 
-{{/* work around unreliable hostname on darwin */}}
 {{- $hostname := .chezmoi.hostname -}}
-{{- if eq .chezmoi.os "darwin" -}}
-{{-   $hostname := output "scutil" "--get" "ComputerName" | trim -}}
-{{- end -}}
 
 {{/* detect interactive mode */}}
 {{- $force := or (has "--force" .chezmoi.args) (has "--force=true" .chezmoi.args) -}}
@@ -78,17 +84,6 @@
 
 {{/* determine whether to prompt interactively */}}
 {{- $prompt := or (has "--prompt" .chezmoi.args) (has "--prompt=true" .chezmoi.args) -}}
-
-{{- $secrets := false -}}
-
-{{- $dotfiles_secrets := (env "DOTFILES_SECRETS") -}}
-{{- if ne $dotfiles_secrets "" -}}
-{{-   $secrets = has (lower $dotfiles_secrets) (list "1" "true" "yes" "on") -}}
-{{- else -}}
-{{-   if and (or $personal $work) (not $ephemeral) -}}
-{{-     $secrets = true -}}
-{{-   end -}}
-{{- end -}}
 
 {{/* set defaults based on context */}}
 {{- if not $ephemeral -}}
@@ -109,7 +104,6 @@
 {{-     $gaming_device_library = true -}}
 {{-     $retro_computing = true -}}
 {{-   else if $steamdeck -}}
-{{-     $secrets = false -}}
 {{-     $use_nix = false -}}
 {{-     $gaming = true -}}
 {{-     $personal = true -}}
@@ -142,6 +136,17 @@
 {{- $dotfiles_skip_gpg_secret_import := (env "DOTFILES_SKIP_GPG_SECRET_IMPORT") -}}
 {{- if ne $dotfiles_skip_gpg_secret_import "" -}}
 {{-   $skip_gpg_secret_import = has (lower $dotfiles_skip_gpg_secret_import) (list "1" "true" "yes" "on") -}}
+{{- end -}}
+
+{{/* determine secrets access - must come after hostname defaults and env var overrides */}}
+{{- $secrets := false -}}
+{{- $dotfiles_secrets := (env "DOTFILES_SECRETS") -}}
+{{- if ne $dotfiles_secrets "" -}}
+{{-   $secrets = has (lower $dotfiles_secrets) (list "1" "true" "yes" "on") -}}
+{{- else -}}
+{{-   if and (or $personal $work) (not $ephemeral) (not $steamdeck) -}}
+{{-     $secrets = true -}}
+{{-   end -}}
 {{- end -}}
 
 {{/* override init detection via env var (explicit) */}}
