@@ -218,6 +218,7 @@ function Add-Marketplace {
 }
 
 Add-McpServer -Name deepwiki -Url https://mcp.deepwiki.com/mcp -Transport http -Scope user
+Add-McpJson -Name context7 -Json '{"type":"stdio","command":"npx","args":["-y","@upstash/context7-mcp"]}' -Scope user
 {{- if and .personal ( not .ephemeral ) }}
 Add-McpServer -Name readwise -Url https://mcp2.readwise.io/mcp -Transport http -Scope user
 {{- end }}
