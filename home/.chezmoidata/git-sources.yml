@@ -127,7 +127,7 @@ git_sources:
     tagged: true
   readwise_skills:
     repo: https://github.com/readwiseio/readwise-skills
-    ref: main
+    ref: master
     review_note: "I only use four skills from this package: build-persona, quiz, reader-recap, and feed-catchup. Focus on changes to those four skill files only. Flag any instructions that could cause unintended data modification, deletions, or unauthorized access to the Readwise API beyond reading and tagging."
   retroarch:
     repo: https://github.com/libretro/RetroArch
