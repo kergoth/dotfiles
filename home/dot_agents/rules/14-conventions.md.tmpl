@@ -1,3 +1,4 @@
+{{- $agent := dig "agent" "" . -}}
 ## Git Conventions
 - Follow the [seven rules of commit messages](https://cbea.ms/git-commit):
   - Imperative mood in subject ("Add feature" not "Added feature")
@@ -6,6 +7,9 @@
   - Explain WHY in the body, not WHAT (the diff shows what changed)
 - Always use explicit `git add` with specific file paths - never `git add -A`, `git add .`, or `git add -u` without listing files
 - Verify edits actually succeeded before committing; check `git diff` if uncertain
+{{- if and (eq $agent "claude") .secrets }}
+- **GPG signing:** All commits are GPG-signed. The sandbox blocks Unix socket connections to `gpg-agent`, so `git commit` requires `dangerouslyDisableSandbox: true`. Configure Bash permissions to auto-allow `git commit` if you want to avoid the prompt.
+{{- end }}
 
 ## Markdown Conventions
 - In documentation files (READMEs, docs/, Obsidian notes): always use proper markdown links - `[descriptive text](url)` or reference-style `[text][ref]` with definitions at the bottom
