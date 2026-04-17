@@ -187,16 +187,54 @@ def parse_messages(jsonl_path: Path) -> list[dict]:
     return messages
 
 
-def get_session_metadata(jsonl_path: Path) -> dict:
-    """Extract session_id, cwd, first timestamp, and custom title from a JSONL file.
+def build_session_name_index(history_path: Path = Path.home() / ".claude" / "history.jsonl") -> dict[str, str]:
+    """Build a session_id -> display_name mapping from history.jsonl.
 
-    Reads the full file to ensure custom-title events (which can appear anywhere)
-    are not missed.
+    Uses the first non-slash-command entry per session as the display name.
+    Falls back to the first entry of any kind if all entries are slash commands.
+    """
+    if not history_path.exists():
+        return {}
+
+    first_any: dict[str, str] = {}
+    first_real: dict[str, str] = {}
+
+    try:
+        with open(history_path, errors="replace") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    entry = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                sid = entry.get("sessionId")
+                display = entry.get("display", "").strip()
+                if not sid or not display:
+                    continue
+                if sid not in first_any:
+                    first_any[sid] = display
+                if sid not in first_real and not display.startswith("/"):
+                    first_real[sid] = display
+    except OSError:
+        return {}
+
+    return {sid: first_real.get(sid, first_any[sid]) for sid in first_any}
+
+
+def get_session_metadata(jsonl_path: Path) -> dict:
+    """Extract session_id, cwd, first timestamp, custom title, and away_summary from a JSONL file.
+
+    Reads the full file to ensure custom-title and away_summary events (which can appear
+    anywhere) are not missed. The most recent away_summary is kept as it summarizes the
+    full session arc up to that point.
     """
     session_id = jsonl_path.stem
     cwd = ""
     first_timestamp = ""
     custom_title = ""
+    away_summary = ""
 
     try:
         with open(jsonl_path, errors="replace") as f:
@@ -215,6 +253,10 @@ def get_session_metadata(jsonl_path: Path) -> dict:
                     cwd = obj["cwd"]
                 if obj.get("type") == "custom-title":
                     custom_title = obj.get("customTitle", "")
+                if obj.get("type") == "system" and obj.get("subtype") == "away_summary":
+                    content = obj.get("content", "")
+                    if content:
+                        away_summary = content  # keep the most recent one
     except OSError:
         pass
 
@@ -223,6 +265,7 @@ def get_session_metadata(jsonl_path: Path) -> dict:
         "cwd": cwd,
         "first_timestamp": first_timestamp,
         "custom_title": custom_title,
+        "away_summary": away_summary,
     }
 
 
@@ -311,6 +354,7 @@ def extract_session_data(
     return {
         "session_id": metadata["session_id"],
         "session_name": metadata["custom_title"] or None,
+        "away_summary": metadata["away_summary"] or None,
         "project_dir": metadata["cwd"],
         "first_timestamp": metadata["first_timestamp"],
         "last_timestamp": last_timestamp,
@@ -378,6 +422,8 @@ def main():
         search_dirs = get_search_dirs(args.scope, args.cwd)
         matching_files = find_matching_files(search_dirs, args.keywords)
 
+    history_index = build_session_name_index()
+
     results = []
     for jsonl_path in matching_files:
         try:
@@ -389,6 +435,8 @@ def main():
             continue
         if data["session_id"] in args.exclude:
             continue
+        if data["session_name"] is None:
+            data["session_name"] = history_index.get(data["session_id"])
         results.append(data)
 
     # Sort by match_count descending (more hits = more likely to be the primary topic),

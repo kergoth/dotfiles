@@ -58,10 +58,12 @@ def test_requires_keywords():
 def test_accepts_valid_args():
     # Should not crash on argument parsing alone (may fail on rg/files, that's ok)
     rc, out, err = run_script("--scope", "global", "--depth", "quick", "nonexistent_keyword_xyz")
-    # Exit 0 with valid JSON array is all we require; result content depends on
-    # live session history so we don't assert it's empty
     assert rc == 0
-    assert isinstance(json.loads(out), list)
+    result = json.loads(out)
+    assert isinstance(result, dict)
+    assert "total_matching" in result
+    assert "sessions" in result
+    assert isinstance(result["sessions"], list)
 
 
 def test_session_name_index_uses_first_non_slash_command():
@@ -196,6 +198,23 @@ def test_get_session_metadata(tmp_path):
     assert meta["session_id"] == "abc123"
     assert meta["cwd"] == "/my/project"
     assert meta["first_timestamp"] == "2026-01-01T09:00:00"
+    assert meta["away_summary"] == ""
+
+
+def test_get_session_metadata_away_summary(tmp_path):
+    lines = [
+        json.dumps({"type": "system", "timestamp": "2026-01-01T09:00:00", "cwd": "/my/project"}),
+        make_jsonl_line("user", "user", "Hello", timestamp="2026-01-01T10:00:00"),
+        json.dumps({"type": "system", "subtype": "away_summary", "content": "First recap", "timestamp": "2026-01-01T11:00:00"}),
+        make_jsonl_line("user", "user", "More work", timestamp="2026-01-01T12:00:00"),
+        json.dumps({"type": "system", "subtype": "away_summary", "content": "Full arc recap here", "timestamp": "2026-01-01T13:00:00"}),
+    ]
+    f = tmp_path / "recap-session.jsonl"
+    f.write_text("\n".join(lines) + "\n")
+
+    meta = get_session_metadata(f)
+    # Most recent away_summary should win
+    assert meta["away_summary"] == "Full arc recap here"
 
 
 def test_get_match_contexts_basic():
@@ -278,14 +297,18 @@ def test_integration_finds_real_session():
     """Smoke test against actual session history — requires rg and real ~/.claude data."""
     rc, out, err = run_script("--scope", "global", "--depth", "quick", "marketplace")
     assert rc == 0, f"Script failed: {err}"
-    results = json.loads(out)
-    assert isinstance(results, list)
+    result = json.loads(out)
+    assert isinstance(result, dict)
+    assert "total_matching" in result
+    sessions = result["sessions"]
+    assert isinstance(sessions, list)
     # We know from manual inspection there are sessions about marketplace
-    assert len(results) >= 1
-    first = results[0]
+    assert len(sessions) >= 1
+    first = sessions[0]
     assert "session_id" in first
     assert "first_exchanges" in first
     assert "match_contexts" in first
+    assert "away_summary" in first
 
 
 def test_script_exits_zero_on_unmatched_keyword():
@@ -300,4 +323,6 @@ def test_script_exits_zero_on_unmatched_keyword():
         "xq9z_no_such_keyword_xq9z",
     )
     assert rc == 0
-    assert isinstance(json.loads(out), list)
+    result = json.loads(out)
+    assert isinstance(result, dict)
+    assert "sessions" in result
