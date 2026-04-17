@@ -32,7 +32,7 @@ git_sources:
     repo: https://github.com/eth-p/bat-extras
     tagged: true
   claude_code:
-    #repo: https://github.com/anthropics/claude-code
+    repo: https://github.com/anthropics/claude-code
     tagged: true
     tag_source: git_tags
     review_paths:
