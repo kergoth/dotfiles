@@ -201,7 +201,8 @@ Skills live in `~/.agents/skills/` and are available to all agent tools (Claude 
 
 ##### External
 
-- **[Anthropic Official Plugins](https://github.com/anthropics/claude-plugins-official/tree/main/plugins)**: CLAUDE.md maintenance and skill authoring.
+- **[Anthropic Official Plugins](https://github.com/anthropics/claude-plugins-official/tree/main/plugins)**: Claude Code setup, maintenance, and skill authoring.
+  - **[claude-automation-recommender](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/claude-code-setup)**: Analyze codebase and recommend Claude Code automations (hooks, subagents, skills, MCP servers).
   - **[claude-md-improver](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/claude-md-management)**: Audit and improve CLAUDE.md files.
   - **[skill-creator](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/skill-creator)**: Create and refine skills.
 - **[Astral](https://github.com/astral-sh/claude-code-plugins/tree/main/plugins/astral/skills)**: Python tooling skills. Also installed as a Claude Code plugin for `ty` LSP integration.
