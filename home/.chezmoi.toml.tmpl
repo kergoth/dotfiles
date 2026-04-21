@@ -187,7 +187,7 @@
 {{-     if eq .chezmoi.os "darwin" -}}
 {{-       $macos_split_user = promptBoolOnce . "macos_split_user" "Will this macOS system use a separate user for admin tasks?" $macos_split_user -}}
 {{-       if $macos_split_user -}}
-{{-         $macos_admin_user = promptBoolOnce . "macos_admin_user" "What is the username of the administrative user?" $macos_admin_user -}}
+{{-         $macos_admin_user = promptStringOnce . "macos_admin_user" "What is the username of the administrative user?" $macos_admin_user -}}
 {{-       end -}}
 {{-     end -}}
 {{-   end -}}
