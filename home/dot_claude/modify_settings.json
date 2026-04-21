@@ -4,23 +4,30 @@
        keys (enabledPlugins, permissions, extraKnownMarketplaces, etc.) are
        preserved. mergeOverwrite does recursive object merge.
 
-       Special handling for permissions.allow and permissions.deny: these are
-       arrays, which mergeOverwrite replaces rather than concatenates. We
-       manually concat+uniq them before the merge, then patch them back. */ -}}
+       Special handling for arrays that should be concatenated rather than
+       replaced: permissions.allow, permissions.deny, sandbox.excludedCommands,
+       and sandbox.network.allowedDomains. We extract them before the merge,
+       then concat+uniq and patch them back. */ -}}
 {{- $managed := includeTemplate (joinPath .chezmoi.workingTree "settings/claude/settings.json.tmpl") . | fromJson -}}
 {{- if eq .chezmoi.stdin "" -}}
 {{-   $managed | toPrettyJson -}}
 {{- else -}}
 {{-   $existing := fromJson .chezmoi.stdin -}}
-{{- /* Merge permission arrays before the object merge clobbers them */ -}}
+{{- /* Extract arrays before the object merge clobbers them */ -}}
 {{-   $existingAllow := dig "permissions" "allow" (list) $existing -}}
 {{-   $managedAllow := dig "permissions" "allow" (list) $managed -}}
 {{-   $existingDeny := dig "permissions" "deny" (list) $existing -}}
 {{-   $managedDeny := dig "permissions" "deny" (list) $managed -}}
+{{-   $existingExcluded := dig "sandbox" "excludedCommands" (list) $existing -}}
+{{-   $managedExcluded := dig "sandbox" "excludedCommands" (list) $managed -}}
+{{-   $existingDomains := dig "sandbox" "network" "allowedDomains" (list) $existing -}}
+{{-   $managedDomains := dig "sandbox" "network" "allowedDomains" (list) $managed -}}
 {{-   $merged := mergeOverwrite $existing $managed -}}
-{{- /* Concat and deduplicate permission arrays */ -}}
+{{- /* Concat and deduplicate arrays */ -}}
 {{-   $mergedAllow := concat $existingAllow $managedAllow | uniq -}}
 {{-   $mergedDeny := concat $existingDeny $managedDeny | uniq -}}
+{{-   $mergedExcluded := concat $existingExcluded $managedExcluded | uniq -}}
+{{-   $mergedDomains := concat $existingDomains $managedDomains | uniq -}}
 {{- /* Ensure permissions object exists, then patch arrays back in */ -}}
 {{-   if not (hasKey $merged "permissions") -}}
 {{-     $_ := set $merged "permissions" dict -}}
@@ -34,6 +41,23 @@
 {{-     $_ := set $merged.permissions "deny" $mergedDeny -}}
 {{-   else -}}
 {{-     $_ := unset $merged.permissions "deny" -}}
+{{-   end -}}
+{{- /* Ensure sandbox object exists, then patch arrays back in */ -}}
+{{-   if not (hasKey $merged "sandbox") -}}
+{{-     $_ := set $merged "sandbox" dict -}}
+{{-   end -}}
+{{-   if $mergedExcluded -}}
+{{-     $_ := set $merged.sandbox "excludedCommands" $mergedExcluded -}}
+{{-   else -}}
+{{-     $_ := unset $merged.sandbox "excludedCommands" -}}
+{{-   end -}}
+{{-   if $mergedDomains -}}
+{{-     if not (hasKey $merged.sandbox "network") -}}
+{{-       $_ := set $merged.sandbox "network" dict -}}
+{{-     end -}}
+{{-     $_ := set $merged.sandbox.network "allowedDomains" $mergedDomains -}}
+{{-   else if hasKey $merged.sandbox "network" -}}
+{{-     $_ := unset $merged.sandbox.network "allowedDomains" -}}
 {{-   end -}}
 {{-   $merged | toPrettyJson -}}
 {{- end -}}
