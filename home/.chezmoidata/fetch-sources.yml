@@ -6,6 +6,24 @@ fetch_sources:
   kitty_installer:
     url_template: "https://sw.kovidgoyal.net/kitty/installer.sh?version={version_no_v}"
     version_source: "git_lock.kitty"
+  codex_macos_arm64_release:
+    url_template: "https://github.com/openai/codex/releases/download/{version}/codex-aarch64-apple-darwin.tar.gz"
+    version_source: "git_lock.codex_cli"
+  codex_macos_amd64_release:
+    url_template: "https://github.com/openai/codex/releases/download/{version}/codex-x86_64-apple-darwin.tar.gz"
+    version_source: "git_lock.codex_cli"
+  codex_linux_amd64_release:
+    url_template: "https://github.com/openai/codex/releases/download/{version}/codex-x86_64-unknown-linux-gnu.tar.gz"
+    version_source: "git_lock.codex_cli"
+  codex_linux_arm64_release:
+    url_template: "https://github.com/openai/codex/releases/download/{version}/codex-aarch64-unknown-linux-gnu.tar.gz"
+    version_source: "git_lock.codex_cli"
+  codex_linux-chimera_amd64_release:
+    url_template: "https://github.com/openai/codex/releases/download/{version}/codex-x86_64-unknown-linux-musl.tar.gz"
+    version_source: "git_lock.codex_cli"
+  codex_linux-chimera_arm64_release:
+    url_template: "https://github.com/openai/codex/releases/download/{version}/codex-aarch64-unknown-linux-musl.tar.gz"
+    version_source: "git_lock.codex_cli"
   zed_installer:
     url_template: "https://raw.githubusercontent.com/zed-industries/zed/{version}/script/install.sh"
     version_source: "git_lock.zed"

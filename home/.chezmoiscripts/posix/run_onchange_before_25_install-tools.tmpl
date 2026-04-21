@@ -59,14 +59,31 @@
 {{-     end -}}
 {{-     $install_uv_tools := and $uv $uv_to_install -}}
 
+{{-     $lock := .git_lock -}}
+{{-     $codex_tag := index $lock "codex_cli" -}}
+{{-     $codex_version := trimPrefix "rust-v" $codex_tag -}}
+{{-     $codex_target_map := dict "darwin_arm64" "aarch64-apple-darwin" "darwin_amd64" "x86_64-apple-darwin" "linux_amd64" "x86_64-unknown-linux-gnu" "linux_arm64" "aarch64-unknown-linux-gnu" -}}
+{{-     $codex_fetch_key_map := dict "darwin_arm64" "codex_macos_arm64_release" "darwin_amd64" "codex_macos_amd64_release" "linux_amd64" "codex_linux_amd64_release" "linux_arm64" "codex_linux_arm64_release" -}}
+{{-     $codex_os := .chezmoi.os -}}
+{{-     if eq .osid "linux-chimera" -}}
+{{-       $codex_os = .osid -}}
+{{-     end -}}
+{{-     $codex_platform_key := printf "%s_%s" $codex_os .chezmoi.arch -}}
+{{-     $codex_rust_target := index $codex_target_map $codex_platform_key -}}
+{{-     $codex_url := "" -}}
+{{-     $codex_sha256 := "" -}}
+{{-     if $codex_rust_target -}}
+{{-       $codex_url = printf "https://github.com/openai/codex/releases/download/%s/codex-%s.tar.gz" $codex_tag $codex_rust_target -}}
+{{-       $codex_sha256 = index .fetch_lock (index $codex_fetch_key_map $codex_platform_key) -}}
+{{-     end -}}
+{{-     $codex_direct_install := and (eq (len $codex_sha256) 64) (or (eq .chezmoi.os "linux") (not .work)) -}}
 {{-     $npm_tools := dict -}}
-{{-     if eq .chezmoi.os "linux" -}}
-{{-       $_ := set $npm_tools "codex" "@openai/codex" -}}
+{{-     if and (eq .chezmoi.os "linux") (not $codex_direct_install) -}}
+{{-       $_ := set $npm_tools "codex" (printf "@openai/codex@%s" $codex_version) -}}
 {{-     end -}}
 {{-     $npm_to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $npm_tools) | fromJson -}}
 {{-     $npm := includeTemplate "find-tool" (dict "root" . "tool" "npm") -}}
 {{-     $install_npm_tools := and $npm $npm_to_install -}}
-{{-     $lock := .git_lock -}}
 {{-     $claude := includeTemplate "find-tool" (dict "root" . "tool" "claude") -}}
 {{-     $claude_tag := index $lock "claude_code" -}}
 {{-     $claude_version := trimPrefix "v" $claude_tag -}}
@@ -176,6 +193,14 @@ if [ "$need_claude_install" -eq 1 ]; then
     export NPM_CONFIG_AUDIT=false
     "{{ $npm }}" install -g @anthropic-ai/claude-code@{{ $claude_version }}
 fi
+{{       end }}
+
+{{       if $codex_direct_install }}
+"$scriptsdir/install-codex" \
+    --tag "{{ $codex_tag }}" \
+    --version "{{ $codex_version }}" \
+    --url "{{ $codex_url }}" \
+    --sha256 "{{ $codex_sha256 }}"
 {{       end }}
 
 {{       if $install_npm_tools }}

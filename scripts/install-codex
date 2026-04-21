@@ -1,0 +1,150 @@
+#!/usr/bin/env bash
+# Usage: install-codex --tag TAG --version VERSION --url URL --sha256 DIGEST
+#
+# Install a pinned Codex release asset and remove any legacy package-manager
+# installation. Idempotent: skips the download if the requested version is
+# already present at ~/.local/bin/codex.
+#
+# Options:
+#     --tag TAG         Git tag for the release (e.g. rust-v0.122.0)
+#     --version VERSION Normalized version string (e.g. 0.122.0)
+#     --url URL         Download URL for the platform tarball
+#     --sha256 DIGEST   Expected SHA-256 hex digest for the tarball
+#     -h                Show this help message
+
+set -euo pipefail
+
+scriptname=${BASH_SOURCE[0]##*/}
+
+usage() {
+    sed -n '/^# Usage:/,/^# *-h /p' "${BASH_SOURCE[0]}" | sed 's/^# *//'
+}
+
+die() {
+    printf '%s: %s\n' "$scriptname" "$*" >&2
+    exit 1
+}
+
+tag=
+version=
+url=
+sha256=
+
+process_arguments() {
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            --tag)
+                shift
+                tag=${1:-}
+                ;;
+            --version)
+                shift
+                version=${1:-}
+                ;;
+            --url)
+                shift
+                url=${1:-}
+                ;;
+            --sha256)
+                shift
+                sha256=${1:-}
+                ;;
+            -h|--help)
+                usage
+                exit 0
+                ;;
+            *)
+                usage >&2
+                die "unknown argument: $1"
+                ;;
+        esac
+        shift
+    done
+}
+
+tmpdir=$(mktemp -d)
+trap 'rm -rf "$tmpdir"' EXIT
+
+main() {
+    process_arguments "$@"
+
+    [ -n "$tag" ] || die "missing --tag"
+    [ -n "$version" ] || die "missing --version"
+    [ -n "$url" ] || die "missing --url"
+    [ -n "$sha256" ] || die "missing --sha256"
+
+    local local_bin="$HOME/.local/bin/codex"
+    local need_install=0
+    local legacy_brew=0
+    local legacy_npm=0
+    local current_version
+    local archive_name
+    local archive
+    local extracted
+    local candidate
+    local candidate_version
+
+    mkdir -p "$HOME/.local/bin"
+
+    current_version=
+    if [ -x "$local_bin" ]; then
+        current_version=$("$local_bin" --version 2>/dev/null \
+            | sed -E 's/.*([0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z]+)*)/\1/' \
+            | head -n1)
+    fi
+
+    if [ "$current_version" != "$version" ]; then
+        need_install=1
+    fi
+
+    if command -v brew >/dev/null 2>&1 && brew list --cask codex >/dev/null 2>&1; then
+        legacy_brew=1
+        need_install=1
+    fi
+
+    if command -v npm >/dev/null 2>&1 && npm list -g @openai/codex >/dev/null 2>&1; then
+        legacy_npm=1
+        need_install=1
+    fi
+
+    if [ "$need_install" -eq 0 ]; then
+        printf 'Codex %s already installed\n' "$version"
+        return 0
+    fi
+
+    printf 'Installing Codex %s from pinned release asset\n' "$version"
+    archive_name=${url##*/}
+    archive="$tmpdir/$archive_name"
+    fetch-verified -o "$archive" "$url" "$sha256"
+    tar -xzf "$archive" -C "$tmpdir"
+
+    extracted="$tmpdir/${archive_name%.tar.gz}"
+    [ -f "$extracted" ] || die "expected extracted binary $extracted"
+
+    candidate="$tmpdir/codex"
+    install -c -m 0755 "$extracted" "$candidate"
+
+    candidate_version=$("$candidate" --version 2>/dev/null \
+        | sed -E 's/.*([0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z]+)*)/\1/' \
+        | head -n1)
+    [ "$candidate_version" = "$version" ] \
+        || die "installed Codex version $candidate_version does not match expected $version"
+
+    mv "$candidate" "$local_bin"
+
+    if [ "$legacy_brew" -eq 1 ]; then
+        printf 'Removing legacy Homebrew Codex install\n'
+        brew uninstall --cask codex
+        hash -r 2>/dev/null || true
+    fi
+
+    if [ "$legacy_npm" -eq 1 ]; then
+        printf 'Removing legacy npm Codex install\n'
+        npm uninstall -g @openai/codex || true
+        hash -r 2>/dev/null || true
+    fi
+
+    command -v rg >/dev/null 2>&1 || die "ripgrep (rg) is unavailable after Codex migration"
+}
+
+main "$@"
