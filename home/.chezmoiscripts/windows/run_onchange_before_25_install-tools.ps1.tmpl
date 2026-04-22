@@ -12,6 +12,18 @@ RefreshEnvPath
 {{-   $rusage := includeTemplate "find-tool" (dict "root" . "tool" "rusage") -}}
 {{-   $lock := .git_lock -}}
 {{-   $claude_version := trimPrefix "v" (index $lock "claude_code") -}}
+{{-   $codex_tag := index $lock "codex_cli" -}}
+{{-   $codex_version := trimPrefix "rust-v" $codex_tag -}}
+{{-   $codex_windows_target_map := dict "amd64" "x86_64-pc-windows-msvc" "arm64" "aarch64-pc-windows-msvc" -}}
+{{-   $codex_windows_fetch_key_map := dict "amd64" "codex_windows_amd64_release" "arm64" "codex_windows_arm64_release" -}}
+{{-   $codex_rust_target := index $codex_windows_target_map .chezmoi.arch -}}
+{{-   $codex_sha256 := "" -}}
+{{-   $codex_url := "" -}}
+{{-   if $codex_rust_target -}}
+{{-     $codex_sha256 = index .fetch_lock (index $codex_windows_fetch_key_map .chezmoi.arch) -}}
+{{-     $codex_url = printf "https://github.com/openai/codex/releases/download/%s/codex-%s.exe.tar.gz" $codex_tag $codex_rust_target -}}
+{{-   end -}}
+{{-   $codex_direct_install := eq (len $codex_sha256) 64 -}}
 {{-   $gh_cmd := includeTemplate "find-tool" (dict "root" . "tool" "gh") -}}
 
 {{/* Note: tmux and zsh are unavailable on Windows */}}
@@ -92,6 +104,35 @@ if ($needClaudeInstall) {
     Write-Host "Installing Claude Code {{ $claude_version }} via official installer"
     & ([scriptblock]::Create((irm https://claude.ai/install.ps1))) {{ $claude_version }}
 }
+
+{{-   if $codex_direct_install }}
+
+$currentCodexVersion = ""
+if (Get-Command codex -ErrorAction SilentlyContinue) {
+    $versionOutput = & codex --version 2>$null
+    if ($versionOutput -match '([0-9]+\.[0-9]+\.[0-9]+)') {
+        $currentCodexVersion = $Matches[1]
+    }
+}
+if ($currentCodexVersion -ne "{{ $codex_version }}") {
+    Write-Host "Installing Codex {{ $codex_version }}"
+    $codexTmpDir = Join-Path $env:TEMP "codex-install-$([System.IO.Path]::GetRandomFileName())"
+    New-Item -ItemType Directory -Path $codexTmpDir -Force | Out-Null
+    try {
+        $codexArchive = Join-Path $codexTmpDir "codex.exe.tar.gz"
+        & "$env:CHEZMOI_COMMAND_DIR\scripts\fetch-verified.ps1" `
+            "{{ $codex_url }}" `
+            "{{ $codex_sha256 }}" `
+            -OutFile $codexArchive
+        tar -xzf $codexArchive -C $codexTmpDir
+        $codexExe = Get-ChildItem -Path $codexTmpDir -Filter "codex.exe" -Recurse | Select-Object -First 1
+        New-Item -ItemType Directory -Path $env:XDG_BIN_HOME -Force | Out-Null
+        Move-Item -Force $codexExe.FullName (Join-Path $env:XDG_BIN_HOME "codex.exe")
+    } finally {
+        Remove-Item -Recurse -Force $codexTmpDir
+    }
+}
+{{-   end }}
 
 {{-   $cargo_git_tools := dict "choose" "--git https://github.com/theryangeary/choose" -}}
 {{-   $cargo_to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $cargo_git_tools) | fromJson -}}

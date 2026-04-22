@@ -24,6 +24,12 @@ fetch_sources:
   codex_linux-chimera_arm64_release:
     url_template: "https://github.com/openai/codex/releases/download/{version}/codex-aarch64-unknown-linux-musl.tar.gz"
     version_source: "git_lock.codex_cli"
+  codex_windows_amd64_release:
+    url_template: "https://github.com/openai/codex/releases/download/{version}/codex-x86_64-pc-windows-msvc.exe.tar.gz"
+    version_source: "git_lock.codex_cli"
+  codex_windows_arm64_release:
+    url_template: "https://github.com/openai/codex/releases/download/{version}/codex-aarch64-pc-windows-msvc.exe.tar.gz"
+    version_source: "git_lock.codex_cli"
   zed_installer:
     url_template: "https://raw.githubusercontent.com/zed-industries/zed/{version}/script/install.sh"
     version_source: "git_lock.zed"

@@ -5,6 +5,8 @@ fetch_lock:
   codex_linux_arm64_release: "f70ebe35f20de3d1cc73f6fa93b486df7fa776d86b6268d8e3ef155257295348"
   codex_macos_amd64_release: "de8b64e1416445162c8060161d0ead76c277754a6dbc2b369725e4fd10181c5b"
   codex_macos_arm64_release: "74e6885e1a58d78f0249faed126eb6ab220f9ce34e7623f9e4108255035d61cc"
+  codex_windows_amd64_release: "857214afc60dd19f62b4cb1d9ee248e3e443dbb794472aac7f541406aece8582"
+  codex_windows_arm64_release: "cfa46d9b2433e68847d197be2064f2d3ca264747766dff5f55319e2e7c4e4cc6"
   eget_installer: "0e64b8a3c13f531da005096cc364ac77835bda54276fedef6c62f3dbdc1ee919"
   kitty_installer: "339346cf3811a77a47588b7bd7ca608f10e09470faea259b6a32c7e7c9ee3e9e"
   rusage: "270e10853812f6c650f0eb4773354070a398f41738b95c4cb9f7e2f918d4833b"
