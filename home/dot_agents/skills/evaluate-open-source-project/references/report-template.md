@@ -1,5 +1,9 @@
 # Report Template
 
+> **Depth:** [triage | assessment | audit]
+> **Confidence:** [LOW | MEDIUM | HIGH] (N/100)
+> **Recommendation:** [one-line verdict]
+
 ## Target summary
 ## Evaluation boundary
 ## Nested target
