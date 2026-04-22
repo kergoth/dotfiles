@@ -6,4 +6,4 @@ others
 .claude/settings.local.json
 .cache/
 *.t.err
-home/dot_agents/skills/evaluate-open-source-project-workspace/
+home/dot_agents/skills/*-workspace/
