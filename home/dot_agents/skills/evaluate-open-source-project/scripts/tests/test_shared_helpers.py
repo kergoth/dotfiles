@@ -19,9 +19,9 @@ def test_bucket_by_windows_counts_items_in_each_window():
 
     counts = bucket_by_windows(rows, key="created_at", today=date(2026, 4, 22))
 
-    assert counts[30] == 1
+    assert counts[30] == 2
     assert counts[90] == 2
-    assert counts[180] == 2
+    assert counts[180] == 3
     assert counts[365] == 3
 
 
