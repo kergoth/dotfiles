@@ -1,7 +1,6 @@
 {{- $codex := includeTemplate "find-tool" (dict "root" . "tool" "codex") -}}
 {{- $claude := includeTemplate "find-tool" (dict "root" . "tool" "claude") -}}
 {{- if or $claude $codex -}}
-{{-   $github_token := or (env "GITHUB_PERSONAL_ACCESS_TOKEN") (env "GITHUB_TOKEN") -}}
 #!/usr/bin/env bash
 
 claude_has_mcp_server() {
@@ -79,9 +78,6 @@ add_marketplace() {
 codex_add_mcp_server deepwiki --url https://mcp.deepwiki.com/mcp
 codex_add_mcp_server context7 -- npx -y @upstash/context7-mcp
 
-{{   if $github_token -}}
-codex_add_mcp_server github --url https://api.githubcopilot.com/mcp/ --bearer-token-env-var GITHUB_TOKEN
-{{-   end }}
 {{   if and .personal ( not .ephemeral ) -}}
 codex_add_mcp_server readwise --url https://mcp2.readwise.io/mcp
 {{-   end }}
@@ -105,8 +101,5 @@ install_plugin astral@astral-sh --scope user
 add_marketplace anthropics/claude-plugins-official
 install_plugin superpowers@claude-plugins-official --scope user
 
-{{   if $github_token -}}
-add_mcp_json github '{"type":"http","url":"https://api.githubcopilot.com/mcp","headers":{"Authorization":"Bearer '"{{ $github_token }}"'"}}' --scope user
-{{-    end }}
 {{-   end }}
 {{- end }}

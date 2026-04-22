@@ -1,11 +1,7 @@
-{{- $github_token := or (env "GITHUB_PERSONAL_ACCESS_TOKEN") (env "GITHUB_TOKEN") -}}
 {{- $servers := dict -}}
 {{- if .work -}}
 {{-   $_ := set $servers "deepwiki" (dict "url" "https://mcp.deepwiki.com/mcp" "type" "http") -}}
 {{-   $_ := set $servers "context7" (dict "type" "stdio" "command" "npx" "args" (list "-y" "@upstash/context7-mcp")) -}}
-{{-   if $github_token -}}
-{{-     $_ := set $servers "github" (dict "url" "https://api.githubcopilot.com/mcp" "type" "http" "headers" (dict "Authorization" (printf "Bearer %s" $github_token))) -}}
-{{-   end -}}
 {{-   range $k, $v := (joinPath .chezmoi.workingTree "settings/agents/work-mcp-cursor.json.age" | include | decrypt | fromJson) -}}
 {{-     $_ := set $servers $k $v -}}
 {{-   end -}}
@@ -13,9 +9,6 @@
 {{- if and .personal (not .ephemeral) -}}
 {{-   $_ := set $servers "readwise" (dict "url" "https://mcp2.readwise.io/mcp" "type" "http") -}}
 {{-   $_ := set $servers "context7" (dict "type" "stdio" "command" "npx" "args" (list "-y" "@upstash/context7-mcp")) -}}
-{{-   if $github_token -}}
-{{-     $_ := set $servers "github" (dict "url" "https://api.githubcopilot.com/mcp" "type" "http" "headers" (dict "Authorization" (printf "Bearer %s" $github_token))) -}}
-{{-   end -}}
 {{- end -}}
 {{- if $servers -}}
 {{ dict "mcpServers" $servers | toPrettyJson }}

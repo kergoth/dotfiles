@@ -235,7 +235,6 @@ Skills live in `~/.agents/skills/` and are available to all agent tools (Claude 
 
 - **[Context7](https://github.com/upstash/context7-mcp)**: Fetch up-to-date library documentation and code examples from source repositories. _Claude Code: unconditional. Codex: personal machines. Cursor: work machines._
 - **[DeepWiki](https://deepwiki.com)**: Query documentation and knowledge from GitHub repositories. _Claude Code: unconditional. Codex: personal machines. Cursor: work machines._
-- **[GitHub](https://github.com/github/github-mcp-server)**: GitHub-aware context and operations. _Claude Code: unconditional. Codex: personal, non-work machines. Cursor: work machines with GitHub token._
 - **[Readwise](https://docs.readwise.io/readwise/guides/mcp)**: Search and retrieve highlights from Readwise; powers the Readwise Skills. _Conditional: personal machines, not ephemeral._
 
 ### Fonts
