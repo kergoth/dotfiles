@@ -1,0 +1,4 @@
+interface:
+  display_name: "Evaluate OSS Project"
+  short_description: "Assess open source adoption risk"
+  default_prompt: "Use $evaluate-open-source-project to evaluate whether I should adopt this GitHub project."

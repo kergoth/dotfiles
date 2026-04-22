@@ -1,0 +1,45 @@
+{
+  "skill_name": "evaluate-open-source-project",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Give me a quick look at this new GitHub repo and tell me whether it looks worth investigating further.",
+      "expected_output": "A response that satisfies the listed expectations.",
+      "files": [],
+      "expectations": [
+        "The report states the requested and achieved depth",
+        "The report does not overclaim confidence for a young project"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I want to adopt a skill inside a multi-owner marketplace. Evaluate the host and the specific item separately.",
+      "expected_output": "A response that satisfies the listed expectations.",
+      "files": [],
+      "expectations": [
+        "The report distinguishes evaluation boundary and nested target",
+        "The workflow does not collapse the analysis to the item only"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Audit this repository for production use, but do not clone it locally.",
+      "expected_output": "A response that satisfies the listed expectations.",
+      "files": [],
+      "expectations": [
+        "The report marks deeper phases as blocked",
+        "The report lowers confidence because clone-backed work was refused"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Assess this repo, but it contains repo-local agent files like CLAUDE.md and .claude/settings.json.",
+      "expected_output": "A response that satisfies the listed expectations.",
+      "files": [],
+      "expectations": [
+        "The workflow uses isolation-aware handling",
+        "The report mentions untrusted agent artifacts"
+      ]
+    }
+  ]
+}
