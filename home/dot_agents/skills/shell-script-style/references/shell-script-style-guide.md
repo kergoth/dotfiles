@@ -162,9 +162,10 @@ EOF
 - Don't create temporary files in functions. Dealing with cleanup and signal handlers in functions isn't particularly portable and is often error prone.
 - Instead, create a global `tmpdir` with an EXIT signal handler to clean up the entire folder unconditionally:
   ```bash
-  tmpdir=$(mktemp -d)
+  tmpdir=$(mktemp -d -p "${TMPDIR:-/tmp}")
   trap 'rm -rf "$tmpdir"' EXIT
   ```
+- **macOS mktemp quirk**: macOS `mktemp -d` ignores `$TMPDIR` and uses the system default (`/var/folders/.../T/`). Always pass `-p "${TMPDIR:-/tmp}"` explicitly for portability. This matters when scripts run in sandboxed environments (e.g., Claude Code) where only specific temp paths are writable.
 - **Signal handling complexity**: Handling interrupts (INT/TERM) in shell scripts is complex. Anything checking child process exit codes needs to explicitly check for interruption/termination, as the child may catch the signal but the parent might not, or they may receive the handler at different times. While INT/TERM traps have been used before (e.g., `trap 'trap - INT; kill -INT $$ &>/dev/null' INT`), more investigation is necessary to consider best practices. If signal handling becomes a serious issue, that's an indicator it's time to switch to Python instead of shell.
 - **Exception for atomic operations**: When downloading or unpacking artifacts to a destination, it's appropriate to create the tmpdir relative to the destination (in the same parent directory) rather than using a global tmpdir. This ensures atomic renames work correctly, as renames across filesystems are not atomic. **Important**: Setting a trap in a function overrides any global trap for that signal. If your script already uses a global EXIT trap, you **must** use a subshell to avoid overriding it:
   ```bash
