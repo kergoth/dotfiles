@@ -16,6 +16,12 @@
     "claude-acp": {
       "type": "registry"
     },
+    "qwen-acp": {
+      "type": "custom",
+      "command": "npx",
+      "args": ["-y", "@qwen-code/qwen-code", "--acp"],
+      "env": {}
+    },
 {{ if and .work -}}
 {{   if .secrets -}}
   {{ include (joinPath .chezmoi.workingTree "settings/zed/settings-agent-work.json.age") | decrypt | indent 4 }}
