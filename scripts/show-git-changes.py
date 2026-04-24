@@ -270,13 +270,16 @@ def fetch_via_bare_clone(
             )
 
         log_cmd = [
-            "git", "-C", str(clone_path), "log", "--oneline", f"{old_sha}..{new_sha}"
+            "git",
+            "-C",
+            str(clone_path),
+            "log",
+            "--oneline",
+            f"{old_sha}..{new_sha}",
         ]
         if review_paths:
             log_cmd += ["--"] + review_paths
-        log_result = subprocess.run(
-            log_cmd, capture_output=True, text=True, check=True
-        )
+        log_result = subprocess.run(log_cmd, capture_output=True, text=True, check=True)
 
         shortlog_result = subprocess.run(
             ["git", "-C", str(clone_path), "shortlog", f"{old_sha}..{new_sha}"],
@@ -414,7 +417,9 @@ def fetch_changes(
         repo_url, old_sha, new_sha, name, ref, cache_dir, review_paths=review_paths
     )
     if data is not None and kind == "tag" and is_github_repo(repo_url):
-        data["release_notes"] = fetch_release_notes(repo_url, old_sha, new_sha, tag_pattern)
+        data["release_notes"] = fetch_release_notes(
+            repo_url, old_sha, new_sha, tag_pattern
+        )
     return data
 
 

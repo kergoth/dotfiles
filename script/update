@@ -115,7 +115,7 @@ if [ -f "$sourcedir/scripts/update-git-lock.py" ]; then
         else
             # Step 2: Review (unless --no-review)
             if [ "$no_review" -eq 0 ]; then
-                uv run python3 -c "
+                cat <<'EOF' | uv run python3 - "$changes_file" "$sourcedir/scripts/show-git-changes.py"
 import json, subprocess, sys
 changes = json.load(open(sys.argv[1]))
 script = sys.argv[2]
@@ -133,7 +133,7 @@ for c in changes:
         for pat in (c.get('review_paths') or []):
             cmd += ['--review-paths', pat]
         subprocess.run(cmd)
-" "$changes_file" "$sourcedir/scripts/show-git-changes.py"
+EOF
             fi
 
             # Step 3: Decision point
@@ -149,7 +149,7 @@ for c in changes:
                             ""|[Yy]|[Yy]es) break ;;
                             [Nn]|[Nn]o) apply=0; break ;;
                             [Dd]|[Dd]iff)
-                                uv run python3 -c "
+                                cat <<'EOF' | uv run python3 - "$changes_file" "$sourcedir/scripts/show-git-changes.py"
 import json, subprocess, sys
 changes = json.load(open(sys.argv[1]))
 script = sys.argv[2]
@@ -167,7 +167,7 @@ for c in changes:
         for pat in (c.get('review_paths') or []):
             cmd += ['--review-paths', pat]
         subprocess.run(cmd)
-" "$changes_file" "$sourcedir/scripts/show-git-changes.py"
+EOF
                                 ;;
                             *) echo >&2 "Please answer Y, n, or d" ;;
                         esac
@@ -191,7 +191,7 @@ for c in changes:
                         fi
                         echo "$title"
                         echo
-                        uv run python3 -c "
+                        cat <<'EOF' | uv run python3 - "$changes_file"
 import json, sys
 changes = json.load(open(sys.argv[1]))
 for c in changes:
@@ -199,14 +199,14 @@ for c in changes:
         old = c['old_sha'] if c['old_sha'] else '(new)'
         new = c['new_sha']
         suffix = f" [{c['tag_pattern']}]" if c.get('tag_pattern') else ""
-        print(f\"  {c['id']}: {old} → {new}{suffix}\")
+        print(f"  {c['id']}: {old} → {new}{suffix}")
     else:
         old = c['old_sha'][:7]
         new = c['new_sha'][:7]
         ref = c.get('ref') or 'main'
         suffix = f" [{c['tag_pattern']}]" if c.get('tag_pattern') else ""
-        print(f\"  {c['id']}: {old} → {new} ({ref}){suffix}\")
-" "$changes_file"
+        print(f"  {c['id']}: {old} → {new} ({ref}){suffix}")
+EOF
                     } > "$sourcedir/.git/COMMIT_EDITMSG"
                     echo >&2 "Committing Git lock update"
                     if [ "$use_jj" -eq 1 ]; then
