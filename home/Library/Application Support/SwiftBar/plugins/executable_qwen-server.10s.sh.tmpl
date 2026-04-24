@@ -1,0 +1,127 @@
+{{- $qwen := includeTemplate "find-tool" (dict "root" . "tool" "qwen") -}}
+{{- if $qwen -}}
+#!/usr/bin/env bash
+# <xbar.title>LLM Server Status</xbar.title>
+# <xbar.version>1.0</xbar.version>
+# <xbar.desc>Manage local SwiftLM model servers used by qwen-code</xbar.desc>
+# <xbar.dependencies>llm-server</xbar.dependencies>
+# <xbar.author>Christopher Larson</xbar.author>
+set -euo pipefail
+
+PATH="/opt/homebrew/bin:$HOME/.brew/bin:$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH"
+
+llm_server_bin=${LLM_SERVER_CLI:-llm-server}
+action_log="/tmp/swiftbar-llm-server-action.log"
+
+extract_port() {
+    local status_line=$1
+    printf "%s\n" "$status_line" | sed -n 's/.*port=\([0-9][0-9]*\).*/\1/p'
+}
+
+endpoint_ready() {
+    local port=$1
+    [ -n "$port" ] || return 1
+    curl -fsS --max-time 1 "http://127.0.0.1:${port}/v1/models" >/dev/null 2>&1
+}
+
+render_missing() {
+    echo "LLM:ERR"
+    echo "---"
+    echo "llm-server command not found"
+    echo "Expected: $llm_server_bin"
+}
+
+topline() {
+    local total running_count init_count status_dump status_line port
+    total=$("$llm_server_bin" list | wc -l | tr -d '[:space:]')
+    status_dump=$("$llm_server_bin" status || true)
+    running_count=$(printf "%s\n" "$status_dump" | awk '$2 == "running" { count += 1 } END { print count + 0 }')
+    init_count=0
+    while IFS= read -r status_line; do
+        [ -n "$status_line" ] || continue
+        if [ "$(printf "%s\n" "$status_line" | awk '{print $2}')" = "running" ]; then
+            port=$(extract_port "$status_line")
+            if ! endpoint_ready "$port"; then
+                init_count=$((init_count + 1))
+            fi
+        fi
+    done <<<"$status_dump"
+
+    if [ "$init_count" -gt 0 ]; then
+        printf "🤖 %s/%s · ⏳%s\n" "$running_count" "$total" "$init_count"
+    else
+        printf "🤖 %s/%s\n" "$running_count" "$total"
+    fi
+}
+
+render_menu() {
+    local status_dump status_line profile state port
+    topline
+    echo "---"
+    status_dump=$("$llm_server_bin" status || true)
+    while IFS= read -r status_line; do
+        [ -n "$status_line" ] || continue
+        profile=$(printf "%s\n" "$status_line" | awk '{print $1}')
+        state=$(printf "%s\n" "$status_line" | awk '{print $2}')
+        port=$(extract_port "$status_line")
+        if [ "$state" = "running" ]; then
+            if endpoint_ready "$port"; then
+                echo "$profile: ON | terminal=false bash='$0' param1=stop param2=$profile refresh=true"
+            else
+                echo "$profile: INIT | terminal=false bash='$0' param1=stop param2=$profile refresh=true"
+            fi
+            echo "-- Stop | terminal=false bash='$0' param1=stop param2=$profile refresh=true"
+            echo "-- Restart | terminal=false bash='$0' param1=restart param2=$profile refresh=true"
+            echo "-- Follow logs | terminal=true bash='$0' param1=follow-logs param2=$profile refresh=false"
+        else
+            echo "$profile: OFF | terminal=false bash='$0' param1=start param2=$profile refresh=true"
+            echo "-- Start | terminal=false bash='$0' param1=start param2=$profile refresh=true"
+            echo "-- Show logs | terminal=true bash='$0' param1=logs param2=$profile refresh=false"
+        fi
+        echo "-- Status: $status_line"
+    done <<<"$status_dump"
+
+    echo "---"
+    echo "Start all | terminal=false bash='$0' param1=start param2=all refresh=true"
+    echo "Stop all | terminal=false bash='$0' param1=stop param2=all refresh=true"
+    echo "Doctor | terminal=true bash='$0' param1=doctor refresh=false"
+    echo "List profiles | terminal=true bash='$0' param1=list refresh=false"
+}
+
+run_action() {
+    local action=$1
+    local profile=${2:-}
+    case "$action" in
+        start|stop|restart)
+            [ -n "$profile" ] || profile=all
+            "$llm_server_bin" "$action" "$profile" >"$action_log" 2>&1 || true
+            ;;
+        logs|follow-logs)
+            [ -n "$profile" ] || profile=reason
+            "$llm_server_bin" "$action" "$profile" >"$action_log" 2>&1 || true
+            ;;
+        list|doctor)
+            "$llm_server_bin" "$action" >"$action_log" 2>&1 || true
+            ;;
+        *)
+            exit 1
+            ;;
+    esac
+}
+
+main() {
+    if ! command -v "$llm_server_bin" >/dev/null 2>&1; then
+        render_missing
+        exit 0
+    fi
+
+    if [ $# -gt 0 ]; then
+        run_action "$1" "${2:-}"
+        exit 0
+    fi
+
+    render_menu
+}
+
+main "$@"
+{{- end -}}
