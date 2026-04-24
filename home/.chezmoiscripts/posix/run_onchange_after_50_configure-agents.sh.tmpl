@@ -81,6 +81,10 @@ codex_add_mcp_server context7 -- npx -y @upstash/context7-mcp
 {{   if and .personal ( not .ephemeral ) -}}
 codex_add_mcp_server readwise --url https://mcp2.readwise.io/mcp
 {{-   end }}
+
+{{ $set_toml := joinPath .chezmoi.sourceDir ".." "scripts" "set-toml-value" -}}
+# Enable my preferred codex status line
+uvx --from tomlkit python3 {{ $set_toml }} ~/.codex/config.toml tui.status_line '["model-with-reasoning", "current-dir", "git-branch", "context-used", "five-hour-limit", "weekly-limit"]'
 {{- end }}
 
 {{   if $claude -}}

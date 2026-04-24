@@ -1,0 +1,44 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# dependencies = ["tomlkit"]
+# ///
+
+import argparse
+from pathlib import Path
+import tomlkit
+
+
+def parse_value(value: str):
+    # Let TOML parse the scalar, so true/false, numbers, arrays, strings work.
+    return tomlkit.parse(f"value = {value}")["value"]
+
+
+def set_path(doc, dotted_path: str, value):
+    parts = dotted_path.split(".")
+    cur = doc
+
+    for part in parts[:-1]:
+        if part not in cur:
+            cur[part] = tomlkit.table()
+        cur = cur[part]
+
+    cur[parts[-1]] = value
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("file", type=Path)
+    parser.add_argument("path")
+    parser.add_argument("value")
+    args = parser.parse_args()
+
+    text = args.file.read_text()
+    doc = tomlkit.parse(text)
+
+    set_path(doc, args.path, parse_value(args.value))
+
+    args.file.write_text(tomlkit.dumps(doc))
+
+
+if __name__ == "__main__":
+    main()
