@@ -179,6 +179,7 @@ Shared Git pinning is part of the repo's broader move toward review-first update
 - `scripts/show-git-changes.py` is the review surface for a candidate update: it fetches the old/new range, shows commit log/shortlog and diff output, and may run an AI review summary.
 - `review_note` adds repo-specific instructions to that AI review.
 - `review_paths` hard-scopes the fetched log and diff passed into review, which is useful for large repositories or release-tracking sources where only part of the tree matters.
+- For tagged GitHub sources, `scripts/show-git-changes.py` also includes release notes in the review prompt when the update metadata carries `kind=tag`. `review_note` should treat release notes as narrative context, not as a replacement for diff review.
 
 ### Secrets Management
 

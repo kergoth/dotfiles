@@ -46,9 +46,7 @@ git_sources:
     tagged: true
     tag_source: git_tags
     tag_pattern: '^rust-v\d+\.\d+\.\d+$'
-    review_paths:
-      - "CHANGELOG.md"
-    review_note: "This repository publishes the Codex CLI and its release assets. Review the CHANGELOG.md diff first and summarize user-visible behavior changes, install or packaging changes, sandbox or permission-model changes, and anything that affects local execution or security posture. If CHANGELOG.md did not change, flag the release for manual inspection."
+    review_note: "This repository publishes the Codex CLI and its release assets. Review the release notes narrative first, then cross-check the diff for user-visible behavior changes, install or packaging changes, sandbox or permission-model changes, and anything that affects local execution or security posture. CHANGELOG.md in this repo is a pointer to the releases page and is not a useful review target."
   beanbaginc_dev_goodies:
     repo: https://github.com/beanbaginc/dev-goodies
     ref: master

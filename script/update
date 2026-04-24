@@ -124,6 +124,10 @@ for c in changes:
         ref = c['new_sha'] if c.get('kind') == 'tag' else (c.get('ref') or 'main')
         cmd = ['uv', 'run', script, c['repo'], c['old_sha'], c['new_sha'],
                '--name', c['id'], '--ref', ref]
+        if c.get('kind'):
+            cmd += ['--kind', c['kind']]
+        if c.get('tag_pattern'):
+            cmd += ['--tag-pattern', c['tag_pattern']]
         if c.get('review_note'):
             cmd += ['--review-note', c['review_note']]
         for pat in (c.get('review_paths') or []):
@@ -154,6 +158,10 @@ for c in changes:
         ref = c['new_sha'] if c.get('kind') == 'tag' else (c.get('ref') or 'main')
         cmd = ['uv', 'run', script, c['repo'], c['old_sha'], c['new_sha'],
                '--name', c['id'], '--ref', ref, '--diff-only']
+        if c.get('kind'):
+            cmd += ['--kind', c['kind']]
+        if c.get('tag_pattern'):
+            cmd += ['--tag-pattern', c['tag_pattern']]
         if c.get('review_note'):
             cmd += ['--review-note', c['review_note']]
         for pat in (c.get('review_paths') or []):
@@ -190,12 +198,14 @@ for c in changes:
     if c.get('kind') == 'tag':
         old = c['old_sha'] if c['old_sha'] else '(new)'
         new = c['new_sha']
-        print(f\"  {c['id']}: {old} → {new}\")
+        suffix = f" [{c['tag_pattern']}]" if c.get('tag_pattern') else ""
+        print(f\"  {c['id']}: {old} → {new}{suffix}\")
     else:
         old = c['old_sha'][:7]
         new = c['new_sha'][:7]
         ref = c.get('ref') or 'main'
-        print(f\"  {c['id']}: {old} → {new} ({ref})\")
+        suffix = f" [{c['tag_pattern']}]" if c.get('tag_pattern') else ""
+        print(f\"  {c['id']}: {old} → {new} ({ref}){suffix}\")
 " "$changes_file"
                     } > "$sourcedir/.git/COMMIT_EDITMSG"
                     echo >&2 "Committing Git lock update"
