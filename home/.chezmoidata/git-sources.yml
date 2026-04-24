@@ -128,9 +128,13 @@ git_sources:
   vim_profiler:
     repo: https://github.com/bchretien/vim-profiler
     ref: master
+  # Sadly this project does not allow for proper review, as there are no in-repo
+  # release notes, code diffs, or changelogs for us to use.
   readwise_reader_desktop:
     repo: https://github.com/readwiseio/reader-desktop-releases
     tagged: true
+    # This project's release notes are not useful: 'See the assets to download this version and install.'
+    review_note: false
   readwise_skills:
     repo: https://github.com/readwiseio/readwise-skills
     ref: master
