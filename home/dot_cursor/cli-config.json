@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "editor": { "vimMode": false },
+  "permissions": { "allow": [], "deny": [] },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.cursor/statusline.sh",
+    "padding": 2
+  }
+}
