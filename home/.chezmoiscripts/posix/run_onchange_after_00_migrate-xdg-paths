@@ -22,6 +22,10 @@ esac
 
 rm -f ~/.wget-hsts "$XDG_DATA_HOME/wget-hsts" "$XDG_CACHE_HOME/wget-hsts"
 
+# Cursor CLI reads cli-config.json from $XDG_CONFIG_HOME/cursor when XDG_CONFIG_HOME
+# is set, making the legacy ~/.cursor/cli-config.json obsolete on terminal use.
+rm -f ~/.cursor/cli-config.json
+
 if ! [ -e "$XDG_DATA_HOME/cargo" ]; then
     if [ -e ~/.cargo ]; then
         mkdir -p "$XDG_DATA_HOME"
