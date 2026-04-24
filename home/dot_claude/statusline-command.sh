@@ -314,6 +314,28 @@ render_name_line() {
         "$COLOR_RESET"
 }
 
+# ── Effort level ────────────────────────────────────────────
+
+# Map Claude Code effort.level string to a single-letter abbreviation
+# for display inside the model segment.
+#
+# Args: $1 = effort level string from stdin JSON (may be empty)
+# Returns: abbreviation on stdout (empty string → segment stays hidden)
+#
+# Known values as of v2.1.119: low, medium, high, xhigh, max
+# Unknown values: Show "?"
+effort_letter() {
+    case "${1:-}" in
+        low)    printf '%s\n' "L" ;;
+        medium) printf '%s\n' "M" ;;
+        high)   printf '%s\n' "H" ;;
+        xhigh)  printf '%s\n' "XH" ;;
+        max)    printf '%s\n' "MX" ;;
+        "")     return ;;
+        *)      printf '%s\n' "?" ;;
+    esac
+}
+
 # ── Segment rendering ───────────────────────────────────────
 
 # Apply color pair (bg + fg) to text
@@ -421,11 +443,19 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
         "rl_5h_pct=" + (.rate_limits.five_hour.used_percentage // 0 | floor | tostring),
         "rl_5h_resets=" + (.rate_limits.five_hour.resets_at // 0 | floor | tostring),
         "rl_7d_pct=" + (.rate_limits.seven_day.used_percentage // 0 | floor | tostring),
-        "rl_7d_resets=" + (.rate_limits.seven_day.resets_at // 0 | floor | tostring)
+        "rl_7d_resets=" + (.rate_limits.seven_day.resets_at // 0 | floor | tostring),
+        "effort_level=" + (.effort.level // .["effort.level"] // "" | @sh)
     ' 2>/dev/null)"
 
     # ── Compute derived values ──────────────────────────────
     now=$(date +%s)
+
+    # Model display: append effort letter if available (e.g. "Opus" → "Opus·H")
+    effort_abbrev=$(effort_letter "${effort_level:-}")
+    model_display="$model"
+    if [[ -n "$effort_abbrev" ]]; then
+        model_display="${model}·${effort_abbrev}"
+    fi
 
     # Branch: prefer worktree.branch, fall back to git
     branch=""
@@ -500,15 +530,15 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     # Combine path + worktree for width calculation (they drop together)
     location_text="$display_path"
     [[ -n "$worktree_display" ]] && location_text="${location_text}  ${worktree_display}"
-    tier=$(select_degradation_tier "$cols" "$model" "$location_text" "$branch" \
+    tier=$(select_degradation_tier "$cols" "$model_display" "$location_text" "$branch" \
         "$rl_worst_text" "$rl_second_text" "$context_text")
 
     # ── Render segments (left-justified with spacing) ──────
     # Segment separator — 2 spaces for breathing room
     sep="  "
 
-    # Model (always)
-    printf '%s%s%s %s %s' "$COLOR_ACCENT_BG" "$COLOR_BOLD" "$COLOR_BRIGHT_TEXT" "$model" "$COLOR_RESET"
+    # Model (always) — includes effort letter when available (e.g. "Opus·H")
+    printf '%s%s%s %s %s' "$COLOR_ACCENT_BG" "$COLOR_BOLD" "$COLOR_BRIGHT_TEXT" "$model_display" "$COLOR_RESET"
 
     # Path (tier <= 1)
     if (( tier <= 1 )) && [[ -n "$display_path" ]]; then

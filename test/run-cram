@@ -1,11 +1,44 @@
 #!/bin/sh
+# Wrapper for `uvx cram`.
+#
+# Resolves a bash ≥4 interpreter and prepends its directory to PATH so that
+# (a) cram's test shell supports `declare -A`, process substitution, etc.,
+# and (b) subprocess `bash` invocations inside tests resolve the same binary.
+# Falls back to the default /bin/sh behavior when no modern bash is found.
 
 set -eu
 
 script_dir=$(cd "$(dirname "$0")" && pwd)
 
+# Locate a bash with associative array support (4.0+).
+resolve_bash() {
+    for candidate in \
+        "$(command -v bash 2>/dev/null || true)" \
+        /opt/homebrew/bin/bash \
+        /usr/local/bin/bash \
+        "$HOME/.nix-profile/bin/bash" \
+        /nix/var/nix/profiles/default/bin/bash
+    do
+        [ -n "$candidate" ] && [ -x "$candidate" ] || continue
+        major=$("$candidate" -c 'echo "${BASH_VERSINFO[0]}"' 2>/dev/null || echo 0)
+        if [ "$major" -ge 4 ] 2>/dev/null; then
+            printf '%s\n' "$candidate"
+            return 0
+        fi
+    done
+    return 1
+}
+
+shell_args=
+if bash_path=$(resolve_bash); then
+    PATH="${bash_path%/*}:$PATH"
+    export PATH
+    shell_args="--shell=$bash_path"
+fi
+
 if [ $# -eq 0 ]; then
     set -- "$script_dir/cram"
 fi
 
-exec uvx cram "$@"
+# shellcheck disable=SC2086 # shell_args is intentionally word-split
+exec uvx cram $shell_args "$@"
