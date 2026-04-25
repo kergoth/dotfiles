@@ -1,0 +1,4 @@
+{{- $codex := includeTemplate "find-tool" (dict "root" . "tool" "codex") -}}
+{{- if $codex -}}
+codex "$@"
+{{- end -}}
