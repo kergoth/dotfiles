@@ -573,7 +573,12 @@ def run_ai_review(
                 timeout=120,
             )
         else:
-            return None
+            result = subprocess.run(
+                full_cmd + [prompt],
+                capture_output=True,
+                text=True,
+                timeout=480,
+            )
 
         if result.returncode == 0 and result.stdout.strip():
             return result.stdout.strip()
