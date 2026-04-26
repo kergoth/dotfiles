@@ -423,8 +423,11 @@ def fetch_changes(
     return data
 
 
-AGENT_CLIS = ["claude", "codex", "agent"]
-AGENT_CMDS = {"claude": ["claude", "--model", "sonnet"]}
+AGENT_CLIS = ["claude", "codex", "agent", "qwen"]
+AGENT_CMDS = {
+    "claude": ["claude", "--model", "sonnet"],
+    "qwen": ["qwen", "--prompt"],
+}
 
 SUPPLY_CHAIN_PROMPT = """\
 This is a non-interactive, automated security review. Do not invoke any skills, tools, or interactive workflows — respond directly with your analysis.
