@@ -60,26 +60,30 @@
 {{-     $install_uv_tools := and $uv $uv_to_install -}}
 
 {{-     $lock := .git_lock -}}
-{{-     $codex_tag := index $lock "codex_cli" -}}
-{{-     $codex_version := trimPrefix "rust-v" $codex_tag -}}
-{{-     $codex_target_map := dict "darwin_arm64" "aarch64-apple-darwin" "darwin_amd64" "x86_64-apple-darwin" "linux_amd64" "x86_64-unknown-linux-gnu" "linux_arm64" "aarch64-unknown-linux-gnu" "linux-chimera_amd64" "x86_64-unknown-linux-musl" "linux-chimera_arm64" "aarch64-unknown-linux-musl" -}}
-{{-     $codex_fetch_key_map := dict "darwin_arm64" "codex_macos_arm64_release" "darwin_amd64" "codex_macos_amd64_release" "linux_amd64" "codex_linux_amd64_release" "linux_arm64" "codex_linux_arm64_release" "linux-chimera_amd64" "codex_linux-chimera_amd64_release" "linux-chimera_arm64" "codex_linux-chimera_arm64_release" -}}
-{{-     $codex_os := .chezmoi.os -}}
-{{-     if eq .osid "linux-chimera" -}}
-{{-       $codex_os = .osid -}}
-{{-     end -}}
-{{-     $codex_platform_key := printf "%s_%s" $codex_os .chezmoi.arch -}}
-{{-     $codex_rust_target := index $codex_target_map $codex_platform_key -}}
-{{-     $codex_url := "" -}}
-{{-     $codex_sha256 := "" -}}
-{{-     if $codex_rust_target -}}
-{{-       $codex_url = printf "https://github.com/openai/codex/releases/download/%s/codex-%s.tar.gz" $codex_tag $codex_rust_target -}}
-{{-       $codex_sha256 = index .fetch_lock (index $codex_fetch_key_map $codex_platform_key) -}}
-{{-     end -}}
-{{-     $codex_direct_install := and (eq (len $codex_sha256) 64) (or (eq .chezmoi.os "linux") (not .work)) -}}
-{{-     $npm_tools := dict -}}
-{{-     if and (eq .chezmoi.os "linux") (not $codex_direct_install) -}}
-{{-       $_ := set $npm_tools "codex" (printf "@openai/codex@%s" $codex_version) -}}
+{{-     $codex_direct_install := false -}}
+{{-     $codex := includeTemplate "find-tool" (dict "root" . "tool" "codex") -}}
+{{-     if and (not $codex) (not .steamdeck) -}}
+{{-       $codex_tag := index $lock "codex_cli" -}}
+{{-       $codex_version := trimPrefix "rust-v" $codex_tag -}}
+{{-       $codex_target_map := dict "darwin_arm64" "aarch64-apple-darwin" "darwin_amd64" "x86_64-apple-darwin" "linux_amd64" "x86_64-unknown-linux-gnu" "linux_arm64" "aarch64-unknown-linux-gnu" "linux-chimera_amd64" "x86_64-unknown-linux-musl" "linux-chimera_arm64" "aarch64-unknown-linux-musl" -}}
+{{-       $codex_fetch_key_map := dict "darwin_arm64" "codex_macos_arm64_release" "darwin_amd64" "codex_macos_amd64_release" "linux_amd64" "codex_linux_amd64_release" "linux_arm64" "codex_linux_arm64_release" "linux-chimera_amd64" "codex_linux-chimera_amd64_release" "linux-chimera_arm64" "codex_linux-chimera_arm64_release" -}}
+{{-       $codex_os := .chezmoi.os -}}
+{{-       if eq .osid "linux-chimera" -}}
+{{-         $codex_os = .osid -}}
+{{-       end -}}
+{{-       $codex_platform_key := printf "%s_%s" $codex_os .chezmoi.arch -}}
+{{-       $codex_rust_target := index $codex_target_map $codex_platform_key -}}
+{{-       $codex_url := "" -}}
+{{-       $codex_sha256 := "" -}}
+{{-       if $codex_rust_target -}}
+{{-         $codex_url = printf "https://github.com/openai/codex/releases/download/%s/codex-%s.tar.gz" $codex_tag $codex_rust_target -}}
+{{-         $codex_sha256 = index .fetch_lock (index $codex_fetch_key_map $codex_platform_key) -}}
+{{-       end -}}
+{{-       $codex_direct_install = and (eq (len $codex_sha256) 64) (or (eq .chezmoi.os "linux") (not .work)) -}}
+{{-       $npm_tools := dict -}}
+{{-       if and (eq .chezmoi.os "linux") (not $codex_direct_install) -}}
+{{-         $_ := set $npm_tools "codex" (printf "@openai/codex@%s" $codex_version) -}}
+{{-       end -}}
 {{-     end -}}
 {{-     $npm_to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $npm_tools) | fromJson -}}
 {{-     $npm := includeTemplate "find-tool" (dict "root" . "tool" "npm") -}}
