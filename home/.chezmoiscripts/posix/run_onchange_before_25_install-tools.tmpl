@@ -62,6 +62,7 @@
 {{-     $lock := .git_lock -}}
 {{-     $codex_direct_install := false -}}
 {{-     $codex := includeTemplate "find-tool" (dict "root" . "tool" "codex") -}}
+{{-     $npm_tools := dict -}}
 {{-     if and (not $codex) (not .steamdeck) -}}
 {{-       $codex_tag := index $lock "codex_cli" -}}
 {{-       $codex_version := trimPrefix "rust-v" $codex_tag -}}
@@ -80,7 +81,6 @@
 {{-         $codex_sha256 = index .fetch_lock (index $codex_fetch_key_map $codex_platform_key) -}}
 {{-       end -}}
 {{-       $codex_direct_install = and (eq (len $codex_sha256) 64) (or (eq .chezmoi.os "linux") (not .work)) -}}
-{{-       $npm_tools := dict -}}
 {{-       if and (eq .chezmoi.os "linux") (not $codex_direct_install) -}}
 {{-         $_ := set $npm_tools "codex" (printf "@openai/codex@%s" $codex_version) -}}
 {{-       end -}}
