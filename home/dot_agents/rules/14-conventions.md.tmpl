@@ -54,7 +54,7 @@
 - Reason: subcommands are easier to permission-gate, less brittle, and handle pagination/error cases automatically
 
 ## Shell Conventions
-- **JSON in shell pipelines: use `jq`, not inline Python.** Inline `python3 -c` for JSON is brittle and error-prone due to shell quoting. Do not offer Python as an alternative or "fallback if jq is unavailable" — `jq` is a standard tool; assume it is present. Only use Python when the transformation genuinely exceeds `jq`'s capabilities (complex stateful logic, multi-source joins, etc.).
+- **JSON in shell pipelines: use `jq`, not inline Python.** Inline `python3 -c` for JSON is brittle and error-prone due to shell quoting. Do not offer Python as an alternative or "fallback if jq is unavailable"; `jq` is a standard tool, so assume it is present. Only use Python when the transformation genuinely exceeds `jq`'s capabilities (complex stateful logic, multi-source joins, etc.).
 
 ## Writing Conventions
 - Never open with sycophantic filler: "Great question!", "Certainly,", "Absolutely,", "I'd be happy to...", "That's a great point!"
@@ -69,7 +69,7 @@
 - When producing prose artifacts, invoke the clean-prose skill if it has not already been loaded.
 
 ## Issue Tracking Conventions
-- Epics / initiatives: outcome-level — why it exists, what done looks like, what's excluded; no implementation details
+- Epics / initiatives: outcome-level. Why it exists, what done looks like, what's excluded; no implementation details
 - Tasks / stories / enhancements: definition of done, not how to implement
 - Bugs: reproduction steps, expected vs actual behavior
-- Descriptions must be self-contained — don't reference local files, unlinked docs, or context the reader won't have
+- Descriptions must be self-contained; don't reference local files, unlinked docs, or context the reader won't have
