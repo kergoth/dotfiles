@@ -8,3 +8,8 @@
 ## Agent Tooling Design
 - Reserve agents for judgment and orchestration; push mechanical computation (API sequences, ID mapping, pagination) into scripts/tools
 - Design script interfaces with high-level intent flags alongside precise targeting so agents don't need to assemble complex arguments
+
+## CLI Tool Discovery
+- Before reading a script or CLI's source to learn how to use it, try `<tool> -h`, `<tool> --help`, or `man <tool>` first. Read source only when help is missing, insufficient, or you need to understand internals beyond usage (debugging, modifying, behavior beyond what docs cover).
+- Reading source for usage is expensive: a typical script is 5-25 KB, help output is usually under 1 KB. The cost compounds across long sessions.
+- Help-flag conventions vary: getopts-driven scripts often accept `-h` but not `--help`; argparse and many third-party CLIs accept both. Try `-h` first; if rejected as an unknown option, try `--help`; if both fail, then Read.
