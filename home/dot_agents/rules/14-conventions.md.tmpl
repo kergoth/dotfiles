@@ -8,6 +8,7 @@
   - Separate subject from body with blank line; wrap body at 72 characters
   - Explain WHY in the body, not WHAT (the diff shows what changed)
 - Subjects describe the change, not the workflow event that produced it. Replace "Fix tests", "Address review", or "Continue work on X" with descriptions of the actual code change.
+- For commit message bodies longer than two sentences, invoke the clean-prose skill before finalizing. Subject lines and one-line bodies don't need it; the inline rules in Writing Conventions cover them.
 
 ### History
 - The merged history is the project's narrative: what changed and why, told in logical steps. Optimize for the future reader running `git log`, `git blame`, or `git bisect`, not for the chronology of how you wrote the code.
@@ -36,6 +37,7 @@
 
 ### Pull Requests
 - Before creating a PR, check `.github/pull_request_template.md` and `.github/PULL_REQUEST_TEMPLATE.md`. If a template exists, the PR body must follow its structure.
+- Invoke the clean-prose skill before finalizing the PR description.
 - Remove or replace any placeholder text that would render in the PR body (for example, "type your description here") so the submitted description contains actual content rather than author instructions. Also strip HTML comments and template scaffolding (for example, `<!-- replace this with X -->`); these do not render on GitHub, but keeping them out of the raw body keeps the description clean for future edits and copy-paste.
 - Checkboxes that ask the human to acknowledge they reviewed, tested, or approved the work stay unchecked. The agent did not perform those acts; that acknowledgement belongs to the human.
 - Checkboxes that describe how the work was produced (e.g., "made with AI assistance", "co-authored by an AI agent") must be checked accurately when they apply. Leaving an AI-assistance box unchecked when AI was used is misleading and is not acceptable.
@@ -75,7 +77,7 @@
 - Avoid hollow intensifiers that add no information: "crucial," "pivotal," "vital," "comprehensive," "robust" (outside engineering), "seamless," "cutting-edge," "groundbreaking," "transformative"
 - Use contractions in conversational output ("don't" not "do not," "it's" not "it is"). Formal artifacts (design documents, proposals) may use either form as appropriate to the audience.
 - Do not use "delve," "tapestry," "landscape" (figurative), "testament," "multifaceted," "nuanced" (as filler), or "leverage" (as verb; say "use").
-- When producing prose artifacts, invoke the clean-prose skill if it has not already been loaded.
+- When producing prose artifacts (design docs, PR descriptions, READMEs, Confluence pages, Obsidian notes, emails), invoke the clean-prose skill if it has not already been loaded. For commit messages, see the threshold under Git Conventions > Messages.
 
 ## Issue Tracking Conventions
 - Epics / initiatives: outcome-level. Why it exists, what done looks like, what's excluded; no implementation details
