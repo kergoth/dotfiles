@@ -150,6 +150,7 @@ freebsd_check sysutils/direnv direnv
 if pkg info -e claude-code >/dev/null 2>&1; then
     pkg delete -y claude-code
 fi
+freebsd_check misc/codex codex
 
 # FreeBSD-only
 freebsd_check sysutils/lsblk lsblk

@@ -337,11 +337,11 @@ Installed software varies by platform based on package availability and platform
 
 #### CLI Software on Linux and macOS
 
-- **[Codex](https://github.com/openai/codex)**: OpenAI's agentic coding tool for your terminal.
 - **[nix](https://nixos.org)**: Nix is a tool that takes a unique approach to package management and system configuration.
 
 #### CLI Software on Linux, macOS, and FreeBSD
 
+- **[Codex](https://github.com/openai/codex)**: OpenAI's agentic coding tool for your terminal.
 - **[patchutils](http://cyberelk.net/tim/software/patchutils/)**: A small collection of programs that operate on patch files.
   - On Windows, patchutils can be used via either WSL or MSYS2 (which can be installed via scoop and run as `msys2`, ex. `msys2 -c 'exec filterdiff "$@"' -`).
 
