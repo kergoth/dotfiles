@@ -135,10 +135,52 @@ def fetch_release_notes(
         return ""
 
     owner, repo = owner_repo
-    releases: list[dict] = []
-    new_seen = False
-    old_seen = False
 
+    def _lookup_tag(tag: str) -> dict | None:
+        try:
+            r = subprocess.run(
+                ["gh", "api", f"repos/{owner}/{repo}/releases/tags/{tag}"],
+                capture_output=True,
+                text=True,
+                timeout=30,
+                check=True,
+            )
+            return json.loads(r.stdout)
+        except (
+            subprocess.CalledProcessError,
+            subprocess.TimeoutExpired,
+            json.JSONDecodeError,
+            OSError,
+        ):
+            return None
+
+    # Resolve anchors directly — avoids false "missing tag" on high-volume repos
+    # where the tag may not appear in the first N pages of the releases list.
+    new_release = _lookup_tag(new_tag)
+    if new_release is None:
+        console.print(
+            f"Warning: could not resolve release notes for {repo_url}: missing "
+            f"new tag {new_tag}",
+            style="yellow",
+        )
+        return ""
+
+    old_release = _lookup_tag(old_tag)
+    if old_release is None:
+        console.print(
+            f"Warning: could not resolve release notes for {repo_url}: missing "
+            f"old tag {old_tag}",
+            style="yellow",
+        )
+        return ""
+
+    new_pub = new_release.get("published_at") or ""
+    old_pub = old_release.get("published_at") or ""
+
+    # Walk pages newest-first; collect releases in the window (old_pub, new_pub].
+    # Use publication dates as the range boundary so tag-name scanning can't miss
+    # a release that doesn't surface in paginated list results.
+    releases: list[dict] = []
     try:
         for page in range(1, 6):
             result = subprocess.run(
@@ -156,21 +198,21 @@ def fetch_release_notes(
             if not page_releases:
                 break
 
+            done = False
             for release in page_releases:
                 if release.get("draft"):
                     continue
-
                 tag_name = release.get("tag_name") or ""
-                if tag_name == new_tag:
-                    new_seen = True
-                if tag_name == old_tag:
-                    old_seen = True
+                pub = release.get("published_at") or ""
+
+                if new_pub and pub and pub > new_pub:
+                    continue  # newer than range; skip
+                if tag_name == old_tag or (old_pub and pub and pub < old_pub):
+                    done = True
                     break
-                if new_seen and (
-                    not tag_pattern or re.fullmatch(tag_pattern, tag_name)
-                ):
+                if not tag_pattern or re.fullmatch(tag_pattern, tag_name):
                     releases.append(release)
-            if old_seen:
+            if done:
                 break
     except (
         subprocess.CalledProcessError,
@@ -179,23 +221,13 @@ def fetch_release_notes(
         OSError,
         FileNotFoundError,
     ):
-        return ""
+        pass
 
-    if not new_seen:
-        console.print(
-            f"Warning: could not resolve release notes for {repo_url}: missing "
-            f"new tag {new_tag}",
-            style="yellow",
-        )
-        return ""
-
-    if not old_seen:
-        console.print(
-            f"Warning: could not resolve release notes for {repo_url}: missing "
-            f"old tag {old_tag}",
-            style="yellow",
-        )
-        return ""
+    # If the paginated walk found nothing (new_tag absent from list on a high-volume
+    # repo), fall back to the directly-fetched new release so we show at least that.
+    if not releases:
+        if not tag_pattern or re.fullmatch(tag_pattern, new_tag):
+            releases = [new_release]
 
     capped = len(releases) > 20
     if capped:
