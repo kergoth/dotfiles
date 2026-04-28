@@ -36,7 +36,7 @@
 
 ### Pull Requests
 - Before creating a PR, check `.github/pull_request_template.md` and `.github/PULL_REQUEST_TEMPLATE.md`. If a template exists, the PR body must follow its structure.
-- Strip instructional placeholders, HTML comments, and template scaffolding (`<!-- replace this with X -->`) from the body before submitting. The rendered description should contain the actual content, not instructions to the author.
+- Remove or replace any placeholder text that would render in the PR body (for example, "type your description here") so the submitted description contains actual content rather than author instructions. Also strip HTML comments and template scaffolding (for example, `<!-- replace this with X -->`); these do not render on GitHub, but keeping them out of the raw body keeps the description clean for future edits and copy-paste.
 - Checkboxes that ask the human to acknowledge they reviewed, tested, or approved the work stay unchecked. The agent did not perform those acts; that acknowledgement belongs to the human.
 - Checkboxes that describe how the work was produced (e.g., "made with AI assistance", "co-authored by an AI agent") must be checked accurately when they apply. Leaving an AI-assistance box unchecked when AI was used is misleading and is not acceptable.
 - After updating an existing PR (force-push, additive commits, rebase), re-read the PR description with `gh pr view` and compare it against the new branch contents. If the description no longer matches the diff (added or removed scope, changed approach, stale file lists), update it via `gh pr edit`. Description-versus-diff drift is a review hazard.
