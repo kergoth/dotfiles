@@ -59,6 +59,16 @@
 
 ## Agent Planning
 
+### Spec and Plan Artifacts
+- Project-local guidance overrides these defaults. If a project defines where specs, plans, issues, ADRs, or design docs live, follow that structure.
+- By default, treat task-specific specs, implementation plans, scratch notes, and agent checklists as temporary working artifacts, not durable project documentation.
+- Store temporary task artifacts outside committed project docs. Prefer `.agent/tasks/<date>-<slug>/` for repo-local scratch when available; otherwise keep them outside the repo.
+- Do not commit temporary task specs or implementation plans unless project guidance requires it or I explicitly ask for it.
+- Do not add personal agent scratch paths to a project's `.gitignore` unless I explicitly ask; these paths are already covered by my personal global Git ignore.
+- When work completes, delete temporary task specs and plans. Promote only durable outcomes into the project's existing documentation system.
+- Promote outcomes by intent: architectural choices to decision records if the project uses them; current architecture or design explanations to living design docs; usage, operations, schemas, and workflows to reference docs; repeatable agent rules to `AGENTS.md` or equivalent; remaining work to the project's issue or TODO system.
+- If a project has no durable documentation convention for the outcome, ask before creating one.
+
 ### Spec Authoring
 - Do not silently resolve open questions during brainstorming — surface them to the user explicitly before writing the spec document
 - After spec self-review, before asking for user review: list every decision made to fill a gap not directly answered by the user, and confirm each one before proceeding
