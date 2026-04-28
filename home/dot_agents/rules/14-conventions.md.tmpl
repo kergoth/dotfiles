@@ -34,6 +34,14 @@
 - **Sandbox and agent sockets:** The sandbox blocks Unix socket connections to authentication agents. `git commit` reaches `gpg-agent` for signing; `git push` reaches `ssh-agent` for SSH key auth. Both require `dangerouslyDisableSandbox: true`. Configure Bash permissions to auto-allow `git commit` and `git push` if you want to avoid the prompts.
 {{- end }}
 
+### Pull Requests
+- Before creating a PR, check `.github/pull_request_template.md` and `.github/PULL_REQUEST_TEMPLATE.md`. If a template exists, the PR body must follow its structure.
+- Strip instructional placeholders, HTML comments, and template scaffolding (`<!-- replace this with X -->`) from the body before submitting. The rendered description should contain the actual content, not instructions to the author.
+- Checkboxes that ask the human to acknowledge they reviewed, tested, or approved the work stay unchecked. The agent did not perform those acts; that acknowledgement belongs to the human.
+- Checkboxes that describe how the work was produced (e.g., "made with AI assistance", "co-authored by an AI agent") must be checked accurately when they apply. Leaving an AI-assistance box unchecked when AI was used is misleading and is not acceptable.
+- After updating an existing PR (force-push, additive commits, rebase), re-read the PR description with `gh pr view` and compare it against the new branch contents. If the description no longer matches the diff (added or removed scope, changed approach, stale file lists), update it via `gh pr edit`. Description-versus-diff drift is a review hazard.
+- Do not restructure an existing PR description to match the repository's PR template when the original does not already follow it; reformatting risks losing context the author captured. Surface the mismatch to the user and let them choose whether to reshape it. Updating the description to track the branch contents within its existing shape is the right move.
+
 ### Project Overrides
 - These are personal defaults. If a project's contributing guide, AGENTS.md, or CLAUDE.md mandates a different workflow (squash-merge required, no force-push, merge commits required), follow the project.
 
