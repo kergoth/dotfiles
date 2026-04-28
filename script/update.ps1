@@ -120,6 +120,8 @@ if (Test-Path $gitLockUpdater) {
                         if ($c.review -ne $false) {
                             $ref = if ($c.kind -eq 'tag') { $c.new_sha } elseif ($c.ref) { $c.ref } else { "main" }
                             $reviewArgs = @($c.repo, $c.old_sha, $c.new_sha, '--name', $c.id, '--ref', $ref)
+                            if ($c.kind) { $reviewArgs += @('--kind', $c.kind) }
+                            if ($c.tag_pattern) { $reviewArgs += @('--tag-pattern', $c.tag_pattern) }
                             if ($c.review_note) { $reviewArgs += @('--review-note', $c.review_note) }
                             foreach ($reviewPath in @($c.review_paths)) {
                                 if ($reviewPath) {
@@ -148,6 +150,8 @@ if (Test-Path $gitLockUpdater) {
                                         if ($c.review -ne $false) {
                                             $ref = if ($c.kind -eq 'tag') { $c.new_sha } elseif ($c.ref) { $c.ref } else { "main" }
                                             $reviewArgs = @($c.repo, $c.old_sha, $c.new_sha, '--name', $c.id, '--ref', $ref, '--diff-only')
+                                            if ($c.kind) { $reviewArgs += @('--kind', $c.kind) }
+                                            if ($c.tag_pattern) { $reviewArgs += @('--tag-pattern', $c.tag_pattern) }
                                             if ($c.review_note) { $reviewArgs += @('--review-note', $c.review_note) }
                                             foreach ($reviewPath in @($c.review_paths)) {
                                                 if ($reviewPath) {
@@ -180,15 +184,16 @@ if (Test-Path $gitLockUpdater) {
                         $title = if ($LASTEXITCODE -eq 0) { "Update Git lock" } else { "Update source locks" }
                         $commitLines = @($title, "")
                         foreach ($c in $changes) {
+                            $suffix = if ($c.tag_pattern) { " [$($c.tag_pattern)]" } else { "" }
                             if ($c.kind -eq 'tag') {
                                 $old = if ($c.old_sha) { $c.old_sha } else { '(new)' }
                                 $new = $c.new_sha
-                                $commitLines += "  $($c.id): $old -> $new"
+                                $commitLines += "  $($c.id): $old -> $new$suffix"
                             } else {
                                 $old = $c.old_sha.Substring(0, 7)
                                 $new = $c.new_sha.Substring(0, 7)
                                 $ref = if ($c.ref) { $c.ref } else { "main" }
-                                $commitLines += "  $($c.id): $old -> $new ($ref)"
+                                $commitLines += "  $($c.id): $old -> $new ($ref)$suffix"
                             }
                         }
                         $commitMessage = $commitLines -join "`n"
