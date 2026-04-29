@@ -1,6 +1,6 @@
 ---
 name: git-commits
-description: Use when writing commit messages, staging changes, splitting bundled work into separate commits, curating branch history, rebasing, autosquashing, addressing review feedback with fixup commits, or evaluating whether a commit is bisectable. Personal defaults for commit-level git work. Invoke this skill before running any `git commit`, even on terse requests like "commit it", "commit this", "check it in", "check this in", "ship it", "save it", or "stage and commit" — those phrases all map to the activities above.
+description: ALWAYS invoke before running `git commit` or any commit-related git work — no exceptions for terse or conversational phrasing. Triggers include "commit it", "commit this", "let's commit", "let's re-commit", "continue with the commit", "go ahead and commit", "check it in", "check this in", "ship it", "save it", "stage and commit", "amend that", and "fixup". Also use when writing or rewriting commit messages, staging changes, splitting bundled work into separate commits, curating branch history, rebasing, autosquashing, addressing review feedback with fixup commits, or evaluating whether a commit is bisectable. Personal defaults for commit-level git work — invoke even when you think you remember the conventions; the skill body has the authoritative rules.
 ---
 
 # Git Commits & History
