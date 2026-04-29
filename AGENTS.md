@@ -5,27 +5,6 @@ This file provides guidance to AI coding agents when working with code in this r
 ## Essential Commands
 
 ```bash
-# Apply dotfiles changes to home directory
-chezmoi apply
-
-# Edit a dotfile with live reload
-chezmoi edit --watch ~/.config/zsh/.zshrc
-
-# Update dotfiles and external dependencies
-chezmoi update -R
-
-# Full update including Home Manager packages (bumps nixpkgs/nixpkgs-unstable inputs)
-./script/update
-
-# Apply home.nix changes, diff generations, commit, and switch (no version bump)
-./script/home-manager-switch "Remove unused packages"
-
-# Setup (after cloning, applies dotfiles + user configuration)
-./script/setup
-
-# System-level setup (requires sudo, installs packages, nix, etc.)
-./script/setup-system
-
 # Inspect current template variables and flags
 chezmoi data | less
 
@@ -34,10 +13,28 @@ chezmoi diff
 
 # Diagnose chezmoi configuration issues
 chezmoi doctor
+
+# Resolve the source file for a managed target
+chezmoi source-path ~/.config/zsh/.zshrc
+
+# Validate template rendering without applying
+scripts/chezmoi-execute-template home/.chezmoiscripts/linux/run_onchange_after_10_install-apps.tmpl
+
+# For managed files, render through chezmoi's built-in command
+chezmoi cat --source-path ~/.config/zsh/.zshrc
 ```
 
+Test entrypoints:
+
 ```bash
-# Test dotfiles setup in containers (requires Docker)
+# Run structured Cram regression suites
+./test/run-cram                         # all Cram suites under test/cram/
+./test/run-cram test/cram/container     # container-backed dotfiles scenarios
+./test/run-cram test/cram/statusline    # statusline transcript tests
+./test/run-cram test/cram/show-git-changes
+./test/run-cram test/cram/fetch-verified
+
+# Test dotfiles setup in containers; requires Docker
 ./script/test           # all supported distros
 ./script/test arch      # specific distro only
 ./script/test -i arch   # drop into user shell after setup (debug)
@@ -49,15 +46,28 @@ chezmoi doctor
 ./script/test -G arch   # seed container GNUPGHOME from host ~/.gnupg (avoids interactive GPG passphrase)
 ./script/test -C arch   # skip shared nix store/cache volumes
 ./script/test debian ubuntu  # test multiple distros in one run (space-separated)
+```
 
-# Run the structured Cram regression suites (all suites, or scope to a path)
-./test/run-cram                         # all Cram suites under test/cram/
-./test/run-cram test/cram/container     # container-backed dotfiles scenarios
-./test/run-cram test/cram/statusline    # statusline transcript tests
+State-changing commands. Run these only when the user explicitly asks for the corresponding operation, or when a task clearly requires it and you have stated the effect first.
 
-# Validate template rendering without applying
-scripts/chezmoi-execute-template home/.chezmoiscripts/linux/run_onchange_after_10_install-apps.tmpl
-# Optional for managed files: chezmoi cat --source-path home/.chezmoiscripts/linux/run_onchange_after_10_install-apps.tmpl
+```bash
+# Apply dotfiles changes to home directory
+chezmoi apply
+
+# Update dotfiles and external dependencies
+chezmoi update -R
+
+# Full update including Home Manager packages (bumps nixpkgs/nixpkgs-unstable inputs)
+./script/update
+
+# Apply home.nix changes, diff generations, commit, and switch
+./script/home-manager-switch "Remove unused packages"
+
+# Setup after cloning; applies dotfiles and user configuration
+./script/setup
+
+# System-level setup; may require sudo and install packages
+./script/setup-system
 ```
 
 Env vars for secrets-enabled testing (pass to `./script/test`):
@@ -66,6 +76,25 @@ Env vars for secrets-enabled testing (pass to `./script/test`):
 - `DOTFILES_PERSONAL=1` — force personal profile (auto-detected from host if unset)
 - `DOTFILES_WORK=1` — force work profile
 - `DOTFILES_SKIP_GPG_SECRET_IMPORT=1` — skip interactive GPG secret key import
+
+## Verification Strategy
+
+Pick the cheapest verification that covers the changed behavior. Prefer render checks and targeted tests before container-wide runs.
+
+| Change type | Verification |
+|-------------|--------------|
+| Markdown-only docs | `sed -n` or `rg -n` review of the changed section |
+| Chezmoi template syntax | `scripts/chezmoi-execute-template <template>` |
+| Managed target rendering | `chezmoi cat --source-path <source-path>` |
+| Final rendered dotfile diff | `chezmoi diff` |
+| Shell scripts | `sh -n <script>` plus shellcheck when available |
+| PowerShell scripts | PSScriptAnalyzer when available |
+| Python helpers | `uv run --with pytest pytest scripts/tests/<test_file>.py -q` |
+| Cram scenarios | `./test/run-cram test/cram/<suite>` |
+| Linux setup or package-flow changes | `./script/test <distro>` or `./script/test -w <distro>` when GUI app installation is in scope |
+| Cross-platform package changes | Combine the relevant render checks with the narrowest matching Cram or container test |
+
+Use `./script/test` without a distro only when a broad setup regression check is needed. It is slower and may require Docker setup.
 
 ## Setup Entry Points
 
@@ -123,6 +152,25 @@ This is a **chezmoi-managed dotfiles** repository supporting macOS, Linux (Arch,
   - `posix/` - Unix-like systems (shared)
 - **`.chezmoitemplates/`** - Reusable templates
   - `external/` - Modular external dependency templates
+
+### Editing Managed Files
+
+Edit source files in `home/`, `scripts/`, `script/`, `settings/`, or other repository paths. Do not edit rendered files in `$HOME`; chezmoi will overwrite them on the next apply.
+
+For a managed target path, resolve the source before editing:
+
+```bash
+chezmoi source-path ~/.config/zsh/.zshrc
+chezmoi cat --source-path ~/.config/zsh/.zshrc
+```
+
+For templates, render the source path directly before applying:
+
+```bash
+scripts/chezmoi-execute-template home/dot_config/zsh/dot_zshrc.tmpl
+```
+
+Use `chezmoi diff` to inspect the final rendered change. Run `chezmoi apply` only when applying to the live home directory is part of the requested task.
 
 ## Chezmoi Patterns
 
@@ -191,20 +239,23 @@ Per-source review metadata:
 
 ### Agent Configuration
 
-Agent rules, skills, and subagent configs are managed through a shared pipeline:
+Agent rules, skills, and subagent configs are managed through a shared pipeline. Edit the source templates in this repository, not generated files under `~/.claude`, `~/.codex`, `~/.cursor`, or `~/.agents`.
 
-- **Rules**: `home/dot_agents/rules/*.md.tmpl` are sorted alphabetically and rendered by `render-agent-rules.md.tmpl` with an `agent` parameter. Each agent tool gets its own output file:
-  - Claude: `~/.claude/CLAUDE.md` (via `home/dot_claude/CLAUDE.md.tmpl`)
-  - Codex: `~/.codex/AGENTS.md` (via `home/dot_codex/AGENTS.md.tmpl`)
-  - Cursor: `~/.cursor/rules/agent-rules.mdc` (via `home/dot_cursor/rules/agent-rules.mdc.tmpl`) — uses `.mdc` format with `alwaysApply: true` frontmatter
-- **Skills**: All agent tools symlink to `~/.agents/skills/` (e.g., `~/.claude/skills → ~/.agents/skills`). Skills come from three sources:
-  - Symlinks to external archives (superpowers, anthropic, astral) in `~/.agents/external-sources/`
-  - Local skills in `home/dot_agents/skills/` (obsidian-cli, shell-script-style)
-  - Work-only skills symlinked by `run_onchange_after_40_link-work-agent-content.tmpl` from encrypted repos cloned to `~/Workspace/`
-- **Agents** (Claude Code only): `~/.claude/agents → ~/.agents/agents/`. Subagent configs (markdown files with YAML frontmatter) come from two sources:
-  - Static symlinks in `home/dot_agents/agents/` — curated, flat (top-level). Use subdirectories named after the source only to resolve name collisions.
-  - Work-only agents linked by `run_onchange_after_40_link-work-agent-content.tmpl` into repo-name subdirectories (e.g., `~/.agents/agents/ai-resources/`). Claude Code discovers agents recursively.
-- **Agent-specific conditionals**: Templates can branch on the `agent` parameter (e.g., `{{ eq $agent "claude" }}`) for tool-specific guidance
+- **Rules**: edit `home/dot_agents/rules/*.md.tmpl`. These are sorted alphabetically and rendered by `home/.chezmoitemplates/render-agent-rules.md.tmpl` with an `agent` parameter.
+  - Claude output: `~/.claude/CLAUDE.md`, rendered from `home/dot_claude/CLAUDE.md.tmpl`
+  - Codex output: `~/.codex/AGENTS.md`, rendered from `home/dot_codex/AGENTS.md.tmpl`
+  - Cursor output: `~/.cursor/rules/agent-rules.mdc`, rendered from `home/dot_cursor/rules/agent-rules.mdc.tmpl`
+- **Skills**: all agent tools symlink to `~/.agents/skills/`. Source content comes from external archives, local skills in `home/dot_agents/skills/`, and work-only encrypted repos linked by `run_onchange_after_40_link-work-agent-content.tmpl`.
+- **Agents** (Claude Code only): `~/.claude/agents` points at `~/.agents/agents/`. Static source links live in `home/dot_agents/agents/`; work-only agents are linked into repo-name subdirectories by `run_onchange_after_40_link-work-agent-content.tmpl`.
+- **Agent-specific conditionals**: templates can branch on the `agent` parameter, for example `{{ eq $agent "claude" }}`.
+
+Useful render checks after changing agent rules:
+
+```bash
+scripts/chezmoi-execute-template home/dot_claude/CLAUDE.md.tmpl
+scripts/chezmoi-execute-template home/dot_codex/AGENTS.md.tmpl
+scripts/chezmoi-execute-template home/dot_cursor/rules/agent-rules.mdc.tmpl
+```
 
 ### Ensuring Directories Exist
 
@@ -235,7 +286,11 @@ Chimera uses musl libc — glibc-linked binaries (1Password, Vivaldi, Zed) can't
 - `packagesForMissingTools` wraps `availableTools`: takes a dict of `cmd→install-spec` (bare pkg name, or full arg string like `--git https://...` for cargo), returns only the specs whose commands are missing.
 - Individual `find-tool` calls scale fine for 1–3 tools; prefer `packagesForMissingTools` for larger sets. Multi-package install scripts will likely migrate to this pattern.
 
-## Common Script Functions (from `scripts/common.sh`)
+## Script Conventions
+
+For maintained shell scripts, read and apply the `shell-script-style` skill before substantial edits. Source `scripts/common.sh` instead of reimplementing shared helpers when writing repository scripts.
+
+Common helpers from `scripts/common.sh`:
 
 ```bash
 has <command>              # Check if command exists
@@ -249,6 +304,8 @@ brewfile_install <file>    # Install from Brewfile
 uv_check <pkg>             # Install Python tool via uv
 cargo_check <pkg>          # Install Rust tool via cargo
 ```
+
+PowerShell helpers live in `scripts/common.ps1`. Prefer existing helpers such as `Install-WinGetPackageIfNotInstalled` over one-off installer logic.
 
 ## Troubleshooting
 
@@ -275,7 +332,7 @@ bash -x "$(chezmoi source-path)/home/.chezmoiscripts/posix/run_onchange_after_50
 # Render and run a templated script with debug output
 scripts/chezmoi-execute-template home/.chezmoiscripts/posix/run_onchange_before_25_install-tools.tmpl | bash -x
 
-# Check if script is being skipped (content hash unchanged)
+# Check whether chezmoi is skipping an unchanged run script
 chezmoi status | grep run_onchange
 ```
 
