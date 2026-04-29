@@ -54,12 +54,6 @@ State-changing commands. Run these only when the user explicitly asks for the co
 # Apply dotfiles changes to home directory
 chezmoi apply
 
-# Update dotfiles and external dependencies
-chezmoi update -R
-
-# Full update including Home Manager packages (bumps nixpkgs/nixpkgs-unstable inputs)
-./script/update
-
 # Apply home.nix changes, diff generations, commit, and switch
 ./script/home-manager-switch "Remove unused packages"
 
@@ -68,6 +62,16 @@ chezmoi update -R
 
 # System-level setup; may require sudo and install packages
 ./script/setup-system
+```
+
+Human-owned update commands. Agents may mention these when relevant, but should not run them unless the user explicitly asks to perform the update workflow.
+
+```bash
+# Interactive review-before-update workflow for dotfiles, externals, and Home Manager inputs
+./script/update
+
+# Update dotfiles and external dependencies through chezmoi
+chezmoi update -R
 ```
 
 Env vars for secrets-enabled testing (pass to `./script/test`):
@@ -107,7 +111,7 @@ Scripts form a progression from OS installation to dotfiles application:
 - `script/setup` / `chezmoi apply` — Apply dotfiles and user-level packages
 - `script/setup-full` — Runs `setup-system` then `setup`
 
-- `script/update` — Update dotfiles, externals, and bump home-manager flake inputs (nixpkgs/nixpkgs-unstable)
+- `script/update` — Human-owned interactive review-before-update workflow for dotfiles, externals, and Home Manager inputs. Agents may suggest it, but should not run it unless explicitly asked to perform that workflow.
 - `script/home-manager-switch [--update-inputs "..."] ["subject"]` — Apply home.nix changes, diff generations, commit all changes under `home/dot_config/home-manager/`, and switch. Called by `script/update`; also useful standalone when editing `home.nix`.
 
 Container-based test runners (`script/test`, `test/run-cram`) are documented in Essential Commands above.
@@ -223,6 +227,8 @@ Update tooling:
 - `scripts/update-fetch-lock.py` — resolves current bytes for `fetch-sources.yml`; writes `fetch-lock.yml`.
 - `script/update` / `script/update.ps1` — orchestrate review-first flow: resolve, review each candidate, prompt before apply, write locks, commit.
 - `scripts/show-git-changes.py` — review surface for a candidate: fetches old/new range, shows log/shortlog/diff, may run AI review. For `kind=tag` GitHub sources, also includes release notes in the AI prompt.
+
+Treat update execution as human-owned. Agents can explain the workflow, inspect lock files, and suggest running `script/update`, but should not run update commands unless the user explicitly requests that workflow.
 
 Per-source review metadata:
 
