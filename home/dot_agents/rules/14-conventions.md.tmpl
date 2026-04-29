@@ -7,11 +7,9 @@
 - **Trigger signs**: If you find yourself reimplementing existing features, STOP and verify current API docs
 
 ## Bash Command Discipline{{- if eq $agent "claude" }} (Claude Code){{- end }}
-- **One command per Bash call**: Never chain with `&&`, `||`, `;`, `|`
-- **No shell control flow**: Avoid `for`/`while`/`if` in Bash calls
-- **No command substitution**: Avoid `$(...)` or backticks
-- **Prefer built-in tools**: Use Read over `cat`, Grep over `grep`, Glob over `find`
-- **No shell state persistence**: Don't rely on variables or `cd` between calls
+- **Prefer built-in tools**: Read over `cat`, Grep over `grep`, Glob over `find`. Tool calls are reviewable and don't go through Bash permission checks at all.
+- **State-modifying commands with `>` or `>>` re-prompt despite allowlist** ([claude-code#20449](https://github.com/anthropics/claude-code/issues/20449)); use Write/Edit instead of `cmd > file` whenever the goal is to produce a file.
+- **Shell state doesn't persist between Bash calls**: variables and `cd` reset across invocations. Pass absolute paths and re-export env per call.
 
 ## GitHub CLI Conventions
 - Prefer explicit `gh` subcommands and installed extensions over raw `gh api` / `gh api graphql`. Subcommands are easier to permission-gate, less brittle, and handle pagination/error cases automatically. Fall back to `gh api` only when no subcommand or extension covers the operation.
