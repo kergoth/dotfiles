@@ -1,6 +1,6 @@
 ---
 name: git-prs
-description: Use when opening pull requests, drafting or revising PR descriptions, addressing PR review feedback, updating an existing PR after a force-push or rebase, handling PR templates, or working with GitHub pull requests, GitLab merge requests, or Bitbucket pull requests. Covers personal defaults for PR description hygiene and reviewer-facing content.
+description: Use when opening pull requests, drafting or revising PR descriptions, addressing PR review feedback, updating an existing PR after a force-push or rebase, handling PR templates, or working with GitHub pull requests, GitLab merge requests, or Bitbucket pull requests. Covers personal defaults for PR description hygiene and reviewer-facing content. Invoke this skill before running `gh pr create`, `glab mr create`, or equivalent, even on terse requests like "open a PR", "send a PR", "ship the PR", "PR it", "push it up for review", or "make an MR" — those phrases all map to the activities above.
 ---
 
 # Pull Requests

@@ -1,6 +1,6 @@
 ---
 name: git-commits
-description: Use when writing commit messages, staging changes, splitting bundled work into separate commits, curating branch history, rebasing, autosquashing, addressing review feedback with fixup commits, or evaluating whether a commit is bisectable. Personal defaults for commit-level git work.
+description: Use when writing commit messages, staging changes, splitting bundled work into separate commits, curating branch history, rebasing, autosquashing, addressing review feedback with fixup commits, or evaluating whether a commit is bisectable. Personal defaults for commit-level git work. Invoke this skill before running any `git commit`, even on terse requests like "commit it", "commit this", "check it in", "check this in", "ship it", "save it", or "stage and commit" — those phrases all map to the activities above.
 ---
 
 # Git Commits & History
