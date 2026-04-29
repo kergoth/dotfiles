@@ -50,21 +50,22 @@ chezmoi doctor
 ./script/test -C arch   # skip shared nix store/cache volumes
 ./script/test debian ubuntu  # test multiple distros in one run (space-separated)
 
-# Run the structured Cram regression suites
+# Run the structured Cram regression suites (all suites, or scope to a path)
 ./test/run-cram                         # all Cram suites under test/cram/
 ./test/run-cram test/cram/container     # container-backed dotfiles scenarios
 ./test/run-cram test/cram/statusline    # statusline transcript tests
-
-# Env vars for secrets-enabled testing:
-#   DOTFILES_SECRETS=1          Mount host age key; enables chezmoi secret decryption
-#   DOTFILES_PERSONAL=1         Force personal profile (auto-detected from host if unset)
-#   DOTFILES_WORK=1             Force work profile
-#   DOTFILES_SKIP_GPG_SECRET_IMPORT=1  Skip interactive GPG secret key import step
 
 # Validate template rendering without applying
 scripts/chezmoi-execute-template home/.chezmoiscripts/linux/run_onchange_after_10_install-apps.tmpl
 # Optional for managed files: chezmoi cat --source-path home/.chezmoiscripts/linux/run_onchange_after_10_install-apps.tmpl
 ```
+
+Env vars for secrets-enabled testing (pass to `./script/test`):
+
+- `DOTFILES_SECRETS=1` — mount host age key; enables chezmoi secret decryption
+- `DOTFILES_PERSONAL=1` — force personal profile (auto-detected from host if unset)
+- `DOTFILES_WORK=1` — force work profile
+- `DOTFILES_SKIP_GPG_SECRET_IMPORT=1` — skip interactive GPG secret key import
 
 ## Setup Entry Points
 
@@ -78,12 +79,9 @@ Scripts form a progression from OS installation to dotfiles application:
 - `script/setup-full` — Runs `setup-system` then `setup`
 
 - `script/update` — Update dotfiles, externals, and bump home-manager flake inputs (nixpkgs/nixpkgs-unstable)
-- `script/home-manager-switch [--update-inputs "..."] ["subject"]` — Apply home.nix changes, diff generations, commit all changed files under `home/dot_config/home-manager/`, and switch. Called by `script/update`; also useful standalone when editing `home.nix` directly.
-- `script/test` — Run dotfiles setup in container test environments (Arch, Debian,
-  Fedora, Ubuntu, Chimera). Tests `setup-root` + `setup-full` end to end.
-- `test/run-cram` — Run the structured Cram regression suites. Use this for
-  repeatable scenario coverage; it layers on top of the container runner and
-  also includes non-container Cram suites such as statusline tests.
+- `script/home-manager-switch [--update-inputs "..."] ["subject"]` — Apply home.nix changes, diff generations, commit all changes under `home/dot_config/home-manager/`, and switch. Called by `script/update`; also useful standalone when editing `home.nix`.
+
+Container-based test runners (`script/test`, `test/run-cram`) are documented in Essential Commands above.
 
 ## Repository Architecture
 
@@ -164,22 +162,24 @@ Chezmoi run scripts follow this pattern:
 
 ### External Dependencies
 
-Chezmoi externals download non-package-manager resources. The templates under `.chezmoitemplates/external/` cover several categories of pinned upstream content, including tooling, agent content, editor assets, fonts, and other app data.
+Chezmoi externals download non-package-manager resources. Templates under `.chezmoitemplates/external/` cover tooling, agent content, editor assets, fonts, and other app data. Shared Git/fetch pinning supports the repo's review-first update flow, used by externals, install/update scripts, and any template consuming upstream content.
 
-Shared Git pinning is part of the repo's broader move toward review-first updates for external resources.
+Sources and locks (in `home/.chezmoidata/`):
 
-- `home/.chezmoidata/git-sources.yml` defines the shared Git sources, how each one is resolved, and optional review metadata. Templates and scripts remain responsible for deciding how pinned content is consumed.
-- `home/.chezmoidata/git-lock.yml` stores the current pinned value for each source. Branch-tracked entries store SHAs; tagged entries may store tag names instead of SHAs.
-- `home/.chezmoidata/fetch-sources.yml` defines pinned single-file fetch sources whose bytes should be locked independently of Git repository state.
-- `home/.chezmoidata/fetch-lock.yml` stores the current SHA-256 digest for each fetch source.
-- This shared mechanism is used by chezmoi externals, install/update scripts, and other templates or scripts that consume upstream Git content.
-- `scripts/update-git-lock.py --dry-run --json` resolves candidate updates and emits the structured metadata consumed by downstream review/apply tooling.
-- `scripts/update-fetch-lock.py` resolves the current bytes for `fetch-sources.yml` entries and writes `fetch-lock.yml`.
-- `script/update` and `script/update.ps1` orchestrate the review-first flow: resolve updates, review each candidate, prompt before apply, write `git-lock.yml`, refresh `fetch-lock.yml` when needed, and commit the lock changes.
-- `scripts/show-git-changes.py` is the review surface for a candidate update: it fetches the old/new range, shows commit log/shortlog and diff output, and may run an AI review summary.
-- `review_note` adds repo-specific instructions to that AI review.
-- `review_paths` hard-scopes the fetched log and diff passed into review, which is useful for large repositories or release-tracking sources where only part of the tree matters.
-- For tagged GitHub sources, `scripts/show-git-changes.py` also includes release notes in the review prompt when the update metadata carries `kind=tag`. `review_note` should treat release notes as narrative context, not as a replacement for diff review.
+- `git-sources.yml` / `git-lock.yml` — Git sources with resolution and review metadata; lock stores SHA (branch-tracked) or tag name (tagged).
+- `fetch-sources.yml` / `fetch-lock.yml` — pinned single-file fetches; lock stores SHA-256 of bytes.
+
+Update tooling:
+
+- `scripts/update-git-lock.py --dry-run --json` — resolves candidate updates; emits structured metadata for downstream tooling.
+- `scripts/update-fetch-lock.py` — resolves current bytes for `fetch-sources.yml`; writes `fetch-lock.yml`.
+- `script/update` / `script/update.ps1` — orchestrate review-first flow: resolve, review each candidate, prompt before apply, write locks, commit.
+- `scripts/show-git-changes.py` — review surface for a candidate: fetches old/new range, shows log/shortlog/diff, may run AI review. For `kind=tag` GitHub sources, also includes release notes in the AI prompt.
+
+Per-source review metadata:
+
+- `review_note` — repo-specific instructions for AI review. Treat release notes as narrative context, not a substitute for diff review.
+- `review_paths` — hard-scopes fetched log/diff; useful for large repos or release-tracking sources where only part of the tree matters.
 
 ### Secrets Management
 
@@ -288,24 +288,9 @@ chezmoi managed --include=externals
 chezmoi apply --refresh-externals
 ```
 
-## Adding Software to This Repository
+## Adding/Removing Software
 
-**See `docs/contributing-software.md` for comprehensive documentation on adding software.**
-
-Quick reference:
-- **GUI apps**: macOS (Homebrew cask), Windows (Scoop/winget), Linux (Flatpak or Nix)
-- **CLI tools**: Prefer Nix > Homebrew (macOS) / Scoop (Windows) > system packages > install-tools (eget/cargo/uv)
-- **Use `before_` scripts for CLI tools** (dotfiles may detect them)
-- **Use `after_` scripts for GUI apps** (don't delay dotfiles for large installs)
-- **Always check conditional flags**: `.coding`, `.containers`, `.ephemeral`, `.headless`, `.personal`, `.work`, etc.
-
-## Removing Software from This Repository
-
-See `docs/contributing-software.md` for platform-specific file paths to check.
-
-1. Remove from all applicable installation files (Brewfile, home.nix, install-tools, scoop, system-setup)
-2. Move README entry from "Installed" to "Formerly-Used" section (drop conditional/install notes, add replacement note)
-3. Verify no remaining references that would break without the tool
+See `docs/contributing-software.md` for the full guide: platform paths (Brewfile, home.nix, install-tools, scoop, system-setup), package-manager preference order, timing rules (`before_` vs `after_`), conditional flags, README entry formatting, and the verification checklist. On removal, README entries move from "Installed" to "Formerly-Used".
 
 ## Platform-Specific Notes
 
@@ -314,7 +299,3 @@ See `docs/contributing-software.md` for platform-specific file paths to check.
 - **Linux**: Nix/home-manager for packages when available; eget for Chimera gaps (no Nix); cargo/uv very limited
 - **Windows**: Uses Scoop and winget, PowerShell scripts (`.ps1.tmpl`). `Install-Scoop-IfNotPresent` is a legacy winget-compat shim being phased out — new GUI app installs use `find-tool` in the template header + bare `scoop install` in the body (see `run_onchange_before_25_install-tools.ps1.tmpl` for the pattern).
 - **FreeBSD**: pkg/ports for tool installation
-
-## README Documentation
-
-See `docs/contributing-software.md` for entry formatting, section selection, and verification checklist.
