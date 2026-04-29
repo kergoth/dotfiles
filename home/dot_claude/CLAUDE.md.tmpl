@@ -1,1 +1,5 @@
-{{- includeTemplate (joinPath .chezmoi.workingTree "home/.chezmoitemplates/render-agent-rules.md.tmpl") (dict "root" . "agent" "claude") -}}
+{{ includeTemplate (joinPath .chezmoi.workingTree "home/.chezmoitemplates/render-agent-rules.md.tmpl") (dict "root" . "agent" "claude") }}
+
+## Claude Code Specifics
+
+- `$TMPDIR` differs between sandbox and non-sandbox modes (sandbox: an isolated path under `/tmp/`; non-sandbox: normal user TMPDIR). A path written in one mode may not be valid in the other — re-resolve `$TMPDIR` per tool call rather than passing paths between them. `/tmp` itself isn't writable in sandbox mode; use `$TMPDIR`.
