@@ -95,6 +95,13 @@ methodical, but still vary paragraph shape and sentence length.
 **Emails and messages:** Contractions, direct address, shorter
 paragraphs. Match the formality of the recipient relationship.
 
+## Markdown link discipline
+
+When the artifact is markdown documentation (READMEs, `docs/` files,
+Obsidian notes, technical blog posts), apply markdown-specific link and
+list conventions from [references/markdown.md](references/markdown.md).
+Plan files, design documents, and conversational responses are exempt.
+
 ## Self-check
 
 Before finalizing any prose artifact, verify:
@@ -105,3 +112,5 @@ Before finalizing any prose artifact, verify:
 4. No hollow intensifiers ("crucial," "pivotal," "seamless")?
 5. Vocabulary fits the context (technical terms fine in technical docs,
    not in casual emails)?
+6. For markdown documentation: links are descriptive, not bare autolinks
+   or generic `[here]` text? See `references/markdown.md`.
