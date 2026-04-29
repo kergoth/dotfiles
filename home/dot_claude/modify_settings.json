@@ -20,6 +20,10 @@
 {{-   $managedDeny := dig "permissions" "deny" (list) $managed -}}
 {{-   $existingExcluded := dig "sandbox" "excludedCommands" (list) $existing -}}
 {{-   $managedExcluded := dig "sandbox" "excludedCommands" (list) $managed -}}
+{{-   $existingAllowWrite := dig "sandbox" "filesystem" "allowWrite" (list) $existing -}}
+{{-   $managedAllowWrite := dig "sandbox" "filesystem" "allowWrite" (list) $managed -}}
+{{-   $existingDenyWrite := dig "sandbox" "filesystem" "denyWrite" (list) $existing -}}
+{{-   $managedDenyWrite := dig "sandbox" "filesystem" "denyWrite" (list) $managed -}}
 {{-   $existingDomains := dig "sandbox" "network" "allowedDomains" (list) $existing -}}
 {{-   $managedDomains := dig "sandbox" "network" "allowedDomains" (list) $managed -}}
 {{-   $merged := mergeOverwrite $existing $managed -}}
@@ -27,6 +31,8 @@
 {{-   $mergedAllow := concat $existingAllow $managedAllow | uniq -}}
 {{-   $mergedDeny := concat $existingDeny $managedDeny | uniq -}}
 {{-   $mergedExcluded := concat $existingExcluded $managedExcluded | uniq -}}
+{{-   $mergedAllowWrite := concat $existingAllowWrite $managedAllowWrite | uniq -}}
+{{-   $mergedDenyWrite := concat $existingDenyWrite $managedDenyWrite | uniq -}}
 {{-   $mergedDomains := concat $existingDomains $managedDomains | uniq -}}
 {{- /* Ensure permissions object exists, then patch arrays back in */ -}}
 {{-   if not (hasKey $merged "permissions") -}}
@@ -50,6 +56,22 @@
 {{-     $_ := set $merged.sandbox "excludedCommands" $mergedExcluded -}}
 {{-   else -}}
 {{-     $_ := unset $merged.sandbox "excludedCommands" -}}
+{{-   end -}}
+{{-   if $mergedAllowWrite -}}
+{{-     if not (hasKey $merged.sandbox "filesystem") -}}
+{{-       $_ := set $merged.sandbox "filesystem" dict -}}
+{{-     end -}}
+{{-     $_ := set $merged.sandbox.filesystem "allowWrite" $mergedAllowWrite -}}
+{{-   else if hasKey $merged.sandbox "filesystem" -}}
+{{-     $_ := unset $merged.sandbox.filesystem "allowWrite" -}}
+{{-   end -}}
+{{-   if $mergedDenyWrite -}}
+{{-     if not (hasKey $merged.sandbox "filesystem") -}}
+{{-       $_ := set $merged.sandbox "filesystem" dict -}}
+{{-     end -}}
+{{-     $_ := set $merged.sandbox.filesystem "denyWrite" $mergedDenyWrite -}}
+{{-   else if hasKey $merged.sandbox "filesystem" -}}
+{{-     $_ := unset $merged.sandbox.filesystem "denyWrite" -}}
 {{-   end -}}
 {{-   if $mergedDomains -}}
 {{-     if not (hasKey $merged.sandbox "network") -}}
