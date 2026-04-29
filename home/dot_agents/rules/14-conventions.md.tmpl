@@ -47,37 +47,18 @@
 ### Project Overrides
 - These are personal defaults. If a project's contributing guide, AGENTS.md, or CLAUDE.md mandates a different workflow (squash-merge required, no force-push, merge commits required), follow the project.
 
-## Markdown Conventions
-- In documentation files (READMEs, docs/, Obsidian notes): always use proper markdown links - `[descriptive text](url)` or reference-style `[text][ref]` with definitions at the bottom
-- Never use bare autolinks (`<http://...>`) or plain unlinked URLs in these contexts - these are the antipattern to avoid
-- Plan files, design documents, and conversational responses may use autolinks or bare URLs
-- Use descriptive link text that explains the destination; avoid generic text like `[here]`, `[this]`, or `[link]`
-- In structured lists, use indented continuation for elaboration that goes beyond a one-sentence definition. The inline portion should answer "what is it"; continuation handles caveats, structure, deployment details, or anything that would otherwise stretch the bullet into a run-on. For example:
-
-  ```
-  - **Pool size**: 20 connections by default.
-    Production overrides via PGPOOL_SIZE; tune per service in infra/db.yml.
-  ```
-
 ## GitHub CLI Conventions
-- Prefer explicit `gh` subcommands (`gh pr view`, `gh issue list`) and installed extensions (`gh pr-review`) over raw `gh api` or `gh api graphql` calls
-- Fall back to `gh api` only when no subcommand or extension covers the needed operation
-- Reason: subcommands are easier to permission-gate, less brittle, and handle pagination/error cases automatically
+- Prefer explicit `gh` subcommands and installed extensions over raw `gh api` / `gh api graphql`. Subcommands are easier to permission-gate, less brittle, and handle pagination/error cases automatically. Fall back to `gh api` only when no subcommand or extension covers the operation.
 
 ## Shell Conventions
-- **JSON in shell pipelines: use `jq`, not inline Python.** Inline `python3 -c` for JSON is brittle and error-prone due to shell quoting. Do not offer Python as an alternative or "fallback if jq is unavailable"; `jq` is a standard tool, so assume it is present. Only use Python when the transformation genuinely exceeds `jq`'s capabilities (complex stateful logic, multi-source joins, etc.).
+- **JSON in shell pipelines: use `jq`, not inline Python.** Inline `python3 -c` for JSON is brittle due to shell quoting. Assume `jq` is present; only use Python when the transformation genuinely exceeds `jq` (complex stateful logic, multi-source joins).
 
 ## Writing Conventions
-- Never open with sycophantic filler: "Great question!", "Certainly,", "Absolutely,", "I'd be happy to...", "That's a great point!"
-- Avoid formulaic closers: "Happy to help!", "Hope this helps!", "Let me know if you have any questions!", "Please don't hesitate to reach out"
-- Do not begin responses or paragraphs with "Certainly," "Indeed," "Moreover," "Furthermore," "Additionally," "Notably," "Importantly," or "Interestingly,"
-- Avoid em dashes as structural crutches. When reaching for an em dash, restructure the sentence: split into two sentences, use a subordinate clause, or use a comma, semicolon, colon, or parentheses instead. Target: zero em dashes. Hard limit: one per 1,000 words.
-- Do not default to groups of three (three examples, three bullet points, three adjectives). Use two, four, one, or however many the content actually warrants.
-- Vary paragraph structure. Do not repeat the pattern: topic sentence, explanation, example, transition. Start some paragraphs with questions, some with blunt statements. Let some be one sentence. Not every paragraph needs a closing transition.
-- Avoid hollow intensifiers that add no information: "crucial," "pivotal," "vital," "comprehensive," "robust" (outside engineering), "seamless," "cutting-edge," "groundbreaking," "transformative"
-- Use contractions in conversational output ("don't" not "do not," "it's" not "it is"). Formal artifacts (design documents, proposals) may use either form as appropriate to the audience.
-- Do not use "delve," "tapestry," "landscape" (figurative), "testament," "multifaceted," "nuanced" (as filler), or "leverage" (as verb; say "use").
-- When producing prose artifacts (design docs, PR descriptions, READMEs, Confluence pages, Obsidian notes, emails), invoke the clean-prose skill if it has not already been loaded. For commit messages, see the threshold under Git Conventions > Messages.
+- No sycophantic openers ("Great question!", "Certainly,", "Absolutely,", "I'd be happy to") or formulaic closers ("Hope this helps!", "Let me know if you have questions!")
+- No em dashes as structural crutches; restructure into separate sentences, subordinate clauses, commas, semicolons, colons, or parentheses. Target zero; hard limit one per 1,000 words.
+- Don't use "delve," "tapestry," "landscape" (figurative), "testament," "multifaceted," "nuanced" (filler), "leverage" (verb; say "use"), or hollow intensifiers ("crucial," "pivotal," "vital," "seamless," "cutting-edge")
+- Use contractions in conversational output. Vary paragraph structure; don't default to groups of three.
+- For prose artifacts (design docs, PR descriptions, READMEs, Obsidian notes, emails), invoke the `clean-prose` skill before finalizing. The `avoid-ai-writing` skill complements it for AI-tell auditing.
 
 ## Issue Tracking Conventions
 - Epics / initiatives: outcome-level. Why it exists, what done looks like, what's excluded; no implementation details
