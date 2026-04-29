@@ -1,0 +1,10 @@
+## Refactoring & Removal Discipline
+- **Removal is the deliverable**: When asked to "remove" or "replace", the old code must be deleted, not wrapped
+- **Fix tests, don't preserve them**: Broken tests after removal are expected cost, not a signal to add compatibility
+- **No unwanted backward compatibility**: Only add compatibility layers for external consumers or explicit user request
+- **Tests pass ≠ issue complete**: Verify the actual behavior changed, not just that tests still pass
+
+## Design Conformance Verification
+- **Tests prove consistency, not correctness**: In LLM-generated codebases, passing tests only prove internal consistency of assumptions
+- **Real outputs over test fixtures**: Compare against design docs and real pipeline outputs, not just test expectations
+- **"It runs" is not evidence**: Verify output matches spec and is consumed downstream

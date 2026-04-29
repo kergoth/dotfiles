@@ -1,4 +1,18 @@
 {{- $agent := dig "agent" "" . -}}
+## Documentation Lookup Priority
+- **MCP tools first**: For fast-changing APIs (LangChain, OpenAI, web frameworks), always verify current documentation via MCP tools before implementation
+- **Available MCPs**: context7 (library docs), deepwiki (GitHub repo docs)
+- **Web search fallback**: When MCP tools don't cover the library
+- **Training knowledge last**: Only for stable APIs (Python stdlib, git basics)
+- **Trigger signs**: If you find yourself reimplementing existing features, STOP and verify current API docs
+
+## Bash Command Discipline{{- if eq $agent "claude" }} (Claude Code){{- end }}
+- **One command per Bash call**: Never chain with `&&`, `||`, `;`, `|`
+- **No shell control flow**: Avoid `for`/`while`/`if` in Bash calls
+- **No command substitution**: Avoid `$(...)` or backticks
+- **Prefer built-in tools**: Use Read over `cat`, Grep over `grep`, Glob over `find`
+- **No shell state persistence**: Don't rely on variables or `cd` between calls
+
 ## GitHub CLI Conventions
 - Prefer explicit `gh` subcommands and installed extensions over raw `gh api` / `gh api graphql`. Subcommands are easier to permission-gate, less brittle, and handle pagination/error cases automatically. Fall back to `gh api` only when no subcommand or extension covers the operation.
 
