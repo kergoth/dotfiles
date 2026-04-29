@@ -3,7 +3,6 @@
 
 ## Identity
 - Senior Embedded Linux Engineer at Pano AI
-- Co-founder of BitBake and OpenEmbedded (basis of Yocto Project); 22+ years in embedded Linux
 - Primary languages: Python, C/C++, shell (bash/sh)
 - Platform: macOS, zsh
 - GitHub: kergoth
@@ -11,105 +10,31 @@
 {{ include (joinPath .chezmoi.workingTree "settings/agents/rules/personal.md.age") | decrypt }}
 {{- end }}
 
-## Dotfiles Source of Truth
-- I manage my dotfiles in `~/.dotfiles/` using chezmoi
-- For config or settings changes that belong to my dotfiles, edit the source in `~/.dotfiles/`, not files in `$HOME`
-- If a file under `$HOME` might be chezmoi-managed, check `~/.dotfiles/` first before editing it directly
-- When behavior depends on machine-specific chezmoi data or templates, inspect those to determine the active configuration
-
 ## Interaction Preferences
-- Default to thinking mode: be exploratory and questioning; understand before acting
-- Be extraordinarily skeptical of your own correctness - red-team decisions before calling them done
-- Minimize assumptions; ask on ambiguity; confirm before major actions
+- Default to thinking mode: explore and question; understand before acting
+- Be extraordinarily skeptical of your own correctness; verify rather than guess; ask on ambiguity
 - Clear, precise language; err formal over informal
-- No sycophancy - honesty over validation; correct firmly without judgment
-- Clarify rather than assume; verify rather than guess
-- Lean toward collaborative teaching - share educational insights, explain trade-offs, and identify opportunities for me to make meaningful design choices rather than doing everything autonomously
+- No sycophancy: honesty over validation; correct firmly without judgment
+- Lean toward collaborative teaching: share insights, explain trade-offs, surface meaningful design choices for me
 
 ## Research & Analysis
-- Always cite sources; prioritize verified information over confident guessing - say "I don't know" rather than stating something unverified authoritatively
-- Start with breadth to determine scope, then drill down systematically; balance thoroughness with token constraints
-- For user opinion/community sentiment, prefer reddit over "best" or "top" listicles
-- Distinguish consensus from anecdotal information and explicitly flag which is which
-- Present multiple perspectives; consider from multiple angles; red-team your own findings
-- These principles extend to all information-gathering, not just dedicated research tasks
+- Cite sources; prefer "I don't know" over confident guessing
+- For user opinion or community sentiment, prefer reddit over "best/top" listicles
+- Distinguish consensus from anecdote and flag which is which
 
 ## Personal Tooling
-- Dotfiles: `~/.dotfiles/` (chezmoi + Nix Home Manager, multi-platform) - has its own CLAUDE.md with full architecture docs
-- `~/bin/` contains my personal shell scripts and small convenience utilities; check there before writing a new one
-- If I ask for a standalone personal script that is not project-specific and does not need chezmoi templating, `~/bin/` is the default destination
+- Dotfiles: `~/.dotfiles/` (chezmoi + Nix Home Manager) — has its own CLAUDE.md with full architecture docs. Edit the source there, not rendered files in `$HOME`.
+- `~/bin/`: my personal scripts; check there before writing a new one. Default destination for standalone non-templated personal scripts.
 - Package install preference: chezmoi externals > Nix > Homebrew > upstream installers > language pkg mgrs > system pkg mgrs
-- Shell is zsh with extensive customization via dotfiles
-- `~/Repos/` contains clean repository clones managed by [ghq](https://github.com/x-motemen/ghq), organized as `~/Repos/{host}/{owner}/{repo}` (e.g., `~/Repos/github.com/panoai/pano-ec`)
-  - When you need to read a file from a repo and the current working directory is not inside that repo, prefer `~/Repos/` over grepping `~/Workspace` (which may contain project-specific modifications) or fetching from GitHub
-  - These clones track the default branch and may include untracked docs from analysis; they are not guaranteed to be up-to-date — run `git -C <path> pull` if freshness matters
-  - `~/Workspace/` project clones may have branch-specific modifications; `~/Repos/` clones are for clean reference
-
-## Pano AI
-- Wildfire detection platform using panoramic cameras on edge computers
-
-## Workspace
-- Primary coding workspace: `~/Workspace/` - see its CLAUDE.md for layout and conventions
-
-## Obsidian Integration
-- When asked to save learnings or session notes, write to the active Obsidian vault
-- Use the `obsidian` CLI (see obsidian-cli skill) for vault operations (create, search, daily notes, metadata); avoid shell file manipulation (echo, sed, etc.)
-- Use vault's PARA structure for placement; use Obsidian-compatible formatting (YAML frontmatter, wikilinks, Dataview metadata)
-- General technical learnings go in `02_Areas/Technical Skills/Shared/` (synced to work machines - only generic knowledge or references to published open-source work; no private/unpublished personal project code or details)
+- `~/Repos/`: clean ghq clones at `~/Repos/{host}/{owner}/{repo}`. Prefer over `~/Workspace/` for clean reference reads (Workspace clones may have branch-specific changes). Run `git -C <path> pull` if freshness matters.
 
 ## Agent Planning
-
-### Spec and Plan Artifacts
-- Project-local guidance overrides these defaults. If a project defines where specs, plans, issues, ADRs, or design docs live, follow that structure.
-- By default, treat task-specific specs, implementation plans, scratch notes, and agent checklists as temporary working artifacts, not durable project documentation.
-- Store temporary task artifacts outside committed project docs. Prefer `.agent/tasks/<date>-<slug>/` for repo-local scratch when available; otherwise keep them outside the repo.
-- Do not commit temporary task specs or implementation plans unless project guidance requires it or I explicitly ask for it.
-- Do not add personal agent scratch paths to a project's `.gitignore` unless I explicitly ask; these paths are already covered by my personal global Git ignore.
-- When work completes, delete temporary task specs and plans. Promote only durable outcomes into the project's existing documentation system.
-- Promote outcomes by intent: architectural choices to decision records if the project uses them; current architecture or design explanations to living design docs; usage, operations, schemas, and workflows to reference docs; repeatable agent rules to `AGENTS.md` or equivalent; remaining work to the project's issue or TODO system.
-- If a project has no durable documentation convention for the outcome, ask before creating one.
-
-### Spec Authoring
-- Do not silently resolve open questions during brainstorming — surface them to the user explicitly before writing the spec document
-- After spec self-review, before asking for user review: list every decision made to fill a gap not directly answered by the user, and confirm each one before proceeding
-- "Fix TBDs" in self-review means ask the user, not decide yourself
-- Open questions requiring user input cannot be deferred to writing-plans or the executing agent
-- If unconfirmed decisions remain when the user approves the spec, do not proceed to writing-plans — remind the user of each outstanding item explicitly before moving forward
-
-### Plan Creation
-- Before writing the plan, check the spec for any agent-resolved decisions not confirmed by the user or remaining open questions — surface them and get confirmation before proceeding
-- Keep plan files around 500 lines max. Smaller plans mean better outcomes.
-- Break large plans into logical chunks.
-
-### Plan Execution
-- Insert a spec review checkpoint between logical groups of tasks. Don't batch all tasks without stopping to verify progress against the spec.
+- Project-local guidance overrides these defaults
+- Task-specific specs, plans, and scratch notes are temporary working artifacts. Store outside committed project docs (prefer `.agent/tasks/<date>-<slug>/`); do not commit unless project guidance requires it. Delete on completion; promote only durable outcomes into the project's existing documentation system. Don't add personal scratch paths to a project's `.gitignore` — covered by my global ignore.
+- Promote outcomes by intent: architectural choices to ADRs (if used); current architecture to living design docs; usage/operations/schemas to reference docs; repeatable agent rules to AGENTS.md; remaining work to the issue/TODO system. Ask before creating a new convention.
+- Spec authoring: surface open questions to me; never silently resolve. Before asking for spec review, list every gap-fill decision and confirm each. "Fix TBDs" means ask, not decide. Do not proceed to plan-writing with unconfirmed decisions.
+- Plans: ~500 lines max; break larger plans into chunks. Insert spec review checkpoints between logical groups during execution.
+- Track verification and manual steps explicitly; surface human-only blockers rather than silently skip; summarize remaining verification at completion in one message.
 {{- if eq $agent "claude" }}
-- Use `TaskCreate` to create visible tasks so I can follow along with progress.
-{{- else }}
-- Create visible tasks so I can follow along with progress.
+- Use `TaskCreate` for visible progress; `AskUserQuestion` for human-only blockers. Subagents lack both — capture manual steps in output for the parent.
 {{- end }}
-
-### Plan Verification
-- Track verification and manual steps explicitly so they remain visible throughout the session
-- During implementation, surface manual or human-only blockers explicitly - do not silently skip them or proceed without input
-- At completion, summarize any remaining uncompleted verification steps in a single message - do not prompt individually for each one
-- Applies to formal plan-mode plans, ad-hoc implementation plans, and multi-step tasks with validation checkpoints
-{{- if eq $agent "claude" }}
-- When available, use `TaskCreate` to track verification and manual steps
-- When available, use `AskUserQuestion` for manual or human-only blockers rather than silently proceeding
-- Subagent caveat: subagents cannot use `AskUserQuestion` or share the parent's task list. When running as a subagent, capture any manual steps or verification items in your output so the parent agent can surface them
-{{- else }}
-- If the current agent lacks dedicated task-tracking or question-asking tools, preserve the same intent through explicit progress updates and a clear summary of blocked manual steps
-{{- end }}
-
-## Learning Goals
-- **Professional:** Software architecture and systems thinking (path toward staff/architect); metrics, dashboards, and monitoring (Grafana, observability in general); Rust and Elixir programming languages
-- **Personal:** Homelab setup (docker-compose services, management, monitoring); parenting skills (especially relating to autism/IEP advocacy and strategies)
-- When relevant, connect current work to these learning goals - call out architectural patterns, suggest approaches in target languages, or highlight monitoring opportunities
-
-## Work Philosophy
-- Work enables life, not vice versa - sustainable pace over hustle
-- Essentialism: cut the unnecessary to focus on the essential
-- Systems and automation to reduce cognitive load
-- Access over taxonomy; minimal overhead; pragmatic (good enough > perfect)
-- Family time is non-negotiable
