@@ -236,6 +236,7 @@ chmod +x "$HOME/.local/bin/rusage"
 export GH_TOKEN="$(cat {{ $chezmoiGithubTokenPath }})"
 {{     end -}}
 echo >&2 "Installing gh extensions"
+{{ $gh_cmd }} extension install --pin {{ index $lock "gh_dash" }} dlvhdr/gh-dash
 {{ $gh_cmd }} extension install --pin {{ index $lock "gh_pr_review" }} agynio/gh-pr-review
 {{   end }}
 {{ end -}}

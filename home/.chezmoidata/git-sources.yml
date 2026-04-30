@@ -4,6 +4,9 @@
 #   The sole purpose of this file is to let the update script resolve and refresh
 #   pinned refs in git-lock.yml.
 git_sources:
+  gh_dash:
+    repo: https://github.com/dlvhdr/gh-dash
+    tagged: true
   gh_pr_review:
     repo: https://github.com/agynio/gh-pr-review
     tagged: true

@@ -15,6 +15,7 @@ git_lock:
   dracula_zed: "08a007ef54231a6144fcb04a764912651f015bc4"
   fumiyas_home_commands: "861e89cb24c7746e32bcd58ca6ae8df0f07d7a82"
   fzf_tab: "v1.3.0"
+  gh_dash: "v4.23.2"
   gh_pr_review: "v1.6.2"
   gh_pr_review_skill: "db2ffdf804f82124e172fcfe296a63a6d2324c69"
   gist_zbell: "e0b06247f3ecd6ca3de341c54ba8d85de7ef6566"

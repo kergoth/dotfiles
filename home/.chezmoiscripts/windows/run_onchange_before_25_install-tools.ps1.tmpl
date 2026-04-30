@@ -176,6 +176,7 @@ New-Item -ItemType Directory -Path $env:XDG_BIN_HOME -Force | Out-Null
 $env:GH_TOKEN = Get-Content -Raw -Path "{{ $chezmoiGithubTokenPath }}"
 {{     end -}}
 Write-Host "Installing gh extensions"
+{{ $gh_cmd }} extension install --pin {{ index $lock "gh_dash" }} dlvhdr/gh-dash
 {{ $gh_cmd }} extension install --pin {{ index $lock "gh_pr_review" }} agynio/gh-pr-review
 {{-   end }}
 {{- end }}
