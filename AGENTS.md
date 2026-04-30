@@ -141,6 +141,9 @@ This is a **chezmoi-managed dotfiles** repository supporting macOS, Linux (Arch,
     - `container/` - Container-backed dotfiles scenario tests
     - `statusline/` - Statusline transcript tests
   - `run-cram` - Wrapper around `uvx cram`
+- **`docs/`** - Documentation
+  - `decisions/` - Architectural Decision Records (MADR format)
+  - `decisions/templates/` - MADR templates; use `adr-template.md` for new ADRs
 
 ### Chezmoi Source Structure (`home/`)
 
@@ -291,6 +294,22 @@ Chimera uses musl libc — glibc-linked binaries (1Password, Vivaldi, Zed) can't
 - None use `lookPath` — search is path-list-only (from `paths.yml` data) for consistent behavior independent of shell `$PATH`.
 - `packagesForMissingTools` wraps `availableTools`: takes a dict of `cmd→install-spec` (bare pkg name, or full arg string like `--git https://...` for cargo), returns only the specs whose commands are missing.
 - Individual `find-tool` calls scale fine for 1–3 tools; prefer `packagesForMissingTools` for larger sets. Multi-package install scripts will likely migrate to this pattern.
+
+## Documenting Architectural Decisions
+
+Significant architectural decisions belong in `docs/decisions/` as MADR-format ADRs.
+
+**When to create an ADR:** When a decision is non-obvious, shapes how future work is done, has real alternatives that were considered, and would be valuable for someone to understand without reading the full git history. Implementation details, task plans, and temporary design notes do not need ADRs.
+
+**How to create one:**
+1. Copy `docs/decisions/templates/adr-template.md` (full) or `adr-template-minimal.md` (simple cases)
+2. Name it `NNNN-kebab-case-title.md` with the next available number
+3. Set `status:` to `proposed` initially; update to `accepted` once the decision is made
+4. Focus on *why* — the context, alternatives considered, and reasoning. The implementation lives in the code and commit history.
+
+**Status vocabulary:** `proposed` → `accepted` → `deprecated` or `superseded by ADR-NNNN`
+
+Agents should suggest creating ADRs when they make or implement a significant architectural decision, and may draft an ADR as part of completing such work.
 
 ## Script Conventions
 
