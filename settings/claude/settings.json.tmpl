@@ -17,7 +17,7 @@
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING" : "0",
     "CLAUDE_CODE_DISABLE_1M_CONTEXT" : "0",
-    "ANTHROPIC_DEFAULT_OPUS_MODEL" : "",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL" : "claude-opus-4-6",
     "DISABLE_AUTOUPDATER": "1"{{ if $uses_musl }},
     "USE_BUILTIN_RIPGREP": "0"{{ end }}{{ if $has_git_bash }},
     "CLAUDE_CODE_GIT_BASH_PATH": "{{ replace $bash `\` `\\` }}"{{ end }}
@@ -27,7 +27,6 @@
       "Bash(python ~/.claude/skills/find-session/scripts/search_sessions.py:*)"
     ]
   },
-  "model": "sonnet",
   "outputStyle": "Direct Explanatory",
   "statusLine": {
     "type": "command",
