@@ -17,6 +17,7 @@ Invoke the `clean-prose` skill before finalizing the PR description.
 
 - Remove or replace any placeholder text that would render in the PR body (for example, "type your description here") so the submitted description contains actual content rather than author instructions. Strip HTML comments and template scaffolding (for example, `<!-- replace this with X -->`); these don't render on GitHub but keep the description clean for future edits and copy-paste.
 - Do not restructure an existing PR description to match the repository's PR template when the original does not already follow it; reformatting risks losing context the author captured. Surface the mismatch and let the user choose whether to reshape it. Updating the description to track the branch contents within its existing shape is the right move.
+- Describe behavior relative to the base branch, not the development arc. A PR description tells reviewers what the diff introduces — not how the implementation evolved. If a feature was first written one way then refined within the branch, only the final behavior matters to a reviewer. "Changed X to Y" is implementation history; "does X" is what belongs in the description.
 
 ## Checkboxes
 
