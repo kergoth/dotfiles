@@ -11,6 +11,7 @@ fi
 : "${TEST_UID:?}"
 : "${TEST_SETUP_MODE:?}"
 : "${TEST_ACTION:?}"
+: "${TEST_INTERACTIVE:?}"
 
 dotfiles_dir="$TEST_DOTFILES_DIR"
 test_distro="$TEST_DISTRO"
@@ -18,6 +19,7 @@ test_user="$TEST_USER"
 test_uid="$TEST_UID"
 test_setup_mode="$TEST_SETUP_MODE"
 test_action="$TEST_ACTION"
+test_interactive="$TEST_INTERACTIVE"
 test_command="${TEST_COMMAND:-}"
 host_gnupg_dir="${HOST_GNUPG_DIR:-/run/host-gnupg}"
 user_gnupg=""
@@ -34,7 +36,11 @@ xdg_runtime_dir="/tmp/xdg-$test_user"
 mkdir -p "$xdg_runtime_dir"
 chmod 700 "$xdg_runtime_dir"
 
-"script/$test_distro/setup-root" "$test_user" "$test_uid" </dev/null
+if [ "$test_interactive" -eq 1 ]; then
+    "script/$test_distro/setup-root" "$test_user" "$test_uid"
+else
+    "script/$test_distro/setup-root" "$test_user" "$test_uid" </dev/null
+fi
 age_key_path="/home/$test_user/.config/chezmoi/age.key"
 if [ -e "$age_key_path" ]; then
     find "/home/$test_user" -path "$age_key_path" -prune -o -exec chown -h "$test_user" {} +
@@ -95,6 +101,14 @@ export GNUPGHOME="${GNUPGHOME:-}"
 
 cd "$DOTFILES_DIR"
 
+run_setup_command() {
+    if [ "${TEST_INTERACTIVE:-0}" -eq 1 ]; then
+        "$@"
+    else
+        "$@" </dev/null
+    fi
+}
+
 # Re-exec under a session bus if we don't have one yet.
 if [ "${1:-}" != "--in-session" ] && [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ]; then
     if command -v dbus-run-session >/dev/null 2>&1; then
@@ -106,23 +120,23 @@ if [ "${1:-}" != "--in-session" ] && [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ]; the
 fi
 
 cp script/bootstrap /tmp
-/tmp/bootstrap </dev/null
+run_setup_command /tmp/bootstrap
 
 case "$TEST_SETUP_MODE" in
     root-only)
         ;;
     user-only)
         if [ "${RUN_TEST_TRACE:-0}" -eq 1 ]; then
-            bash -x ./script/setup </dev/null
+            run_setup_command bash -x ./script/setup
         else
-            ./script/setup </dev/null
+            run_setup_command ./script/setup
         fi
         ;;
     full)
         if [ "${RUN_TEST_TRACE:-0}" -eq 1 ]; then
-            bash -x ./script/setup-full </dev/null
+            run_setup_command bash -x ./script/setup-full
         else
-            ./script/setup-full </dev/null
+            run_setup_command ./script/setup-full
         fi
         ;;
     *)
@@ -156,6 +170,7 @@ env_cmd="env RUN_TEST_TRACE=$(sh_quote "${RUN_TEST_TRACE:-0}")"
 env_cmd="$env_cmd TEST_DOTFILES_DIR=$(sh_quote "$dotfiles_dir")"
 env_cmd="$env_cmd TEST_SETUP_MODE=$(sh_quote "$test_setup_mode")"
 env_cmd="$env_cmd TEST_ACTION=$(sh_quote "$test_action")"
+env_cmd="$env_cmd TEST_INTERACTIVE=$(sh_quote "$test_interactive")"
 env_cmd="$env_cmd DOTFILES_DIR=$(sh_quote "$dotfiles_dir")"
 env_cmd="$env_cmd GITHUB_TOKEN=$(sh_quote "${GITHUB_TOKEN:-}")"
 env_cmd="$env_cmd CLAUDE_CODE_OAUTH_TOKEN=$(sh_quote "${CLAUDE_CODE_OAUTH_TOKEN:-}")"
