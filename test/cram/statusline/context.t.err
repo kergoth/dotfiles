@@ -1,8 +1,0 @@
-Test context percentage display:
-
-  $ . "$TESTDIR"/helpers.sh && source_functions
-  /Users/kergoth/.dotfiles/.worktrees/container-scenario-tests/home/dot_claude/statusline-command.sh: line 81: syntax error near unexpected token `<' (no-eol)
-
-Format context segment text:
-
-  $ format_context 35
