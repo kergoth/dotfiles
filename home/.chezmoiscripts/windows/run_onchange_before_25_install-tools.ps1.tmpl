@@ -176,7 +176,15 @@ New-Item -ItemType Directory -Path $env:XDG_BIN_HOME -Force | Out-Null
 $env:GH_TOKEN = Get-Content -Raw -Path "{{ $chezmoiGithubTokenPath }}"
 {{     end -}}
 Write-Host "Installing gh extensions"
-{{ $gh_cmd }} extension install --pin {{ index $lock "gh_dash" }} dlvhdr/gh-dash
-{{ $gh_cmd }} extension install --pin {{ index $lock "gh_pr_review" }} agynio/gh-pr-review
+$ghDashInstalled = ({{ $gh_cmd }} extension list 2>$null | Where-Object { $_ -match "dlvhdr/gh-dash" } | ForEach-Object { ($_ -split '\s+')[-1] })
+if ($ghDashInstalled -ne "{{ index $lock "gh_dash" }}") {
+    {{ $gh_cmd }} extension remove dlvhdr/gh-dash 2>$null
+    {{ $gh_cmd }} extension install --pin {{ index $lock "gh_dash" }} dlvhdr/gh-dash
+}
+$ghPrReviewInstalled = ({{ $gh_cmd }} extension list 2>$null | Where-Object { $_ -match "agynio/gh-pr-review" } | ForEach-Object { ($_ -split '\s+')[-1] })
+if ($ghPrReviewInstalled -ne "{{ index $lock "gh_pr_review" }}") {
+    {{ $gh_cmd }} extension remove agynio/gh-pr-review 2>$null
+    {{ $gh_cmd }} extension install --pin {{ index $lock "gh_pr_review" }} agynio/gh-pr-review
+}
 {{-   end }}
 {{- end }}

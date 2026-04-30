@@ -236,7 +236,15 @@ chmod +x "$HOME/.local/bin/rusage"
 export GH_TOKEN="$(cat {{ $chezmoiGithubTokenPath }})"
 {{     end -}}
 echo >&2 "Installing gh extensions"
-{{ $gh_cmd }} extension install --pin {{ index $lock "gh_dash" }} dlvhdr/gh-dash
-{{ $gh_cmd }} extension install --pin {{ index $lock "gh_pr_review" }} agynio/gh-pr-review
+_install_gh_ext() {
+    local _repo="$1" _pin="$2" _installed
+    _installed=$({{ $gh_cmd }} extension list 2>/dev/null | awk -v r="$_repo" '$0 ~ r { print $NF }')
+    if [ "$_installed" != "$_pin" ]; then
+        {{ $gh_cmd }} extension remove "$_repo" 2>/dev/null || true
+        {{ $gh_cmd }} extension install --pin "$_pin" "$_repo"
+    fi
+}
+_install_gh_ext dlvhdr/gh-dash {{ index $lock "gh_dash" }}
+_install_gh_ext agynio/gh-pr-review {{ index $lock "gh_pr_review" }}
 {{   end }}
 {{ end -}}
