@@ -37,8 +37,9 @@ Test entrypoints:
 # Test dotfiles setup in containers; requires Docker
 ./script/test           # all supported distros
 ./script/test arch      # specific distro only
-./script/test -i arch   # drop into user shell after setup (debug)
-./script/test -r -i arch   # stop after setup-root, then open a shell
+./script/test -i arch   # preserve stdin/TTY for interactive setup prompts
+./script/test -s arch   # drop into user shell after setup (debug)
+./script/test -r -s arch   # stop after setup-root, then open a shell
 ./script/test -c 'chezmoi data' arch   # run a command after the selected setup phase
 ./script/test -S arch   # skip setup-system, only run setup
 ./script/test -b        # build container images only, don't run
