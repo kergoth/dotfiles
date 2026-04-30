@@ -229,19 +229,3 @@ if ! [ -e ~/.config/chezmoi/chezmoi.toml ] || echo "$@" | grep -Eq '\--prompt|--
     chmod 0600 "$HOME/.config/chezmoi/chezmoi.toml"
 fi
 
-if [ -t 1 ] && [ -t 0 ] && [ -r /dev/tty ]; then
-    noninteractive=
-    reopen=-o
-else
-    noninteractive="--no-tty --no-pager"
-    reopen=
-fi
-
-# Run any chezmoi scripts which bootstrap, for use by the setup scripts
-# Skip externals evaluation to avoid GitHub API rate limits during initial bootstrap
-export CHEZMOI_SKIP_EXTERNALS=1
-chezmoi managed --include=scripts --path-style=source-absolute ~/.chezmoiscripts |
-    grep -E 'before_.*bootstrap-' |
-    tr '\n' '\0' |
-    xargs -0 $reopen chezmoi apply --include=scripts --source-path $noninteractive
-unset CHEZMOI_SKIP_EXTERNALS

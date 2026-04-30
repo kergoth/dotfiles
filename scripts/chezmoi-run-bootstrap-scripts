@@ -1,0 +1,70 @@
+#!/bin/sh
+# Usage: chezmoi-run-bootstrap-scripts [-n] [-v] [-q] [-h]
+#
+# Run chezmoi scripts matching before_*bootstrap-*, needed by setup scripts
+# that require the secrets chain before chezmoi apply.
+#
+# Options:
+#     -n          Dry run, show which scripts would run
+#     -v          Increase verbosity
+#     -q          Decrease verbosity
+#     -h          Show this help message
+
+set -eu
+
+usage() {
+    sed -n '/^# Usage:/,/^# *-h /p' "$0" | sed 's/^# *//'
+}
+
+process_arguments() {
+    while getopts :nvqh opt; do
+        case $opt in
+            n) dry_run=1 ;;
+            v) verbosity=$((verbosity + 1)) ;;
+            q) verbosity=$((verbosity - 1)) ;;
+            h) usage; exit 0 ;;
+            \?)
+                echo "Unknown option: -$OPTARG" >&2
+                usage >&2
+                exit 1
+                ;;
+        esac
+    done
+    shift $((OPTIND - 1))
+    if [ $# -gt 0 ]; then
+        echo "Unexpected arguments: $*" >&2
+        usage >&2
+        exit 1
+    fi
+}
+
+main() {
+    dry_run=0
+    verbosity=0
+    process_arguments "$@"
+
+    if [ -t 1 ] && [ -t 0 ] && [ -r /dev/tty ]; then
+        reopen=-o
+        noninteractive=
+    else
+        reopen=
+        noninteractive="--no-tty --no-pager"
+    fi
+
+    CHEZMOI_SKIP_EXTERNALS=1
+    export CHEZMOI_SKIP_EXTERNALS
+
+    if [ "$dry_run" -eq 1 ]; then
+        chezmoi managed --include=scripts --path-style=source-absolute ~/.chezmoiscripts |
+            grep -E 'before_.*bootstrap-'
+    else
+        chezmoi managed --include=scripts --path-style=source-absolute ~/.chezmoiscripts |
+            grep -E 'before_.*bootstrap-' |
+            tr '\n' '\0' |
+            xargs -0 $reopen chezmoi apply --include=scripts --source-path $noninteractive
+    fi
+
+    unset CHEZMOI_SKIP_EXTERNALS
+}
+
+main "$@"
