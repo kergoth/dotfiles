@@ -1,0 +1,29 @@
+{
+  "skill_name": "cram",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "I want to add cram tests to my CLI tool `csvtool`. Write a test that verifies `csvtool --help` shows usage, and another that tests `csvtool sort` on a small input file. The version string in the `--help` output changes on every release.",
+      "expected_output": "A .t file with correct cram syntax, (glob) or (re) to match the changing version string, an exit-80 guard for tool availability, and proper indentation throughout",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "My cram test is failing with a diff but the expected and actual lines look identical. What's going on?",
+      "expected_output": "Identifies trailing whitespace as the likely cause, explains that cram does literal matching including trailing spaces, suggests using (glob) or (re) as workarounds, and mentions the .err file for inspection",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "My cram test hangs indefinitely and I have to ctrl-c to stop it. The commands look fine when I run them manually. What would cause this?",
+      "expected_output": "Identifies stdin consumption (commands like ssh reading the test shell's stdin) or daemon processes inheriting stdout causing cram to wait for EOF; suggests ssh -n, explicit stdin redirect, or redirecting daemon output to /dev/null",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "My cram test for a database migration script works fine locally but fails on CI with different output. The timestamps in the output look like `2024-03-15 10:23:45` locally but `1970-01-01 00:00:00` on CI. Why?",
+      "expected_output": "Identifies that cram resets TZ to GMT before each test, explains that 1970-01-01 is the Unix epoch in UTC confirming the TZ reset is the cause, and suggests using (re) or (glob) to match timestamps flexibly or setting TZ explicitly in the test",
+      "files": []
+    }
+  ]
+}
