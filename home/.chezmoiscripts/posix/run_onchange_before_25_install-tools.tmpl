@@ -70,7 +70,7 @@
 {{-     if and (not $codex) (not .steamdeck) -}}
 {{-       $codex_tag = index $lock "codex_cli" -}}
 {{-       $codex_version = trimPrefix "rust-v" $codex_tag -}}
-{{-       $codex_target_map := dict "darwin_arm64" "aarch64-apple-darwin" "darwin_amd64" "x86_64-apple-darwin" "linux_amd64" "x86_64-unknown-linux-gnu" "linux_arm64" "aarch64-unknown-linux-gnu" "linux-chimera_amd64" "x86_64-unknown-linux-musl" "linux-chimera_arm64" "aarch64-unknown-linux-musl" -}}
+{{-       $codex_target_map := dict "darwin_arm64" "aarch64-apple-darwin" "darwin_amd64" "x86_64-apple-darwin" "linux_amd64" "x86_64-unknown-linux-musl" "linux_arm64" "aarch64-unknown-linux-musl" "linux-chimera_amd64" "x86_64-unknown-linux-musl" "linux-chimera_arm64" "aarch64-unknown-linux-musl" -}}
 {{-       $codex_fetch_key_map := dict "darwin_arm64" "codex_macos_arm64_release" "darwin_amd64" "codex_macos_amd64_release" "linux_amd64" "codex_linux_amd64_release" "linux_arm64" "codex_linux_arm64_release" "linux-chimera_amd64" "codex_linux-chimera_amd64_release" "linux-chimera_arm64" "codex_linux-chimera_arm64_release" -}}
 {{-       $codex_os := .chezmoi.os -}}
 {{-       if eq .osid "linux-chimera" -}}
