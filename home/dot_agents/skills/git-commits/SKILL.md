@@ -1,11 +1,15 @@
 ---
 name: git-commits
-description: ALWAYS invoke before running `git commit` or any commit-related git work — no exceptions for terse or conversational phrasing. Triggers include "commit it", "commit this", "let's commit", "let's re-commit", "continue with the commit", "go ahead and commit", "check it in", "check this in", "ship it", "save it", "stage and commit", "amend that", and "fixup". Also use when writing or rewriting commit messages, staging changes, splitting bundled work into separate commits, curating branch history, rebasing, autosquashing, addressing review feedback with fixup commits, or evaluating whether a commit is bisectable. Personal defaults for commit-level git work — invoke even when you think you remember the conventions; the skill body has the authoritative rules.
+description: ALWAYS invoke before running `git commit` or any commit-related git work when the repository context is non-`.jj/`. In repositories containing `.jj/`, invoke this skill only for explicit Git-only commit intent; do not use it for generic commit intent. Triggers include "commit it", "commit this", "let's commit", "let's re-commit", "continue with the commit", "go ahead and commit", "check it in", "check this in", "ship it", "save it", "stage and commit", "amend that", and "fixup" when routing resolves to Git. Also use when writing or rewriting commit messages, staging changes, splitting bundled work into separate commits, curating branch history, rebasing, autosquashing, addressing review feedback with fixup commits, or evaluating whether a commit is bisectable for Git flows. Personal defaults for commit-level git work — invoke even when you think you remember the conventions; the skill body has the authoritative rules.
 ---
 
 # Git Commits & History
 
-Personal defaults for commit-level git work. If a project's CONTRIBUTING, AGENTS.md, or CLAUDE.md mandates a different workflow, follow the project.
+Personal defaults for commit-level git work. If project-specific instructions mandate a different workflow, follow the project.
+
+## Routing
+
+Local constraint: in `.jj` repos, invoke only for explicit Git-only commit intent. Generic `.jj` commit intent routes to `jujutsu` + `jj-commits` instead.
 
 ## Commit messages
 

@@ -1,6 +1,6 @@
 ---
 name: jujutsu
-description: Use when working with version control in a repository that contains `.jj/`, when the user explicitly mentions Jujutsu or `jj`, or when any Git or VCS task is in scope — check for `.jj/` in the working directory when in doubt, and apply this skill if found instead of defaulting to plain Git assumptions.
+description: Use when working with version control in a repository that contains `.jj/`, or when the user explicitly mentions Jujutsu or `jj`. When the VCS context is ambiguous, check for `.jj/` in the working tree before defaulting to plain Git. Do not use this skill as the primary route for non-`.jj/` generic Git tasks.
 ---
 
 # Jujutsu
@@ -8,6 +8,8 @@ description: Use when working with version control in a repository that contains
 ## Overview
 
 Use this skill to keep VCS behavior accurate in jj repositories. Prefer `jj` for mutations, history editing, bookmarks, workspaces, and recovery. In colocated repositories, Git is still available, but do not default to Git mental models.
+
+Local constraint: for `.jj` commit paths, always pair with `jj-commits` (generic intent) or `git-commits` (explicit Git-only intent).
 
 Validated against jj `0.39.0` on 2026-03-12 using `jj/docs/`, `jj/cli/docs/`, and the `v0.38.0` and `v0.39.0` release notes.
 

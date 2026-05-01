@@ -14,6 +14,14 @@
 ## GitHub CLI Conventions
 - Prefer explicit `gh` subcommands and installed extensions over raw `gh api` / `gh api graphql`. Subcommands are easier to permission-gate, less brittle, and handle pagination/error cases automatically. Fall back to `gh api` only when no subcommand or extension covers the operation.
 
+## Source Control Conventions
+- Preserve these convention classes across VCS tools: bisectability, one logical change per commit, hunk hygiene, and merge style aligned with repository norms.
+- Before commit-affecting operations, validate repository state and change scope with each tool's native inspection surfaces.
+- Keep conventions at policy and intent level. Command-level workflows and procedures belong in skills.
+- Ownership boundaries use a three-skill split: `jujutsu` owns jj mechanics, procedures, and sequencing; `jj-commits` owns jj commit policy only (commit quality + series hygiene); `git-commits` owns Git commit mechanics and commit policy for Git flows.
+- Intent classification is explicit: `explicit Git-only commit intent` means the user unambiguously requests a Git command flow in a `.jj` context; `generic commit intent` means any commit request without an explicit Git-only qualifier. In `.jj` contexts, ambiguous commit requests default to `generic commit intent`.
+- Canonical commit-intent contract (deterministic, stateless, same-turn): `.jj` + generic commit intent routes to `jujutsu` + `jj-commits`; `.jj` + explicit Git-only commit intent routes to `jujutsu` + `git-commits`; non-`.jj` commit intent routes to `git-commits`.
+
 ## Shell Conventions
 - **JSON in shell pipelines: use `jq`, not inline Python.** Inline `python3 -c` for JSON is brittle due to shell quoting. Assume `jq` is present; only use Python when the transformation genuinely exceeds `jq` (complex stateful logic, multi-source joins).
 
