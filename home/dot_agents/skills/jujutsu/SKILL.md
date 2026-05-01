@@ -9,7 +9,7 @@ description: Use when working with version control in a repository that contains
 
 Use this skill to keep VCS behavior accurate in jj repositories. Prefer `jj` for mutations, history editing, bookmarks, workspaces, and recovery. In colocated repositories, Git is still available, but do not default to Git mental models.
 
-Local constraint: for `.jj` commit paths, always pair with `jj-commits` (generic intent) or `git-commits` (explicit Git-only intent).
+Local constraint: for `.jj` commit paths, pair with `jj-commits` for generic intent or `git-commits` for explicit Git-only intent.
 
 Validated against jj `0.39.0` on 2026-03-12 using `jj/docs/`, `jj/cli/docs/`, and the `v0.38.0` and `v0.39.0` release notes.
 

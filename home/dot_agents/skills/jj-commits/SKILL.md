@@ -1,6 +1,6 @@
 ---
 name: jj-commits
-description: Invoke for generic commit-related intent in repositories containing `.jj/`, including commit message writing, commit shaping, and commit-series hygiene decisions. This skill is policy-only and must be routed with `jujutsu` in the same turn; never use it as a standalone skill.
+description: Use for generic commit-related intent in `.jj/` repositories. Must be paired with `jujutsu` in the same turn; never use it as a standalone skill. Explicit Git-only `.jj` commit intent routes to `git-commits`.
 ---
 
 # JJ Commits
@@ -31,9 +31,9 @@ This skill explicitly excludes:
 
 Use `jujutsu` for jj mechanics, operation sequencing, and command-level flow.
 
-## Commit Message Quality
+## Commit messages
 
-Follow the same message conventions as Git:
+Follow the [seven rules of commit messages](https://cbea.ms/git-commit):
 
 - Imperative mood in subject ("Add feature" not "Added feature")
 - Limit subject to 50 characters (72 hard limit), no trailing period
@@ -42,7 +42,7 @@ Follow the same message conventions as Git:
 
 Subjects describe the change, not the workflow event that produced it. Replace "Fix tests", "Address review", or "Continue work on X" with descriptions of the actual code change.
 
-For commit message bodies longer than two sentences, invoke the `clean-prose` skill before finalizing. Subject lines and one-line bodies don't need it.
+For commit message bodies longer than two sentences, invoke the clean-prose skill before finalizing. Subject lines and one-line bodies don't need it.
 
 ## Commit-Series Hygiene
 
