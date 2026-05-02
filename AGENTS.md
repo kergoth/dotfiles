@@ -27,30 +27,31 @@ chezmoi cat --source-path ~/.config/zsh/.zshrc
 Test entrypoints:
 
 ```bash
-# Run Python unit tests
+# Run all automated tests (pytest + cram)
+./script/test
+
+# Run specific test types
+./script/test -p                              # pytest only
+./script/test -t                              # cram only
+./script/test -p test/pytest/<test_file>.py  # specific pytest file
+./script/test -t test/cram/<suite>           # specific cram suite
+
+# Invoke runners directly (same as script/test delegates to)
 ./test/run-pytest                        # all tests under test/pytest/
-./test/run-pytest test/pytest/<test_file>.py  # specific test file
-
-# Run structured Cram regression suites
 ./test/run-cram                          # all Cram suites under test/cram/
-./test/run-cram test/cram/container      # container-backed dotfiles scenarios
-./test/run-cram test/cram/statusline     # statusline transcript tests
-./test/run-cram test/cram/show-git-changes
-./test/run-cram test/cram/fetch-verified
 
-# Test dotfiles setup in containers; requires Docker
-./script/test           # all supported distros
-./script/test arch      # specific distro only
-./script/test -i arch   # preserve stdin/TTY for interactive setup prompts
-./script/test -s arch   # drop into user shell after setup (debug)
-./script/test -r -s arch   # stop after setup-root, then open a shell
-./script/test -c 'chezmoi data' arch   # run a command after the selected setup phase
-./script/test -S arch   # skip setup-system, only run setup
-./script/test -b        # build container images only, don't run
-./script/test -w arch   # workstation mode: DOTFILES_HEADLESS=0, DOTFILES_EPHEMERAL=0 (enables GUI app installs)
-./script/test -G arch   # seed container GNUPGHOME from host ~/.gnupg (avoids interactive GPG passphrase)
-./script/test -C arch   # skip shared nix store/cache volumes
-./script/test debian ubuntu  # test multiple distros in one run (space-separated)
+# Manually launch a container for interactive testing; requires Docker
+./test/run-container arch      # specific distro
+./test/run-container -i arch   # preserve stdin/TTY for interactive setup prompts
+./test/run-container -s arch   # drop into user shell after setup (debug)
+./test/run-container -r -s arch   # stop after setup-root, then open a shell
+./test/run-container -c 'chezmoi data' arch   # run a command after the selected setup phase
+./test/run-container -S arch   # skip setup-system, only run setup
+./test/run-container -b        # build container images only, don't run
+./test/run-container -w arch   # workstation mode: DOTFILES_HEADLESS=0, DOTFILES_EPHEMERAL=0
+./test/run-container -G arch   # seed container GNUPGHOME from host ~/.gnupg
+./test/run-container -C arch   # skip shared nix store/cache volumes
+./test/run-container debian ubuntu  # multiple distros in one run (space-separated)
 ```
 
 State-changing commands. Run these only when the user explicitly asks for the corresponding operation, or when a task clearly requires it and you have stated the effect first.
@@ -79,7 +80,7 @@ Human-owned update commands. Agents may mention these when relevant, but should 
 chezmoi update -R
 ```
 
-Env vars for secrets-enabled testing (pass to `./script/test`):
+Env vars for secrets-enabled testing (pass to `./test/run-container`):
 
 - `DOTFILES_SECRETS=1` — mount host age key; enables chezmoi secret decryption
 - `DOTFILES_PERSONAL=1` — force personal profile (auto-detected from host if unset)
@@ -100,10 +101,10 @@ Pick the cheapest verification that covers the changed behavior. Prefer render c
 | PowerShell scripts | PSScriptAnalyzer when available |
 | Python helpers | `./test/run-pytest test/pytest/<test_file>.py` |
 | Cram scenarios | `./test/run-cram test/cram/<suite>` |
-| Linux setup or package-flow changes | `./script/test <distro>` or `./script/test -w <distro>` when GUI app installation is in scope |
+| Linux setup or package-flow changes | `./test/run-container <distro>` or `./test/run-container -w <distro>` when GUI app installation is in scope |
 | Cross-platform package changes | Combine the relevant render checks with the narrowest matching Cram or container test |
 
-Use `./script/test` without a distro only when a broad setup regression check is needed. It is slower and may require Docker setup.
+Use `./test/run-container` without a distro only when a broad setup regression check is needed. It is slower and may require Docker setup.
 
 ## Setup Entry Points
 

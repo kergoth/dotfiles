@@ -1,13 +1,89 @@
-#!/bin/sh
+#!/usr/bin/env bash
+# Usage: script/test [options] [path...]
+#
+# Run automated test suites. With no options runs all pytest and cram tests.
+#
+# Options:
+#   -p          Run Python (pytest) tests only
+#   -t          Run Cram transcript tests only
+#   -n          Dry run, don't actually do anything
+#   -v          Increase verbosity
+#   -q          Decrease verbosity
+#   -h          Show this help message
 
-set -eu
+set -euo pipefail
 
-scriptdir=$(cd "$(dirname "$0")" && pwd)
-testdir="$(dirname "$scriptdir")/test"
+scriptdir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
+testdir=$(cd "$scriptdir/../test" && pwd -P)
 
-if [ $# -eq 0 ]; then
-    # All container tests
-    set -- -a
-fi
+usage() {
+    sed -n '/^# Usage:/,/^# *-h /p' "$0" | sed 's/^# *//'
+}
 
-"$testdir/run-container" "$@"
+run() {
+    if [ "${dry_run:-0}" -ne 0 ] || [ "${verbosity:-0}" -gt 0 ]; then
+        printf '❯ %s\n' "$*" >&2
+    fi
+    if [ "${dry_run:-0}" -eq 0 ]; then
+        "$@" || return $?
+    fi
+}
+
+process_arguments() {
+    run_pytest=0
+    run_cram=0
+    dry_run=0
+    verbosity=0
+
+    while getopts ":ptnvqh" opt; do
+        case "$opt" in
+            p) run_pytest=1 ;;
+            t) run_cram=1 ;;
+            n) dry_run=1 ;;
+            v) verbosity=$((verbosity + 1)) ;;
+            q) verbosity=$((verbosity - 1)) ;;
+            h) usage; exit 0 ;;
+            \?) printf 'Unknown option: -%s\n' "$OPTARG" >&2; usage >&2; exit 1 ;;
+        esac
+    done
+    shift $((OPTIND - 1))
+
+    if [ "$run_pytest" -eq 0 ] && [ "$run_cram" -eq 0 ]; then
+        run_pytest=1
+        run_cram=1
+    fi
+
+    targets=("$@")
+}
+
+main() {
+    process_arguments "$@"
+
+    if [ "${#targets[@]}" -gt 0 ] && [ "$run_pytest" -eq 1 ] && [ "$run_cram" -eq 1 ]; then
+        printf 'error: cannot specify paths with both -p and -t; use separate invocations\n' >&2
+        usage >&2
+        exit 1
+    fi
+
+    local ret=0
+
+    if [ "$run_pytest" -eq 1 ]; then
+        if [ "${#targets[@]}" -gt 0 ]; then
+            run "$testdir/run-pytest" "${targets[@]}" || ret=$?
+        else
+            run "$testdir/run-pytest" || ret=$?
+        fi
+    fi
+
+    if [ "$run_cram" -eq 1 ]; then
+        if [ "${#targets[@]}" -gt 0 ]; then
+            run "$testdir/run-cram" "${targets[@]}" || ret=$?
+        else
+            run "$testdir/run-cram" || ret=$?
+        fi
+    fi
+
+    return $ret
+}
+
+main "$@"
