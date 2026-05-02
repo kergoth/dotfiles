@@ -1,0 +1,36 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/enforce-task-artifact-location.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(scripts/chezmoi-execute-template:*)",
+      "Bash(test/run-cram:*)",
+      "Bash(chezmoi diff:*)",
+      "Bash(chezmoi apply:*)",
+      "Bash(uvx pytest:*)",
+      "Bash(uvx ruff:*)",
+      "Bash(uvx ty:*)",
+      "Bash(shellcheck:*)",
+      "Bash(shfmt:*)",
+      "Bash(uv run scripts/*)"
+    ]
+  },
+  "sandbox": {
+    "filesystem": {
+      "allowWrite": [
+        "~/.config/chezmoi/chezmoistate.boltdb"
+      ]
+    }
+  }
+}

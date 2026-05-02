@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|apply_patch|Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$(git rev-parse --show-toplevel)/.codex/hooks/enforce-task-artifact-location.sh\"",
+            "statusMessage": "Checking task artifact path policy"
+          }
+        ]
+      }
+    ]
+  }
+}
