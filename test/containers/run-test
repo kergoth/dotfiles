@@ -356,6 +356,22 @@ run_container() {
     fi
 }
 
+completion_msg() {
+    if [ "$action" = "shell" ]; then
+        printf "Interactive shell session ended"
+    elif [ "$interactive" -eq 1 ]; then
+        printf "Interactive setup session ended"
+    elif [ "$setup_mode" = "root-only" ]; then
+        printf "Root-only setup completed"
+    elif [ "$setup_mode" = "user-only" ]; then
+        printf "User-only setup completed"
+    elif [ "$action" = "command" ]; then
+        printf "Command run completed"
+    else
+        printf "Test completed"
+    fi
+}
+
 run_one() {
     distro=$1
     image_name="dotfiles-test-$distro"
@@ -416,9 +432,12 @@ main() {
         fi
     done <"$tmpdir/distros.txt"
 
+    label=$(completion_msg)
     # shellcheck disable=SC2046
     if [ $(wc -l <"$tmpdir/distros.txt") -gt 1 ]; then
-        echo >&2 "All tests completed for distros: $(cat "$tmpdir/distros.txt" | tr '\n' ' ')"
+        msg "%s for all distros: %s" "$label" "$(tr '\n' ' ' <"$tmpdir/distros.txt")"
+    else
+        msg "%s for distro: %s" "$label" "$distro"
     fi
 }
 
