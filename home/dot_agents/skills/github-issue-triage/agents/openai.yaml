@@ -1,0 +1,4 @@
+interface:
+  display_name: "GitHub Issue Triage"
+  short_description: "Run end-to-end GitHub issue triage"
+  default_prompt: "Use $github-issue-triage to run issue triage from snapshot through subagent scoring and markdown consolidation."

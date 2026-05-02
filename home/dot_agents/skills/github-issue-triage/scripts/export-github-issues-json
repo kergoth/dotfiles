@@ -1,0 +1,148 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Usage: export-github-issues-json [options]
+#
+# Export GitHub issues as JSON for triage/report workflows.
+#
+# Options:
+#     -r REPO     GitHub repo in owner/name form (default: current gh repo)
+#     -o FILE     Output JSON path (default: .agent/tasks/YYYY-MM-DD-issue-triage/open-issues.json)
+#     -s STATE    Issue state: open|closed|all (default: open)
+#     -l LIMIT    Maximum issues to fetch (default: 200)
+#     -n          Dry run; do not write output file
+#     -v          Increase verbosity (repeatable)
+#     -q          Decrease verbosity (repeatable)
+#     -h          Show this help message
+
+dry_run=0
+verbosity=0
+repo=
+output=
+state=open
+limit=200
+
+usage() {
+    sed -n '/^# Usage:/,/^#     -h /p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+}
+
+process_arguments() {
+    while getopts ":r:o:s:l:nvqh" opt; do
+        case "$opt" in
+            r) repo=$OPTARG ;;
+            o) output=$OPTARG ;;
+            s) state=$OPTARG ;;
+            l) limit=$OPTARG ;;
+            n) dry_run=1 ;;
+            v) verbosity=$((verbosity + 1)) ;;
+            q) verbosity=$((verbosity - 1)) ;;
+            h)
+                usage
+                exit 0
+                ;;
+            \?)
+                printf 'Unknown option: -%s\n' "$OPTARG" >&2
+                usage >&2
+                exit 1
+                ;;
+            :)
+                printf 'Option -%s requires an argument\n' "$OPTARG" >&2
+                usage >&2
+                exit 1
+                ;;
+        esac
+    done
+}
+
+msg() {
+    local fmt=$1
+    if [ $# -gt 1 ]; then
+        shift
+    fi
+    # shellcheck disable=SC2059
+    printf -- "$fmt\n" "$@" >&2
+}
+
+msg_verbose() {
+    if [ "$verbosity" -gt 0 ]; then
+        msg "$@"
+    fi
+}
+
+die() {
+    msg "$@"
+    exit 1
+}
+
+detect_repo() {
+    gh repo view --json nameWithOwner -q .nameWithOwner 2>/dev/null || true
+}
+
+main() {
+    local today
+    local output_dir
+    local tmpdir
+    local tmpfile
+    local issue_count
+
+    process_arguments "$@"
+
+    if ! command -v gh >/dev/null 2>&1; then
+        die "gh is required"
+    fi
+    if ! command -v jq >/dev/null 2>&1; then
+        die "jq is required"
+    fi
+
+    case "$state" in
+        open|closed|all) ;;
+        *) die "state must be one of: open, closed, all" ;;
+    esac
+
+    if ! [[ "$limit" =~ ^[0-9]+$ ]]; then
+        die "limit must be a positive integer"
+    fi
+
+    if [ -z "$repo" ]; then
+        repo=$(detect_repo)
+        if [ -z "$repo" ]; then
+            die "unable to detect repository; pass -r owner/name"
+        fi
+    fi
+
+    if [ -z "$output" ]; then
+        today=$(date +%F)
+        output=".agent/tasks/${today}-issue-triage/open-issues.json"
+    fi
+
+    output_dir=$(dirname -- "$output")
+    mkdir -p "$output_dir"
+
+    msg_verbose "Repo: %s" "$repo"
+    msg_verbose "State: %s, Limit: %s" "$state" "$limit"
+    msg_verbose "Output: %s" "$output"
+
+    tmpdir=$(mktemp -d -p "${TMPDIR:-/tmp}")
+    trap "rm -rf -- '$tmpdir'" EXIT
+    tmpfile="$tmpdir/open-issues.json"
+
+    gh issue list \
+        -R "$repo" \
+        --state "$state" \
+        --limit "$limit" \
+        --json number,title,body,labels,assignees,author,createdAt,updatedAt,comments,url \
+        >"$tmpfile"
+
+    issue_count=$(jq 'length' "$tmpfile")
+    msg "Fetched %s issue(s) from %s" "$issue_count" "$repo"
+
+    if [ "$dry_run" -eq 1 ]; then
+        msg "Dry run; not writing %s" "$output"
+        return 0
+    fi
+
+    mv "$tmpfile" "$output"
+    msg "Wrote %s" "$output"
+}
+
+main "$@"

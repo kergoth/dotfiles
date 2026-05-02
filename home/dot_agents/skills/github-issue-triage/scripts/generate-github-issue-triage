@@ -1,0 +1,384 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Usage: generate-github-issue-triage [options]
+#
+# Prepare and render the GitHub issue triage report.
+#
+# Options:
+#     -r REPO     GitHub repo in owner/name form (default: current gh repo)
+#     -t DIR      Task directory (default: .agent/tasks/YYYY-MM-DD-issue-triage)
+#     -o FILE     Output markdown file (default: docs/github-issue-triage.md)
+#     -s STATE    Issue state for prepare step: open|closed|all (default: open)
+#     -l LIMIT    Maximum issues to fetch on prepare (default: 200)
+#     -c COUNT    Number of chunks to create/check (default: 5)
+#     -m MODE     all|prepare|consolidate (default: all)
+#     -n          Dry run; print planned actions only
+#     -v          Increase verbosity (repeatable)
+#     -q          Decrease verbosity (repeatable)
+#     -h          Show this help message
+#
+# Modes:
+# - all: prepare snapshot, chunk issues, consolidate scores, render markdown.
+# - prepare: fetch snapshot + chunk only.
+# - consolidate: merge scored chunks + render markdown.
+
+dry_run=0
+verbosity=0
+repo=
+task_dir=
+output=docs/github-issue-triage.md
+state=open
+limit=200
+chunk_count=5
+mode=all
+
+resolve_script_path() {
+    local source=$1
+    local dir=
+    local next=
+
+    if command -v greadlink >/dev/null 2>&1; then
+        greadlink -f "$source"
+        return 0
+    fi
+
+    if readlink -f "$source" >/dev/null 2>&1; then
+        readlink -f "$source"
+        return 0
+    fi
+
+    while [ -L "$source" ]; do
+        dir=$(cd -P "$(dirname "$source")" && pwd -P)
+        next=$(readlink "$source")
+        case "$next" in
+            /*) source=$next ;;
+            *) source="$dir/$next" ;;
+        esac
+    done
+
+    dir=$(cd -P "$(dirname "$source")" && pwd -P)
+    printf '%s/%s\n' "$dir" "$(basename "$source")"
+}
+
+scriptdir=$(dirname "$(resolve_script_path "${BASH_SOURCE[0]}")")
+
+usage() {
+    sed -n '/^# Usage:/,/^#     -h /p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+}
+
+process_arguments() {
+    while getopts ":r:t:o:s:l:c:m:nvqh" opt; do
+        case "$opt" in
+            r) repo=$OPTARG ;;
+            t) task_dir=$OPTARG ;;
+            o) output=$OPTARG ;;
+            s) state=$OPTARG ;;
+            l) limit=$OPTARG ;;
+            c) chunk_count=$OPTARG ;;
+            m) mode=$OPTARG ;;
+            n) dry_run=1 ;;
+            v) verbosity=$((verbosity + 1)) ;;
+            q) verbosity=$((verbosity - 1)) ;;
+            h)
+                usage
+                exit 0
+                ;;
+            \?)
+                printf 'Unknown option: -%s\n' "$OPTARG" >&2
+                usage >&2
+                exit 1
+                ;;
+            :)
+                printf 'Option -%s requires an argument\n' "$OPTARG" >&2
+                usage >&2
+                exit 1
+                ;;
+        esac
+    done
+}
+
+msg() {
+    local fmt=$1
+    if [ $# -gt 1 ]; then
+        shift
+    fi
+    # shellcheck disable=SC2059
+    printf -- "$fmt\n" "$@" >&2
+}
+
+msg_verbose() {
+    if [ "$verbosity" -gt 0 ]; then
+        msg "$@"
+    fi
+}
+
+die() {
+    msg "$@"
+    exit 1
+}
+
+run_cmd() {
+    if [ "$dry_run" -eq 1 ]; then
+        msg "[dry-run] %s" "$*"
+        return 0
+    fi
+    "$@"
+}
+
+set_defaults() {
+    local today
+
+    if [ -z "$task_dir" ]; then
+        today=$(date +%F)
+        task_dir=".agent/tasks/${today}-issue-triage"
+    fi
+}
+
+validate_inputs() {
+    case "$state" in
+        open|closed|all) ;;
+        *) die "state must be one of: open, closed, all" ;;
+    esac
+
+    case "$mode" in
+        all|prepare|consolidate) ;;
+        *) die "mode must be one of: all, prepare, consolidate" ;;
+    esac
+
+    if ! [[ "$limit" =~ ^[0-9]+$ ]]; then
+        die "limit must be a positive integer"
+    fi
+    if ! [[ "$chunk_count" =~ ^[0-9]+$ ]]; then
+        die "chunk count must be a positive integer"
+    fi
+}
+
+prepare_snapshot() {
+    local snapshot
+    local args
+
+    snapshot="${task_dir}/open-issues.json"
+    args=("$scriptdir/export-github-issues-json" -o "$snapshot" -s "$state" -l "$limit")
+    if [ -n "$repo" ]; then
+        args+=(-r "$repo")
+    fi
+
+    msg "Preparing issue snapshot: %s" "$snapshot"
+    run_cmd "${args[@]}"
+}
+
+chunk_snapshot() {
+    local input
+    local i
+    local modulo
+    local out
+
+    input="${task_dir}/open-issues.json"
+    if [ ! -f "$input" ]; then
+        die "missing snapshot: $input"
+    fi
+
+    msg "Creating %s chunks in %s" "$chunk_count" "$task_dir"
+    i=0
+    while [ "$i" -lt "$chunk_count" ]; do
+        modulo=$i
+        out="${task_dir}/chunk-$((i + 1)).json"
+        run_cmd jq --argjson m "$modulo" --argjson n "$chunk_count" \
+            'to_entries | map(select((.key % $n)==$m) | .value)' \
+            "$input" >"$out"
+        i=$((i + 1))
+    done
+}
+
+consolidate_scores() {
+    local merged
+    local enriched
+
+    merged="${task_dir}/scored-all.json"
+    enriched="${task_dir}/scored-all-enriched.json"
+
+    if [ ! -f "${task_dir}/open-issues.json" ]; then
+        die "missing snapshot: ${task_dir}/open-issues.json"
+    fi
+
+    if [ "$(find "$task_dir" -maxdepth 1 -name 'scored-chunk-*.json' | wc -l | tr -d ' ')" -lt "$chunk_count" ]; then
+        die "expected at least ${chunk_count} scored chunk files in ${task_dir}"
+    fi
+
+    msg "Consolidating scored chunk files"
+    run_cmd jq -s \
+        'flatten
+        | sort_by(.number)
+        | map(. + {
+            effort: (.complexity + .difficulty),
+            priority_score: ((.benefit * 2) - .complexity - .difficulty)
+          })' \
+        "$task_dir"/scored-chunk-*.json >"$merged"
+
+    run_cmd jq -s \
+        '.[0] as $issues
+        | .[1]
+        | map(. as $s
+          | $s + {
+              url: ($issues[] | select(.number == $s.number) | .url),
+              updatedAt: ($issues[] | select(.number == $s.number) | .updatedAt),
+              createdAt: ($issues[] | select(.number == $s.number) | .createdAt)
+            })' \
+        "${task_dir}/open-issues.json" \
+        "$merged" >"$enriched"
+}
+
+render_report() {
+    local data
+    local issue_count
+    local generated
+    local repo_name
+    local lane_summary
+    local scope_summary
+    local today
+
+    data="${task_dir}/scored-all-enriched.json"
+    if [ ! -f "$data" ]; then
+        die "missing consolidated data: $data"
+    fi
+
+    if [ "$dry_run" -eq 1 ]; then
+        msg "[dry-run] render %s from %s" "$output" "$data"
+        return 0
+    fi
+
+    mkdir -p "$(dirname -- "$output")"
+
+    issue_count=$(jq 'length' "$data")
+    generated=$(date +%F)
+    today=$(date +%F)
+    repo_name=$repo
+    if [ -z "$repo_name" ] && [ -f "${task_dir}/open-issues.json" ]; then
+        repo_name=$(jq -r '.[0].url // ""' "${task_dir}/open-issues.json" | sed -E 's|https://github.com/([^/]+/[^/]+)/issues/.*|\1|')
+    fi
+    if [ -z "$repo_name" ]; then
+        repo_name="<unknown>"
+    fi
+
+    lane_summary=$(jq -r 'group_by(.lane) | map("- `\(.[0].lane)`: `\(length)`") | .[]' "$data")
+    scope_summary=$(jq -r 'group_by(.scope) | map("- `\(.[0].scope)`: `\(length)`") | .[]' "$data")
+
+    {
+        echo "# GitHub Issue Triage Guide"
+        echo
+        echo "This document provides a repeatable triage pass for open issues, with per-issue scoring and an execution-lane recommendation."
+        echo
+        echo "## Snapshot"
+        echo
+        echo "- Repository: \`$repo_name\`"
+        echo "- Source snapshot: \`${task_dir}/open-issues.json\`"
+        echo "- Open issues evaluated: \`$issue_count\`"
+        echo "- Generated: \`$generated\`"
+        echo
+        echo "## Scoring Model"
+        echo
+        echo "- \`complexity\` (1-5): breadth of change, coupling, unknowns."
+        echo "- \`difficulty\` (1-5): technical risk and failure modes."
+        echo "- \`benefit\` (1-5): expected user/repo impact."
+        echo "- \`scope\`: \`XS|S|M|L|XL\` estimate of expected change size."
+        echo "- \`lane\`: delivery mode recommendation:"
+        echo "  - \`agent-implementation\`: bounded coding task with low irreversible risk."
+        echo "  - \`agent-assist-human\`: agent can implement portions, but human decisions/review are integral."
+        echo "  - \`human-only\`: strategic/security/account-sensitive work requiring human ownership."
+        echo
+        echo "## Summary"
+        echo
+        printf '%s\n' "$lane_summary"
+        echo
+        echo "Scope distribution:"
+        printf '%s\n' "$scope_summary"
+        echo
+        echo "## Top Candidates"
+        echo
+        echo "Highest-value low/medium effort (\`priority_score = benefit*2 - complexity - difficulty\`):"
+        jq -r '
+            sort_by(-.priority_score, .effort, .number)[:10]
+            | .[]
+            | "- [\(.title)](\(.url)) (#\(.number)): `b\(.benefit)/c\(.complexity)/d\(.difficulty)` `scope:\(.scope)` `lane:\(.lane)`; \(.rationale)"
+        ' "$data"
+        echo
+        echo "## Lane-Oriented Queues"
+        echo
+        echo "### Agent Implementation Candidates"
+        jq -r '
+            map(select(.lane=="agent-implementation"))
+            | sort_by(-.priority_score, .effort, .number)
+            | .[]
+            | "- [\(.title)](\(.url)) (#\(.number)); `b\(.benefit)/c\(.complexity)/d\(.difficulty)` `\(.scope)`; \(.rationale)"
+        ' "$data"
+        echo
+        echo "### Agent Assist + Human-in-the-Loop Candidates"
+        jq -r '
+            map(select(.lane=="agent-assist-human"))
+            | sort_by(-.priority_score, .effort, .number)
+            | .[]
+            | "- [\(.title)](\(.url)) (#\(.number)); `b\(.benefit)/c\(.complexity)/d\(.difficulty)` `\(.scope)`; \(.rationale)"
+        ' "$data"
+        echo
+        echo "### Human-Only Candidates"
+        jq -r '
+            map(select(.lane=="human-only"))
+            | sort_by(-.priority_score, .effort, .number)
+            | .[]
+            | "- [\(.title)](\(.url)) (#\(.number)); `b\(.benefit)/c\(.complexity)/d\(.difficulty)` `\(.scope)`; \(.rationale)"
+        ' "$data"
+        echo
+        echo "## Full Matrix"
+        echo
+        echo "| Issue | Benefit | Complexity | Difficulty | Scope | Lane | Confidence | Rationale |"
+        echo "|---|---:|---:|---:|---|---|---|---|"
+        jq -r '
+            def clean: gsub("\\|"; "\\\\|") | gsub("\n"; " ") | gsub("\r"; " ");
+            sort_by(.number)
+            | .[]
+            | "| [\(.title)](\(.url)) (#\(.number)) | \(.benefit) | \(.complexity) | \(.difficulty) | \(.scope) | `\(.lane)` | \(.confidence) | \(.rationale|clean) |"
+        ' "$data"
+        echo
+        echo "## Re-run Workflow"
+        echo
+        echo "1. Prepare fresh issues and chunks:"
+        echo "   \`\`\`bash"
+        echo "   scripts/generate-github-issue-triage -m prepare -r ${repo_name} -t .agent/tasks/${today}-issue-triage"
+        echo "   \`\`\`"
+        echo "2. Score each chunk with subagents into \`scored-chunk-N.json\` files."
+        echo "3. Consolidate and render:"
+        echo "   \`\`\`bash"
+        echo "   scripts/generate-github-issue-triage -m consolidate -t .agent/tasks/${today}-issue-triage -o docs/github-issue-triage.md"
+        echo "   \`\`\`"
+    } >"$output"
+}
+
+main() {
+    process_arguments "$@"
+    set_defaults
+    validate_inputs
+
+    msg_verbose "Mode: %s" "$mode"
+    msg_verbose "Task directory: %s" "$task_dir"
+    msg_verbose "Output: %s" "$output"
+
+    case "$mode" in
+        prepare)
+            prepare_snapshot
+            chunk_snapshot
+            ;;
+        consolidate)
+            consolidate_scores
+            render_report
+            ;;
+        all)
+            prepare_snapshot
+            chunk_snapshot
+            consolidate_scores
+            render_report
+            ;;
+    esac
+}
+
+main "$@"
