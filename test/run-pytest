@@ -1,0 +1,17 @@
+#!/bin/sh
+# Wrapper for `uvx pytest`.
+
+set -eu
+
+if [ -z "${0##/*}" ]; then
+    scriptdir=$(cd "$(dirname "$0")" && pwd -P)
+else
+    script=$(command -v "${0##*/}") || script="$0"
+    scriptdir=$(cd "$(dirname "$script")" && pwd -P)
+fi
+
+if [ $# -eq 0 ]; then
+    set -- "$scriptdir/pytest"
+fi
+
+exec uvx pytest "$@"

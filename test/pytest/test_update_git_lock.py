@@ -9,7 +9,7 @@ from unittest.mock import MagicMock, patch
 
 spec = importlib.util.spec_from_file_location(
     "update_git_lock",
-    pathlib.Path(__file__).parent.parent / "update-git-lock.py",
+    pathlib.Path(__file__).parent.parent.parent / "scripts" / "update-git-lock.py",
 )
 assert spec is not None and spec.loader is not None
 mod = importlib.util.module_from_spec(spec)
@@ -29,14 +29,14 @@ def test_format_diff_lines_branch_unchanged():
         sources,
         ["foo"],
     )
-    assert result == ["foo: aaa0000 \u2192 bbb0000 (master)"]
+    assert result == ["foo: aaa0000 → bbb0000 (master)"]
 
 
 def test_format_diff_lines_tagged_new():
     """Tagged new entry shows full tag name, no ref suffix."""
     sources = {"bar": {"repo": "https://github.com/x/y", "tagged": True}}
     result = format_diff_lines({}, {"bar": "v0.35.0"}, sources, ["bar"])
-    assert result == ["bar: (new) \u2192 v0.35.0"]
+    assert result == ["bar: (new) → v0.35.0"]
 
 
 def test_format_diff_lines_tagged_update():
@@ -45,7 +45,7 @@ def test_format_diff_lines_tagged_update():
     result = format_diff_lines(
         {"bar": "v0.34.0"}, {"bar": "v0.35.0"}, sources, ["bar"]
     )
-    assert result == ["bar: v0.34.0 \u2192 v0.35.0"]
+    assert result == ["bar: v0.34.0 → v0.35.0"]
 
 
 def test_format_diff_lines_tagged_missing_externals_key():
@@ -56,7 +56,7 @@ def test_format_diff_lines_tagged_missing_externals_key():
         {},
         ["stale"],
     )
-    assert result == ["stale: aaa0000 \u2192 bbb0000 (main)"]
+    assert result == ["stale: aaa0000 → bbb0000 (main)"]
 
 
 def _run_main_dry_run_json(sources: dict, ids: list[str]) -> list:
@@ -431,7 +431,7 @@ _rich_stubs = {
 
 _sgc_spec = importlib.util.spec_from_file_location(
     "show_git_changes",
-    pathlib.Path(__file__).parent.parent / "show-git-changes.py",
+    pathlib.Path(__file__).parent.parent.parent / "scripts" / "show-git-changes.py",
 )
 assert _sgc_spec is not None and _sgc_spec.loader is not None
 _sgc_mod = importlib.util.module_from_spec(_sgc_spec)

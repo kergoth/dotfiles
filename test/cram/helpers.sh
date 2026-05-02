@@ -26,7 +26,7 @@ run_script_test() {
     shift
     (
         cd "$TEST_ROOT"
-        HOME=/tmp ./script/test "$@" "$distro"
+        HOME=/tmp ./test/run-container "$@" "$distro"
     )
 }
 
@@ -35,7 +35,7 @@ run_container_runner() {
     shift
     (
         cd "$TEST_ROOT"
-        HOME=/tmp ./test/containers/run-test "$@" "$distro"
+        HOME=/tmp ./test/run-container "$@" "$distro"
     )
 }
 
@@ -44,7 +44,7 @@ run_container_runner_with_host_home() {
     shift
     (
         cd "$TEST_ROOT"
-        HOME=$HOST_HOME ./test/containers/run-test "$@" "$distro"
+        HOME=$HOST_HOME ./test/run-container "$@" "$distro"
     )
 }
 
@@ -129,7 +129,7 @@ run_script_test_smoke() {
 run_container_runner_dry_raw() {
     (
         cd "$TEST_ROOT"
-        GITHUB_TOKEN= CLAUDE_CODE_OAUTH_TOKEN= HOME=/tmp ./test/containers/run-test -n "$@"
+        GITHUB_TOKEN= CLAUDE_CODE_OAUTH_TOKEN= HOME=/tmp ./test/run-container -n "$@"
     )
 }
 

@@ -4,7 +4,7 @@ import pathlib
 
 spec = importlib.util.spec_from_file_location(
     "update_fetch_lock",
-    pathlib.Path(__file__).parent.parent / "update-fetch-lock.py",
+    pathlib.Path(__file__).parent.parent.parent / "scripts" / "update-fetch-lock.py",
 )
 assert spec is not None and spec.loader is not None
 mod = importlib.util.module_from_spec(spec)

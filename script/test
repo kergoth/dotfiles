@@ -10,4 +10,4 @@ if [ $# -eq 0 ]; then
     set -- -a
 fi
 
-"$testdir/containers/run-test" "$@"
+"$testdir/run-container" "$@"

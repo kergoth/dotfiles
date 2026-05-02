@@ -10,7 +10,8 @@ import types
 
 
 SCRIPT = (
-    pathlib.Path(__file__).resolve().parents[1]
+    pathlib.Path(__file__).resolve().parents[2]
+    / "scripts"
     / "macos"
     / "prefer-integer-display-scaling.py"
 )

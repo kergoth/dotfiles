@@ -240,7 +240,7 @@ init_gnupg_overrides() {
 }
 
 find_distros() {
-    for d in "$scriptdir"/*; do
+    for d in "$containerdir"/*; do
         [ -d "$d" ] || continue
         [ -f "$d/Dockerfile" ] || continue
         printf "%s\n" "${d##*/}"
@@ -248,8 +248,8 @@ find_distros() {
 }
 
 validate_distro() {
-    if [ ! -f "$scriptdir/$1/Dockerfile" ]; then
-        die "no test container for '%s' (expected %s/%s/Dockerfile)" "$1" "$scriptdir" "$1"
+    if [ ! -f "$containerdir/$1/Dockerfile" ]; then
+        die "no test container for '%s' (expected %s/%s/Dockerfile)" "$1" "$containerdir" "$1"
     fi
 }
 
@@ -375,7 +375,7 @@ completion_msg() {
 run_one() {
     distro=$1
     image_name="dotfiles-test-$distro"
-    build_context="$scriptdir/$distro/"
+    build_context="$containerdir/$distro/"
 
     validate_distro "$distro"
     build_image "$image_name" "$build_context" "$distro"
@@ -403,7 +403,7 @@ main() {
     if [ "$all_distros" -eq 1 ]; then
         distros=$(find_distros)
         if [ -z "$distros" ]; then
-            die "no distros found under %s (expected */Dockerfile)" "$scriptdir"
+            die "no distros found under %s (expected */Dockerfile)" "$containerdir"
         fi
         echo "$distros" | while IFS= read -r d; do
             echo "$d"
@@ -447,7 +447,7 @@ else
     script=$(command -v "${0##*/}") || script="$0"
     scriptdir=$(cd "$(dirname "$script")" && pwd -P)
 fi
-
-repodir=$(cd "$scriptdir/../.." && pwd -P)
+containerdir="$scriptdir/containers"
+repodir=$(cd "$containerdir/.." && pwd -P)
 
 main "$@"

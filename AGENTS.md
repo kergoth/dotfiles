@@ -27,10 +27,14 @@ chezmoi cat --source-path ~/.config/zsh/.zshrc
 Test entrypoints:
 
 ```bash
+# Run Python unit tests
+./test/run-pytest                        # all tests under test/pytest/
+./test/run-pytest test/pytest/<test_file>.py  # specific test file
+
 # Run structured Cram regression suites
-./test/run-cram                         # all Cram suites under test/cram/
-./test/run-cram test/cram/container     # container-backed dotfiles scenarios
-./test/run-cram test/cram/statusline    # statusline transcript tests
+./test/run-cram                          # all Cram suites under test/cram/
+./test/run-cram test/cram/container      # container-backed dotfiles scenarios
+./test/run-cram test/cram/statusline     # statusline transcript tests
 ./test/run-cram test/cram/show-git-changes
 ./test/run-cram test/cram/fetch-verified
 
@@ -94,7 +98,7 @@ Pick the cheapest verification that covers the changed behavior. Prefer render c
 | Final rendered dotfile diff | `chezmoi diff` |
 | Shell scripts | `sh -n <script>` plus shellcheck when available |
 | PowerShell scripts | PSScriptAnalyzer when available |
-| Python helpers | `uv run --with pytest pytest scripts/tests/<test_file>.py -q` |
+| Python helpers | `./test/run-pytest test/pytest/<test_file>.py` |
 | Cram scenarios | `./test/run-cram test/cram/<suite>` |
 | Linux setup or package-flow changes | `./script/test <distro>` or `./script/test -w <distro>` when GUI app installation is in scope |
 | Cross-platform package changes | Combine the relevant render checks with the narrowest matching Cram or container test |
@@ -114,8 +118,6 @@ Scripts form a progression from OS installation to dotfiles application:
 
 - `script/update` — Human-owned interactive review-before-update workflow for dotfiles, externals, and Home Manager inputs. Agents may suggest it, but should not run it unless explicitly asked to perform that workflow.
 - `script/home-manager-switch [--update-inputs "..."] ["subject"]` — Apply home.nix changes, diff generations, commit all changes under `home/dot_config/home-manager/`, and switch. Called by `script/update`; also useful standalone when editing `home.nix`.
-
-Container-based test runners (`script/test`, `test/run-cram`) are documented in Essential Commands above.
 
 ## Repository Architecture
 
@@ -137,11 +139,14 @@ This is a **chezmoi-managed dotfiles** repository supporting macOS, Linux (Arch,
   - `agents/rules/` - Private agent rule templates (personal, work) included by `render-agent-rules.md.tmpl`
   - `agents/` - Encrypted data blobs for work-only agent configuration
 - **`test/`** - Test infrastructure
-  - `containers/` - Per-distro Dockerfiles and the `run-test` driver script
+  - `containers/` - Per-distro Dockerfiles
   - `cram/` - Structured Cram suites and helpers
     - `container/` - Container-backed dotfiles scenario tests
     - `statusline/` - Statusline transcript tests
+  - `pytest/` - Python unit tests for scripts and helpers
+  - `run-container` - Container test driver script
   - `run-cram` - Wrapper around `uvx cram`
+  - `run-pytest` - Wrapper around `uvx pytest`
 - **`docs/`** - Documentation
   - `decisions/` - Architectural Decision Records (MADR format)
   - `decisions/templates/` - MADR templates; use `adr-template.md` for new ADRs
