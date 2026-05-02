@@ -491,6 +491,7 @@ Installed software varies by platform based on package availability and platform
 - **[Carbon Copy Cloner](https://bombich.com)**: Backups and disk cloning for macOS.
 - **[DaisyDisk](https://daisydiskapp.com)**: Disk space visualizer. Get a visual breakdown of your disk space in form of an interactive map, reveal the biggest space wasters, and remove them with a simple drag and drop.
 - **[Deliveries](https://apps.apple.com/us/app/deliveries-a-package-tracker/id290986013)**: Track your packages with support for dozens of services. Syncs via iCloud.
+- **[Driveaway](https://apps.apple.com/us/app/driveaway/id6758246708)**: Menu bar utility that removes macOS metadata clutter from external drives and ejects mounted volumes.
 - **[ForkLift](https://binarynights.com)**: Advanced dual pane file manager and file transfer client for macOS. Available via brew as `forklift`.
 - **[Juicy](https://getjuicy.app)**: Battery Alerts & Health. Available via [Mac App Store](https://apps.apple.com/us/app/juicy-battery-alerts-health/id6752221257?mt=12)
 - **[Karabiner-Elements](https://karabiner-elements.pqrs.org)** ([Open-Source](https://github.com/pqrs-org/Karabiner-Elements)): A powerful and stable keyboard customizer for macOS.
