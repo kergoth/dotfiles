@@ -381,6 +381,8 @@ chezmoi apply --refresh-externals
 
 See `docs/contributing-software.md` for the full guide: platform paths (Brewfile, home.nix, install-tools, scoop, system-setup), package-manager preference order, timing rules (`before_` vs `after_`), conditional flags, README entry formatting, and the verification checklist. On removal, README entries move from "Installed" to "Formerly-Used".
 
+For software names and README summary lines, do not infer wording. Use verified source text from official project pages, official app-store listings, or upstream docs/README files. Preserve official capitalization in package or `mas` entry names. If reliable sources conflict or are unavailable, use neutral factual wording and explicitly flag the uncertainty instead of guessing.
+
 ## Platform-Specific Notes
 
 - **macOS**: Uses Homebrew (prefix: `$HOME/.brew`), optional split admin user setup

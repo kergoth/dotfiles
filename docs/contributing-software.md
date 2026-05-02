@@ -540,6 +540,15 @@ Include installation instructions:
 - [ToolName](https://example.com): Description. Available via brew, nix, cargo, or [download](https://example.com/download).
 ```
 
+### Description Sourcing (Required)
+
+Software summary lines must be source-backed, not inferred.
+
+- Use at least one verified source: official product page, official store listing (App Store, Homebrew formula/cask page, Scoop/Winget/Flathub entry), or upstream docs/README.
+- Preserve official product naming and capitalization in package and `mas` entries.
+- Prefer concise factual behavior statements over marketing language.
+- If sources conflict or no reliable source is available, use neutral wording and call out uncertainty in the change notes instead of guessing.
+
 ## Verification Checklist
 
 Pick the cheapest verification that covers the changed behavior. Agents should prefer render and template checks before live install checks; commands that apply changes to the current machine are manual unless the task explicitly asks for them.
@@ -547,6 +556,7 @@ Pick the cheapest verification that covers the changed behavior. Agents should p
 Baseline checks:
 
 - [ ] **Markdown-only docs**: inspect the changed section with `sed -n` or `rg -n`
+- [ ] **Software summary provenance** (when adding/changing README software descriptions): verify wording against official source links and confirm naming/capitalization matches the source
 - [ ] **Chezmoi template syntax**: `scripts/chezmoi-execute-template <template>`
 - [ ] **Managed target rendering**: `chezmoi cat --source-path <source-path>`
 - [ ] **Final rendered diff**: `chezmoi diff`
