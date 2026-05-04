@@ -14,11 +14,12 @@ Use this skill to keep user-owned shell scripts aligned with the local shell sty
 1. Decide whether the script is user-facing. If it is a temporary harness, scratch file, or agent-only helper, skip this skill.
 2. Decide whether the script should be `bash` or POSIX `sh`. Prefer `bash` unless portability requirements clearly call for `sh`.
 3. Read [`references/shell-script-style-guide.md`](references/shell-script-style-guide.md) before drafting or revising the script.
-4. Apply the guide with judgment:
+4. If the script is a user-facing CLI tool (has flags, help text, or interactive output), invoke the `cli-design` skill before writing code.
+5. Apply the guide with judgment:
    - Use the full structure for moderate or complex scripts.
    - Keep genuinely tiny wrappers or filters minimal when the guide explicitly allows it.
    - Skip `process_arguments()` for scripts that only forward positional arguments (no switches/dry-run knobs) to another tool (e.g., `@/Users/kergoth/bin/list-chezmoi-repos`) and, more generally, for “hello world”–style utilities that only consume arguments/produce output without any options to encode.
-5. Before finishing, verify the script still matches the guide's defaults for safety flags, formatting, argument parsing, messaging helpers, and dry-run or verbosity behavior where applicable.
+6. Before finishing, verify the script still matches the guide's defaults for safety flags, formatting, argument parsing, messaging helpers, and dry-run or verbosity behavior where applicable.
 
 ## Non-Negotiables
 
