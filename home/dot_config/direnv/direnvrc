@@ -1,13 +1,26 @@
-layout_poetry() {
-  if [[ ! -f pyproject.toml ]]; then
-    log_error 'No pyproject.toml found. Use `poetry new` or `poetry init` to create one first.'
-    exit 2
-  fi
+layout_uv() {
+    if [[ -d ".venv" ]]; then
+        VIRTUAL_ENV="$(pwd)/.venv"
+    fi
 
-  # create venv if it doesn't exist
-  poetry run true
+    if [[ -z $VIRTUAL_ENV || ! -d $VIRTUAL_ENV ]]; then
+        if [[ ! -f "pyproject.toml" ]]; then
+            log_status "No uv project exists. Executing \`uv init\` to create one."
+            uv init --no-readme
+            rm main.py
+            uv venv
+        else
+            uv sync
+        fi
+        VIRTUAL_ENV="$(pwd)/.venv"
+    fi
+    export UV_PROJECT_ENVIRONMENT=$VIRTUAL_ENV
 
-  export VIRTUAL_ENV=$(poetry env info --path)
-  export POETRY_ACTIVE=1
-  PATH_add "$VIRTUAL_ENV/bin"
+    if [ -d ".venv/bin" ]; then
+        PATH_add .venv/bin
+    elif [ -d ".venv/Scripts" ]; then
+        PATH_add .venv/Scripts
+    fi
+    export UV_ACTIVE=1 # or VENV_ACTIVE=1
+    export VIRTUAL_ENV
 }
