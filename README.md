@@ -193,6 +193,7 @@ Skills live in `~/.agents/skills/` and are available to all agent tools (Claude 
 ##### First-Party
 
 - **[Clean Prose](home/dot_agents/skills/clean-prose/SKILL.md)**: Improve prose quality and reduce AI writing patterns in written artifacts.
+- **[CLI Design](home/dot_agents/skills/cli-design/SKILL.md)**: Guidelines for designing and implementing command-line interfaces, with [clig.dev](https://clig.dev/) as the baseline.
 - **[Cram](home/dot_agents/skills/cram/SKILL.md)**: Write, read, and debug [cram](https://bitheap.org/cram/) functional tests (.t files).
 - **[Find Session](home/dot_agents/skills/find-session/SKILL.md)**: Find and resume past Claude Code conversations by keyword search.
 - **[Jujutsu](home/dot_agents/skills/jujutsu/SKILL.md)**: Version control for [Jujutsu (jj)](https://github.com/jj-vcs/jj) repositories.
