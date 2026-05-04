@@ -9,6 +9,7 @@
 ## Bash Command Discipline{{- if eq $agent "claude" }} (Claude Code){{- end }}
 - **Prefer built-in tools**: Read over `cat`, Grep over `grep`, Glob over `find`. Tool calls are reviewable and don't go through Bash permission checks at all.
 - **State-modifying commands with `>` or `>>` re-prompt despite allowlist** ([claude-code#20449](https://github.com/anthropics/claude-code/issues/20449)); use Write/Edit instead of `cmd > file` whenever the goal is to produce a file.
+- **Always double-quote paths that contain spaces** — never backslash-escape spaces in arguments. Backslash-escaped whitespace triggers permission prompts even for allowed paths; quoting does not.
 - **Shell state doesn't persist between Bash calls**: variables and `cd` reset across invocations. Pass absolute paths and re-export env per call.
 
 ## GitHub CLI Conventions
