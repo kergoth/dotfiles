@@ -202,7 +202,7 @@ Skills live in `~/.agents/skills/` and are available to all agent tools (Claude 
 - **[Git PRs](home/dot_agents/skills/git-prs/SKILL.md)**: Personal conventions for pull request descriptions, templates, and reviewer-facing content.
 - **[GitHub Issue Triage](home/dot_agents/skills/github-issue-triage/SKILL.md)**: End-to-end GitHub issue triage with complexity scoring and execution-lane recommendations.
 - **[Issue Tracking Conventions](home/dot_agents/skills/issue-tracking-conventions/SKILL.md)**: Structural conventions for issues, epics, and bug reports across trackers.
-- **[Jj Commits](home/dot_agents/skills/jj-commits/SKILL.md)**: Commit policy for Jujutsu repositories (paired with the Jujutsu skill).
+- **[jj Commits](home/dot_agents/skills/jj-commits/SKILL.md)**: Commit policy for Jujutsu repositories (paired with the Jujutsu skill).
 - **[Jujutsu](home/dot_agents/skills/jujutsu/SKILL.md)**: Version control for [Jujutsu (jj)](https://github.com/jj-vcs/jj) repositories.
 - **[Obsidian CLI](home/dot_agents/skills/obsidian-cli/SKILL.md)**: Work with the [Obsidian](https://obsidian.md) CLI.
 - **[Shell Script Style](home/dot_agents/skills/shell-script-style/SKILL.md)**: Apply personal Bash/POSIX shell script style conventions.
