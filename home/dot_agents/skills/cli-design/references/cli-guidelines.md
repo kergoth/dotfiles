@@ -525,6 +525,39 @@ additions are clearly separated because they represent either newer conventions,
 constraints (POSIX sh portability), or an emerging design space (agent consumers) rather than
 established clig content.
 
+### Color control
+
+The clig Output section recommends `--no-color` as a flag. In practice, most modern CLIs
+have converged on a tri-state `--color` flag instead:
+
+```
+--color=always    Force color output regardless of TTY
+--color=auto      Color when the output stream is a TTY (the default)
+--color=never     Disable color unconditionally
+```
+
+This pattern is used by `grep`, `ls`, `git`, `cargo`, `ripgrep`, `diff`, `gcc`, and many
+others. It covers all use cases in a single flag, is familiar to users, and interacts cleanly
+with the environment variables below. `--no-color` can be accepted as an alias for
+`--color=never` for compatibility, but `--color` should be the primary interface.
+
+**Supersedes:** the `--no-color` flag guidance in the Output section above.
+
+**Full evaluation order for color decisions:**
+
+1. `NO_COLOR` env var — if set and non-empty, disable color
+2. `--color` flag — `always` forces on, `never` forces off, `auto` defers to steps 3-4
+3. `TERM=dumb` — disable color (when still in `auto` mode)
+4. TTY detection — enable color if the output stream is a TTY (the `auto` default)
+5. `FORCE_COLOR` env var — if set and non-empty, enable color (final override)
+
+This means a user can set `NO_COLOR=1` system-wide but override it per-command with
+`--color=always`, and `FORCE_COLOR` always wins when set. This ordering is consistent
+with [force-color.org](https://force-color.org)'s specification.
+
+When implementing, check each output stream (stdout, stderr) independently for TTY status.
+A command may have its stdout piped while stderr remains on a terminal.
+
 ### Additional environment variables
 
 **Check `VISUAL` before `EDITOR`.** By long-standing Unix convention, `VISUAL` specifies the
@@ -536,14 +569,7 @@ prompt for multi-line input should check `VISUAL` first, then fall back to `EDIT
 complements `NO_COLOR`. When `FORCE_COLOR` is set and non-empty, force ANSI color output
 regardless of TTY detection. This is useful when piping through pagers (`less -R`), in CI
 environments that support ANSI, or when chaining programs where flags aren't accessible.
-
-Evaluation order in your color logic:
-1. Check `NO_COLOR` — if set and non-empty, disable color
-2. Apply config files and command-line flags (`--color`, `--no-color`)
-3. Check `FORCE_COLOR` last — if set and non-empty, enable color (overrides above)
-
-This means `FORCE_COLOR` wins over `NO_COLOR` when both are set, which matches
-[force-color.org](https://force-color.org)'s specification.
+See the Color Control section above for the full evaluation order.
 
 ### Agent-friendly design
 

@@ -151,6 +151,26 @@ Apply config in this precedence (highest to lowest):
 The following guidance extends clig with considerations it doesn't cover. See
 `references/cli-guidelines.md` §Beyond clig for details.
 
+### Color control
+
+Prefer `--color=always|auto|never` over a bare `--no-color` flag. This tri-state pattern
+(used by `grep`, `ls`, `git`, `cargo`, `rg`, and many others) covers all use cases in a
+single flag and is widely understood. `auto` (the default) enables color when the output
+stream is a TTY.
+
+Full evaluation order for color decisions:
+1. `NO_COLOR` env var — if set and non-empty, disable color
+2. `--color` flag — `always` forces on, `never` forces off, `auto` defers to TTY detection
+3. `TERM=dumb` — disable color (when still in `auto` mode)
+4. TTY detection — enable color if the output stream is a TTY (the `auto` behavior)
+5. `FORCE_COLOR` env var — if set and non-empty, enable color (final override)
+
+This supersedes the `--no-color` flag mentioned in the core clig guidance above. The
+`--no-color` form is equivalent to `--color=never` and can be accepted as an alias for
+compatibility, but `--color` should be the primary interface.
+
+See `references/cli-guidelines.md` §Beyond clig for details on `FORCE_COLOR`.
+
 ### Additional environment variables
 
 - Check `VISUAL` before `EDITOR` when prompting for multi-line input. `VISUAL` takes
