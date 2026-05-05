@@ -195,7 +195,14 @@ Skills live in `~/.agents/skills/` and are available to all agent tools (Claude 
 - **[Clean Prose](home/dot_agents/skills/clean-prose/SKILL.md)**: Improve prose quality and reduce AI writing patterns in written artifacts.
 - **[CLI Design](home/dot_agents/skills/cli-design/SKILL.md)**: Guidelines for designing and implementing command-line interfaces, with [clig.dev](https://clig.dev/) as the baseline.
 - **[Cram](home/dot_agents/skills/cram/SKILL.md)**: Write, read, and debug [cram](https://bitheap.org/cram/) functional tests (.t files).
+- **[Dispatch External Model](home/dot_agents/skills/dispatch-external-model/SKILL.md)**: CLI syntax for dispatching prompts to external model agents (claude, cursor, codex, gemini).
+- **[Evaluate Open-Source Project](home/dot_agents/skills/evaluate-open-source-project/SKILL.md)**: Due diligence for adopting open-source projects, plugins, or skills (trust, maintainer health, security risk).
 - **[Find Session](home/dot_agents/skills/find-session/SKILL.md)**: Find and resume past Claude Code conversations by keyword search.
+- **[Git Commits](home/dot_agents/skills/git-commits/SKILL.md)**: Personal conventions for Git commit messages, staging, history curation, and bisectability.
+- **[Git PRs](home/dot_agents/skills/git-prs/SKILL.md)**: Personal conventions for pull request descriptions, templates, and reviewer-facing content.
+- **[GitHub Issue Triage](home/dot_agents/skills/github-issue-triage/SKILL.md)**: End-to-end GitHub issue triage with complexity scoring and execution-lane recommendations.
+- **[Issue Tracking Conventions](home/dot_agents/skills/issue-tracking-conventions/SKILL.md)**: Structural conventions for issues, epics, and bug reports across trackers.
+- **[Jj Commits](home/dot_agents/skills/jj-commits/SKILL.md)**: Commit policy for Jujutsu repositories (paired with the Jujutsu skill).
 - **[Jujutsu](home/dot_agents/skills/jujutsu/SKILL.md)**: Version control for [Jujutsu (jj)](https://github.com/jj-vcs/jj) repositories.
 - **[Obsidian CLI](home/dot_agents/skills/obsidian-cli/SKILL.md)**: Work with the [Obsidian](https://obsidian.md) CLI.
 - **[Shell Script Style](home/dot_agents/skills/shell-script-style/SKILL.md)**: Apply personal Bash/POSIX shell script style conventions.
