@@ -20,6 +20,7 @@
 - Keep this section at policy and intent level. Command-level workflows belong in skills.
 - Ownership split: `jujutsu` owns jj mechanics/procedures/sequencing; `jj-commits` owns jj commit policy (quality + series hygiene); `git-commits` owns Git commit policy and mechanics.
 - Routing contract: in `.jj` repos, ambiguous commit requests default to generic commit intent. Generic commit intent routes to `jujutsu` + `jj-commits`; explicit Git-only commit intent routes to `jujutsu` + `git-commits`; non-`.jj` commit intent routes to `git-commits`.
+- When writing commit messages anywhere, including in plans or design documents, invoke `git-commits`.
 
 ## Shell Conventions
 - **JSON in shell pipelines: use `jq`, not inline Python.** Inline `python3 -c` for JSON is brittle due to shell quoting. Assume `jq` is present; only use Python when the transformation genuinely exceeds `jq` (complex stateful logic, multi-source joins).

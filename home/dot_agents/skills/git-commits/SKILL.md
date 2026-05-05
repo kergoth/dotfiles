@@ -1,6 +1,6 @@
 ---
 name: git-commits
-description: ALWAYS invoke before running `git commit` or any commit-related git work when the repository context is non-`.jj/`. In repositories containing `.jj/`, invoke this skill only for explicit Git-only commit intent; do not use it for generic commit intent. Triggers include "commit it", "commit this", "let's commit", "let's re-commit", "continue with the commit", "go ahead and commit", "check it in", "check this in", "ship it", "save it", "stage and commit", "amend that", and "fixup" when routing resolves to Git. Also use when writing or rewriting commit messages, staging changes, splitting bundled work into separate commits, curating branch history, rebasing, autosquashing, addressing review feedback with fixup commits, or evaluating whether a commit is bisectable for Git flows. Personal defaults for commit-level git work — invoke even when you think you remember the conventions; the skill body has the authoritative rules.
+description: ALWAYS invoke before running `git commit` or any commit-related git work when the repository context is non-`.jj/`. In repositories containing `.jj/`, invoke this skill only for explicit Git-only commit intent; do not use it for generic commit intent. Triggers include "commit it", "commit this", "let's commit", "let's re-commit", "continue with the commit", "go ahead and commit", "check it in", "check this in", "ship it", "save it", "stage and commit", "amend that", "fixup", "write a commit message", "what should the commit say", and "draft a commit message" when routing resolves to Git. Also use when writing or rewriting commit messages anywhere — including in implementation plans, design documents, or other artifacts — staging changes, splitting bundled work into separate commits, curating branch history, rebasing, autosquashing, addressing review feedback with fixup commits, or evaluating whether a commit is bisectable for Git flows. Personal defaults for commit-level git work — invoke even when you think you remember the conventions; the skill body has the authoritative rules.
 ---
 
 # Git Commits & History
@@ -18,7 +18,8 @@ Follow the [seven rules of commit messages](https://cbea.ms/git-commit):
 - Imperative mood in subject ("Add feature" not "Added feature")
 - Limit subject to 50 characters (72 hard limit), no trailing period
 - Separate subject from body with blank line; wrap body at 72 characters
-- Explain WHY in the body, not WHAT (the diff shows what changed)
+- Subject lines name the change at a high level of abstraction — this aids navigation and is fine. Bodies explain WHY: motivation, constraints, and context the diff lacks.
+- Never narrate implementation detail the diff already shows. If the message would become redundant with `git show`, it is too low-level. "Fix session timeout under high load" is a good subject; "Add `last_event_time` field to `SessionStatus` dataclass, initialized via `__post_init__` to `start_time`" is diff narration.
 
 Subjects describe the change, not the workflow event that produced it. Replace "Fix tests", "Address review", or "Continue work on X" with descriptions of the actual code change.
 
@@ -48,7 +49,7 @@ The merged history is the project's narrative: what changed and why, told in log
 - Before staging, run `git status`. If files you're about to modify already have unstaged or staged work, surface it before proceeding rather than mingling unrelated changes into your commit.
 - Verify edits actually succeeded before committing; check `git diff` if uncertain.
 - Before committing, run `git diff --cached` and confirm the staged diff contains only the changes you intended. If pre-existing work has been staged alongside, separate it with `git restore --staged <path>`, `git stash --keep-index`, or `git add -p` before committing.
-- Before pushing for review, run `git log <base>..HEAD` (where `<base>` is the merge target, usually `main` or `origin/main`) and read the series. Each subject describes a code change rather than a workflow event; bodies explain why the change exists rather than narrating workflow (a common autosquash artifact); no `fixup!` or `squash!` commits remain; the order tells a coherent story. If any check fails, curate before pushing.
+- Before pushing for review, run `git log <base>..HEAD` (where `<base>` is the merge target, usually `main` or `origin/main`) and read the series. Each subject describes a code change rather than a workflow event; bodies explain why the change exists rather than narrating implementation detail (a common autosquash and agent artifact); no `fixup!` or `squash!` commits remain; the order tells a coherent story. If any check fails, curate before pushing.
 
 ## Claude Code: sandbox and agent sockets
 
