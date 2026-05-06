@@ -1,0 +1,5 @@
+{{- $codex := includeTemplate "find-tool" (dict "root" . "tool" "codex") -}}
+{{- if $codex -}}
+cd ~/Workspace || return 1
+{{ $codex }} "$@"
+{{- end -}}

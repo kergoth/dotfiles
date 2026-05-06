@@ -1,0 +1,28 @@
+{{- $zoxide := includeTemplate "find-tool" (dict "root" . "tool" "zoxide") -}}
+{{- $codex := includeTemplate "find-tool" (dict "root" . "tool" "codex") -}}
+{{- if and $zoxide $codex -}}
+# Interactively select directory via zoxide+fzf and launch codex there.
+# Usage: zicdx [<query>...] [-- <codex-args>...]
+local args=("$@")
+local sep_index=${args[(i)--]}  # index of first "--", or $#args+1 if not found
+
+local query
+local codex_args
+
+if (( sep_index <= ${#args} )); then
+    query=("${args[1,sep_index-1]}")
+    codex_args=("${args[sep_index+1,-1]}")
+else
+    query=("${args[@]}")
+    codex_args=()
+fi
+
+local target_dir="$("{{ $zoxide }}" query --interactive -- "${query[@]}")"
+if [[ -z "$target_dir" ]]; then
+    echo "No match found for query: ${query[*]}" >&2
+    return 1
+fi
+
+cd "$target_dir" || return 1
+"{{ $codex }}" "${codex_args[@]}"
+{{ end -}}

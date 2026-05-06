@@ -1,0 +1,7 @@
+{{- $codex := includeTemplate "find-tool" (dict "root" . "tool" "codex") -}}
+{{- if $codex -}}
+# Launch codex in my dotfiles
+# Usage: dcdx [<codex-args>...]
+cd ~/.dotfiles || exit 1
+codex "$@"
+{{- end -}}
