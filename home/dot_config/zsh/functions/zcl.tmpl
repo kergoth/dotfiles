@@ -23,8 +23,6 @@ if [[ -z "$target_dir" ]]; then
     return 1
 fi
 
-(
-    cd "$target_dir" || return 1
-    "{{ $claude }}" "${claude_args[@]}"
-) || return $?
+cd "$target_dir" || return 1
+"{{ $claude }}" "${claude_args[@]}"
 {{ end -}}

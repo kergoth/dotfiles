@@ -27,8 +27,6 @@ if [[ -z "$vault_path" ]]; then
     return 1
 fi
 
-(
-    cd "$vault_path" || return 1
-    "{{ $claude }}" "$@"
-)
+cd "$vault_path" || return 1
+"{{ $claude }}" "$@"
 {{ end -}}

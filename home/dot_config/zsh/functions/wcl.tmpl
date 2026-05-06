@@ -1,6 +1,5 @@
 {{- $claude := includeTemplate "find-tool" (dict "root" . "tool" "claude") -}}
 {{- if $claude -}}
-(
-    cd ~/Workspace && claude "$@"
-)
+cd ~/Workspace || return 1
+{{ $claude }} "$@"
 {{- end -}}
