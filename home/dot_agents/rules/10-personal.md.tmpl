@@ -34,6 +34,8 @@
 - Promote outcomes by intent: architectural choices to ADRs (if used); current architecture to living design docs; usage/operations/schemas to reference docs; repeatable agent rules to AGENTS.md; remaining work to the issue/TODO system. Ask before creating a new convention.
 - Spec authoring: surface open questions to me; never silently resolve. Before asking for spec review, list every gap-fill decision and confirm each. "Fix TBDs" means ask, not decide. Do not proceed to plan-writing with unconfirmed decisions.
 - Plans: ~500 lines max; break larger plans into chunks. Insert spec review checkpoints between logical groups during execution.
+- Commit steps in plans must include both a subject line and a body explaining WHY: the motivation, constraint, or design decision the commit encodes. The plan author writes these bodies into the plan document; the executor follows them literally. Only the plan author has the spec and discussion context to write WHY — the executor does not.
+- Every plan must end with a "Curate history" task authored by the plan writer, not the executor. It must specify: the target logical commit series (what the reviewer sees after rebase), which plan commits should be squashed together and why, and the rebase command to execute. The falsifiable criterion is bisectability: every commit in the final series must build and pass tests independently.
 - Track verification and manual steps explicitly; surface human-only blockers rather than silently skip; summarize remaining verification at completion in one message.
 {{- if eq $agent "claude" }}
 - Use `TaskCreate` for visible progress; `AskUserQuestion` for human-only blockers. Subagents lack both — capture manual steps in output for the parent.
