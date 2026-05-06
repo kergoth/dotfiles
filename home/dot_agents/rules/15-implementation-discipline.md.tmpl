@@ -1,3 +1,4 @@
+{{- $agent := dig "agent" "" . -}}
 ## Refactoring & Removal Discipline
 - **Removal is the deliverable**: When asked to "remove" or "replace", the old code must be deleted, not wrapped
 - **Fix tests, don't preserve them**: Broken tests after removal are expected cost, not a signal to add compatibility
@@ -9,5 +10,12 @@
 - **Real outputs over test fixtures**: Compare against design docs and real pipeline outputs, not just test expectations
 - **"It runs" is not evidence**: Verify output matches spec and is consumed downstream
 
-## Code Review
-- When dispatching any code review, model diversity is required: at least one reviewer must use a different model than the orchestrating session. Dispatch a peer Claude model via `claude -p --model <model>`; use the `dispatch-external-model` skill for external tools.
+## Review Quality
+- **Model diversity required**: All reviews (code, spec, plan) must include at least one reviewer from a different model than the orchestrating session, in addition to any current-model reviewers.
+- **External dispatch**: Claude CLI, Codex, Cursor, and Gemini add perspectives beyond built-in peer pairing; include one when available via the `dispatch-external-model` skill.
+{{- if eq $agent "claude" }}
+- **Claude pairing**: Use Opus when orchestrating on Sonnet, Sonnet when orchestrating on Opus; do not use Haiku for review.
+- **Dispatch in Claude Code**: Dispatch peer Claude via the Agent tool with a `model` override; use the `dispatch-external-model` skill for external tools.
+{{- else }}
+- **Dispatch**: Use native agent dispatch mechanisms where available; consult the `dispatch-external-model` skill for CLI-based dispatch.
+{{- end }}
