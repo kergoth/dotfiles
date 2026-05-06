@@ -8,3 +8,6 @@
 - **Tests prove consistency, not correctness**: In LLM-generated codebases, passing tests only prove internal consistency of assumptions
 - **Real outputs over test fixtures**: Compare against design docs and real pipeline outputs, not just test expectations
 - **"It runs" is not evidence**: Verify output matches spec and is consumed downstream
+
+## Code Review
+- When dispatching any code review, model diversity is required: at least one reviewer must use a different model than the orchestrating session. Dispatch a peer Claude model via `claude -p --model <model>`; use the `dispatch-external-model` skill for external tools.
