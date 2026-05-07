@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Apply home-manager config changes, diff generations, commit, and switch.
 #
-# Usage: home-manager-switch [--update-inputs "input1 input2 ..."] [subject]
+# Usage: home-manager-switch [--dry-run|-n] [--update-inputs "input1 input2 ..."] [subject]
 #
 # Without --update-inputs: syncs the lock file without bumping versions
 #   (nix flake lock). Use this when applying home.nix changes directly.
@@ -13,7 +13,7 @@
 
 set -euo pipefail
 
-scriptdir=$(cd "$(dirname "$0")" && pwd -P)
+scriptdir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
 sourcedir=$(dirname "$scriptdir")
 PATH="$PATH:$scriptdir:$sourcedir/scripts"
 
@@ -38,16 +38,21 @@ else
 fi
 
 usage() {
-    echo >&2 "Usage: ${0##*/} [--update-inputs \"input1 input2 ...\"] [subject]"
+    echo >&2 "Usage: ${0##*/} [--dry-run|-n] [--update-inputs \"input1 input2 ...\"] [subject]"
     exit 2
 }
 
 # Parse arguments
+dry_run=0
 update_inputs=""
 subject=""
 
 while [ $# -gt 0 ]; do
     case "$1" in
+    -n | --dry-run)
+        dry_run=1
+        shift
+        ;;
     --update-inputs)
         shift
         update_inputs="${1:-}"
@@ -76,11 +81,12 @@ while [ $# -gt 0 ]; do
     esac
 done
 
-tmpfile=$(mktemp -t "${0##*/}.XXXXXX")
+tmpdir=$(mktemp -d -p "${TMPDIR:-/tmp}" "${0##*/}.XXXXXX")
+tmpfile="$tmpdir/nvd-diff"
 
 on_exit() {
-    rm -f "$tmpfile"
-    if [ "$use_jj" -eq 0 ]; then
+    rm -rf "$tmpdir"
+    if [ "$dry_run" -eq 0 ] && [ "$use_jj" -eq 0 ]; then
         (cd "$sourcedir" && git checkout HEAD -- home/dot_config/home-manager/private_flake.lock &>/dev/null) || :
     fi
 }
@@ -93,14 +99,15 @@ fi
 
 # Determine the home-manager configuration name (matches home-manager-build convention)
 configuration="$USER"
-package="$HOME/.config/home-manager#homeConfigurations.$configuration.activationPackage"
+home_manager_dir="$HOME/.config/home-manager"
+package="$home_manager_dir#homeConfigurations.$configuration.activationPackage"
 
 # Build "before" from current disk state — before applying any changes.
 # This is the correct baseline whether called standalone (user edits home.nix)
 # or from script/update (chezmoi update -R already applied remote changes).
 echo >&2 "Building current Home Manager generation"
 before_path=""
-if [ -f "$HOME/.config/home-manager/flake.nix" ]; then
+if [ -f "$home_manager_dir/flake.nix" ]; then
     nix build --no-link "$package" 2>/dev/null \
         && before_path=$(nix path-info "$package" 2>/dev/null) || :
 fi
@@ -109,11 +116,19 @@ if [ -z "$before_path" ]; then
     before_path=$(hm generations 2>/dev/null | head -n 1 | cut -d" " -f7) || :
 fi
 
-# Sync committed config to ~/.config/home-manager (applies home.nix changes)
-chezmoi apply ~/.config/home-manager
+if [ "$dry_run" -eq 1 ]; then
+    candidate_dir="$tmpdir/home-manager"
+    cp -R "$home_manager_dir" "$candidate_dir"
+    after_package="path:$candidate_dir#homeConfigurations.$configuration.activationPackage"
+else
+    # Sync committed config to ~/.config/home-manager (applies home.nix changes)
+    chezmoi apply ~/.config/home-manager
+    candidate_dir="$home_manager_dir"
+    after_package="$package"
+fi
 
 # Update or sync the lock file
-cd ~/.config/home-manager
+cd "$candidate_dir"
 if [ -n "$update_inputs" ]; then
     echo >&2 "Updating Home Manager inputs: $update_inputs"
     # shellcheck disable=SC2086
@@ -124,12 +139,14 @@ else
     nix flake lock
 fi
 
-chezmoi re-add flake.lock
+if [ "$dry_run" -eq 0 ]; then
+    chezmoi re-add flake.lock
+fi
 
 # Build "after" — same config with updated lock
 echo >&2 "Building updated Home Manager generation"
-nix build --no-link "$package"
-after_path=$(nix path-info "$package")
+nix build --no-link "$after_package"
+after_path=$(nix path-info "$after_package")
 
 # Early exit if no generation change
 if [ "$before_path" = "$after_path" ]; then
@@ -140,6 +157,10 @@ fi
 # Diff the two generations
 if command -v nvd >/dev/null 2>&1; then
     nvd diff "$before_path" "$after_path" | tee "$tmpfile"
+fi
+
+if [ "$dry_run" -eq 1 ]; then
+    exit 0
 fi
 
 # Skip commit if nvd reports no meaningful package changes
