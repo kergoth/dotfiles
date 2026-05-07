@@ -65,6 +65,8 @@ run_matrix() {
     distro_fn=$2
     shift 2
 
+    require_docker_daemon
+
     "$distro_fn" | while IFS= read -r distro; do
         [ -n "$distro" ] || continue
         log_file="${CRAMTMP}/${scenario_name}-${distro}.log"
@@ -112,9 +114,16 @@ require_host_age_key() {
     test -f "$HOST_HOME/.config/chezmoi/age.key" || exit 80
 }
 
+require_docker_daemon() {
+    command -v docker >/dev/null 2>&1 || exit 80
+    docker version >/dev/null 2>&1 || exit 80
+}
+
 run_script_test_smoke() {
     distro=$1
     log_file="${CRAMTMP}/script-test-smoke-${distro}.log"
+
+    require_docker_daemon
 
     if run_case_quietly "$log_file" \
         run_script_test "$distro" -r -c 'getent passwd testuser >/dev/null && printf ok-script-test-smoke\n'
