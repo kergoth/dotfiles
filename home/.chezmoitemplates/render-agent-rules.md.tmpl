@@ -9,6 +9,8 @@
   {{- else -}}
     {{- $content = include $path | trim -}}
   {{- end -}}
+  {{- /* Drop per-rule leading H1 when composing merged rules doc. */ -}}
+  {{- $content = regexReplaceAll "^# [^\\n]+\\n?" $content "" | trim -}}
   {{- if $content -}}
     {{- if not $first }}
 
