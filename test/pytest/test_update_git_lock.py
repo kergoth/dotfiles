@@ -713,7 +713,8 @@ def test_render_changes_passes_review_paths_to_ai():
     original = _sgc_mod.run_ai_review
 
     def capturing_run_ai_review(agent_cmd, log, diff, name,
-                                review_note=None, review_paths=None):
+                                review_note=None, review_paths=None,
+                                release_notes=None):
         captured_paths.append(review_paths)
         return "safe"
 
