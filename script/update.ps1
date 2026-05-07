@@ -20,8 +20,61 @@ if ((Test-Path "$repodir/.jj") -and (Get-Command jj -ErrorAction SilentlyContinu
     $vcs = "git"
 }
 
+function Invoke-Nix {
+    param (
+        [Parameter(Mandatory=$true)]
+        [string[]]$Args
+    )
+    & nix --experimental-features 'nix-command flakes' @Args
+    if ($LASTEXITCODE -ne 0) {
+        throw "nix failed with exit code $LASTEXITCODE"
+    }
+}
+
+function Invoke-HM {
+    param (
+        [Parameter(Mandatory=$true)]
+        [string[]]$Args
+    )
+    if (-not (Get-Command home-manager -ErrorAction SilentlyContinue)) {
+        Invoke-Nix (@("run", "--no-write-lock-file", "github:nix-community/home-manager/", "--") + $Args)
+    } else {
+        & home-manager @Args
+    }
+}
+
+function Home-Manager-NVD {
+    param (
+        [string]$Configuration = $env:USER
+    )
+    $generation = Invoke-HM @("generations") | Select-String -Pattern "generation" | Select-Object -First 1 | ForEach-Object { $_.Line.Split()[6] }
+    if ($generation) {
+        $package = "$HOME/.config/home-manager#homeConfigurations.$Configuration.activationPackage"
+        $new_generation = Invoke-Nix @("path-info", $package) 2>&1 | Out-String
+        if ($new_generation -and $generation -ne $new_generation) {
+            if (Get-Command nvd -ErrorAction SilentlyContinue) {
+                nvd diff $generation $new_generation
+            }
+        }
+    }
+}
+
+function Home-Manager-Build {
+    param (
+        [string]$Configuration = $env:USER
+    )
+    $package = "$HOME/.config/home-manager#homeConfigurations.$Configuration.activationPackage"
+    Invoke-Nix @("build", "--no-link", $package)
+    Home-Manager-NVD $Configuration
+}
+
 if ($DryRun) {
-    Write-Host "Dry run: skipping chezmoi upgrade"
+    Write-Host "Dry run: checking chezmoi upgrade"
+    try {
+        chezmoi upgrade --dry-run
+    } catch {
+        # Match the shell script behavior and keep going on upgrade failures.
+    }
 } else {
     Write-Host "Updating chezmoi"
     try {
@@ -32,7 +85,31 @@ if ($DryRun) {
 }
 
 if ($DryRun) {
-    Write-Host "Dry run: skipping dotfiles repository sync"
+    Write-Host "Dry run: checking dotfiles repository"
+    Set-Location $repodir
+    if ($use_jj -eq 1) {
+        jj git fetch
+        Write-Host "Dry run: fetched jj-backed dotfiles repository, not applying"
+    } else {
+        git symbolic-ref -q HEAD *> $null
+        if ($LASTEXITCODE -eq 0) {
+            git fetch
+            $upstream = git rev-parse --abbrev-ref --symbolic-full-name '@{u}' 2> $null
+            if ($LASTEXITCODE -eq 0 -and $upstream) {
+                $incoming = git rev-list --count "HEAD..$upstream"
+                if ($LASTEXITCODE -eq 0 -and [int]$incoming -gt 0) {
+                    Write-Host "Dry run: $incoming incoming dotfiles commit(s) from $upstream"
+                } else {
+                    Write-Host "Dry run: dotfiles repository has no upstream updates"
+                }
+            } else {
+                Write-Host "Dry run: dotfiles branch has no upstream, fetched only"
+            }
+        } else {
+            git fetch
+            Write-Host "Dry run: detached dotfiles repository, fetched only"
+        }
+    }
 } else {
     Write-Host "Updating dotfiles repository"
     if ($use_jj -eq 1) {
@@ -54,20 +131,34 @@ if ($DryRun) {
 }
 
 function Update-OpCliVersions {
+    param (
+        [string[]]$UpdateArgs = @()
+    )
     $python = Get-Command python3 -ErrorAction SilentlyContinue
     if (-not $python) {
         Write-Warning "Warning: python3 not available; skipping op CLI version update"
         return $null
     }
 
-    & $python.Source (Join-Path $repodir "scripts/update-op-cli-versions.py")
+    & $python.Source (Join-Path $repodir "scripts/update-op-cli-versions.py") @UpdateArgs
     if ($LASTEXITCODE -ne 0) {
         throw "update-op-cli-versions.py failed with exit code $LASTEXITCODE"
     }
 }
 
 if ($DryRun) {
-    Write-Host "Dry run: skipping op CLI version update"
+    try {
+        $opChanges = Update-OpCliVersions -UpdateArgs @("--dry-run")
+    } catch {
+        Write-Warning "Warning: op CLI version dry-run failed; skipping"
+        $opChanges = $null
+    }
+    if ($opChanges) {
+        Write-Host "Dry run: op CLI version changes available"
+        $opChanges | ForEach-Object { Write-Host "  $_" }
+    } else {
+        Write-Host "Dry run: no op CLI version changes"
+    }
 } else {
     try {
         $opChanges = Update-OpCliVersions
@@ -275,8 +366,80 @@ for key in sorted(set(old_map) | set(new_map)):
     }
 }
 
+function Get-HomeManagerGenerationPath {
+    $generation = Invoke-HM @("generations") | Select-String -Pattern "/nix/store/" | Select-Object -First 1
+    if ($generation) {
+        $match = [regex]::Match($generation.Line, "/nix/store/\S+")
+        if ($match.Success) {
+            return $match.Value
+        }
+    }
+    return $null
+}
+
+function Get-HomeManagerPackagePath {
+    param (
+        [Parameter(Mandatory=$true)]
+        [string]$FlakeRef,
+        [switch]$FallbackToGeneration
+    )
+    try {
+        Invoke-Nix @("build", "--no-link", $FlakeRef) | Out-Null
+        $path = Invoke-Nix @("path-info", $FlakeRef) 2> $null
+        if ($LASTEXITCODE -eq 0 -and $path) {
+            return ($path | Select-Object -First 1).ToString().Trim()
+        }
+    } catch {
+    }
+    if ($FallbackToGeneration) {
+        return Get-HomeManagerGenerationPath
+    }
+    return $null
+}
+
 if ($DryRun) {
-    Write-Host "Dry run: skipping Home Manager update"
+    if (-not (Get-Command nix -ErrorAction SilentlyContinue)) {
+        Write-Warning "Warning: nix must be installed to preview Home Manager packages"
+        exit 0
+    }
+
+    if (-not $env:HOME) {
+        $env:HOME = $env:USERPROFILE
+    }
+    $configuration = if ($env:USER) { $env:USER } else { $env:USERNAME }
+    $sourceDir = Join-Path $env:HOME ".config/home-manager"
+    $candidateDir = Join-Path ([System.IO.Path]::GetTempPath()) ([System.Guid]::NewGuid().ToString())
+    $previousLocation = Get-Location
+
+    try {
+        Copy-Item -Path $sourceDir -Destination $candidateDir -Recurse -Force
+
+        $beforeRef = "$sourceDir#homeConfigurations.$configuration.activationPackage"
+        $beforePath = Get-HomeManagerPackagePath -FlakeRef $beforeRef -FallbackToGeneration
+
+        Set-Location $candidateDir
+        Invoke-Nix @("flake", "update", "nixpkgs", "nixpkgs-unstable")
+
+        $afterRef = "path:$candidateDir#homeConfigurations.$configuration.activationPackage"
+        $afterPath = Get-HomeManagerPackagePath -FlakeRef $afterRef
+
+        if ($beforePath -and $afterPath -and $beforePath -ne $afterPath) {
+            if (Get-Command nvd -ErrorAction SilentlyContinue) {
+                nvd diff $beforePath $afterPath
+            } else {
+                Write-Host "Dry run: Home Manager generation would change: $beforePath -> $afterPath"
+            }
+        } elseif ($beforePath -and $afterPath) {
+            Write-Host "Dry run: no Home Manager package updates"
+        } else {
+            Write-Warning "Warning: unable to compare Home Manager package paths"
+        }
+    } finally {
+        Set-Location $previousLocation
+        if (Test-Path $candidateDir) {
+            Remove-Item $candidateDir -Recurse -Force
+        }
+    }
     exit 0
 }
 
@@ -284,51 +447,6 @@ if ($DryRun) {
 if (-not (Get-Command nix -ErrorAction SilentlyContinue)) {
     Write-Warning "Warning: nix must be installed to update Home Manager packages"
     exit 1
-}
-
-function Invoke-Nix {
-    param (
-        [Parameter(Mandatory=$true)]
-        [string[]]$Args
-    )
-    & nix --experimental-features 'nix-command flakes' @Args
-}
-
-function Invoke-HM {
-    param (
-        [Parameter(Mandatory=$true)]
-        [string[]]$Args
-    )
-    if (-not (Get-Command home-manager -ErrorAction SilentlyContinue)) {
-        Invoke-Nix @("run", "--no-write-lock-file", "github:nix-community/home-manager/", "--") + $Args
-    } else {
-        & home-manager @Args
-    }
-}
-
-function Home-Manager-Build {
-    param (
-        [string]$Configuration = $env:USER
-    )
-    $package = "$HOME/.config/home-manager#homeConfigurations.$Configuration.activationPackage"
-    Invoke-Nix @("build", "--no-link", $package)
-    Home-Manager-NVD $Configuration
-}
-
-function Home-Manager-NVD {
-    param (
-        [string]$Configuration = $env:USER
-    )
-    $generation = Invoke-HM @("generations") | Select-String -Pattern "generation" | Select-Object -First 1 | ForEach-Object { $_.Line.Split()[6] }
-    if ($generation) {
-        $package = "$HOME/.config/home-manager#homeConfigurations.$Configuration.activationPackage"
-        $new_generation = Invoke-Nix @("path-info", $package) 2>&1 | Out-String
-        if ($new_generation -and $generation -ne $new_generation) {
-            if (Get-Command nvd -ErrorAction SilentlyContinue) {
-                nvd diff $generation $new_generation
-            }
-        }
-    }
 }
 
 if (-not $env:HOME) {
@@ -350,7 +468,7 @@ try {
 
     Write-Host "Updating Home Manager packages"
     Set-Location $sourcedir
-    $nixUpdateOutput = Invoke-Nix @("flake", "update", "--override-input", "nixpkgs", "github:NixOS/nixpkgs/nixos-unstable") 2>&1
+    $nixUpdateOutput = Invoke-Nix @("flake", "update", "nixpkgs", "nixpkgs-unstable") 2>&1
     $nixUpdateFiltered = $nixUpdateOutput -notmatch '(^warning:|searching up|into the Git cache)'
     $nixUpdateFiltered | Out-File -FilePath $tmpfile -Encoding utf8
 
