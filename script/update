@@ -36,14 +36,36 @@ if [ -d "$sourcedir/.jj" ] && command -v jj >/dev/null 2>&1; then
 fi
 
 if [ "$dry_run" -eq 1 ]; then
-    echo >&2 "Dry run: skipping chezmoi upgrade"
+    echo >&2 "Dry run: checking chezmoi upgrade"
+    chezmoi upgrade --dry-run || :
 else
     echo >&2 "Updating chezmoi"
     chezmoi upgrade || :
 fi
 
 if [ "$dry_run" -eq 1 ]; then
-    echo >&2 "Dry run: skipping dotfiles repository sync"
+    echo >&2 "Dry run: checking dotfiles repository"
+    if [ "$use_jj" -eq 1 ]; then
+        (cd "$sourcedir" && jj git fetch)
+        echo >&2 "Dry run: fetched jj-backed dotfiles repository, not applying"
+    else
+        if (cd "$sourcedir" && git symbolic-ref -q HEAD >/dev/null); then
+            (cd "$sourcedir" && git fetch)
+            if upstream=$(cd "$sourcedir" && git rev-parse --abbrev-ref --symbolic-full-name '@{u}' 2>/dev/null); then
+                incoming=$(cd "$sourcedir" && git rev-list --count "HEAD..$upstream")
+                if [ "$incoming" -gt 0 ]; then
+                    echo >&2 "Dry run: $incoming incoming dotfiles commit(s) from $upstream"
+                else
+                    echo >&2 "Dry run: dotfiles repository has no upstream updates"
+                fi
+            else
+                echo >&2 "Dry run: dotfiles branch has no upstream, fetched only"
+            fi
+        else
+            (cd "$sourcedir" && git fetch)
+            echo >&2 "Dry run: detached dotfiles repository, fetched only"
+        fi
+    fi
 else
     echo >&2 "Updating dotfiles repository"
     if [ "$use_jj" -eq 1 ]; then
@@ -68,11 +90,20 @@ update_op_cli_versions() {
         return 0
     fi
 
-    python3 "$sourcedir/scripts/update-op-cli-versions.py"
+    python3 "$sourcedir/scripts/update-op-cli-versions.py" "$@"
 }
 
 if [ "$dry_run" -eq 1 ]; then
-    echo >&2 "Dry run: skipping op CLI version update"
+    op_exit=0
+    op_changes=$(update_op_cli_versions --dry-run) || op_exit=$?
+    if [ "$op_exit" -ne 0 ]; then
+        echo >&2 "Warning: op CLI version dry-run failed (exit $op_exit); skipping"
+    elif [ -n "$op_changes" ]; then
+        echo >&2 "Dry run: op CLI version changes available"
+        echo "$op_changes" | sed 's/^/  /' >&2
+    else
+        echo >&2 "Dry run: no op CLI version changes"
+    fi
 else
     op_exit=0
     op_changes=$(update_op_cli_versions) || op_exit=$?
@@ -275,7 +306,7 @@ EOF
 fi
 
 if [ "$dry_run" -eq 1 ]; then
-    echo >&2 "Dry run: skipping Home Manager switch"
+    "$scriptdir/home-manager-switch" --dry-run --update-inputs "nixpkgs nixpkgs-unstable" "Update Home Manager packages"
 else
-    script/home-manager-switch --update-inputs "nixpkgs nixpkgs-unstable" "Update Home Manager packages"
+    "$scriptdir/home-manager-switch" --update-inputs "nixpkgs nixpkgs-unstable" "Update Home Manager packages"
 fi
