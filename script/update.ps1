@@ -196,6 +196,53 @@ if (Test-Path $gitLockUpdater) {
                                 $commitLines += "  $($c.id): $old -> $new ($ref)$suffix"
                             }
                         }
+                        $fetchUpdates = @'
+import re
+import subprocess
+import sys
+
+repo = sys.argv[1]
+path = "home/.chezmoidata/fetch-lock.yml"
+line_re = re.compile(r"^[+-]  ([^:]+): \"([^\"]*)\"$")
+
+result = subprocess.run(
+    ["git", "-C", repo, "diff", "--no-color", "--unified=0", "--", path],
+    capture_output=True,
+    text=True,
+    check=False,
+)
+
+old_map = {}
+new_map = {}
+for line in result.stdout.splitlines():
+    if line.startswith("--- ") or line.startswith("+++ "):
+        continue
+    match = line_re.match(line)
+    if not match:
+        continue
+    key, value = match.groups()
+    if line[0] == "-":
+        old_map[key] = value
+    elif line[0] == "+":
+        new_map[key] = value
+
+for key in sorted(set(old_map) | set(new_map)):
+    old_v = old_map.get(key)
+    new_v = new_map.get(key)
+    if old_v != new_v:
+        old_s = (old_v or "(new)")[:12]
+        new_s = (new_v or "(removed)")[:12]
+        print(f"{key}: {old_s} -> {new_s}")
+'@ | uv run python3 - $repodir
+                        if ($LASTEXITCODE -eq 0 -and $fetchUpdates) {
+                            $commitLines += ""
+                            $commitLines += "Fetch lock updates:"
+                            foreach ($line in ($fetchUpdates -split "`r?`n")) {
+                                if ($line) {
+                                    $commitLines += "  $line"
+                                }
+                            }
+                        }
                         $commitMessage = $commitLines -join "`n"
                         $commitMessage | Out-File -FilePath "$repodir\.git\COMMIT_EDITMSG" -Encoding utf8
 
