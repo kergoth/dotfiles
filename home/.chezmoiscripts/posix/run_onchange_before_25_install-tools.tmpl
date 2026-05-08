@@ -113,7 +113,7 @@ curl -fL -o "$tmpdir/distrobox.tar.gz" \
     https://github.com/89luca89/distrobox/archive/{{ index .git_lock "distrobox" }}.tar.gz
 tar -xzf "$tmpdir/distrobox.tar.gz" -C "$tmpdir"
 mkdir -p "$HOME/.local/bin"
-mv "$tmpdir"/distrobox* "$HOME/.local/bin/"
+install -m 755 "$tmpdir"/distrobox-*/distrobox* "$HOME/.local/bin/"
 {{-       end }}
 
 {{       if $eget_to_install }}
