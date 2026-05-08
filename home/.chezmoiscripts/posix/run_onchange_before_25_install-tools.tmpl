@@ -60,6 +60,7 @@
 {{-     $install_uv_tools := and $uv $uv_to_install -}}
 
 {{-     $lock := .git_lock -}}
+{{-     $rg := includeTemplate "find-tool" (dict "root" . "tool" "rg") -}}
 {{-     $codex := includeTemplate "find-tool" (dict "root" . "tool" "codex") -}}
 {{-     $codex_tag := "" -}}
 {{-     $codex_version := "" -}}
@@ -82,8 +83,8 @@
 {{-         $codex_url = printf "https://github.com/openai/codex/releases/download/%s/codex-%s.tar.gz" $codex_tag $codex_rust_target -}}
 {{-         $codex_sha256 = index .fetch_lock (index $codex_fetch_key_map $codex_platform_key) -}}
 {{-       end -}}
-{{-       $codex_direct_install = and (eq (len $codex_sha256) 64) (or (eq .chezmoi.os "linux") (not .work)) -}}
-{{-       if and (eq .chezmoi.os "linux") (not $codex_direct_install) -}}
+{{-       $codex_direct_install = and $rg (eq (len $codex_sha256) 64) (or (eq .chezmoi.os "linux") (not .work)) -}}
+{{-       if and $rg (eq .chezmoi.os "linux") (not $codex_direct_install) -}}
 {{-         $_ := set $npm_tools "codex" (printf "@openai/codex@%s" $codex_version) -}}
 {{-       end -}}
 {{-     end -}}

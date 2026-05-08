@@ -23,7 +23,8 @@ RefreshEnvPath
 {{-     $codex_sha256 = index .fetch_lock (index $codex_windows_fetch_key_map .chezmoi.arch) -}}
 {{-     $codex_url = printf "https://github.com/openai/codex/releases/download/%s/codex-%s.exe.tar.gz" $codex_tag $codex_rust_target -}}
 {{-   end -}}
-{{-   $codex_direct_install := eq (len $codex_sha256) 64 -}}
+{{-   $rg := includeTemplate "find-tool" (dict "root" . "tool" "rg") -}}
+{{-   $codex_direct_install := and $rg (eq (len $codex_sha256) 64) -}}
 {{-   $gh_cmd := includeTemplate "find-tool" (dict "root" . "tool" "gh") -}}
 
 {{/* Note: tmux and zsh are unavailable on Windows */}}
