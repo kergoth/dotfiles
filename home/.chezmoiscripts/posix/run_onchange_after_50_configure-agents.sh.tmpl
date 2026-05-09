@@ -78,9 +78,6 @@ add_marketplace() {
 codex_add_mcp_server deepwiki --url https://mcp.deepwiki.com/mcp
 codex_add_mcp_server context7 -- npx -y @upstash/context7-mcp
 
-{{   if and .personal ( not .ephemeral ) -}}
-codex_add_mcp_server readwise --url https://mcp2.readwise.io/mcp
-{{-   end }}
 
 {{ $set_toml := joinPath .chezmoi.sourceDir ".." "scripts" "set-toml-value" -}}
 # Enable my preferred codex status line
@@ -91,9 +88,6 @@ uvx --from tomlkit python3 {{ $set_toml }} ~/.codex/config.toml tui.status_line 
 claude_add_mcp_server deepwiki --scope user --transport http https://mcp.deepwiki.com/mcp
 add_mcp_json context7 '{"type":"stdio","command":"npx","args":["-y","@upstash/context7-mcp"]}' --scope user
 
-{{   if and .personal ( not .ephemeral ) -}}
-claude_add_mcp_server readwise --scope user --transport http https://mcp2.readwise.io/mcp
-{{-   end }}
 
 {{   if .work -}}
 {{ joinPath .chezmoi.workingTree "settings/agents/work-mcp-claude.sh.age" | include | decrypt }}
