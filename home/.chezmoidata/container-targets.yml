@@ -1,0 +1,19 @@
+container_targets:
+  - source: debian_latest
+    path: test/containers/debian/Dockerfile
+    kind: from
+  - source: ubuntu_latest
+    path: test/containers/ubuntu/Dockerfile
+    kind: from
+  - source: fedora_latest
+    path: test/containers/fedora/Dockerfile
+    kind: from
+  - source: chimera_latest
+    path: test/containers/chimera/Dockerfile
+    kind: from
+  - source: arch_amd64_latest
+    path: test/containers/arch/Dockerfile.amd64
+    kind: from
+  - source: arch_arm64_latest
+    path: test/containers/arch/Dockerfile.arm64
+    kind: from

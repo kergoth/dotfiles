@@ -1,0 +1,13 @@
+container_sources:
+  debian_latest:
+    image: "debian:latest"
+  ubuntu_latest:
+    image: "ubuntu:latest"
+  fedora_latest:
+    image: "fedora:latest"
+  chimera_latest:
+    image: "chimeralinux/chimera:latest"
+  arch_amd64_latest:
+    image: "archlinux/archlinux:latest"
+  arch_arm64_latest:
+    image: "ghcr.io/baerenbude-org/archlinuxarm-arm64v8:latest"

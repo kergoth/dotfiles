@@ -107,6 +107,7 @@ printf 'repo-home-manager-switch %s\\n' "$*" >>{log}
     assert "chezmoi upgrade --dry-run" in calls
     assert "git fetch" in calls
     assert "update-op-cli-versions.py --dry-run" in calls
+    assert "update-container-pins.py --dry-run" in calls
     assert (
         "repo-home-manager-switch --dry-run --update-inputs nixpkgs nixpkgs-unstable"
         in calls
@@ -212,6 +213,7 @@ if ($args[0] -eq "generations") {
     assert "chezmoi upgrade --dry-run" in calls
     assert "git fetch" in calls
     assert "update-op-cli-versions.py --dry-run" in calls
+    assert "update-container-pins.py --dry-run" in calls
     assert "nvd diff /nix/store/before /nix/store/after" in calls
     assert "chezmoi apply -R" not in calls
     assert "chezmoi apply" not in calls

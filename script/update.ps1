@@ -146,6 +146,22 @@ function Update-OpCliVersions {
     }
 }
 
+function Update-ContainerBaseImageDigests {
+    param (
+        [string[]]$UpdateArgs = @()
+    )
+    $python = Get-Command python3 -ErrorAction SilentlyContinue
+    if (-not $python) {
+        Write-Warning "Warning: python3 not available; skipping container pin update"
+        return $null
+    }
+
+    & $python.Source (Join-Path $repodir "scripts/update-container-pins.py") @UpdateArgs
+    if ($LASTEXITCODE -ne 0) {
+        throw "update-container-pins.py failed with exit code $LASTEXITCODE"
+    }
+}
+
 if ($DryRun) {
     try {
         $opChanges = Update-OpCliVersions -UpdateArgs @("--dry-run")
@@ -182,6 +198,58 @@ if ($DryRun) {
         } else {
             Set-Location $repodir
             git commit -F .git/COMMIT_EDITMSG home/.chezmoidata/versions.yml
+        }
+    }
+}
+
+if ($DryRun) {
+    $containerError = $false
+    try {
+        $containerChanges = Update-ContainerBaseImageDigests -UpdateArgs @("--dry-run")
+    } catch {
+        Write-Warning "Warning: container pin dry-run had errors; continuing"
+        $containerError = $true
+        $containerChanges = $null
+    }
+    if ($containerChanges) {
+        if ($containerError) {
+            Write-Host "Dry run: container pin partial changes available"
+        } else {
+            Write-Host "Dry run: container pin changes available"
+        }
+        $containerChanges | ForEach-Object { Write-Host "  $_" }
+    } elseif (-not $containerError) {
+        Write-Host "Dry run: no container pin changes"
+    }
+} else {
+    $containerError = $false
+    try {
+        $containerChanges = Update-ContainerBaseImageDigests
+    } catch {
+        Write-Warning "Warning: container pin update had errors; continuing"
+        $containerError = $true
+        $containerChanges = $null
+    }
+    if ($containerChanges -and $containerError) {
+        Write-Host "Container pin partial changes:"
+        $containerChanges | ForEach-Object { Write-Host "  $_" }
+    }
+    if ($containerChanges -and -not $containerError) {
+        Write-Host "Updated container pins"
+        $indentedChanges = $containerChanges | ForEach-Object { "  $_" }
+        $commitMessage = (@(
+            'Update container pins'
+            ''
+        ) + $indentedChanges) -join "`n"
+        $commitMessage | Out-File -FilePath "$repodir\.git\COMMIT_EDITMSG" -Encoding utf8
+        Write-Host "Committing container pin update"
+        if ($use_jj -eq 1) {
+            $commitMsg = Get-Content "$repodir\.git\COMMIT_EDITMSG" -Raw
+            Set-Location $repodir
+            jj commit -m $commitMsg home/.chezmoidata/container-lock.yml test/containers
+        } else {
+            Set-Location $repodir
+            git commit -F .git/COMMIT_EDITMSG home/.chezmoidata/container-lock.yml test/containers
         }
     }
 }

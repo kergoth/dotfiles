@@ -1,4 +1,4 @@
-FROM chimeralinux/chimera:latest
+FROM chimeralinux/chimera:latest@sha256:29102d7e12a1f464707d7aba19ce53e652d277861838ed4129178d0655444b1a
 
 RUN apk add --no-cache --no-interactive \
         ca-certificates \

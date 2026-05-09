@@ -93,6 +93,15 @@ update_op_cli_versions() {
     python3 "$sourcedir/scripts/update-op-cli-versions.py" "$@"
 }
 
+update_container_base_image_digests() {
+    if ! command -v python3 >/dev/null 2>&1; then
+        echo >&2 "Warning: python3 not available; skipping container pin update"
+        return 0
+    fi
+
+    python3 "$sourcedir/scripts/update-container-pins.py" "$@"
+}
+
 if [ "$dry_run" -eq 1 ]; then
     op_exit=0
     op_changes=$(update_op_cli_versions --dry-run) || op_exit=$?
@@ -124,6 +133,51 @@ else
         else
             (cd "$sourcedir" && git commit -F .git/COMMIT_EDITMSG \
                 home/.chezmoidata/versions.yml)
+        fi
+    fi
+fi
+
+if [ "$dry_run" -eq 1 ]; then
+    container_exit=0
+    container_changes=$(update_container_base_image_digests --dry-run) || container_exit=$?
+    if [ "$container_exit" -ne 0 ]; then
+        echo >&2 "Warning: container pin dry-run had errors (exit $container_exit); continuing"
+        if [ -n "$container_changes" ]; then
+            echo >&2 "Dry run: container pin partial changes available"
+            echo "$container_changes" | sed 's/^/  /' >&2
+        fi
+    elif [ -n "$container_changes" ]; then
+        echo >&2 "Dry run: container pin changes available"
+        echo "$container_changes" | sed 's/^/  /' >&2
+    else
+        echo >&2 "Dry run: no container pin changes"
+    fi
+else
+    container_exit=0
+    container_changes=$(update_container_base_image_digests) || container_exit=$?
+    if [ "$container_exit" -ne 0 ]; then
+        echo >&2 "Warning: container pin update had errors (exit $container_exit); continuing"
+        if [ -n "$container_changes" ]; then
+            echo >&2 "Container pin partial changes:"
+            echo "$container_changes" | sed 's/^/  /' >&2
+        fi
+    elif [ -n "$container_changes" ]; then
+        echo >&2 "Updated container pins"
+        {
+            echo "Update container pins"
+            echo
+            echo "$container_changes" | sed 's/^/  /'
+        } >"$sourcedir/.git/COMMIT_EDITMSG"
+        echo >&2 "Committing container pin update"
+        if [ "$use_jj" -eq 1 ]; then
+            commit_msg=$(cat "$sourcedir/.git/COMMIT_EDITMSG")
+            (cd "$sourcedir" && jj commit -m "$commit_msg" \
+                home/.chezmoidata/container-lock.yml \
+                test/containers)
+        else
+            (cd "$sourcedir" && git commit -F .git/COMMIT_EDITMSG \
+                home/.chezmoidata/container-lock.yml \
+                test/containers)
         fi
     fi
 fi
