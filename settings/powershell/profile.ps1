@@ -54,14 +54,17 @@ if (Get-Command starship -ErrorAction SilentlyContinue) {
   }
 
   function Invoke-Starship-PreCommand {
+    $loc = $executionContext.SessionState.Path.CurrentLocation
     if ($IsWindows) {
-      # Support new tab / window at current path in Windows Terminal
-      $loc = $executionContext.SessionState.Path.CurrentLocation
-      $prompt = "$([char]27)]9;12$([char]7)"
-      if ($loc.Provider.Name -eq "FileSystem") {
-        $prompt += "$([char]27)]9;9;`"$($loc.ProviderPath)`"$([char]27)\"
+      if (-not ((Get-Item Env:\WT_SESSION -ErrorAction SilentlyContinue) -and (-not (Test-Path env:VSCODE_INJECTION)))) {
+        # Support new tab / window at current path for non-WT integration path
+        $prompt = "$([char]27)]9;12$([char]7)"
+        if ($loc.Provider.Name -eq "FileSystem") {
+          $escapedProviderPath = $loc.ProviderPath.Replace("`e",'').Replace("`a",'').Replace('"','""')
+          $prompt += "$([char]27)]9;9;`"$escapedProviderPath`"$([char]27)\"
+        }
+        $host.UI.Write($prompt)
       }
-      $host.UI.Write($prompt)
     }
 
     # Set the window title to the current path
@@ -70,6 +73,61 @@ if (Get-Command starship -ErrorAction SilentlyContinue) {
   }
 
   Invoke-Expression (& starship init powershell)
+
+  if ($IsWindows -and (Get-Item Env:\WT_SESSION -ErrorAction SilentlyContinue) -and (-not (Test-Path env:VSCODE_INJECTION))) {
+    function Initialize-WindowsTerminalPromptIntegration {
+      if (-not (Test-Path Function:\global:oldPrompt)) {
+        Copy-Item Function:\prompt Function:\global:oldPrompt
+      }
+      $Global:__LastHistoryId = -1
+    }
+    Initialize-WindowsTerminalPromptIntegration
+    Remove-Item -Path Function:\Initialize-WindowsTerminalPromptIntegration
+
+    function prompt {
+      $originalDollarQuestion = $global:?
+      $originalLastExitCode = $global:LASTEXITCODE
+      $LastHistoryEntry = $(Get-History -Count 1)
+      $out = ''
+
+      if ($Global:__LastHistoryId -ne -1) {
+        if (-not $LastHistoryEntry) {
+          $out += "`e]133;D`a"
+        }
+        elseif ($LastHistoryEntry.Id -eq $Global:__LastHistoryId) {
+          $out += "`e]133;D`a"
+        }
+        else {
+          $Global:__LastHistoryId = $LastHistoryEntry.Id
+          $out += "`e]133;D;$originalLastExitCode`a"
+        }
+      }
+      elseif ($LastHistoryEntry) {
+        $Global:__LastHistoryId = $LastHistoryEntry.Id
+      }
+
+      $loc = $executionContext.SessionState.Path.CurrentLocation
+      $out += "`e]133;A$([char]07)"
+      if ($loc.Provider.Name -eq 'FileSystem') {
+        $escapedProviderPath = $loc.ProviderPath.Replace("`e",'').Replace("`a",'').Replace('"','""')
+        $out += "`e]9;9;`"$escapedProviderPath`"$([char]07)"
+      }
+
+      $global:LASTEXITCODE = $originalLastExitCode
+      if ($global:? -ne $originalDollarQuestion) {
+        if ($originalDollarQuestion) {
+          1 + 1 | Out-Null
+        }
+        else {
+          Write-Error '' -ErrorAction Ignore
+        }
+      }
+
+      $out += oldPrompt
+      $out += "`e]133;B$([char]07)"
+      return $out
+    }
+  }
 }
 
 if (-not $env:DOTFILESDIR) {
