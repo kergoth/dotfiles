@@ -1,0 +1,12 @@
+# check=skip=InvalidBaseImagePlatform
+FROM ghcr.io/baerenbude-org/archlinuxarm-arm64v8:latest@sha256:d52ad36df5441308d17a4064cfdfe259fdb85a0e28bb9230e8cf0ee2d877ff09
+
+RUN sed -i 's/^#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen && locale-gen
+
+ENV LANG=en_US.UTF-8
+
+RUN pacman-key --init \
+    && pacman-key --populate \
+    && pacman --noconfirm -Syu \
+    && pacman --noconfirm --needed -S sudo dbus \
+    && rm -rf /var/cache/pacman/pkg/*

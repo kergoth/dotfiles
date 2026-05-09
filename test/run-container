@@ -2,9 +2,7 @@
 # Usage: run-test [options] [DISTRO]
 #
 # Env overrides:
-#     ARCH_BASE_IMAGE         Override base image for arch container (all arches).
-#     ARCH_ARM64_BASE_IMAGE   Override base image for arch container on arm64 only.
-#                             Default: ghcr.io/baerenbude-org/archlinuxarm-arm64v8:latest
+#     DOCKER_SERVER_ARCH      Override detected docker server architecture (tests).
 #     DOTFILES_SKIP_GPG_SECRET_IMPORT  Skip secret key import in GPG setup (1/0).
 #     DOTFILES_SECRETS        Force secrets on/off (1/0).
 #     DOTFILES_PERSONAL       Force personal profile (always passed through).
@@ -242,18 +240,24 @@ init_gnupg_overrides() {
 find_distros() {
     for d in "$containerdir"/*; do
         [ -d "$d" ] || continue
-        [ -f "$d/Dockerfile" ] || continue
-        printf "%s\n" "${d##*/}"
+        if [ -f "$d/Dockerfile" ] || [ -f "$d/Dockerfile.amd64" ] || [ -f "$d/Dockerfile.arm64" ]; then
+            printf "%s\n" "${d##*/}"
+        fi
     done
 }
 
 validate_distro() {
-    if [ ! -f "$containerdir/$1/Dockerfile" ]; then
-        die "no test container for '%s' (expected %s/%s/Dockerfile)" "$1" "$containerdir" "$1"
+    if [ -f "$containerdir/$1/Dockerfile" ] || [ -f "$containerdir/$1/Dockerfile.amd64" ] || [ -f "$containerdir/$1/Dockerfile.arm64" ]; then
+        return 0
     fi
+    die "no test container for '%s' (expected %s/%s/Dockerfile*)" "$1" "$containerdir" "$1"
 }
 
 docker_server_arch() {
+    if [ -n "${DOCKER_SERVER_ARCH:-}" ]; then
+        printf "%s" "$DOCKER_SERVER_ARCH"
+        return 0
+    fi
     # Prefer docker version formatting (fast, stable), fall back to docker info.
     arch=$(docker version -f '{{.Server.Arch}}' 2>/dev/null || true)
     if [ -n "$arch" ]; then
@@ -269,18 +273,6 @@ docker_server_arch() {
     printf "%s" "unknown"
 }
 
-arch_base_image_for_host() {
-    if [ -n "${ARCH_BASE_IMAGE:-}" ]; then
-        printf "%s" "$ARCH_BASE_IMAGE"
-        return 0
-    fi
-    if [ "$(docker_server_arch)" = "arm64" ]; then
-        printf "%s" "${ARCH_ARM64_BASE_IMAGE:-ghcr.io/baerenbude-org/archlinuxarm-arm64v8:latest}"
-        return 0
-    fi
-    printf "%s" "archlinux/archlinux:latest"
-}
-
 build_image() {
     image_name=$1
     build_context=$2
@@ -288,14 +280,19 @@ build_image() {
 
     msg "Building %s..." "$image_name"
     if [ "${distro:-}" = "arch" ]; then
-        base_image=$(arch_base_image_for_host)
-        msg "  arch base image: %s" "$base_image"
-        # BuildKit mishandles ARG-before-FROM with the
-        # check=skip=InvalidBaseImagePlatform directive; disable it for arch.
-        DOCKER_BUILDKIT=0 run docker build \
-            --build-arg "BASE_IMAGE=$base_image" \
-            -t "$image_name" \
-            "$build_context"
+        arch=$(docker_server_arch)
+        case "$arch" in
+            amd64)
+                dockerfile="$build_context/Dockerfile.amd64"
+                ;;
+            arm64)
+                dockerfile="$build_context/Dockerfile.arm64"
+                ;;
+            *)
+                die "unsupported docker server arch for arch test container: %s" "$arch"
+                ;;
+        esac
+        run docker build -f "$dockerfile" -t "$image_name" "$build_context"
     else
         run docker build -t "$image_name" "$build_context"
     fi
@@ -403,7 +400,7 @@ main() {
     if [ "$all_distros" -eq 1 ]; then
         distros=$(find_distros)
         if [ -z "$distros" ]; then
-            die "no distros found under %s (expected */Dockerfile)" "$containerdir"
+            die "no distros found under %s (expected */Dockerfile*)" "$containerdir"
         fi
         echo "$distros" | while IFS= read -r d; do
             echo "$d"
@@ -448,6 +445,6 @@ else
     scriptdir=$(cd "$(dirname "$script")" && pwd -P)
 fi
 containerdir="$scriptdir/containers"
-repodir=$(cd "$containerdir/.." && pwd -P)
+repodir=$(cd "$containerdir/../.." && pwd -P)
 
 main "$@"
