@@ -43,7 +43,11 @@ def parse_args():
         help="Show only the diff, skipping shortlog and AI review",
     )
     parser.add_argument("--no-ai", action="store_true", help="Skip AI summary")
-    parser.add_argument("--ai-cmd", help="Override agent CLI detection")
+    parser.add_argument(
+        "--ai-agent",
+        choices=["claude", "codex", "agent", "qwen", "cursor"],
+        help="Reviewer agent selector; maps to underlying CLI",
+    )
     parser.add_argument(
         "--ai-model",
         help="Model override passed to supported AI CLIs (e.g. sonnet, gpt-5)",
@@ -460,6 +464,11 @@ def fetch_changes(
 
 
 AGENT_CLIS = ["claude", "codex", "agent", "qwen"]
+AI_AGENT_ALIASES = {"cursor": "agent"}
+
+
+def normalize_ai_cmd(ai_cmd: str) -> str:
+    return AI_AGENT_ALIASES.get(ai_cmd, ai_cmd)
 
 
 def build_agent_cmd(agent_cmd: str, ai_model: str | None = None) -> list[str]:
@@ -712,15 +721,16 @@ def main():
     args = parse_args()
     cache_dir = get_cache_dir(args.cache_dir)
 
-    if args.ai_model and not args.ai_cmd:
+    if args.ai_model and not args.ai_agent:
         console.print(
-            "Error: --ai-model requires --ai-cmd (CLI-specific model namespaces)",
+            "Error: --ai-model requires --ai-agent (CLI-specific model namespaces)",
             style="red",
         )
         return 2
 
-    if args.ai_cmd and not shutil.which(args.ai_cmd):
-        console.print(f"Error: AI CLI not found: {args.ai_cmd}", style="red")
+    normalized_ai_cmd = normalize_ai_cmd(args.ai_agent) if args.ai_agent else None
+    if normalized_ai_cmd and not shutil.which(normalized_ai_cmd):
+        console.print(f"Error: AI CLI not found for agent: {args.ai_agent}", style="red")
         return 2
 
     data = fetch_changes(
@@ -747,7 +757,7 @@ def main():
         new_sha=args.new_sha,
         data=data,
         show_diff=args.diff or args.diff_only,
-        ai_cmd=args.ai_cmd,
+        ai_cmd=normalized_ai_cmd,
         ai_model=args.ai_model,
         skip_ai=args.no_ai or args.diff_only,
         skip_log=args.diff_only,

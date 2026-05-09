@@ -679,7 +679,7 @@ def test_run_ai_review_scope_restriction_in_prompt():
 
 
 def test_main_rejects_ai_model_without_ai_cmd():
-    """--ai-model requires --ai-cmd."""
+    """--ai-model requires --ai-agent."""
     with patch("sys.argv", [
         "show-git-changes.py", "https://github.com/x/y", "a" * 40, "b" * 40,
         "--ai-model", "sonnet",
@@ -688,12 +688,27 @@ def test_main_rejects_ai_model_without_ai_cmd():
     assert rc == 2
 
 
-def test_main_rejects_missing_ai_cmd_binary():
-    """Unknown --ai-cmd fails fast."""
+def test_main_maps_cursor_ai_agent_to_agent_cli():
+    """--ai-agent cursor maps to underlying agent CLI."""
     with (
         patch("sys.argv", [
             "show-git-changes.py", "https://github.com/x/y", "a" * 40, "b" * 40,
-            "--ai-cmd", "definitely-not-installed",
+            "--ai-agent", "cursor",
+            "--no-ai",
+        ]),
+        patch("shutil.which", side_effect=lambda x: "/usr/bin/agent" if x == "agent" else None),
+        patch.object(_sgc_mod, "fetch_changes", return_value={"log": "", "shortlog": "", "diff": ""}),
+    ):
+        rc = _sgc_mod.main()
+    assert rc == 0
+
+
+def test_main_rejects_missing_ai_cmd_binary():
+    """Unknown --ai-agent fails fast."""
+    with (
+        patch("sys.argv", [
+            "show-git-changes.py", "https://github.com/x/y", "a" * 40, "b" * 40,
+            "--ai-agent", "agent",
         ]),
         patch("shutil.which", return_value=None),
     ):

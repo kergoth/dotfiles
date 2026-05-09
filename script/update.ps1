@@ -282,7 +282,7 @@ if (Test-Path $gitLockUpdater) {
                             if ($c.kind) { $reviewArgs += @('--kind', $c.kind) }
                             if ($c.tag_pattern) { $reviewArgs += @('--tag-pattern', $c.tag_pattern) }
                             if ($c.review_note) { $reviewArgs += @('--review-note', $c.review_note) }
-                            if ($c.ai_agent) { $reviewArgs += @('--ai-cmd', $c.ai_agent) }
+                            if ($c.ai_agent) { $reviewArgs += @('--ai-agent', $c.ai_agent) }
                             if ($c.ai_model) { $reviewArgs += @('--ai-model', $c.ai_model) }
                             foreach ($reviewPath in @($c.review_paths)) {
                                 if ($reviewPath) {
@@ -314,7 +314,7 @@ if (Test-Path $gitLockUpdater) {
                                             if ($c.kind) { $reviewArgs += @('--kind', $c.kind) }
                                             if ($c.tag_pattern) { $reviewArgs += @('--tag-pattern', $c.tag_pattern) }
                                             if ($c.review_note) { $reviewArgs += @('--review-note', $c.review_note) }
-                                            if ($c.ai_agent) { $reviewArgs += @('--ai-cmd', $c.ai_agent) }
+                                            if ($c.ai_agent) { $reviewArgs += @('--ai-agent', $c.ai_agent) }
                                             if ($c.ai_model) { $reviewArgs += @('--ai-model', $c.ai_model) }
                                             foreach ($reviewPath in @($c.review_paths)) {
                                                 if ($reviewPath) {
