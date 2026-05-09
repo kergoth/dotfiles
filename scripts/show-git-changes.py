@@ -45,7 +45,7 @@ def parse_args():
     parser.add_argument("--no-ai", action="store_true", help="Skip AI summary")
     parser.add_argument(
         "--ai-agent",
-        choices=["claude", "codex", "agent", "qwen", "cursor"],
+        choices=["claude", "codex", "agent", "qwen", "cursor", "pi"],
         help="Reviewer agent selector; maps to underlying CLI",
     )
     parser.add_argument(
@@ -463,7 +463,7 @@ def fetch_changes(
     return data
 
 
-AGENT_CLIS = ["claude", "codex", "agent", "qwen"]
+AGENT_CLIS = ["claude", "codex", "agent", "qwen", "pi"]
 AI_AGENT_ALIASES = {"cursor": "agent"}
 
 
@@ -473,13 +473,24 @@ def normalize_ai_cmd(ai_cmd: str) -> str:
 
 def build_agent_cmd(agent_cmd: str, ai_model: str | None = None) -> list[str]:
     if agent_cmd == "claude":
-        return ["claude", "--model", ai_model or "sonnet"]
-    if agent_cmd == "codex" and ai_model:
-        return ["codex", "--model", ai_model]
-    if agent_cmd == "agent" and ai_model:
-        return ["agent", "--model", ai_model]
+        return ["claude", "--model", ai_model or "sonnet", "--print", "--no-session-persistence"]
+    if agent_cmd == "codex":
+        cmd = ["codex"]
+        if ai_model:
+            cmd += ["--model", ai_model]
+        return cmd + ["exec", "--ephemeral"]
+    if agent_cmd == "agent":
+        cmd = ["agent"]
+        if ai_model:
+            cmd += ["--model", ai_model]
+        return cmd + ["-m"]
     if agent_cmd == "qwen":
         return ["qwen", "--prompt"]
+    if agent_cmd == "pi":
+        cmd = ["pi"]
+        if ai_model:
+            cmd += ["--model", ai_model]
+        return cmd + ["-p", "--no-session"]
     return [agent_cmd]
 
 SUPPLY_CHAIN_PROMPT = """\
@@ -590,34 +601,13 @@ def run_ai_review(
     full_cmd = build_agent_cmd(agent_cmd, ai_model)
 
     try:
-        if agent_cmd == "claude":
-            result = subprocess.run(
-                full_cmd + ["--print", "--no-session-persistence", prompt],
-                capture_output=True,
-                text=True,
-                timeout=120,
-            )
-        elif agent_cmd == "codex":
-            result = subprocess.run(
-                full_cmd + ["exec", "--ephemeral", prompt],
-                capture_output=True,
-                text=True,
-                timeout=120,
-            )
-        elif agent_cmd == "agent":
-            result = subprocess.run(
-                full_cmd + ["-m", prompt],
-                capture_output=True,
-                text=True,
-                timeout=120,
-            )
-        else:
-            result = subprocess.run(
-                full_cmd + [prompt],
-                capture_output=True,
-                text=True,
-                timeout=480,
-            )
+        timeout = 120 if agent_cmd in {"claude", "codex", "agent", "pi"} else 480
+        result = subprocess.run(
+            full_cmd + [prompt],
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+        )
 
         if result.returncode == 0 and result.stdout.strip():
             return result.stdout.strip()
