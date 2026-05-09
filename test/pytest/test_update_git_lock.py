@@ -118,6 +118,21 @@ def test_dry_run_json_preserves_review_note_for_tagged_entry():
     assert changes[0]["kind"] == "tag"
     assert changes[0]["tag_source"] is None
     assert changes[0]["review_note"] == "Review CHANGELOG.md only."
+    assert changes[0]["ai_agent"] is None
+
+
+def test_dry_run_json_preserves_ai_agent():
+    """ai_agent is included in dry-run JSON output."""
+    sources = {
+        "_test_ai_agent": {
+            "repo": "https://github.com/x/y",
+            "ref": "main",
+            "ai_agent": "claude",
+        },
+    }
+    changes = _run_main_dry_run_json(sources, ["_test_ai_agent"])
+    assert len(changes) == 1
+    assert changes[0]["ai_agent"] == "claude"
 
 
 def test_dry_run_json_preserves_review_paths():
@@ -661,6 +676,29 @@ def test_run_ai_review_scope_restriction_in_prompt():
     assert captured_prompt, "subprocess.run was not called"
     assert "SCOPE RESTRICTION" in captured_prompt[0]
     assert "CHANGELOG.md" in captured_prompt[0]
+
+
+def test_main_rejects_ai_model_without_ai_cmd():
+    """--ai-model requires --ai-cmd."""
+    with patch("sys.argv", [
+        "show-git-changes.py", "https://github.com/x/y", "a" * 40, "b" * 40,
+        "--ai-model", "sonnet",
+    ]):
+        rc = _sgc_mod.main()
+    assert rc == 2
+
+
+def test_main_rejects_missing_ai_cmd_binary():
+    """Unknown --ai-cmd fails fast."""
+    with (
+        patch("sys.argv", [
+            "show-git-changes.py", "https://github.com/x/y", "a" * 40, "b" * 40,
+            "--ai-cmd", "definitely-not-installed",
+        ]),
+        patch("shutil.which", return_value=None),
+    ):
+        rc = _sgc_mod.main()
+    assert rc == 2
 
 
 def test_run_ai_review_scope_restriction_before_review_note():

@@ -215,6 +215,10 @@ for c in changes:
             cmd += ['--tag-pattern', c['tag_pattern']]
         if c.get('review_note'):
             cmd += ['--review-note', c['review_note']]
+        if c.get('ai_agent'):
+            cmd += ['--ai-cmd', c['ai_agent']]
+        if c.get('ai_model'):
+            cmd += ['--ai-model', c['ai_model']]
         for pat in (c.get('review_paths') or []):
             cmd += ['--review-paths', pat]
         subprocess.run(cmd)
@@ -249,6 +253,10 @@ for c in changes:
             cmd += ['--tag-pattern', c['tag_pattern']]
         if c.get('review_note'):
             cmd += ['--review-note', c['review_note']]
+        if c.get('ai_agent'):
+            cmd += ['--ai-cmd', c['ai_agent']]
+        if c.get('ai_model'):
+            cmd += ['--ai-model', c['ai_model']]
         for pat in (c.get('review_paths') or []):
             cmd += ['--review-paths', pat]
         subprocess.run(cmd)

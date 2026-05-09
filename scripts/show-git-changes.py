@@ -45,6 +45,10 @@ def parse_args():
     parser.add_argument("--no-ai", action="store_true", help="Skip AI summary")
     parser.add_argument("--ai-cmd", help="Override agent CLI detection")
     parser.add_argument(
+        "--ai-model",
+        help="Model override passed to supported AI CLIs (e.g. sonnet, gpt-5)",
+    )
+    parser.add_argument(
         "--ref",
         default="main",
         help="Branch ref for bare clone fallback (default: main)",
@@ -456,10 +460,18 @@ def fetch_changes(
 
 
 AGENT_CLIS = ["claude", "codex", "agent", "qwen"]
-AGENT_CMDS = {
-    "claude": ["claude", "--model", "sonnet"],
-    "qwen": ["qwen", "--prompt"],
-}
+
+
+def build_agent_cmd(agent_cmd: str, ai_model: str | None = None) -> list[str]:
+    if agent_cmd == "claude":
+        return ["claude", "--model", ai_model or "sonnet"]
+    if agent_cmd == "codex" and ai_model:
+        return ["codex", "--model", ai_model]
+    if agent_cmd == "agent" and ai_model:
+        return ["agent", "--model", ai_model]
+    if agent_cmd == "qwen":
+        return ["qwen", "--prompt"]
+    return [agent_cmd]
 
 SUPPLY_CHAIN_PROMPT = """\
 This is a non-interactive, automated security review. Do not invoke any skills, tools, or interactive workflows — respond directly with your analysis.
@@ -526,18 +538,6 @@ End with a one-sentence verdict on whether this update appears safe to apply. If
 """
 
 
-def find_agent_cli(override: str | None = None) -> str | None:
-    """Find the first available agent CLI."""
-    if override:
-        if shutil.which(override):
-            return override
-        return None
-    for cli in AGENT_CLIS:
-        if shutil.which(cli):
-            return cli
-    return None
-
-
 def run_ai_review(
     agent_cmd: str,
     log: str,
@@ -546,6 +546,7 @@ def run_ai_review(
     review_note: str | None = None,
     review_paths: list[str] | None = None,
     release_notes: str | None = None,
+    ai_model: str | None = None,
 ) -> str | None:
     """Run AI agent to produce a supply chain review summary."""
     context_parts = []
@@ -577,10 +578,7 @@ def run_ai_review(
         release_notes=release_notes or "",
     )
 
-    if agent_cmd in AGENT_CMDS:
-        full_cmd = AGENT_CMDS[agent_cmd]
-    else:
-        full_cmd = [agent_cmd]
+    full_cmd = build_agent_cmd(agent_cmd, ai_model)
 
     try:
         if agent_cmd == "claude":
@@ -637,6 +635,7 @@ def render_changes(
     data: dict,
     show_diff: bool = False,
     ai_cmd: str | None = None,
+    ai_model: str | None = None,
     skip_log: bool = False,
     skip_ai: bool = False,
     review_note: str | None = None,
@@ -674,6 +673,7 @@ def render_changes(
                 review_note,
                 review_paths,
                 notes,
+                ai_model,
             )
             if review:
                 used_agent = agent
@@ -712,6 +712,17 @@ def main():
     args = parse_args()
     cache_dir = get_cache_dir(args.cache_dir)
 
+    if args.ai_model and not args.ai_cmd:
+        console.print(
+            "Error: --ai-model requires --ai-cmd (CLI-specific model namespaces)",
+            style="red",
+        )
+        return 2
+
+    if args.ai_cmd and not shutil.which(args.ai_cmd):
+        console.print(f"Error: AI CLI not found: {args.ai_cmd}", style="red")
+        return 2
+
     data = fetch_changes(
         args.repo_url,
         args.old_sha,
@@ -737,6 +748,7 @@ def main():
         data=data,
         show_diff=args.diff or args.diff_only,
         ai_cmd=args.ai_cmd,
+        ai_model=args.ai_model,
         skip_ai=args.no_ai or args.diff_only,
         skip_log=args.diff_only,
         review_note=args.review_note,

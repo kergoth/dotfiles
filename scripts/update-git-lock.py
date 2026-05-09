@@ -356,6 +356,8 @@ def main() -> int:
                         "review": entry.get("review", True),
                         "review_note": entry.get("review_note"),
                         "review_paths": entry.get("review_paths"),
+                        "ai_agent": entry.get("ai_agent"),
+                        "ai_model": entry.get("ai_model"),
                     }
                 )
         if not changes:
