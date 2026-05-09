@@ -219,6 +219,8 @@ for c in changes:
             cmd += ['--ai-agent', c['ai_agent']]
         if c.get('ai_model'):
             cmd += ['--ai-model', c['ai_model']]
+        if c.get('ai_timeout'):
+            cmd += ['--ai-timeout', str(c['ai_timeout'])]
         for pat in (c.get('review_paths') or []):
             cmd += ['--review-paths', pat]
         subprocess.run(cmd)
@@ -257,6 +259,8 @@ for c in changes:
             cmd += ['--ai-agent', c['ai_agent']]
         if c.get('ai_model'):
             cmd += ['--ai-model', c['ai_model']]
+        if c.get('ai_timeout'):
+            cmd += ['--ai-timeout', str(c['ai_timeout'])]
         for pat in (c.get('review_paths') or []):
             cmd += ['--review-paths', pat]
         subprocess.run(cmd)

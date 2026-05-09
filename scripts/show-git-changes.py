@@ -53,6 +53,11 @@ def parse_args():
         help="Model override passed to supported AI CLIs (e.g. sonnet, gpt-5)",
     )
     parser.add_argument(
+        "--ai-timeout",
+        type=int,
+        help="Override AI CLI timeout in seconds (default is agent-specific)",
+    )
+    parser.add_argument(
         "--ref",
         default="main",
         help="Branch ref for bare clone fallback (default: main)",
@@ -465,6 +470,14 @@ def fetch_changes(
 
 AGENT_CLIS = ["claude", "codex", "agent", "qwen", "pi"]
 AI_AGENT_ALIASES = {"cursor": "agent"}
+AGENT_DEFAULT_TIMEOUTS = {
+    "claude": 120,
+    "codex": 120,
+    "agent": 120,
+    "pi": 120,
+    "qwen": 480,
+}
+FALLBACK_AGENT_TIMEOUT = 480
 
 
 def normalize_ai_cmd(ai_cmd: str) -> str:
@@ -567,6 +580,7 @@ def run_ai_review(
     review_paths: list[str] | None = None,
     release_notes: str | None = None,
     ai_model: str | None = None,
+    ai_timeout: int | None = None,
 ) -> str | None:
     """Run AI agent to produce a supply chain review summary."""
     context_parts = []
@@ -601,7 +615,9 @@ def run_ai_review(
     full_cmd = build_agent_cmd(agent_cmd, ai_model)
 
     try:
-        timeout = 120 if agent_cmd in {"claude", "codex", "agent", "pi"} else 480
+        timeout = ai_timeout or AGENT_DEFAULT_TIMEOUTS.get(
+            agent_cmd, FALLBACK_AGENT_TIMEOUT
+        )
         result = subprocess.run(
             full_cmd + [prompt],
             capture_output=True,
@@ -635,6 +651,7 @@ def render_changes(
     show_diff: bool = False,
     ai_cmd: str | None = None,
     ai_model: str | None = None,
+    ai_timeout: int | None = None,
     skip_log: bool = False,
     skip_ai: bool = False,
     review_note: str | None = None,
@@ -673,6 +690,7 @@ def render_changes(
                 review_paths,
                 notes,
                 ai_model,
+                ai_timeout,
             )
             if review:
                 used_agent = agent
@@ -749,6 +767,7 @@ def main():
         show_diff=args.diff or args.diff_only,
         ai_cmd=normalized_ai_cmd,
         ai_model=args.ai_model,
+        ai_timeout=args.ai_timeout,
         skip_ai=args.no_ai or args.diff_only,
         skip_log=args.diff_only,
         review_note=args.review_note,

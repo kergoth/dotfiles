@@ -358,6 +358,7 @@ def main() -> int:
                         "review_paths": entry.get("review_paths"),
                         "ai_agent": entry.get("ai_agent"),
                         "ai_model": entry.get("ai_model"),
+                        "ai_timeout": entry.get("ai_timeout"),
                     }
                 )
         if not changes:
