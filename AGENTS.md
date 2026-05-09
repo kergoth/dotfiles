@@ -42,12 +42,14 @@ Test entrypoints:
 
 # Manually launch a container for interactive testing; requires Docker
 ./test/run-container arch      # specific distro
+./test/run-container -a        # all distros with test container Dockerfiles
 ./test/run-container -i arch   # preserve stdin/TTY for interactive setup prompts
 ./test/run-container -s arch   # drop into user shell after setup (debug)
 ./test/run-container -r -s arch   # stop after setup-root, then open a shell
 ./test/run-container -c 'chezmoi data' arch   # run a command after the selected setup phase
 ./test/run-container -S arch   # skip setup-system, only run setup
 ./test/run-container -b        # build container images only, don't run
+./test/run-container -n arch   # dry run; show selected actions without running Docker
 ./test/run-container -w arch   # workstation mode: DOTFILES_HEADLESS=0, DOTFILES_EPHEMERAL=0
 ./test/run-container -G arch   # seed container GNUPGHOME from host ~/.gnupg
 ./test/run-container -C arch   # skip shared nix store/cache volumes
@@ -75,6 +77,9 @@ Human-owned update commands. Agents may mention these when relevant, but should 
 ```bash
 # Interactive review-before-update workflow for dotfiles, externals, and Home Manager inputs
 ./script/update
+
+# Preview update workflow without applying changes
+./script/update --dry-run
 
 # Update dotfiles and external dependencies through chezmoi
 chezmoi update -R
@@ -118,7 +123,8 @@ Scripts form a progression from OS installation to dotfiles application:
 - `script/setup-full` — Runs `setup-system` then `setup`
 
 - `script/update` — Human-owned interactive review-before-update workflow for dotfiles, externals, and Home Manager inputs. Agents may suggest it, but should not run it unless explicitly asked to perform that workflow.
-- `script/home-manager-switch [--update-inputs "..."] ["subject"]` — Apply home.nix changes, diff generations, commit all changes under `home/dot_config/home-manager/`, and switch. Called by `script/update`; also useful standalone when editing `home.nix`.
+- `script/update --dry-run` — Preview available updates without applying them. It checks chezmoi upgrade status, dotfiles repository updates, op CLI versions, container base image pins, Git/fetch externals, and Home Manager package updates.
+- `script/home-manager-switch [--dry-run] [--update-inputs "..."] ["subject"]` — Apply home.nix changes, diff generations, commit all changes under `home/dot_config/home-manager/`, and switch. Called by `script/update`; also useful standalone when editing `home.nix`. Dry-run mode builds a temporary candidate and reports the Home Manager generation diff without applying or committing.
 
 ## Repository Architecture
 
@@ -140,7 +146,7 @@ This is a **chezmoi-managed dotfiles** repository supporting macOS, Linux (Arch,
   - `agents/rules/` - Private agent rule templates (personal, work) included by `render-agent-rules.md.tmpl`
   - `agents/` - Encrypted data blobs for work-only agent configuration
 - **`test/`** - Test infrastructure
-  - `containers/` - Per-distro Dockerfiles
+  - `containers/` - Per-distro Dockerfiles. Arch has separate `Dockerfile.amd64` and `Dockerfile.arm64`; other distros use `Dockerfile`.
   - `cram/` - Structured Cram suites and helpers
     - `container/` - Container-backed dotfiles scenario tests
     - `statusline/` - Statusline transcript tests
@@ -230,15 +236,21 @@ Sources and locks (in `home/.chezmoidata/`):
 
 - `git-sources.yml` / `git-lock.yml` — Git sources with resolution and review metadata; lock stores SHA (branch-tracked) or tag name (tagged).
 - `fetch-sources.yml` / `fetch-lock.yml` — pinned single-file fetches; lock stores SHA-256 of bytes.
+- `container-sources.yml` / `container-lock.yml` / `container-targets.yml` — test container base image sources, resolved digests, and Dockerfile targets. Lock entries store `sha256:` image digests.
 
 Update tooling:
 
 - `scripts/update-git-lock.py --dry-run --json` — resolves candidate updates; emits structured metadata for downstream tooling.
 - `scripts/update-fetch-lock.py` — resolves current bytes for `fetch-sources.yml`; writes `fetch-lock.yml`.
-- `script/update` / `script/update.ps1` — orchestrate review-first flow: resolve, review each candidate, prompt before apply, write locks, commit.
+- `scripts/update-container-pins.py --dry-run` — resolves current test container base image digests via `docker buildx imagetools inspect`; writes `container-lock.yml` and pinned Dockerfile references when run without `--dry-run`.
+- `script/update` / `script/update.ps1` — orchestrate review-first flow: resolve updates, review candidates where applicable, prompt before apply, write locks, commit. Dry-run mode reports available changes without applying them.
 - `scripts/show-git-changes.py` — review surface for a candidate: fetches old/new range, shows log/shortlog/diff, may run AI review. For `kind=tag` GitHub sources, also includes release notes in the AI prompt.
 
 Treat update execution as human-owned. Agents can explain the workflow, inspect lock files, and suggest running `script/update`, but should not run update commands unless the user explicitly requests that workflow.
+
+When adding or changing test container images, update the container source, lock, target, and Dockerfile pin together. Prefer `scripts/update-container-pins.py --dry-run` to preview digest drift, then verify with the narrowest relevant container test or `./test/run-container -b <distro>`.
+
+For Arch container tests, `test/run-container` chooses `test/containers/arch/Dockerfile.amd64` or `test/containers/arch/Dockerfile.arm64` from the Docker server architecture. Use `DOCKER_SERVER_ARCH` only as a test override for that selection logic.
 
 Per-source review metadata:
 
