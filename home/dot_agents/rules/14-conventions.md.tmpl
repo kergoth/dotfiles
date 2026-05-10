@@ -1,34 +1,34 @@
 {{- $agent := dig "agent" "" . -}}
 ## Documentation Lookup Priority
-- **MCP tools first**: For fast-changing APIs (LangChain, OpenAI, web frameworks), always verify current documentation via MCP tools before implementation
-- **Available MCPs**: context7 (library docs), deepwiki (GitHub repo docs)
-- **Web search fallback**: When MCP tools don't cover the library
-- **Training knowledge last**: Only for stable APIs (Python stdlib, git basics)
-- **Trigger signs**: If you find yourself reimplementing existing features, STOP and verify current API docs
+- **MCP tools first**: For fast-changing APIs (LangChain, OpenAI, web frameworks), verify current docs via MCP tools before implementation.
+- **Available MCPs**: context7 (library docs), deepwiki (GitHub repo docs).
+- **Web search fallback**: Use when MCP tools do not cover library.
+- **Training knowledge last**: Use only for stable APIs (Python stdlib, git basics).
+- **Trigger signs**: If reimplementing existing features, STOP and verify current API docs.
 
 ## Bash Command Discipline{{- if eq $agent "claude" }} (Claude Code){{- end }}
-- **Prefer built-in tools**: Read over `cat`, Grep over `grep`, Glob over `find`. Tool calls are reviewable and don't go through Bash permission checks at all.
-- **State-modifying commands with `>` or `>>` re-prompt despite allowlist** ([claude-code#20449](https://github.com/anthropics/claude-code/issues/20449)); use Write/Edit instead of `cmd > file` whenever the goal is to produce a file.
-- **Always double-quote paths that contain spaces** — never backslash-escape spaces in arguments. Backslash-escaped whitespace triggers permission prompts even for allowed paths; quoting does not.
-- **Shell state doesn't persist between Bash calls**: variables and `cd` reset across invocations. Pass absolute paths and re-export env per call.
+- **Prefer built-in tools**: Read over `cat`, Grep over `grep`, Glob over `find`. Tool calls are reviewable and skip Bash permission checks.
+- **State-modifying commands with `>` or `>>` re-prompt despite allowlist** ([claude-code#20449](https://github.com/anthropics/claude-code/issues/20449)); use Write/Edit instead of `cmd > file` when goal is file output.
+- **Always double-quote paths with spaces**. Never backslash-escape spaces in arguments. Backslash-escaped whitespace triggers permission prompts even for allowed paths; quoting does not.
+- **Shell state does not persist between Bash calls**: variables and `cd` reset per call. Pass absolute paths and re-export env per call.
 
 ## GitHub CLI Conventions
-- Prefer explicit `gh` subcommands and installed extensions over raw `gh api` / `gh api graphql`. Subcommands are easier to permission-gate, less brittle, and handle pagination/error cases automatically. Fall back to `gh api` only when no subcommand or extension covers the operation.
+- Prefer explicit `gh` subcommands and installed extensions over raw `gh api` / `gh api graphql`. Subcommands are easier to permission-gate, less brittle, and handle pagination/error cases. Fall back to `gh api` only when no subcommand/extension covers operation.
 
 ## Source Control Conventions
-- Preserve these convention classes across VCS tools: bisectability, one logical change per commit, hunk hygiene, and merge style aligned with repository norms.
-- Keep this section at policy and intent level. Command-level workflows belong in skills.
-- Ownership split: `jujutsu` owns jj mechanics/procedures/sequencing; `jj-commits` owns jj commit policy (quality + series hygiene); `git-commits` owns Git commit policy and mechanics.
-- Routing contract: in `.jj` repos, ambiguous commit requests default to generic commit intent. Generic commit intent routes to `jujutsu` + `jj-commits`; explicit Git-only commit intent routes to `jujutsu` + `git-commits`; non-`.jj` commit intent routes to `git-commits`.
-- When writing commit messages anywhere, including in plans or design documents, invoke `git-commits`.
-- Commit message bodies explain WHY — motivation, constraints, context the diff lacks. Never narrate what the diff already shows ("add X field to Y class"); that is diff narration and adds no value even for small or config-only commits.
+- Preserve convention classes across VCS tools: bisectability, one logical change per commit, hunk hygiene, merge style aligned with repo norms.
+- Keep this section policy/intent level. Command workflows belong in skills.
+- Ownership split: `jujutsu` owns jj mechanics/procedures/sequencing; `jj-commits` owns jj commit policy (quality + series hygiene); `git-commits` owns Git commit policy/mechanics.
+- Routing contract: in `.jj` repos, ambiguous commit requests default to generic commit intent. Generic intent routes to `jujutsu` + `jj-commits`; explicit Git-only intent routes to `jujutsu` + `git-commits`; non-`.jj` commit intent routes to `git-commits`.
+- When writing commit messages anywhere, including plans/design docs, invoke `git-commits`.
+- Commit message bodies explain WHY: motivation, constraints, context diff lacks. Never narrate what diff already shows ("add X field to Y class"); diff narration adds no value, even for small/config-only commits.
 
 ## Shell Conventions
-- **JSON in shell pipelines: use `jq`, not inline Python.** Inline `python3 -c` for JSON is brittle due to shell quoting. Assume `jq` is present; only use Python when the transformation genuinely exceeds `jq` (complex stateful logic, multi-source joins).
+- **JSON in shell pipelines: use `jq`, not inline Python.** Inline `python3 -c` JSON handling is brittle from shell quoting. Assume `jq` present. Use Python only when transformation truly exceeds `jq` (complex stateful logic, multi-source joins).
 
 ## Writing Conventions
-- No sycophantic openers ("Great question!", "Certainly,", "Absolutely,", "I'd be happy to") or formulaic closers ("Hope this helps!", "Let me know if you have questions!")
-- No em dashes as structural crutches; restructure into separate sentences, subordinate clauses, commas, semicolons, colons, or parentheses. Target zero; hard limit one per 1,000 words.
-- Don't use "delve," "tapestry," "landscape" (figurative), "testament," "multifaceted," "nuanced" (filler), "leverage" (verb; say "use"), or hollow intensifiers ("crucial," "pivotal," "vital," "seamless," "cutting-edge")
-- Use contractions in conversational output. Vary paragraph structure; don't default to groups of three.
-- For prose artifacts (design docs, PR descriptions, READMEs, Obsidian notes, emails), invoke the `clean-prose` skill before finalizing. The `avoid-ai-writing` skill complements it for AI-tell auditing.
+- No sycophantic openers ("Great question!", "Certainly,", "Absolutely,", "I'd be happy to") or formulaic closers ("Hope this helps!", "Let me know if you have questions!").
+- No em dashes as structure crutch. Restructure with separate sentences, subordinate clauses, commas, semicolons, colons, parentheses. Target zero; hard limit one per 1,000 words.
+- Do not use "delve," "tapestry," "landscape" (figurative), "testament," "multifaceted," "nuanced" (filler), "leverage" (verb; say "use"), or hollow intensifiers ("crucial," "pivotal," "vital," "seamless," "cutting-edge").
+- Use contractions in conversational output. Vary paragraph structure; do not default to groups of three.
+- For prose artifacts (design docs, PR descriptions, READMEs, Obsidian notes, emails), invoke `clean-prose` skill before finalizing. `avoid-ai-writing` skill complements for AI-tell auditing.

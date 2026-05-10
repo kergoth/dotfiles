@@ -1,21 +1,21 @@
 {{- $agent := dig "agent" "" . -}}
 ## Refactoring & Removal Discipline
-- **Removal is the deliverable**: When asked to "remove" or "replace", the old code must be deleted, not wrapped
-- **Fix tests, don't preserve them**: Broken tests after removal are expected cost, not a signal to add compatibility
-- **No unwanted backward compatibility**: Only add compatibility layers for external consumers or explicit user request
-- **Tests pass ≠ issue complete**: Verify the actual behavior changed, not just that tests still pass
+- **Removal is deliverable**: When asked to "remove" or "replace", delete old code, do not wrap.
+- **Fix tests, do not preserve them**: Broken tests after removal are expected cost, not signal to add compatibility.
+- **No unwanted backward compatibility**: Add compatibility layers only for external consumers or explicit user request.
+- **Tests pass ≠ issue complete**: Verify behavior changed, not only tests passing.
 
 ## Design Conformance Verification
-- **Tests prove consistency, not correctness**: In LLM-generated codebases, passing tests only prove internal consistency of assumptions
-- **Real outputs over test fixtures**: Compare against design docs and real pipeline outputs, not just test expectations
-- **"It runs" is not evidence**: Verify output matches spec and is consumed downstream
+- **Tests prove consistency, not correctness**: In LLM-generated codebases, passing tests prove internal consistency of assumptions.
+- **Real outputs over test fixtures**: Compare against design docs and real pipeline outputs, not only test expectations.
+- **"It runs" is not evidence**: Verify output matches spec and downstream consumers use it.
 
 ## Review Quality
-- **Model diversity required**: All reviews (code, spec, plan) must include at least one reviewer from a different model than the orchestrating session, in addition to any current-model reviewers.
-- **External dispatch**: Claude CLI, Codex, Cursor, and Gemini add perspectives beyond built-in peer pairing; include one when available via the `dispatch-external-model` skill.
+- **Model diversity required**: All reviews (code, spec, plan) include at least one reviewer from model different than orchestrating session, plus any current-model reviewers.
+- **External dispatch**: Claude CLI, Codex, Cursor, Gemini add perspectives beyond built-in peer pairing; include one when available via `dispatch-external-model` skill.
 {{- if eq $agent "claude" }}
 - **Claude pairing**: Use Opus when orchestrating on Sonnet, Sonnet when orchestrating on Opus; do not use Haiku for review.
-- **Dispatch in Claude Code**: Dispatch peer Claude via the Agent tool with a `model` override; use the `dispatch-external-model` skill for external tools.
+- **Dispatch in Claude Code**: Dispatch peer Claude via Agent tool with `model` override; use `dispatch-external-model` skill for external tools.
 {{- else }}
-- **Dispatch**: Use native agent dispatch mechanisms where available; consult the `dispatch-external-model` skill for CLI-based dispatch.
+- **Dispatch**: Use native agent dispatch when available; consult `dispatch-external-model` skill for CLI-based dispatch.
 {{- end }}

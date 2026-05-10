@@ -11,32 +11,32 @@
 {{- end }}
 
 ## Interaction Preferences
-- Default to thinking mode: explore and question; understand before acting
-- Be extraordinarily skeptical of your own correctness; verify rather than guess; ask on ambiguity
-- Clear, precise language; err formal over informal
-- No sycophancy: honesty over validation; correct firmly without judgment
-- Lean toward collaborative teaching: share insights, explain trade-offs, surface meaningful design choices for me
+- Default: thinking mode. Explore, question, understand before act.
+- Be skeptical about own correctness. Verify, do not guess. Ask on ambiguity.
+- Clear, precise language. Prefer formal over informal.
+- No sycophancy: honesty over validation. Correct firmly, no judgment.
+- Collaborative teaching: share insights, explain trade-offs, surface design choices for me.
 
 ## Research & Analysis
-- Cite sources; prefer "I don't know" over confident guessing
-- For user opinion or community sentiment, prefer reddit over "best/top" listicles
-- Distinguish consensus from anecdote and flag which is which
+- Cite sources. Prefer "I don't know" over confident guessing.
+- For user opinion/community sentiment, prefer reddit over "best/top" listicles.
+- Distinguish consensus vs anecdote; flag which is which.
 
 ## Personal Tooling
-- Dotfiles: `~/.dotfiles/` (chezmoi + Nix Home Manager) — has its own CLAUDE.md with full architecture docs. Edit the source there, not rendered files in `$HOME`.
-- `~/bin/`: my personal scripts; check there before writing a new one. Default destination for standalone non-templated personal scripts.
-- Package install preference: chezmoi externals > Nix > Homebrew > upstream installers > language pkg mgrs > system pkg mgrs
-- `~/Repos/`: clean ghq clones at `~/Repos/{host}/{owner}/{repo}`. Prefer over `~/Workspace/` for clean reference reads (Workspace clones may have branch-specific changes). Run `git -C <path> pull` if freshness matters.
+- Dotfiles: `~/.dotfiles/` (chezmoi + Nix Home Manager). Has own CLAUDE.md architecture docs. Edit source there, not rendered files in `$HOME`.
+- `~/bin/`: personal scripts. Check there before writing new one. Default destination for standalone non-templated personal scripts.
+- Package install preference: chezmoi externals > Nix > Homebrew > upstream installers > language pkg mgrs > system pkg mgrs.
+- `~/Repos/`: clean ghq clones at `~/Repos/{host}/{owner}/{repo}`. Prefer over `~/Workspace/` for clean reference reads (Workspace clones may have branch-specific changes). Run `git -C <path> pull` when freshness matters.
 
 ## Agent Planning
-- Project-local guidance overrides these defaults
-- Task-specific specs, plans, and scratch notes are temporary working artifacts. Store outside committed project docs (prefer `.agent/tasks/<date>-<slug>/`); do not commit unless project guidance requires it. Delete on completion; promote only durable outcomes into the project's existing documentation system. Don't add personal scratch paths to a project's `.gitignore` — covered by my global ignore.
-- Promote outcomes by intent: architectural choices to ADRs (if used); current architecture to living design docs; usage/operations/schemas to reference docs; repeatable agent rules to AGENTS.md; remaining work to the issue/TODO system. Ask before creating a new convention.
-- Spec authoring: surface open questions to me; never silently resolve. Before asking for spec review, list every gap-fill decision and confirm each. "Fix TBDs" means ask, not decide. Do not proceed to plan-writing with unconfirmed decisions.
-- Plans: ~500 lines max; break larger plans into chunks. Insert spec review checkpoints between logical groups during execution.
-- Commit steps in plans must include both a subject line and a body explaining WHY: the motivation, constraint, or design decision the commit encodes. The plan author writes these bodies into the plan document; the executor follows them literally. Only the plan author has the spec and discussion context to write WHY — the executor does not.
-- Every plan must end with a "Curate history" task authored by the plan writer, not the executor. It must specify: the target logical commit series (what the reviewer sees after rebase), which plan commits should be squashed together and why, and the rebase command to execute. The falsifiable criterion is bisectability: every commit in the final series must build and pass tests independently.
-- Track verification and manual steps explicitly; surface human-only blockers rather than silently skip; summarize remaining verification at completion in one message.
+- Project-local guidance overrides defaults.
+- Task-specific specs/plans/scratch notes are temporary artifacts. Store outside committed docs (prefer `.agent/tasks/<date>-<slug>/`). Do not commit unless guidance requires. Delete on completion. Promote durable outcomes into project doc system. Do not add personal scratch paths to project `.gitignore` (covered by global ignore).
+- Promote outcomes by intent: architecture choices to ADRs (if used); current architecture to living design docs; usage/operations/schemas to reference docs; repeatable agent rules to AGENTS.md; remaining work to issue/TODO system. Ask before creating new convention.
+- Spec authoring: surface open questions. Never resolve silently. Before spec review request, list every gap-fill decision and confirm each. "Fix TBDs" means ask, not decide. Do not start plan-writing with unconfirmed decisions.
+- Plans: ~500 lines max. Split larger plans. Insert spec review checkpoints between logical groups.
+- Plan commit steps must include subject + WHY body (motivation, constraint, or design decision). Plan author writes bodies in plan doc; executor follows literally. Only plan author has spec/discussion context for WHY.
+- Every plan ends with "Curate history" task authored by plan writer, not executor. Must specify target logical commit series (reviewer view after rebase), which plan commits squash and why, and rebase command. Falsifiable criterion: bisectability. Every final commit builds and tests pass independently.
+- Track verification/manual steps explicitly. Surface human-only blockers, do not skip silently. Summarize remaining verification at completion in one message.
 {{- if eq $agent "claude" }}
-- Use `TaskCreate` for visible progress; `AskUserQuestion` for human-only blockers. Subagents lack both — capture manual steps in output for the parent.
+- Use `TaskCreate` for visible progress; `AskUserQuestion` for human-only blockers. Subagents lack both. Capture manual steps in output for parent.
 {{- end }}

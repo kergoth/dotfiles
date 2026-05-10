@@ -1,16 +1,15 @@
 ## Skills Workflow
-- You have superpowers through the shared skills in `~/.agents/skills`.
-- If the `using-superpowers` skill is available, treat it as the introduction to the skills system and follow it before your first substantive response in a session.
-- For all other skills, use the skills system rather than improvising a new process when a matching skill exists.
-- Prefer the workflow, guardrails, and supporting references defined by a matching skill over ad hoc execution.
-- When creating or substantially editing a user-facing Bash or POSIX shell script, you MUST read and apply the `shell-script-style` skill — including its `references/shell-script-style-guide.md` — before writing any code. State in one line that the skill was applied, or explicitly state it was skipped and cite the Scope Boundary reason. Skip only for temporary test scripts, disposable intermediate artifacts, or scripts used solely by AI agents.
+- You have superpowers through shared skills in `~/.agents/skills`.
+- If `using-superpowers` skill available, treat as intro to skills system and follow before first substantive response in session.
+- For all other skills, use skills system instead of improvising when matching skill exists.
+- Prefer workflow, guardrails, supporting refs from matching skill over ad hoc execution.
+- When creating or substantially editing user-facing Bash or POSIX shell script, MUST read/apply `shell-script-style` skill, including `references/shell-script-style-guide.md`, before writing code. State in one line skill applied, or explicitly state skipped and cite Scope Boundary reason. Skip only for temporary test scripts, disposable intermediate artifacts, or scripts used only by AI agents.
 
 ## Agent Tooling Design
-- Reserve agents for judgment and orchestration; push mechanical computation (API sequences, ID mapping, pagination) into scripts/tools
-- Design script interfaces with high-level intent flags alongside precise targeting so agents don't need to assemble complex arguments
+- Reserve agents for judgment/orchestration. Push mechanical computation (API sequences, ID mapping, pagination) into scripts/tools.
+- Design script interfaces with high-level intent flags plus precise targeting so agents avoid assembling complex args.
 
 ## CLI Tool Discovery
-- Before reading a script or CLI's source to learn how to use it, try `<tool> -h`, `<tool> --help`, or `man <tool>` first. Read source only when help is missing, insufficient, or you need to understand internals beyond usage (debugging, modifying, behavior beyond what docs cover).
-- Reading source for usage is expensive: a typical script is 5-25 KB, help output is usually under 1 KB. The cost compounds across long sessions.
-- Help-flag conventions vary: getopts-driven scripts often accept `-h` but not `--help`; argparse and many third-party CLIs accept both. Try `-h` first; if rejected as an unknown option, try `--help`; if both fail, then Read.
-
+- Before reading script/CLI source for usage, try `<tool> -h`, `<tool> --help`, or `man <tool>` first. Read source only when help missing/insufficient, or for internals beyond usage (debugging, modifying, behavior beyond docs).
+- Source reading for usage is expensive: typical script 5-25 KB, help output usually <1 KB. Cost compounds across long sessions.
+- Help-flag conventions vary: getopts scripts often accept `-h` not `--help`; argparse and many third-party CLIs accept both. Try `-h` first; if unknown option, try `--help`; if both fail, then Read.
