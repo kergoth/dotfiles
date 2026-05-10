@@ -2,6 +2,20 @@
 
 This file provides guidance to AI coding agents when working with code in this repository.
 
+## Quick Navigation
+
+- [Essential Commands](#essential-commands)
+- [Verification Strategy](#verification-strategy)
+- [Setup Entry Points](#setup-entry-points)
+- [Repository Architecture](#repository-architecture)
+- [Editing Managed Files](#editing-managed-files)
+- [Chezmoi Patterns](#chezmoi-patterns)
+- [Documenting Architectural Decisions](#documenting-architectural-decisions)
+- [Script Conventions](#script-conventions)
+- [Troubleshooting](#troubleshooting)
+- [Adding/Removing Software](#addingremoving-software)
+- [Platform-Specific Notes](#platform-specific-notes)
+
 ## Essential Commands
 
 ```bash
