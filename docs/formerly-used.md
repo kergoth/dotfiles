@@ -13,11 +13,12 @@ Software I've used in the past but no longer use. Kept for historical reference.
 - [Recursive](https://www.recursive.design) Code
 - [Fira Code](https://github.com/tonsky/FiraCode)
 - [Input](https://input.djr.com) Mono Narrow
-- **[Inconsolata](https://levien.com/type/myfonts/inconsolata.html)**: See also [Google Fonts](https://fonts.google.com/specimen/Inconsolata)
+- [Inconsolata](https://levien.com/type/myfonts/inconsolata.html): See also [Google Fonts](https://fonts.google.com/specimen/Inconsolata)
+- [Iosevka](https://github.com/be5invis/Iosevka)
 - [Terminus](https://terminus-font.sourceforge.net)
 - [DejaVu](https://dejavu-fonts.github.io) Sans Mono
 - [Leonine Sans Mono](https://www.leonerd.org.uk/hacks/hints/leoninesansmono.html)
-- **[Bitstream Vera](https://web.archive.org/web/20210314185159/https://www.gnome.org/fonts/)** Sans Mono: See [download](https://download.gnome.org/sources/ttf-bitstream-vera/1.10/)
+- [Bitstream Vera](https://web.archive.org/web/20210314185159/https://www.gnome.org/fonts/) Sans Mono: See [download](https://download.gnome.org/sources/ttf-bitstream-vera/1.10/)
 - [Envy Code R](https://damieng.com/blog/2008/05/26/envy-code-r-preview-7-coding-font-released) (Occasional Use)
 
 ## Formerly-Used CLI Software
