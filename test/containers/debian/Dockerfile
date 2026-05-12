@@ -1,4 +1,4 @@
-FROM debian:latest@sha256:0000000000000000000000000000000000000000000000000000000000000000
+FROM debian:latest@sha256:e2d08da6f42ef4b09b165d55528a12727aeed8240dc9edf888e3ec07e10ef9da
 
 # setup-root installs ca-certificates, curl, git, sudo; the Dockerfile
 # is only responsible for locale setup (which setup-root does not handle).
