@@ -7,9 +7,13 @@
 // custom settings, run the `open default settings` command
 // from the command palette or from `Zed` application menu.
 {
+  "cli_default_open_behavior": "new_window",
   "soft_wrap": "bounded",
   "show_wrap_guides": true,
   "agent_servers": {
+    "pi-acp": {
+      "type": "registry"
+    },
     "github-copilot-cli": {
       "type": "registry"
     },
@@ -17,6 +21,14 @@
       "type": "registry"
     },
     "qwen-acp": {
+      "default_config_options": {
+        "model": "mlx-community/Qwen3.6-27B-4bit(openai)"
+      },
+      "favorite_config_option_values": {
+        "model": [
+          "mlx-community/Qwen3.6-27B-4bit(openai)"
+        ]
+      },
       "type": "custom",
       "command": "npx",
       "args": ["-y", "@qwen-code/qwen-code", "--acp"],
@@ -142,6 +154,9 @@
     "xml": true
   },
   "current_line_highlight": "gutter", // Highlight the gutter only
+  "file_scan_inclusions": [
+    ".agent/tasks/**"
+  ],
   "file_scan_exclusions": [
     "**/.git",
     "**/.jj",
@@ -223,6 +238,7 @@
   },
   "project_panel": {
     /// Fold directories automatically when a directory has only one directory inside.
+    "dock": "right",
     "auto_fold_dirs": true
   },
   "telemetry": {
