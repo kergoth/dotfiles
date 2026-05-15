@@ -468,7 +468,7 @@ def fetch_changes(
     return data
 
 
-AGENT_CLIS = ["claude", "codex", "agent", "qwen", "pi"]
+AGENT_CLIS = ["codex", "agent", "qwen", "pi", "claude" ]
 AI_AGENT_ALIASES = {"cursor": "agent"}
 AGENT_DEFAULT_TIMEOUTS = {
     "claude": 120,
