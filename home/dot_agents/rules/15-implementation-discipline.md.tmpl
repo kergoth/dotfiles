@@ -1,17 +1,17 @@
 {{- $agent := dig "agent" "" . -}}
 ## Refactoring & Removal Discipline
-- **Removal is deliverable**: When asked to "remove" or "replace", delete old code, do not wrap.
-- **Fix tests, do not preserve them**: Broken tests after removal are expected cost, not signal to add compatibility.
-- **No unwanted backward compatibility**: Add compatibility layers only for external consumers or explicit user request.
+- **Removal is deliverable**: "Remove" or "replace" means delete old code, not wrap.
+- **Fix tests, don't preserve them**: Broken tests after removal = expected cost, not signal for compatibility.
+- **No unwanted backward compatibility**: Compatibility layers only for external consumers or explicit request.
 - **Tests pass ≠ issue complete**: Verify behavior changed, not only tests passing.
 
 ## Design Conformance Verification
-- **Tests prove consistency, not correctness**: In LLM-generated codebases, passing tests prove internal consistency of assumptions.
+- **Tests prove consistency, not correctness**: In LLM-generated codebases, passing tests prove internal consistency only.
 - **Real outputs over test fixtures**: Compare against design docs and real pipeline outputs, not only test expectations.
-- **"It runs" is not evidence**: Verify output matches spec and downstream consumers use it.
+- **"It runs" ≠ evidence**: Verify output matches spec and downstream consumers use it.
 
 ## Review Quality
-- **Model diversity required**: All reviews (code, spec, plan) include at least one reviewer from model different than orchestrating session, plus any current-model reviewers.
+- **Model diversity required**: All reviews (code, spec, plan) include at least one reviewer from different model than orchestrating session, plus any current-model reviewers.
 - **External dispatch**: Claude CLI, Codex, Cursor, Gemini add perspectives beyond built-in peer pairing; include one when available via `dispatch-external-model` skill.
 {{- if eq $agent "claude" }}
 - **Claude pairing**: Use Opus when orchestrating on Sonnet, Sonnet when orchestrating on Opus; do not use Haiku for review.

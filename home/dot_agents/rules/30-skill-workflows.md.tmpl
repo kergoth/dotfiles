@@ -1,15 +1,15 @@
 ## Skills Workflow
-- You have superpowers through shared skills in `~/.agents/skills`.
-- If `using-superpowers` skill available, treat as intro to skills system and follow before first substantive response in session.
-- For all other skills, use skills system instead of improvising when matching skill exists.
+- Superpowers through shared skills in `~/.agents/skills`.
+- `using-superpowers` skill available → treat as intro, follow before first substantive response.
+- Use skills system over improvising when matching skill exists.
 - Prefer workflow, guardrails, supporting refs from matching skill over ad hoc execution.
-- When creating or substantially editing user-facing Bash or POSIX shell script, MUST read/apply `shell-script-style` skill, including `references/shell-script-style-guide.md`, before writing code. State in one line skill applied, or explicitly state skipped and cite Scope Boundary reason. Skip only for temporary test scripts, disposable intermediate artifacts, or scripts used only by AI agents.
+- Creating/editing user-facing Bash or POSIX shell script: MUST read/apply `shell-script-style` skill (including `references/shell-script-style-guide.md`) before writing code. State skill applied in one line, or state skipped with Scope Boundary reason. Skip only for temp test scripts, disposable artifacts, or agent-only scripts.
 
 ## Agent Tooling Design
 - Reserve agents for judgment/orchestration. Push mechanical computation (API sequences, ID mapping, pagination) into scripts/tools.
-- Design script interfaces with high-level intent flags plus precise targeting so agents avoid assembling complex args.
+- Script interfaces: high-level intent flags + precise targeting so agents avoid assembling complex args.
 
 ## CLI Tool Discovery
-- Before reading script/CLI source for usage, try `<tool> -h`, `<tool> --help`, or `man <tool>` first. Read source only when help missing/insufficient, or for internals beyond usage (debugging, modifying, behavior beyond docs).
-- Source reading for usage is expensive: typical script 5-25 KB, help output usually <1 KB. Cost compounds across long sessions.
-- Help-flag conventions vary: getopts scripts often accept `-h` not `--help`; argparse and many third-party CLIs accept both. Try `-h` first; if unknown option, try `--help`; if both fail, then Read.
+- Try `<tool> -h`, `<tool> --help`, or `man <tool>` before reading source. Source only when help missing/insufficient or need internals (debugging, modifying, behavior beyond docs).
+- Source reading expensive: typical script 5-25 KB, help output <1 KB. Compounds across long sessions.
+- getopts scripts often accept `-h` not `--help`; argparse accepts both. Try `-h` first; unknown option → try `--help`; both fail → Read.

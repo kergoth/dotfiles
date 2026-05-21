@@ -12,31 +12,31 @@
 
 ## Interaction Preferences
 - Default: thinking mode. Explore, question, understand before act.
-- Be skeptical about own correctness. Verify, do not guess. Ask on ambiguity.
-- Clear, precise language. Prefer formal over informal.
+- Skeptical about own correctness. Verify, don't guess. Ask on ambiguity.
+- Clear, precise language. Formal over informal.
 - No sycophancy: honesty over validation. Correct firmly, no judgment.
-- Collaborative teaching: share insights, explain trade-offs, surface design choices for me.
+- Collaborative teaching: share insights, explain trade-offs, surface design choices.
 
 ## Research & Analysis
-- Cite sources. Prefer "I don't know" over confident guessing.
-- For user opinion/community sentiment, prefer reddit over "best/top" listicles.
-- Distinguish consensus vs anecdote; flag which is which.
+- Cite sources. "I don't know" over confident guessing.
+- User opinion/community sentiment: prefer reddit over "best/top" listicles.
+- Distinguish consensus vs anecdote; flag which.
 
 ## Personal Tooling
-- Dotfiles: `~/.dotfiles/` (chezmoi + Nix Home Manager). Has own CLAUDE.md architecture docs. Edit source there, not rendered files in `$HOME`.
-- `~/bin/`: personal scripts. Check there before writing new one. Default destination for standalone non-templated personal scripts.
+- Dotfiles: `~/.dotfiles/` (chezmoi + Nix Home Manager). Own CLAUDE.md architecture docs. Edit source there, not rendered files in `$HOME`.
+- `~/bin/`: personal scripts. Check before writing new one. Default destination for standalone non-templated scripts.
 - Package install preference: chezmoi externals > Nix > Homebrew > upstream installers > language pkg mgrs > system pkg mgrs.
-- `~/Repos/`: clean ghq clones at `~/Repos/{host}/{owner}/{repo}`. Prefer over `~/Workspace/` for clean reference reads (Workspace clones may have branch-specific changes). Run `git -C <path> pull` when freshness matters.
+- `~/Repos/`: clean ghq clones at `~/Repos/{host}/{owner}/{repo}`. Prefer over `~/Workspace/` for clean reference reads (Workspace clones may have branch-specific changes). `git -C <path> pull` when freshness matters.
 
 ## Agent Planning
 - Project-local guidance overrides defaults.
-- Task-specific specs/plans/scratch notes are temporary artifacts. Store outside committed docs (prefer `.agent/tasks/<date>-<slug>/`). Do not commit unless guidance requires. Delete on completion. Promote durable outcomes into project doc system. Do not add personal scratch paths to project `.gitignore` (covered by global ignore).
-- Promote outcomes by intent: architecture choices to ADRs (if used); current architecture to living design docs; usage/operations/schemas to reference docs; repeatable agent rules to AGENTS.md; remaining work to issue/TODO system. Ask before creating new convention.
-- Spec authoring: surface open questions. Never resolve silently. Before spec review request, list every gap-fill decision and confirm each. "Fix TBDs" means ask, not decide. Do not start plan-writing with unconfirmed decisions.
-- Plans: ~500 lines max. Split larger plans. Insert spec review checkpoints between logical groups.
-- Plan commit steps must include subject + WHY body (motivation, constraint, or design decision). Plan author writes bodies in plan doc; executor follows literally. Only plan author has spec/discussion context for WHY.
-- Every plan ends with "Curate history" task authored by plan writer, not executor. Must specify target logical commit series (reviewer view after rebase), which plan commits squash and why, and rebase command. Falsifiable criterion: bisectability. Every final commit builds and tests pass independently.
-- Track verification/manual steps explicitly. Surface human-only blockers, do not skip silently. Summarize remaining verification at completion in one message.
+- Task-specific specs/plans/scratch notes are temporary. Store outside committed docs (prefer `.agent/tasks/<date>-<slug>/`). Don't commit unless guidance requires. Delete on completion. Promote durable outcomes into project doc system. Don't add personal scratch paths to project `.gitignore` (covered by global ignore).
+- Promote outcomes by intent: architecture → ADRs (if used); current architecture → living design docs; usage/operations/schemas → reference docs; repeatable rules → AGENTS.md; remaining work → issue/TODO system. Ask before creating new convention.
+- Spec authoring: surface open questions. Never resolve silently. Before requesting spec review, list every gap-fill decision, confirm each. "Fix TBDs" means ask, not decide. Don't start plan-writing with unconfirmed decisions.
+- High-level plans: ~500 lines max readability guard. Split when covering multiple independent deliverables, features, review boundaries, or verification paths. Insert spec review checkpoints between logical groups. Execution plans from written spec/design doc may exceed limit when extra length is exact code, commands, expected outputs, or commit intent preserving design intent — not vague prose substituting for specificity.
+- Plan commit steps must include subject + WHY body (motivation, constraint, or design decision). Plan author writes bodies; executor follows literally. Only plan author has spec/discussion context for WHY.
+- Every plan ends with "Curate history" task by plan writer, not executor. Must specify target logical commit series (reviewer view after rebase), which commits squash and why, rebase command. Falsifiable criterion: bisectability. Every final commit builds and tests pass independently.
+- Track verification/manual steps explicitly. Surface human-only blockers, don't skip silently. Summarize remaining verification at completion in one message.
 {{- if eq $agent "claude" }}
 - Use `TaskCreate` for visible progress; `AskUserQuestion` for human-only blockers. Subagents lack both. Capture manual steps in output for parent.
 {{- end }}
