@@ -67,6 +67,7 @@ fpath=(
   $HOMEBREW_PREFIX/share/zsh/site-functions
   $HOMEBREWS_HOME/*/share/zsh/site-functions(N)
   $HOMEBREW_PREFIX/opt/*/share/zsh/site-functions(N)
+  /usr/share/zsh/*/functions(N)
   $fpath
 )
 
