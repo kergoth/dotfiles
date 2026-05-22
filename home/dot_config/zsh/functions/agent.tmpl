@@ -5,5 +5,5 @@
 echo >&2 "Checking for Cursor agent updates..."
 command agent update
 
-command agent "$@"
+FPATH="$FPATH" command agent "$@"
 {{ end -}}
