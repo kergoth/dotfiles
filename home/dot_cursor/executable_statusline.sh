@@ -7,6 +7,9 @@ CONTEXT_WARN_THRESHOLD=50
 CONTEXT_CRIT_THRESHOLD=80
 MIN_ROWS_FOR_NAME_LINE=15
 
+# ── Agent identity (at-a-glance vs Claude Code) ─────────────
+AGENT_LABEL="CU"
+
 # ── Symbols ─────────────────────────────────────────────────
 SYMBOL_SESSION="⌘"
 SYMBOL_WORKTREE="⊕"
@@ -16,7 +19,7 @@ SYMBOL_WORKTREE="⊕"
 COLOR_SUBTLE_GREEN_BG=$'\033[48;2;42;58;42m'   # #2a3a2a
 COLOR_YELLOW_BG=$'\033[48;2;249;226;175m'      # #f9e2af
 COLOR_RED_BG=$'\033[48;2;243;139;168m'         # #f38ba8
-COLOR_ACCENT_BG=$'\033[48;2;69;71;90m'         # #45475a
+COLOR_ACCENT_BG=$'\033[48;2;30;58;95m'         # #1e3a5f — muted navy (Cursor)
 COLOR_NAME_LINE_BG=$'\033[48;2;49;50;68m'      # #313244
 
 # Foregrounds
@@ -239,15 +242,17 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     location_text="$display_path"
     [[ -n "$worktree_display" ]] && location_text="${location_text}  ${worktree_display}"
 
+    model_display="${AGENT_LABEL}·${model}"
+
     context_text=$(format_context "${context_pct:-0}")
-    tier=$(select_degradation_tier "$cols" "$model" "$location_text" "$branch" "$context_text")
+    tier=$(select_degradation_tier "$cols" "$model_display" "$location_text" "$branch" "$context_text")
 
     render_name_line "${session_name:-}"
 
     sep="  "
 
     # Model (always)
-    printf '%s%s%s %s %s' "$COLOR_ACCENT_BG" "$COLOR_BOLD" "$COLOR_BRIGHT_TEXT" "$model" "$COLOR_RESET"
+    printf '%s%s%s %s %s' "$COLOR_ACCENT_BG" "$COLOR_BOLD" "$COLOR_BRIGHT_TEXT" "$model_display" "$COLOR_RESET"
 
     # Path (tier 0)
     if (( tier <= 0 )) && [[ -n "$display_path" ]]; then

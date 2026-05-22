@@ -104,7 +104,7 @@ capture "tmux-statusbar" '
 capture "claude-statusline-calm" '
 <div class="terminal">
   <div class="bar claude-bar">
-    <span class="seg claude-model"> Opus </span>
+    <span class="seg claude-model"> CC·Opus </span>
     <span class="claude-gap"></span>
     <span class="seg claude-path">.dotfiles</span>
     <span class="claude-gap"></span>
@@ -124,7 +124,7 @@ capture "claude-statusline-calm" '
 capture "claude-statusline-worktree" '
 <div class="terminal">
   <div class="bar claude-bar">
-    <span class="seg claude-model"> Opus </span>
+    <span class="seg claude-model"> CC·Opus </span>
     <span class="claude-gap"></span>
     <span class="seg claude-worktree">⊕ upload-retry</span>
     <span class="claude-gap"></span>
@@ -144,7 +144,7 @@ capture "claude-statusline-worktree" '
 capture "claude-statusline-ratelimit-ok" '
 <div class="terminal">
   <div class="bar claude-bar">
-    <span class="seg claude-model"> Opus </span>
+    <span class="seg claude-model"> CC·Opus </span>
     <span class="claude-gap"></span>
     <span class="seg claude-path">W/pano-o/pano-ec</span>
     <span class="claude-gap"></span>
@@ -166,7 +166,7 @@ capture "claude-statusline-ratelimit-ok" '
 capture "claude-statusline-ratelimit-warn" '
 <div class="terminal">
   <div class="bar claude-bar">
-    <span class="seg claude-model"> Opus </span>
+    <span class="seg claude-model"> CC·Opus </span>
     <span class="claude-gap"></span>
     <span class="seg claude-path">W/pano-o/pano-ec</span>
     <span class="claude-gap"></span>
@@ -188,7 +188,7 @@ capture "claude-statusline-ratelimit-warn" '
 capture "claude-statusline-critical" '
 <div class="terminal">
   <div class="bar claude-bar">
-    <span class="seg claude-model"> Opus </span>
+    <span class="seg claude-model"> CC·Opus </span>
     <span class="claude-gap"></span>
     <span class="seg claude-path">W/pano-o/pano-ec</span>
     <span class="claude-gap"></span>
@@ -210,7 +210,7 @@ capture "claude-statusline-critical" '
 capture "claude-statusline-both-limits" '
 <div class="terminal">
   <div class="bar claude-bar">
-    <span class="seg claude-model"> Opus </span>
+    <span class="seg claude-model"> CC·Opus </span>
     <span class="claude-gap"></span>
     <span class="seg claude-path">W/pano-o/pano-ec</span>
     <span class="claude-gap"></span>
@@ -234,7 +234,7 @@ capture "claude-statusline-both-limits" '
 capture "claude-statusline-sonnet" '
 <div class="terminal">
   <div class="bar claude-bar">
-    <span class="seg claude-model"> Sonnet </span>
+    <span class="seg claude-model"> CC·Sonnet </span>
     <span class="claude-gap"></span>
     <span class="seg claude-path">.dotfiles</span>
     <span class="claude-gap"></span>

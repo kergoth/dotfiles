@@ -11,6 +11,9 @@ CONTEXT_WARN_THRESHOLD=50
 CONTEXT_CRIT_THRESHOLD=80
 MIN_ROWS_FOR_NAME_LINE=15
 
+# ── Agent identity (at-a-glance vs Cursor) ───────────────────
+AGENT_LABEL="CC"
+
 # ── Symbols ─────────────────────────────────────────────────
 SYMBOL_ON_TRACK="✓"
 SYMBOL_WARNING="⚠"
@@ -23,7 +26,7 @@ COLOR_GREEN_BG=$'\033[48;2;166;227;161m'       # #a6e3a1
 COLOR_YELLOW_BG=$'\033[48;2;249;226;175m'      # #f9e2af
 COLOR_RED_BG=$'\033[48;2;243;139;168m'         # #f38ba8
 COLOR_SUBTLE_GREEN_BG=$'\033[48;2;42;58;42m'   # #2a3a2a
-COLOR_ACCENT_BG=$'\033[48;2;69;71;90m'         # #45475a
+COLOR_ACCENT_BG=$'\033[48;2;69;71;90m'         # #45475a — surface2 (Claude Code)
 COLOR_NAME_LINE_BG=$'\033[48;2;49;50;68m'      # #313244
 
 # Foregrounds
@@ -450,11 +453,11 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     # ── Compute derived values ──────────────────────────────
     now=$(date +%s)
 
-    # Model display: append effort letter if available (e.g. "Opus" → "Opus·H")
+    # Model display: agent label, then model, then effort (e.g. "CC·Opus·H")
     effort_abbrev=$(effort_letter "${effort_level:-}")
-    model_display="$model"
+    model_display="${AGENT_LABEL}·${model}"
     if [[ -n "$effort_abbrev" ]]; then
-        model_display="${model}·${effort_abbrev}"
+        model_display="${model_display}·${effort_abbrev}"
     fi
 
     # Branch: prefer worktree.branch, fall back to git

@@ -33,24 +33,24 @@ Unknown values surface as "?" — visible signal that the mapping needs updating
 Integration — pipe JSON with effort.level, model renders with abbreviation:
 
   $ . "$TESTDIR"/helpers.sh
-  $ make_json '.effort = {"level": "high"}' | COLUMNS=120 bash "$STATUSLINE" | strip_ansi | grep -o 'Opus·H'
-  Opus·H
+  $ make_json '.effort = {"level": "high"}' | COLUMNS=120 bash "$STATUSLINE" | strip_ansi | grep -o 'CC·Opus·H'
+  CC·Opus·H
 
-Integration — effort omitted, model renders as plain "Opus":
+Integration — effort omitted, model renders with agent label only:
 
-  $ make_json | COLUMNS=120 bash "$STATUSLINE" | strip_ansi | grep -oE 'Opus[^ ]*' | head -1
-  Opus
+  $ make_json | COLUMNS=120 bash "$STATUSLINE" | strip_ansi | grep -oE 'CC·Opus[^ ]*' | head -1
+  CC·Opus
 
 Integration — each known level renders correctly:
 
-  $ make_json '.effort = {"level": "low"}'   | COLUMNS=120 bash "$STATUSLINE" | strip_ansi | grep -o 'Opus·L'
-  Opus·L
-  $ make_json '.effort = {"level": "max"}'   | COLUMNS=120 bash "$STATUSLINE" | strip_ansi | grep -o 'Opus·MX'
-  Opus·MX
-  $ make_json '.effort = {"level": "xhigh"}' | COLUMNS=120 bash "$STATUSLINE" | strip_ansi | grep -o 'Opus·XH'
-  Opus·XH
+  $ make_json '.effort = {"level": "low"}'   | COLUMNS=120 bash "$STATUSLINE" | strip_ansi | grep -o 'CC·Opus·L'
+  CC·Opus·L
+  $ make_json '.effort = {"level": "max"}'   | COLUMNS=120 bash "$STATUSLINE" | strip_ansi | grep -o 'CC·Opus·MX'
+  CC·Opus·MX
+  $ make_json '.effort = {"level": "xhigh"}' | COLUMNS=120 bash "$STATUSLINE" | strip_ansi | grep -o 'CC·Opus·XH'
+  CC·Opus·XH
 
 Integration — unknown level shows "?" rather than hiding:
 
-  $ make_json '.effort = {"level": "ludicrous"}' | COLUMNS=120 bash "$STATUSLINE" | strip_ansi | grep -o 'Opus·?'
-  Opus·?
+  $ make_json '.effort = {"level": "ludicrous"}' | COLUMNS=120 bash "$STATUSLINE" | strip_ansi | grep -o 'CC·Opus·?'
+  CC·Opus·?
