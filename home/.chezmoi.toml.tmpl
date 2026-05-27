@@ -88,11 +88,15 @@
 {{/* set defaults based on context */}}
 {{- if not $ephemeral -}}
 {{-   if eq $hostname "asano" -}}
+{{-     $ephemeral = false -}}
+{{-     $headless = false -}}
 {{-     $work = true -}}
 {{-     $coding = true -}}
 {{-     $containers = true -}}
 {{-     $macos_split_user = false -}}
 {{-   else if or (eq $hostname "vaelin") (eq $hostname "zorian") -}}
+{{-     $ephemeral = false -}}
+{{-     $headless = false -}}
 {{-     $personal = true -}}
 {{-     $coding = true -}}
 {{-     $containers = true -}}

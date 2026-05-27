@@ -1,5 +1,3 @@
-{{- if not .devpod }}
-if [[ -n "$SSH_AUTH_SOCK" ]]; then
-    export GPG_TTY=${GPG_TTY:-${SSH_TTY:-$(tty)}}
-fi
+{{- if and (not .devpod) .secrets }}
+export GPG_TTY=${GPG_TTY:-${SSH_TTY:-$TTY}}
 {{- end }}
