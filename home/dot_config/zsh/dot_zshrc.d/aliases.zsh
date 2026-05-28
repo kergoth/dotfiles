@@ -64,9 +64,9 @@ what () {
 # Convenience when pasting shell snippets
 alias '$='
 
-alias rgv=gv
-alias rgva=gva
-alias rg=g
+if (( $+commands[batgrep] )); then
+    alias rg=batgrep
+fi
 
 if (( $+commands[podman] )) && ! (( $+commands[docker] )); then
     alias docker=podman
