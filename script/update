@@ -288,6 +288,7 @@ EOF
                         fi
                         echo "$title"
                         echo
+                        echo "Git lock updates:"
                         cat <<'EOF' | uv run python3 - "$changes_file"
 import json, sys
 changes = json.load(open(sys.argv[1]))

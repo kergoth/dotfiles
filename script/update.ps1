@@ -347,7 +347,7 @@ if (Test-Path $gitLockUpdater) {
                         Set-Location $repodir
                         git diff --quiet -- home/.chezmoidata/fetch-lock.yml 2> $null
                         $title = if ($LASTEXITCODE -eq 0) { "Update Git lock" } else { "Update source locks" }
-                        $commitLines = @($title, "")
+                        $commitLines = @($title, "", "Git lock updates:")
                         foreach ($c in $changes) {
                             $suffix = if ($c.tag_pattern) { " [$($c.tag_pattern)]" } else { "" }
                             if ($c.kind -eq 'tag') {
