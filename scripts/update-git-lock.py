@@ -63,7 +63,11 @@ def _gh_api(path: str) -> Any:
 
 
 def resolve_latest_tag(
-    repo: str, name: str, tag_pattern: str | None, tag_source: str | None = None
+    repo: str,
+    name: str,
+    tag_pattern: str | None,
+    tag_source: str | None = None,
+    prefer_latest_marker: bool = True,
 ) -> str:
     """Return the latest pinned tag according to the requested source."""
     if tag_source is None:
@@ -74,7 +78,7 @@ def resolve_latest_tag(
             raise SystemExit(
                 f"error: tag_source 'github_releases' is only valid for GitHub repos ({name!r})"
             )
-        return _resolve_github_tag(repo, name, tag_pattern)
+        return _resolve_github_tag(repo, name, tag_pattern, prefer_latest_marker)
     if tag_source == "git_tags":
         return _resolve_generic_tag(repo, name, tag_pattern)
     raise SystemExit(
@@ -83,7 +87,9 @@ def resolve_latest_tag(
     )
 
 
-def _resolve_github_tag(repo: str, name: str, tag_pattern: str | None) -> str:
+def _resolve_github_tag(
+    repo: str, name: str, tag_pattern: str | None, prefer_latest_marker: bool = True
+) -> str:
     owner_repo = _github_owner_repo(repo)
     try:
         if tag_pattern is None:
@@ -91,6 +97,13 @@ def _resolve_github_tag(repo: str, name: str, tag_pattern: str | None) -> str:
             return data["tag_name"]
 
         pattern = re.compile(tag_pattern)  # already validated at startup
+
+        if prefer_latest_marker:
+            data = _gh_api(f"repos/{owner_repo}/releases/latest")
+            tag = data.get("tag_name", "")
+            if tag and not data.get("draft") and pattern.fullmatch(tag):
+                return tag
+
         page = 1
         while True:
             releases = _gh_api(f"repos/{owner_repo}/releases?per_page=100&page={page}")
@@ -315,6 +328,10 @@ def main() -> int:
             raise SystemExit(
                 f"error: invalid tag_source for {eid!r}: {tag_source!r}"
             )
+        if entry.get("prefer_latest_marker") is True and not _is_github_repo(entry["repo"]):
+            raise SystemExit(
+                f"error: prefer_latest_marker is only valid for GitHub repos ({eid!r})"
+            )
         if (
             tag_source == "github_releases"
             and not _is_github_repo(entry["repo"])
@@ -331,7 +348,11 @@ def main() -> int:
             if not repo:
                 continue
             new_locks[eid] = resolve_latest_tag(
-                repo, eid, entry.get("tag_pattern"), entry.get("tag_source")
+                repo,
+                eid,
+                entry.get("tag_pattern"),
+                entry.get("tag_source"),
+                prefer_latest_marker=entry.get("prefer_latest_marker", True),
             )
         else:
             new_locks[eid] = resolve_ref(entry["repo"], entry.get("ref", "main"))
