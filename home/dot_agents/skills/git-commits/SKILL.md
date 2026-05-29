@@ -34,6 +34,24 @@ Follow the [seven rules of commit messages](https://cbea.ms/git-commit):
 
 Subjects describe the change, not the workflow event that produced it. Replace "Fix tests", "Address review", or "Continue work on X" with descriptions of the actual code change.
 
+**Body-echoes-subject is not a body.** A body that merely rephrases the subject in past tense conveys nothing and is a strong AI-generation signal. Delete it or replace it with actual motivation:
+
+```
+# Bad — body adds no information
+Update README with Paper Atlas Tool details
+
+Added Paper Atlas Tool details to the README.
+
+# Good — body explains why the change exists
+Document Paper Atlas Tool setup in README
+
+The tool ships as a sidecar beside the game exe; without setup
+instructions users won't know to configure the dump/replacement
+folders before first run.
+```
+
+**Avoid "Update X with Y" subject construction.** Using `with` as a connector ("Update README with details on X") obscures intent and makes every commit look identical at a glance. Prefer a verb that names the actual change: "Document X in README", "Explain X setup", "Clarify X behavior", "Remove Y from Z".
+
 For commit message bodies longer than two sentences, invoke the clean-prose skill before finalizing. Subject lines and one-line bodies don't need it.
 
 ## History
