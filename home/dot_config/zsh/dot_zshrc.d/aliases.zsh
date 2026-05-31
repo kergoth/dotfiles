@@ -64,6 +64,10 @@ what () {
 # Convenience when pasting shell snippets
 alias '$='
 
+if ! (( $+commands[rsync] )) && (( $+commands[openrsync] )); then
+    alias rsync=openrsync
+fi
+
 if (( $+commands[batgrep] )); then
     alias rg=batgrep
 fi
