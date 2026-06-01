@@ -12,6 +12,11 @@
 - **Double-quote paths with spaces**. Never backslash-escape spaces. Backslash-escaped whitespace triggers permission prompts even for allowed paths; quoting doesn't.
 - **Shell state doesn't persist between Bash calls**: variables and `cd` reset per call. Pass absolute paths, re-export env per call.
 
+## Security & Privilege Boundaries
+- **Never escalate privileges**, directly or indirectly: `sudo`, `su`, `doas`, `pkexec`, SUID/SGID binaries, Linux capabilities, `newgrp`, Docker/Podman group membership (grants root-equivalent host filesystem access via bind mounts).
+- Task requires elevated privileges, none interactively available: **stop and ask** — don't seek alternative escalation paths.
+- Group memberships (`docker`, `podman`, `wheel`, `disk`, etc.) exist for intended purpose. Never use to access resources beyond normal user scope.
+
 ## GitHub CLI Conventions
 - Prefer `gh` subcommands and extensions over raw `gh api` / `gh api graphql`. Easier to permission-gate, less brittle, handle pagination/errors. Fall back to `gh api` only when no subcommand/extension covers operation.
 
