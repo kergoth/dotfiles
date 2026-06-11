@@ -116,8 +116,10 @@ defaults write com.apple.dock wvous-br-modifier -int 0
 # Disable font smoothing
 defaults -currentHost write -g AppleFontSmoothing -int 0
 
-# Hide at least some of the extremely irritating menu item icons in Tahoe
+{{ if eq .macos_major_version 26 -}}
+# Hide menu item icons added in Tahoe (macOS 26); removed in macOS 27
 defaults write -g NSMenuEnableActionImages -bool false || :
+{{- end }}
 
 {{ if eq .chezmoi.hostname "vaelin" -}}
     # Prefer integer-backed scaling on the current main display.
