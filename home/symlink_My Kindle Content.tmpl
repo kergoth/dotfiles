@@ -1,4 +1,5 @@
-{{- $path := joinPath (printf "%s" .chezmoi.destDir) "Library/Application Support/Kindle/My Kindle Content" -}}
+{{- $kindle := "Library/Containers/com.amazon.Lassen/Data/Library/eBooks" -}}
+{{- $path := joinPath (printf "%s" .chezmoi.destDir) $kindle -}}
 {{- if stat $path -}}
-Library/Application Support/Kindle/My Kindle Content
+{{-   $kindle -}}
 {{- end -}}
