@@ -351,9 +351,11 @@ def extract_session_data(
 
     last_timestamp = messages[-1]["timestamp"] if messages else ""
 
+    custom_title = (metadata["custom_title"] or "").strip()
     return {
         "session_id": metadata["session_id"],
-        "session_name": metadata["custom_title"] or None,
+        "session_name": custom_title or None,
+        "has_custom_name": bool(custom_title),
         "away_summary": metadata["away_summary"] or None,
         "project_dir": metadata["cwd"],
         "first_timestamp": metadata["first_timestamp"],
