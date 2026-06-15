@@ -6,5 +6,115 @@
 # z as non-interactive, zz as interactive
 unalias z 2>/dev/null || :
 alias zz=zi
+
+# Scoped cd: z[scope] quick, z[scope][scope] interactive (double scope letter).
+# ghq aliases keep the older gz/gzz names.
+alias gz=zg
+alias gzz=zgg
+
+# Run in resolved dir: zin [-g|-p] [-i] <cmd> [query...] [-- <cmd-args>...]
+# Frequent wrappers: zcl/zicl (claude), zcdx/zicdx (codex). Use i before action, not doubled.
+
+# Print a directory path from zoxide (optional --base-dir) with optional ghq fallback.
+_zoxide_resolve() {
+    emulate -L zsh
+    local base=$1 interactive=$2 ghq_fallback=$3
+    shift 3
+
+    local -a cmd=( "{{ $zoxide }}" query )
+    (( interactive )) && cmd+=(-i)
+    [[ -n $base ]] && cmd+=( --base-dir "$base" )
+    cmd+=( -- "$@" )
+
+    local result
+    if result=$("${cmd[@]}"); then
+        print -r -- "$result"
+        return 0
+    fi
+
+    if (( ghq_fallback && $# > 0 )); then
+        _ghq_resolve "$@" && return 0
+    fi
+
+    return 1
+}
+
+# Resolve an existing ghq clone when zoxide has no match yet.
+_ghq_resolve() {
+    emulate -L zsh
+    local query="$*"
+    local ghq_root="${GHQ_ROOT:-$HOME/Repos}"
+    local -a matches
+
+    if [[ $query == */* ]]; then
+        matches=( "${(@f)$(command ghq list -e "$query" 2>/dev/null)}" )
+    else
+        matches=( "${(@f)$(command ghq list "$query" 2>/dev/null)}" )
+    fi
+
+    case ${#matches} in
+        0)
+            return 1
+            ;;
+        1)
+            print -r -- "$ghq_root/$matches[1]"
+            return 0
+            ;;
+        *)
+            print -u2 "ambiguous: ${#matches} ghq matches, use zgg/gzz or zin -gi" >&2
+            return 1
+            ;;
+    esac
+}
+
+# Resolve a scoped directory and cd there.
+_zoxide_cd_scoped() {
+    emulate -L zsh
+    local base=$1 interactive=$2 ghq_fallback=$3
+    shift 3
+
+    local target
+    if ! target=$(_zoxide_resolve "$base" "$interactive" "$ghq_fallback" "$@"); then
+        print -u2 "zoxide: no match found${*:+ for: ${(j: :)@}}" >&2
+        return 1
+    fi
+
+    builtin cd -- "$target"
+}
+
+# Resolve a scoped directory, cd there, and run a command.
+# Usage: _zoxide_run <base> <interactive> <ghq_fallback> <cmd> [query...] [-- <cmd-args>...]
+_zoxide_run() {
+    emulate -L zsh
+    local base=$1 interactive=$2 ghq_fallback=$3
+    shift 3
+    local cmd=$1
+    shift
+
+    local args=( "$@" )
+    local sep_index=${args[(i)--]}
+    local query cmd_args
+
+    if (( sep_index <= ${#args} )); then
+        query=( "${args[1,sep_index-1]}" )
+        cmd_args=( "${args[sep_index+1,-1]}" )
+    else
+        query=( "${args[@]}" )
+        cmd_args=()
+    fi
+
+    local target
+    if ! target=$(_zoxide_resolve "$base" "$interactive" "$ghq_fallback" "${query[@]}"); then
+        if (( ${#query} > 0 )); then
+            print -u2 "zoxide: no match found for: ${(j: :)query}" >&2
+        else
+            print -u2 "zoxide: no match found" >&2
+        fi
+        return 1
+    fi
+
+    builtin cd -- "$target" || return 1
+    "$cmd" "${cmd_args[@]}"
+}
 {{- else }}
 {{- end -}}

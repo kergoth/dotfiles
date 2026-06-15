@@ -1,8 +1,0 @@
-if [[ $# -ne 0 ]]; then
-    set -- --select-1 -q "'$*"
-fi
-
-local dir=$(git list | fzf-tmux --exit-0 "$@") || return $?
-if [[ -n "$dir" ]]; then
-    cd "${GHQ_ROOT:-$HOME/ghq}/$dir"
-fi

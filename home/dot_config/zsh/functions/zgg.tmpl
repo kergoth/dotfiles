@@ -1,0 +1,5 @@
+{{- $zoxide := includeTemplate "find-tool" (dict "root" . "tool" "zoxide") -}}
+{{- if $zoxide -}}
+# ghq-scoped zoxide cd (interactive). Alias: gzz
+_zoxide_cd_scoped "${GHQ_ROOT:-$HOME/Repos}" 1 1 "$@"
+{{- end -}}

@@ -1,0 +1,47 @@
+{{- $zoxide := includeTemplate "find-tool" (dict "root" . "tool" "zoxide") -}}
+{{- if $zoxide -}}
+# Run a command in a zoxide-resolved directory.
+# Usage: zin [-g|-p] [-i] <cmd> [query...] [-- <cmd-args>...]
+#
+#   zin claude pano-ec              global quick jump + claude
+#   zin -i claude                   global interactive picker + claude
+#   zin -g claude stitcher          ghq-scoped
+#   zin -p claude scripts           project-scoped (git root)
+#   zin -pi codex tests -- --model x
+emulate -L zsh
+
+local base="" interactive=0 ghq_fallback=0 opt
+
+while getopts ":gpi" opt; do
+    case $opt in
+        g)
+            base="${GHQ_ROOT:-$HOME/Repos}"
+            ghq_fallback=1
+            ;;
+        p)
+            base=$(command git rev-parse --show-toplevel 2>/dev/null) || {
+                print -u2 "zin: not in a git repository" >&2
+                return 1
+            }
+            ;;
+        i)
+            interactive=1
+            ;;
+        ?)
+            print -u2 "zin: usage: zin [-g|-p] [-i] <cmd> [query...] [-- <cmd-args>...]" >&2
+            return 1
+            ;;
+    esac
+done
+shift $(( OPTIND - 1 ))
+
+if (( $# == 0 )); then
+    print -u2 "zin: usage: zin [-g|-p] [-i] <cmd> [query...] [-- <cmd-args>...]" >&2
+    return 1
+fi
+
+local cmd=$1
+shift
+
+_zoxide_run "$base" "$interactive" "$ghq_fallback" "$cmd" "$@"
+{{- end -}}

@@ -1,0 +1,10 @@
+{{- $zoxide := includeTemplate "find-tool" (dict "root" . "tool" "zoxide") -}}
+{{- if $zoxide -}}
+# project-scoped zoxide cd (interactive, git root)
+local root
+root=$(command git rev-parse --show-toplevel 2>/dev/null) || {
+    print -u2 "zpp: not in a git repository" >&2
+    return 1
+}
+_zoxide_cd_scoped "$root" 1 0 "$@"
+{{- end -}}
