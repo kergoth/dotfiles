@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Cursor CLI status line — Dracula-inspired, adapted from Claude Code statusline
+# Cursor CLI status line — theme-aware (Dracula dark / Catppuccin Latte light), adapted from Claude Code statusline
 set -euo pipefail
 
 # ── Thresholds ──────────────────────────────────────────────
@@ -14,24 +14,83 @@ AGENT_LABEL="CU"
 SYMBOL_SESSION="⌘"
 SYMBOL_WORKTREE="⊕"
 
-# ── Colors (ANSI 24-bit truecolor) ─────────────────────────
-# Backgrounds
-COLOR_SUBTLE_GREEN_BG=$'\033[48;2;42;58;42m'   # #2a3a2a
-COLOR_YELLOW_BG=$'\033[48;2;249;226;175m'      # #f9e2af
-COLOR_RED_BG=$'\033[48;2;243;139;168m'         # #f38ba8
-COLOR_ACCENT_BG=$'\033[48;2;30;58;95m'         # #1e3a5f — muted navy (Cursor)
-COLOR_NAME_LINE_BG=$'\033[48;2;49;50;68m'      # #313244
+# ── Theme detection ─────────────────────────────────────────
 
-# Foregrounds
-COLOR_DARK_TEXT=$'\033[38;2;30;30;46m'         # #1e1e2e
-COLOR_BRIGHT_TEXT=$'\033[38;2;205;214;244m'    # #cdd6f4
-COLOR_DIM_TEXT=$'\033[38;2;108;112;134m'       # #6c7086
-COLOR_PURPLE_TEXT=$'\033[38;2;203;166;247m'    # #cba6f7
-COLOR_CYAN_TEXT=$'\033[38;2;148;226;213m'      # #94e2d5
-COLOR_GREEN_TEXT=$'\033[38;2;166;227;161m'     # #a6e3a1
+detect_theme() {
+    case "${CLITHEME:-auto}" in
+        dark|light) echo "$CLITHEME"; return ;;
+    esac
+
+    if [[ -e /dev/tty ]]; then
+        local response="" old_stty=""
+        { exec 3</dev/tty 4>/dev/tty; } 2>/dev/null || { echo dark; return; }
+        old_stty=$(stty -g <&3 2>/dev/null) || old_stty=""
+        [[ -n "$old_stty" ]] && stty -echo raw <&3 2>/dev/null
+        printf '\e]11;?\e\\' >&4 2>/dev/null
+        if IFS= read -r -d $'\\' -t 1 response <&3 2>/dev/null; then
+            if [[ "$response" =~ rgb:([0-9a-fA-F]{2,4})/([0-9a-fA-F]{2,4})/([0-9a-fA-F]{2,4}) ]]; then
+                local r="${BASH_REMATCH[1]:0:2}" g="${BASH_REMATCH[2]:0:2}" b="${BASH_REMATCH[3]:0:2}"
+                local ri=$((16#$r)) gi=$((16#$g)) bi=$((16#$b))
+                local lum=$(( (ri * 299 + gi * 587 + bi * 114) / 1000 ))
+                [[ -n "$old_stty" ]] && stty "$old_stty" <&3 2>/dev/null
+                { exec 3<&- 4>&-; } 2>/dev/null
+                if (( lum > 128 )); then
+                    echo light
+                else
+                    echo dark
+                fi
+                return
+            fi
+        fi
+        [[ -n "$old_stty" ]] && stty "$old_stty" <&3 2>/dev/null
+        { exec 3<&- 4>&-; } 2>/dev/null
+    fi
+
+    echo dark
+}
+
+# ── Colors (ANSI 24-bit truecolor) ─────────────────────────
 
 COLOR_BOLD=$'\033[1m'
 COLOR_RESET=$'\033[0m'
+
+init_palette() {
+    local theme="${1:-dark}"
+    case "$theme" in
+        light)
+            # Catppuccin Latte
+            COLOR_SUBTLE_GREEN_BG=$'\033[48;2;223;239;221m' # #dfefdd
+            COLOR_YELLOW_BG=$'\033[48;2;223;142;29m'        # #df8e1d
+            COLOR_RED_BG=$'\033[48;2;210;15;57m'            # #d20f39
+            COLOR_ACCENT_BG=$'\033[48;2;114;135;172m'       # #7287ac — muted blue (Cursor)
+            COLOR_NAME_LINE_BG=$'\033[48;2;204;208;218m'    # #ccd0da — surface0
+
+            COLOR_DARK_TEXT=$'\033[38;2;239;241;245m'       # #eff1f5 — base (pill text)
+            COLOR_BRIGHT_TEXT=$'\033[38;2;76;79;105m'       # #4c4f69 — text
+            COLOR_DIM_TEXT=$'\033[38;2;156;160;176m'        # #9ca0b0 — overlay0
+            COLOR_PURPLE_TEXT=$'\033[38;2;136;57;239m'      # #8839ef — mauve
+            COLOR_CYAN_TEXT=$'\033[38;2;23;146;153m'        # #179299 — teal
+            COLOR_GREEN_TEXT=$'\033[38;2;64;160;43m'        # #40a02b — green
+            ;;
+        *)
+            # Dracula (default)
+            COLOR_SUBTLE_GREEN_BG=$'\033[48;2;34;51;34m'   # #223322
+            COLOR_YELLOW_BG=$'\033[48;2;241;250;140m'      # #f1fa8c
+            COLOR_RED_BG=$'\033[48;2;255;85;85m'           # #ff5555
+            COLOR_ACCENT_BG=$'\033[48;2;30;58;95m'         # #1e3a5f — muted navy (Cursor)
+            COLOR_NAME_LINE_BG=$'\033[48;2;40;42;54m'      # #282a36 — background
+
+            COLOR_DARK_TEXT=$'\033[38;2;40;42;54m'         # #282a36 — background (pill text)
+            COLOR_BRIGHT_TEXT=$'\033[38;2;248;248;242m'    # #f8f8f2 — foreground
+            COLOR_DIM_TEXT=$'\033[38;2;98;114;164m'        # #6272a4 — comment
+            COLOR_PURPLE_TEXT=$'\033[38;2;189;147;249m'    # #bd93f9 — purple
+            COLOR_CYAN_TEXT=$'\033[38;2;139;233;253m'      # #8be9fd — cyan
+            COLOR_GREEN_TEXT=$'\033[38;2;80;250;123m'      # #50fa7b — green
+            ;;
+    esac
+}
+
+init_palette dark
 
 # ── Path shortening (fish-style unique prefix) ─────────────
 
@@ -205,6 +264,8 @@ render_name_line() {
 # ── Main (only when not sourced) ────────────────────────────
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     input=$(cat)
+
+    init_palette "$(detect_theme)"
 
     if [[ -n "${COLUMNS:-}" ]]; then
         cols="$COLUMNS"

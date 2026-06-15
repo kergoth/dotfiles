@@ -5,5 +5,27 @@
 echo >&2 "Checking for Cursor agent updates..."
 command agent update
 
-FPATH="$FPATH" command agent "$@"
+if [[ -z "${CLITHEME:-}" ]]; then
+    # Detect terminal background via OSC 11 (needs interactive tty)
+    if [[ -t 1 ]]; then
+        local response="" old_stty=""
+        old_stty=$(stty -g < /dev/tty 2>/dev/null) || old_stty=""
+        [[ -n "$old_stty" ]] && stty -echo raw < /dev/tty 2>/dev/null
+        printf '\e]11;?\e\\' > /dev/tty 2>/dev/null
+        if IFS= read -r -d $'\\' -t 1 response < /dev/tty 2>/dev/null; then
+            if [[ "$response" =~ 'rgb:([0-9a-fA-F]{2,4})/([0-9a-fA-F]{2,4})/([0-9a-fA-F]{2,4})' ]]; then
+                local r="${match[1][1,2]}" g="${match[2][1,2]}" b="${match[3][1,2]}"
+                local ri=$((16#$r)) gi=$((16#$g)) bi=$((16#$b))
+                local lum=$(( (ri * 299 + gi * 587 + bi * 114) / 1000 ))
+                if (( lum > 128 )); then
+                    export CLITHEME=light
+                else
+                    export CLITHEME=dark
+                fi
+            fi
+        fi
+        [[ -n "$old_stty" ]] && stty "$old_stty" < /dev/tty 2>/dev/null
+    fi
+fi
+FPATH="$FPATH" ${CLITHEME:+"CLITHEME=$CLITHEME"} command agent "$@"
 {{ end -}}
