@@ -27,5 +27,5 @@ if [[ -z "${CLITHEME:-}" ]]; then
         [[ -n "$old_stty" ]] && stty "$old_stty" < /dev/tty 2>/dev/null
     fi
 fi
-FPATH="$FPATH" ${CLITHEME:+"CLITHEME=$CLITHEME"} command agent "$@"
+env FPATH="$FPATH" ${CLITHEME:+"CLITHEME=$CLITHEME"} agent "$@"
 {{ end -}}
