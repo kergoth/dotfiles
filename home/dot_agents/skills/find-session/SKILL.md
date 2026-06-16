@@ -1,19 +1,20 @@
 ---
 name: find-session
 description: >
-  Find and resume a past Claude Code conversation by searching session JSONL history files
-  by keyword. Use this skill whenever the user wants to find a previous conversation, can't
-  remember which directory they were working in, wants to look up work from a past session,
-  needs to resume a session they can't locate with /resume, or says something like "I know
-  we discussed X somewhere" or "where was that session about Y". Infers search scope and
-  keywords from the user's description and presents matching sessions with AI-generated
-  summaries before asking which to resume. Always use this skill rather than manually
-  searching ~/.claude/ yourself.
+  Find and resume a past Claude Code or Codex conversation by searching session
+  history files by keyword. Use this skill whenever the user wants to find a
+  previous conversation, can't remember which directory or agent they were using,
+  wants to look up work from a past session, needs to resume a session they can't
+  locate with /resume or codex resume, or says something like "I know we
+  discussed X somewhere" or "where was that session about Y". Infers search
+  scope, agent, and keywords from the user's description and presents matching
+  sessions with summaries before asking which to resume. Always use this skill
+  rather than manually searching ~/.claude/ or ~/.codex/ yourself.
 ---
 
 # Find Session
 
-Search past Claude Code session history by keyword and present matching sessions for resumption.
+Search past Claude Code or Codex session history by keyword and present matching sessions for resumption.
 
 ## Step 1: Infer scope and extract keywords
 
@@ -25,6 +26,11 @@ From the user's description:
 - "somewhere" / "I can't remember" / "I was working on X" / no location specified → `--scope global`
 - When ambiguous, default to `--scope global`
 
+**Agent:**
+- User says "Claude", "Claude Code", or asks for a Claude session -> `--agent claude`
+- User says "Codex" or asks for a Codex session -> `--agent codex`
+- User does not identify the agent -> `--agent all`
+
 **Keywords:** Extract 2–4 specific, concrete terms. Prefer domain nouns over generic verbs.
 - "that session about the marketplace proposal" → `marketplace proposal`
 - "where we set up the mender deployment" → `mender deploy`
@@ -32,7 +38,8 @@ From the user's description:
 ## Step 2: Run the search script
 
 ```bash
-python ~/.claude/skills/find-session/scripts/search_sessions.py \
+python ~/.agents/skills/find-session/scripts/search_sessions.py \
+  --agent <claude|codex|all> \
   --scope <project|global> \
   --depth quick \
   --cwd <path> \
@@ -50,9 +57,11 @@ If a result is clearly the current session (the one you're running in right now)
   "total_matching": number,            // total files rg matched (may exceed sessions shown)
   "sessions": [
     {
+      "agent":           "claude" | "codex",
       "session_id":      string,           // UUID
       "session_name":    string | null,    // explicit /rename title if set; falls back to first prompt from history.jsonl (may be a slash-command when no other entries exist); null if neither available
       "has_custom_name": boolean,          // true only when session_name came from an explicit /rename; false for fallback names
+      "resume_command":  string,           // agent-specific resume command
       "away_summary":    string | null,    // recap summary stored by Claude Code on session pause; null if none
       "project_dir":     string,           // absolute path to project cwd
       "first_timestamp": string,           // ISO8601
@@ -75,7 +84,8 @@ If a result is clearly the current session (the one you're running in right now)
 
 To fetch thorough context for specific sessions by ID (bypassing keyword search):
 ```bash
-python ~/.claude/skills/find-session/scripts/search_sessions.py \
+python ~/.agents/skills/find-session/scripts/search_sessions.py \
+  --agent <claude|codex|all> \
   --depth thorough \
   --session-ids <id1> --session-ids <id2> \
   <keyword1> [keyword2 ...]
@@ -98,7 +108,8 @@ Extract full session IDs from the quick search output — never truncate and the
 **WARNING:** Session IDs are UUIDs. If you only extracted a prefix (e.g., first 8 chars), do NOT attempt to reconstruct the full ID — you will hallucinate the suffix. Either re-extract the full ID from the original output, or pass the prefix directly (`--session-ids` supports unambiguous prefixes).
 
 ```bash
-python ~/.claude/skills/find-session/scripts/search_sessions.py \
+python ~/.agents/skills/find-session/scripts/search_sessions.py \
+  --agent <claude|codex|all> \
   --depth thorough \
   --session-ids <id1> --session-ids <id2> \
   <same keywords>
@@ -129,28 +140,34 @@ The keywords genuinely didn't match. Try variations:
 
 ## Step 4: Detect interactive vs. non-interactive mode
 
-Check the environment before presenting results:
+Use the current agent interface first:
+
+- If you can ask the user a follow-up, use **interactive mode**.
+- If this is a one-shot print/API run where no follow-up is possible, use **non-interactive mode**.
+
+For Claude Code, the entrypoint can confirm this:
 
 ```bash
 printenv CLAUDE_CODE_ENTRYPOINT
 ```
 
-- `cli` → **interactive mode**: can ask follow-up questions
-- `sdk-cli` → **non-interactive mode** (`-p`/`--print`): output must be fully self-contained; no follow-up is possible
+- `cli` -> **interactive mode**
+- `sdk-cli` -> **non-interactive mode** (`-p`/`--print`)
+- unset or unknown -> infer from whether this agent run can ask follow-up questions; in Codex, default to **interactive mode** unless the invocation is clearly one-shot
 
 ## Step 5: Summarize and present
 
-For each session write a short (≤10 word) summary label. Always include a `Session ID` column for unnamed sessions — it lets the user pass the ID directly to `/resume` without needing to ask.
+For each session write a short (≤10 word) summary label. Always include a `Session ID` column for unnamed sessions so the resume command can target the exact session without another lookup.
 
 ```
 Found N sessions matching "<keywords>":
 
-#  Date        Project          Name                      Session ID    Summary
-1  2026-03-30  backend-service                            a1b2c3d4      Auth token refresh design sync
-2  2026-03-12  my-api-project   cache-invalidation-fix                  Deploy pipeline phases design
-3  2026-03-25  backend-service                            e5f6g7h8      Rate limiting implementation proposal
+#  Agent   Date        Project          Name                      Session ID    Summary
+1  codex   2026-06-15  dotfiles                                  019ecea4      Find-session Codex support design
+2  claude  2026-03-30  backend-service                           a1b2c3d4      Auth token refresh design sync
 ```
 
+**Agent:** `agent`.
 **Date:** `YYYY-MM-DD` from `last_timestamp`.
 **Project:** `basename(project_dir)`.
 **Name:** `session_name` when `has_custom_name` is true (set via `/rename`), blank otherwise. Do not invent or infer names.
@@ -159,12 +176,26 @@ Found N sessions matching "<keywords>":
 
 ## Step 6: Provide resume command(s)
 
+Use `resume_command` from the search output when available.
+
+Claude example:
+
+```bash
+cd <project_dir> && claude --resume <session_id>
+```
+
+Codex example:
+
+```bash
+cd <project_dir> && codex resume <session_id>
+```
+
 **Interactive mode (`cli`):**
 
 If there is exactly one candidate and it's an obvious match — its `session_name` directly matches the user's query, or it's the only result with a substantially higher `match_count` than any alternative — give the resume command immediately without prompting:
 
 ```bash
-cd <project_dir> && claude --resume <session_id>
+<resume_command>
 ```
 
 Otherwise ask the user to pick a number, then show the resume command.
@@ -175,11 +206,11 @@ Output is the final response — list resume commands for all candidates, best m
 
 ```
 To resume the best match:
-cd <project_dir> && claude --resume <session_id>
+<resume_command>
 
 Other candidates:
-cd <project_dir2> && claude --resume <session_id2>
-cd <project_dir3> && claude --resume <session_id3>
+<resume_command2>
+<resume_command3>
 ```
 
 **Resume argument:** Use `session_name` only when `has_custom_name` is `true` (set via `/rename`). Otherwise always use `session_id` (the full UUID). Session names derived from the first prompt do not work with `--resume`.
