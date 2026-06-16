@@ -1,20 +1,25 @@
 import json
+import sqlite3
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
+
+import pytest
 
 SCRIPT = Path(__file__).parent.parent / "executable_search_sessions.py"
 
 # Import module directly for unit tests
 sys.path.insert(0, str(SCRIPT.parent))
 from executable_search_sessions import (
+    ClaudeProvider,
     CodexProvider,
     build_resume_command,
     build_session_name_index,
     cwd_to_slug,
     extract_text,
     extract_session_data,
+    find_files_by_session_ids_across_providers,
     find_matching_files,
     get_match_contexts,
     get_search_dirs,
@@ -113,6 +118,13 @@ def test_default_agent_is_all():
     assert "claude" in out
     assert "codex" in out
     assert "all" in out
+
+
+def test_script_accepts_agent_all_argument():
+    rc, out, err = run_script("--agent", "all", "--scope", "global", "xq9z_no_such_keyword_xq9z")
+    assert rc == 0
+    result = json.loads(out)
+    assert "sessions" in result
 
 
 def test_build_resume_command_quotes_paths_with_spaces():
@@ -413,6 +425,187 @@ def test_codex_extract_session_data_builds_normalized_record(tmp_path):
     assert data["last_timestamp"] == "2026-06-15T10:00:02.000Z"
     assert data["match_count"] >= 1
     assert data["resume_command"] == "cd /repo && codex resume 019ecodex-record"
+
+
+def test_codex_search_files_uses_rg_candidates_and_parsed_filter(tmp_path):
+    good = tmp_path / "2026" / "06" / "15" / "rollout-2026-06-15T10-00-00-019egood.jsonl"
+    bad = tmp_path / "2026" / "06" / "15" / "rollout-2026-06-15T10-00-00-019ebad.jsonl"
+    good.parent.mkdir(parents=True)
+    good.write_text("\n".join([
+        make_codex_session_meta(session_id="019egood", cwd="/repo"),
+        make_codex_message("user", [{"type": "input_text", "text": "marketplace proposal"}]),
+    ]) + "\n")
+    bad.write_text("\n".join([
+        make_codex_session_meta(session_id="019ebad", cwd="/repo"),
+        make_codex_message("developer", [{"type": "input_text", "text": "marketplace"}]),
+        make_codex_message("user", [{"type": "input_text", "text": "proposal"}]),
+    ]) + "\n")
+
+    provider = CodexProvider(sessions_root=tmp_path)
+    files = provider.search_files("global", "/repo", ["marketplace", "proposal"])
+
+    assert files == [good]
+
+
+def test_codex_project_scope_filters_by_cwd_from_jsonl(tmp_path):
+    keep = tmp_path / "2026" / "06" / "15" / "rollout-2026-06-15T10-00-00-019ekeep.jsonl"
+    drop = tmp_path / "2026" / "06" / "15" / "rollout-2026-06-15T10-00-00-019edrop.jsonl"
+    keep.parent.mkdir(parents=True)
+    keep.write_text("\n".join([
+        make_codex_session_meta(session_id="019ekeep", cwd="/repo"),
+        make_codex_message("user", [{"type": "input_text", "text": "marketplace"}]),
+    ]) + "\n")
+    drop.write_text("\n".join([
+        make_codex_session_meta(session_id="019edrop", cwd="/other"),
+        make_codex_message("user", [{"type": "input_text", "text": "marketplace"}]),
+    ]) + "\n")
+
+    provider = CodexProvider(sessions_root=tmp_path, state_db=tmp_path / "missing.sqlite")
+    files = provider.search_files("project", "/repo", ["marketplace"])
+
+    assert files == [keep]
+
+
+def test_codex_files_by_session_ids_resolves_true_id_prefix(tmp_path):
+    f = tmp_path / "2026" / "06" / "15" / "rollout-2026-06-15T10-00-00-not-the-id.jsonl"
+    f.parent.mkdir(parents=True)
+    f.write_text("\n".join([
+        make_codex_session_meta(session_id="019ecodex-real-id", cwd="/repo"),
+        make_codex_message("user", [{"type": "input_text", "text": "hello"}]),
+    ]) + "\n")
+
+    provider = CodexProvider(sessions_root=tmp_path)
+
+    assert provider.files_by_session_ids(["019ecodex-real"]) == [f]
+
+
+def test_cross_provider_session_id_prefix_rejects_ambiguity(tmp_path):
+    claude_file = tmp_path / "claude" / "project" / "019eshared-claude.jsonl"
+    codex_file = tmp_path / "codex" / "2026" / "06" / "15" / "rollout-2026-06-15T10-00-00-019eshared-codex.jsonl"
+    claude_file.parent.mkdir(parents=True)
+    codex_file.parent.mkdir(parents=True)
+    claude_file.write_text(make_jsonl_line("user", "user", "hello", session_id="019eshared-claude") + "\n")
+    codex_file.write_text("\n".join([
+        make_codex_session_meta(session_id="019eshared-codex", cwd="/repo"),
+        make_codex_message("user", [{"type": "input_text", "text": "hello"}]),
+    ]) + "\n")
+
+    claude = ClaudeProvider(projects_root=tmp_path / "claude")
+    codex = CodexProvider(sessions_root=tmp_path / "codex")
+
+    with pytest.raises(SystemExit):
+        find_files_by_session_ids_across_providers([claude, codex], ["019eshared"])
+
+
+def test_codex_enrich_results_uses_sqlite_title_and_updated_time(tmp_path):
+    db = tmp_path / "state_5.sqlite"
+    session_file = tmp_path / "2026" / "06" / "15" / "rollout-2026-06-15T10-00-00-019esql.jsonl"
+    session_file.parent.mkdir(parents=True)
+    session_file.write_text("\n".join([
+        make_codex_session_meta(
+            session_id="019esql",
+            cwd="/jsonl-repo",
+            timestamp="2026-06-15T10:00:00.000Z",
+        ),
+        make_codex_message(
+            "user",
+            [{"type": "input_text", "text": "marketplace"}],
+            timestamp="2026-06-15T10:00:01.000Z",
+        ),
+    ]) + "\n")
+    conn = sqlite3.connect(db)
+    conn.execute("create table threads (id text, rollout_path text, cwd text, title text, created_at integer, updated_at integer, created_at_ms integer, updated_at_ms integer)")
+    conn.execute(
+        "insert into threads values (?, ?, ?, ?, ?, ?, ?, ?)",
+        ("019esql", str(session_file), "/sqlite-repo", "marketplace-notes", 1781488800, 1781488860, 1781488800000, 1781488860000),
+    )
+    conn.commit()
+    conn.close()
+
+    provider = CodexProvider(sessions_root=tmp_path, state_db=db)
+    data = provider.extract_session_data(session_file, ["marketplace"], "quick")
+    assert data is not None
+    provider.enrich_results([data])
+
+    assert data["session_name"] == "marketplace-notes"
+    assert data["project_dir"] == "/sqlite-repo"
+    assert data["first_timestamp"] == "2026-06-15T02:00:00.000Z"
+    assert data["last_timestamp"] == "2026-06-15T02:01:00.000Z"
+
+
+def test_codex_enrich_results_uses_sqlite_second_timestamps_over_jsonl(tmp_path):
+    db = tmp_path / "state_5.sqlite"
+    session_file = tmp_path / "2026" / "06" / "15" / "rollout-2026-06-15T10-00-00-019eseconds.jsonl"
+    session_file.parent.mkdir(parents=True)
+    session_file.write_text("\n".join([
+        make_codex_session_meta(
+            session_id="019eseconds",
+            cwd="/jsonl-repo",
+            timestamp="2026-06-15T10:00:00.000Z",
+        ),
+        make_codex_message(
+            "user",
+            [{"type": "input_text", "text": "marketplace"}],
+            timestamp="2026-06-15T10:00:01.000Z",
+        ),
+    ]) + "\n")
+    conn = sqlite3.connect(db)
+    conn.execute("create table threads (id text, rollout_path text, cwd text, title text, created_at integer, updated_at integer, created_at_ms integer, updated_at_ms integer)")
+    conn.execute(
+        "insert into threads values (?, ?, ?, ?, ?, ?, ?, ?)",
+        ("019eseconds", str(session_file), "/sqlite-repo", "marketplace-notes", 1781488800, 1781488860, None, None),
+    )
+    conn.commit()
+    conn.close()
+
+    provider = CodexProvider(sessions_root=tmp_path, state_db=db)
+    data = provider.extract_session_data(session_file, ["marketplace"], "quick")
+    assert data is not None
+    provider.enrich_results([data])
+
+    assert data["project_dir"] == "/sqlite-repo"
+    assert data["first_timestamp"] == "2026-06-15T02:00:00.000Z"
+    assert data["last_timestamp"] == "2026-06-15T02:01:00.000Z"
+
+
+def test_codex_enrich_results_falls_back_to_session_index_then_history(tmp_path):
+    session_file = tmp_path / "2026" / "06" / "15" / "rollout-2026-06-15T10-00-00-019eindex.jsonl"
+    session_file.parent.mkdir(parents=True)
+    session_file.write_text("\n".join([
+        make_codex_session_meta(session_id="019eindex", cwd="/repo"),
+        make_codex_message("user", [{"type": "input_text", "text": "marketplace"}]),
+    ]) + "\n")
+    session_index = tmp_path / "session_index.jsonl"
+    history = tmp_path / "history.jsonl"
+    session_index.write_text(json.dumps({
+        "id": "019eindex",
+        "thread_name": "index-title",
+        "updated_at": "2026-06-15T10:03:00Z",
+    }) + "\n")
+    history.write_text(json.dumps({
+        "session_id": "019eindex",
+        "text": "history-title",
+        "ts": 1781517600,
+    }) + "\n")
+
+    provider = CodexProvider(
+        sessions_root=tmp_path,
+        state_db=tmp_path / "missing.sqlite",
+        session_index_path=session_index,
+        history_path=history,
+    )
+    data = provider.extract_session_data(session_file, ["marketplace"], "quick")
+    assert data is not None
+    provider.enrich_results([data])
+
+    assert data["session_name"] == "index-title"
+
+    session_index.write_text("")
+    data = provider.extract_session_data(session_file, ["marketplace"], "quick")
+    assert data is not None
+    provider.enrich_results([data])
+
+    assert data["session_name"] == "history-title"
 
 
 def test_find_matching_files_returns_empty_for_empty_dirs():

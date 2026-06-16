@@ -37,7 +37,7 @@ def unix_to_iso(value: int | None, *, milliseconds: bool = False) -> str:
     if value is None:
         return ""
     seconds = value / 1000 if milliseconds else value
-    return datetime.fromtimestamp(seconds, tz=timezone.utc).isoformat().replace("+00:00", "Z")
+    return datetime.fromtimestamp(seconds, tz=timezone.utc).isoformat(timespec="milliseconds").replace("+00:00", "Z")
 
 
 def cwd_to_slug(cwd: str) -> str:
@@ -118,6 +118,10 @@ def find_matching_files(search_dirs: list[Path], keywords: list[str]) -> list[Pa
         return []
 
     return [Path(p) for p in matched]
+
+
+def find_matching_jsonl_files(search_dirs: list[Path], keywords: list[str]) -> list[Path]:
+    return find_matching_files(search_dirs, keywords)
 
 
 def find_files_by_session_ids(
@@ -517,14 +521,65 @@ class CodexProvider:
             "away_summary": "",
         }
 
+    def all_session_files(self) -> list[Path]:
+        if not self.sessions_root.exists():
+            return []
+        return sorted(self.sessions_root.glob("**/*.jsonl"))
+
+    def project_files_from_sqlite(self, cwd: str) -> list[Path]:
+        if not self.state_db.exists():
+            return []
+        try:
+            with sqlite3.connect(self.state_db) as conn:
+                rows = conn.execute(
+                    "select rollout_path from threads where cwd = ? and rollout_path != ''",
+                    (cwd,),
+                ).fetchall()
+        except sqlite3.Error as e:
+            print(f"Warning: failed to read Codex state DB {self.state_db}: {e}", file=sys.stderr)
+            return []
+        return [Path(row[0]) for row in rows if row[0] and Path(row[0]).exists()]
+
+    def file_matches_project(self, jsonl_path: Path, cwd: str) -> bool:
+        return self.get_metadata(jsonl_path).get("cwd") == cwd
+
     def search_files(self, scope: str, cwd: str, keywords: list[str]) -> list[Path]:
-        return []
+        sqlite_files = []
+        if scope == "project":
+            sqlite_files = self.project_files_from_sqlite(cwd)
+            if sqlite_files:
+                candidates = sqlite_files
+            else:
+                dirs = [self.sessions_root] if self.sessions_root.exists() else []
+                candidates = find_matching_jsonl_files(dirs, keywords)
+        else:
+            dirs = [self.sessions_root] if self.sessions_root.exists() else []
+            candidates = find_matching_jsonl_files(dirs, keywords)
+
+        results = []
+        for path in candidates:
+            if scope == "project" and not sqlite_files and not self.file_matches_project(path, cwd):
+                continue
+            messages = self.parse_messages(path)
+            if not all_keywords_match(messages, keywords):
+                continue
+            results.append(path)
+        return sorted(results)
 
     def files_by_session_ids(self, session_ids: list[str]) -> list[Path]:
-        return []
+        return [
+            path
+            for _provider, path in find_files_by_session_ids_across_providers([self], session_ids)
+        ]
 
     def session_id_matches(self, session_id: str) -> list[tuple[Path, str]]:
-        return []
+        metadata_by_path = [(path, self.get_metadata(path)) for path in self.all_session_files()]
+        return [
+            (path, metadata.get("session_id", ""))
+            for path, metadata in metadata_by_path
+            if metadata.get("session_id") == session_id
+            or metadata.get("session_id", "").startswith(session_id)
+        ]
 
     def extract_session_data(self, jsonl_path: Path, keywords: list[str], depth: str) -> dict | None:
         metadata = self.get_metadata(jsonl_path)
@@ -562,8 +617,82 @@ class CodexProvider:
         data["resume_command"] = build_resume_command(self.name, data)
         return data
 
+    def thread_index(self) -> dict[str, dict]:
+        if not self.state_db.exists():
+            return {}
+        try:
+            with sqlite3.connect(self.state_db) as conn:
+                conn.row_factory = sqlite3.Row
+                rows = conn.execute(
+                    "select id, title, cwd, rollout_path, created_at, updated_at, created_at_ms, updated_at_ms from threads"
+                ).fetchall()
+        except sqlite3.Error as e:
+            print(f"Warning: failed to read Codex state DB {self.state_db}: {e}", file=sys.stderr)
+            return {}
+        return {row["id"]: dict(row) for row in rows}
+
+    def session_name_index(self) -> dict[str, str]:
+        if not self.session_index_path.exists():
+            return {}
+        names = {}
+        try:
+            with open(self.session_index_path, errors="replace") as f:
+                for line in f:
+                    try:
+                        entry = json.loads(line)
+                    except json.JSONDecodeError:
+                        continue
+                    sid = entry.get("id")
+                    name = entry.get("thread_name")
+                    if sid and name:
+                        names[sid] = name
+        except OSError:
+            return {}
+        return names
+
+    def history_name_index(self) -> dict[str, str]:
+        if not self.history_path.exists():
+            return {}
+        names = {}
+        try:
+            with open(self.history_path, errors="replace") as f:
+                for line in f:
+                    try:
+                        entry = json.loads(line)
+                    except json.JSONDecodeError:
+                        continue
+                    sid = entry.get("session_id")
+                    text = entry.get("text")
+                    if sid and text and sid not in names:
+                        names[sid] = text
+        except OSError:
+            return {}
+        return names
+
     def enrich_results(self, results: list[dict]) -> None:
-        return None
+        threads = self.thread_index()
+        session_index = self.session_name_index()
+        history_index = self.history_name_index()
+        for data in results:
+            thread = threads.get(data["session_id"])
+            if thread and not data.get("session_name") and thread.get("title"):
+                data["session_name"] = thread["title"]
+            if not data.get("session_name"):
+                data["session_name"] = session_index.get(data["session_id"]) or history_index.get(data["session_id"])
+            if thread:
+                if thread.get("cwd"):
+                    data["project_dir"] = thread["cwd"]
+                updated = thread.get("updated_at_ms")
+                if updated is not None:
+                    data["last_timestamp"] = unix_to_iso(updated, milliseconds=True)
+                elif thread.get("updated_at") is not None:
+                    data["last_timestamp"] = unix_to_iso(thread["updated_at"])
+                created = thread.get("created_at_ms")
+                if created is not None:
+                    data["first_timestamp"] = unix_to_iso(created, milliseconds=True)
+                elif thread.get("created_at") is not None:
+                    data["first_timestamp"] = unix_to_iso(thread["created_at"])
+            data["resume_command"] = build_resume_command(self.name, data)
 
 
 PROVIDERS = {
