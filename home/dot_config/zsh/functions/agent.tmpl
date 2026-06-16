@@ -5,8 +5,10 @@
 echo >&2 "Checking for Cursor agent updates..."
 command agent update
 
-if [[ -z "${CLITHEME:-}" ]]; then
-    # Detect terminal background via OSC 11 (needs interactive tty)
+# Resolve CLITHEME per wiki.tau.garden/cli-theme/ (ADR-0005: wrappers have tty access).
+case "${CLITHEME:-auto}" in
+  dark|light) export CLITHEME="${CLITHEME%%:*}" ;;
+  auto|*)
     if [[ -t 1 ]]; then
         local response="" old_stty=""
         old_stty=$(stty -g < /dev/tty 2>/dev/null) || old_stty=""
@@ -26,6 +28,9 @@ if [[ -z "${CLITHEME:-}" ]]; then
         fi
         [[ -n "$old_stty" ]] && stty "$old_stty" < /dev/tty 2>/dev/null
     fi
-fi
-env FPATH="$FPATH" ${CLITHEME:+"CLITHEME=$CLITHEME"} agent "$@"
+    # Spec: auto without detection (non-tty or OSC failure) → dark
+    [[ "${CLITHEME:-auto}" == auto ]] && export CLITHEME=dark
+    ;;
+esac
+env FPATH="$FPATH" CLITHEME="$CLITHEME" agent "$@"
 {{ end -}}
