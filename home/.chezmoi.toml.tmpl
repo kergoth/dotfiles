@@ -22,8 +22,8 @@
 {{- $use_nix := true -}}{{/* true if this machine should use Nix. default to true*/}}
 {{/* device usage flags */}}
 {{- $coding := true -}}{{/* true if this device will be used for coding, beyond just shell scripting */}}
-{{- $containers := false -}}{{/* true if this machine should have a container runtime installed */}}
-{{- $containers_crossarch := false -}}{{/* true if this machine should support cross-architecture containers */}}
+{{- $container_runtime := false -}}{{/* true if this machine should have a container runtime installed */}}
+{{- $container_runtime_crossarch := false -}}{{/* true if this machine should support cross-architecture containers */}}
 {{- $gaming := false -}}{{/* true if this device will be used for gaming */}}
 {{- $video := false -}}{{/* true if this device will be used to stream video, controls VLC/etc installation */}}
 {{- $music := false -}}{{/* true if this device will be used to listen to music */}}
@@ -92,14 +92,14 @@
 {{-     $headless = false -}}
 {{-     $work = true -}}
 {{-     $coding = true -}}
-{{-     $containers = true -}}
+{{-     $container_runtime = true -}}
 {{-     $macos_split_user = false -}}
 {{-   else if or (eq $hostname "vaelin") (eq $hostname "zorian") -}}
 {{-     $ephemeral = false -}}
 {{-     $headless = false -}}
 {{-     $personal = true -}}
 {{-     $coding = true -}}
-{{-     $containers = true -}}
+{{-     $container_runtime = true -}}
 {{-     $gaming = true -}}
 {{-     $video = true -}}
 {{-     $music = true -}}
@@ -125,7 +125,7 @@
 {{- end -}}
 
 {{- if and (eq $osid "linux-chimera") (not $headless) (not $ephemeral) -}}
-{{-   $containers = true -}}
+{{-   $container_runtime = true -}}
 {{- end -}}
 
 {{/* override via env vars (explicit) */}}
@@ -181,9 +181,9 @@
 {{-       $personal = promptBoolOnce . "personal" "Is this a personal machine?" $personal -}}
 {{-     end -}}
 {{-     $coding = promptBoolOnce . "coding" "Will this machine be used for coding (beyond just scripting)?" $coding -}}
-{{-     $containers = promptBoolOnce . "containers" "Should a container runtime be installed?" $containers -}}
-{{-     if and (eq .chezmoi.os "darwin") $containers -}}
-{{-       $containers_crossarch = promptBoolOnce . "containers_crossarch" "Should cross-architecture containers be supported?" $containers_crossarch -}}
+{{-     $container_runtime = promptBoolOnce . "container_runtime" "Should a container runtime be installed?" $container_runtime -}}
+{{-     if and (eq .chezmoi.os "darwin") $container_runtime -}}
+{{-       $container_runtime_crossarch = promptBoolOnce . "container_runtime_crossarch" "Should cross-architecture containers be supported?" $container_runtime_crossarch -}}
 {{-     end -}}
 {{-     $gaming = promptBoolOnce . "gaming" "Will this machine be used for gaming?" $gaming -}}
 {{-     $video = promptBoolOnce . "video" "Will this machine be used for local video playback (install VLC)?" $video -}}
@@ -286,8 +286,8 @@ encryption = "age"
     ephemeral = {{ $ephemeral }}
     headless = {{ $headless }}
     has_init = {{ $has_init }}
-    containers = {{ $containers }}
-    containers_crossarch = {{ $containers_crossarch }}
+    container_runtime = {{ $container_runtime }}
+    container_runtime_crossarch = {{ $container_runtime_crossarch }}
     personal = {{ $personal }}
     work = {{ $work }}
 

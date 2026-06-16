@@ -65,7 +65,7 @@
 {{-   if and (or (eq .osid "linux-debian") (eq .osid "linux-ubuntu")) (not $kitty) -}}{{- $need_install = true -}}{{- end -}}
 {{-   if gt (len $flatpak_to_install) 0 -}}{{- $need_install = true -}}{{- end -}}
 {{- end -}}
-{{- if and .coding .containers -}}
+{{- if and .coding .container_runtime -}}
 {{-   $devpod = includeTemplate "find-tool" (dict "root" . "tool" "devpod") -}}
 {{-   if not $devpod -}}{{- $need_install = true -}}{{- end -}}
 {{- end -}}
@@ -121,7 +121,7 @@ sed -i "s|Exec=kitty|Exec=$HOME/.local/kitty.app/bin/kitty|g" ~/.local/share/app
 ln -sf ~/.local/kitty.app/bin/kitty ~/.local/kitty.app/bin/kitten ~/.local/bin/
 {{-   end }}
 
-{{-   if and .coding .containers (not $devpod) }}
+{{-   if and .coding .container_runtime (not $devpod) }}
 msg "Installing DevPod CLI"
 tmpdir=$(mktemp -d)
 trap 'rm -rf "$tmpdir"' EXIT

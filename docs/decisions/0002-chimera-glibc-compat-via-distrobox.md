@@ -50,7 +50,7 @@ After `chezmoi apply` on a non-headless, non-ephemeral Chimera system:
 
 Implementation: `home/.chezmoiscripts/linux/run_onchange_after_20_setup-distrobox.tmpl` and `scripts/setup-distrobox-chimera.sh`.
 
-The distrobox runs only when `.containers`, `not .headless`, `not .ephemeral`, and `CONTAINER_ID` is unset — preventing the setup script from running recursively inside the container.
+The distrobox runs only when `.container_runtime`, `not .headless`, `not .ephemeral`, and `CONTAINER_ID` is unset — preventing the setup script from running recursively inside the container.
 
 Inside-container logic always lives in `scripts/setup-distrobox-chimera.sh`, not inline in the template, so it can be run directly for development and debugging without a full `chezmoi apply`.
 

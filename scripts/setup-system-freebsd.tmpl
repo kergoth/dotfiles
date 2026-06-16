@@ -135,7 +135,7 @@ freebsd_check www/jira-cli jira
 {{- end }}
 
 # Containers
-{{ if .containers -}}
+{{ if .container_runtime -}}
 freebsd_check sysutils/podman-suite podman
 freebsd_check sysutils/podman-compose podman-compose
 {{- end }}

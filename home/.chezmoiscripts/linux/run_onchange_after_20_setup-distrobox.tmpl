@@ -1,4 +1,4 @@
-{{- if and (eq .osid "linux-chimera") .containers (not .headless) (not .ephemeral) (not (env "CONTAINER_ID")) -}}
+{{- if and (eq .osid "linux-chimera") .container_runtime (not .headless) (not .ephemeral) (not (env "CONTAINER_ID")) -}}
 #!/usr/bin/env bash
 # Set up the ubuntu:22.04 distrobox on Chimera Linux.
 # Re-runs when this script or the inside-container setup script changes.

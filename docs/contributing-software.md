@@ -115,7 +115,7 @@ Available flags from `.chezmoi.toml.tmpl` for conditional installation:
 | `.personal` | Personal machine with secrets | Personal-only apps |
 | `.work` | Work machine | Work tools, skip personal |
 | `.coding` | Development workstation | Dev tools (IDEs, DevPod) |
-| `.containers` | Container runtime needed | Docker, Podman, DevPod |
+| `.container_runtime` | Container runtime needed | Docker, Podman, DevPod |
 | `.gaming` | Gaming machine | Steam, game clients |
 | `.video` | Video playback needed | VLC, media players |
 | `.music` | Music playback | Music apps |
@@ -146,7 +146,7 @@ cask "steam"
 {{- end }}
 
 # Multiple conditions
-{{ if and .coding .containers (not .ephemeral) (not .headless) -}}
+{{ if and .coding .container_runtime (not .ephemeral) (not .headless) -}}
 cask "devpod"
 {{- end }}
 ```
@@ -236,7 +236,7 @@ This script self-elevates to administrator. Use for:
     neovim
 
     # Conditional on feature flag
-{{- if .containers }}
+{{- if .container_runtime }}
     docker
     docker-compose
 {{- end }}
@@ -244,7 +244,7 @@ This script self-elevates to administrator. Use for:
   # Platform-specific (Linux only for GUI, macOS uses Homebrew)
   ] ++ lib.optionals stdenv.isLinux [
     glibcLocales
-  {{- if and .coding .containers (not .ephemeral) (not .headless) }}
+  {{- if and .coding .container_runtime (not .ephemeral) (not .headless) }}
     devpod
   {{- end }}
   ];
@@ -371,7 +371,7 @@ if ! distrobox-export --app appname; then
 fi
 ```
 
-Conditions: host script runs only when `eq .osid "linux-chimera"` and `.containers` (Podman/distrobox) and `not .headless` and `not .ephemeral` and not already inside a container (`not (env "CONTAINER_ID")`).
+Conditions: host script runs only when `eq .osid "linux-chimera"` and `.container_runtime` (Podman/distrobox) and `not .headless` and `not .ephemeral` and not already inside a container (`not (env "CONTAINER_ID")`).
 
 ### 10. Chimera Linux (apk + Flatpak)
 
@@ -435,7 +435,7 @@ Wraps `availableTools`. Takes a dict of `cmd→install-spec`, returns only the i
 
 ```go
 # GUI app with multiple requirements
-{{ if and .coding .containers (not .ephemeral) (not .headless) -}}
+{{ if and .coding .container_runtime (not .ephemeral) (not .headless) -}}
 
 # Personal-only app (not for work machines)
 {{ if and .personal (not .work) (not .ephemeral) -}}

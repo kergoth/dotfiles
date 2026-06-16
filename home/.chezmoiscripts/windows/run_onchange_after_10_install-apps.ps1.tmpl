@@ -126,7 +126,7 @@ Install-Scoop-IfNotPresent vlc VideoLAN.VLC | Out-Null
 scoop install calibre
 {{-     end }}
 {{-   end }}
-{{    if and .coding .containers (not .ephemeral) -}}
+{{    if and .coding .container_runtime (not .ephemeral) -}}
 Install-Scoop-IfNotPresent devpod LoftLabs.DevPod | Out-Null
 {{    end -}}
 

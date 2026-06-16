@@ -226,7 +226,7 @@ $personal   // Personal machine with secrets
 $work       // Work machine
 $secrets    // Has access to secrets (personal or work, non-ephemeral)
 $coding     // Development workstation
-$containers // Needs container runtime
+$container_runtime // Needs container runtime
 $use_nix    // Use Nix/home-manager
 $user_setup // Full user setup vs dotfiles-only
 ```
@@ -319,7 +319,7 @@ Two-phase: template header computes `$need_install` via `find-tool` checks (rend
 
 ### Chimera Linux Distrobox Pattern (`run_onchange_after_20_setup-distrobox.tmpl`)
 
-Chimera uses musl libc — glibc-linked binaries (1Password, Vivaldi, Zed) can't run natively. The solution is an Ubuntu 22.04 distrobox: `run_onchange_after_20_setup-distrobox.tmpl` creates/updates the container from the host; `scripts/setup-distrobox-chimera.sh` runs inside to install apps and export `.desktop` files via `distrobox-export`. Only runs when `.containers`, `not .headless`, `not .ephemeral`, and not already inside a container. Use this for glibc GUI apps on Chimera that are unavailable on Flathub or where Flatpak sandboxing is inappropriate (cross-app IPC, DE biometric integration, unrestricted filesystem access).
+Chimera uses musl libc — glibc-linked binaries (1Password, Vivaldi, Zed) can't run natively. The solution is an Ubuntu 22.04 distrobox: `run_onchange_after_20_setup-distrobox.tmpl` creates/updates the container from the host; `scripts/setup-distrobox-chimera.sh` runs inside to install apps and export `.desktop` files via `distrobox-export`. Only runs when `.container_runtime`, `not .headless`, `not .ephemeral`, and not already inside a container. Use this for glibc GUI apps on Chimera that are unavailable on Flathub or where Flatpak sandboxing is inappropriate (cross-app IPC, DE biometric integration, unrestricted filesystem access).
 
 ### Template Helpers: `find-tool` / `availableTools` / `packagesForMissingTools`
 

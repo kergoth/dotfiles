@@ -89,7 +89,7 @@ flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flat
 apk add --no-interactive clang gmake cmake ninja
 {{- end }}
 
-{{ if .containers -}}
+{{ if .container_runtime -}}
 # Container support
 apk add --no-interactive podman podman-compose
 {{- end }}

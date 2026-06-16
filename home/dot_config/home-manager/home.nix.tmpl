@@ -71,7 +71,7 @@ in {
     tmux
 
     # Development
-{{- if .containers }}
+{{- if .container_runtime }}
     docker
     docker-buildx
     docker-compose
@@ -140,7 +140,7 @@ in {
   ] ++ lib.optionals stdenv.isDarwin [
     darwin.trash
     duti
-{{- if and .containers (not .ephemeral) (eq .chezmoi.os "darwin") }}
+{{- if and .container_runtime (not .ephemeral) (eq .chezmoi.os "darwin") }}
     pkgs-unstable.colima
 {{- end }}
     pkgs-unstable.lima
@@ -152,7 +152,7 @@ in {
   {{- if .wsl2 }}
     socat
   {{- end }}
-  {{- if and .coding .containers }}
+  {{- if and .coding .container_runtime }}
     devpod
   {{- end }}
   ];
@@ -178,7 +178,7 @@ in {
 {{- end }}
   };
 
-{{- if and .work .containers (not .ephemeral) (eq .chezmoi.os "darwin") }}
+{{- if and .work .container_runtime (not .ephemeral) (eq .chezmoi.os "darwin") }}
   # The colima service isn't yet available in the 25.11 home-manager
   #services.colima.enable = true;
 {{- end }}

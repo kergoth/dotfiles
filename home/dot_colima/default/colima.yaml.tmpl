@@ -2,7 +2,7 @@
 {{- $default := .vmDefaultProfile -}}
 {{- $cfg := index $profiles .hostname | default $default -}}
 {{- $memory := $cfg.colima_mem_gib -}}
-{{- $rosetta_enabled := and .containers_crossarch (eq .chezmoi.os "darwin") (eq .chezmoi.arch "arm64") (not (not (stat "/Library/Apple/usr/share/rosetta/rosetta"))) -}}
+{{- $rosetta_enabled := and .container_runtime_crossarch (eq .chezmoi.os "darwin") (eq .chezmoi.arch "arm64") (not (not (stat "/Library/Apple/usr/share/rosetta/rosetta"))) -}}
 # Number of CPUs to be allocated to the virtual machine.
 # Default: 2
 cpu: {{ $cfg.colima_cpus }}
@@ -15,7 +15,7 @@ disk: {{ $cfg.vm_disk_gib }}
 
 # Size of the memory in GiB to be allocated to the virtual machine.
 # Default: 2
-{{- if .containers_crossarch -}}
+{{- if .container_runtime_crossarch -}}
 {{/* Increase memory due to cross-arch support */}}
 {{-   $increase := div $memory 4 }}
 {{-   $memory = add $memory $increase -}}
@@ -189,7 +189,7 @@ rosetta: {{ $rosetta_enabled }}
 
 # Enable foreign architecture emulation via binfmt (e.g. amd64 on arm64, arm64 on amd64)
 # Default: true
-binfmt: {{ .containers_crossarch }}
+binfmt: {{ .container_runtime_crossarch }}
 
 # Enable nested virtualization for the virtual machine (requires m3 mac and vmType `vz`)
 # Default: false
