@@ -9,6 +9,7 @@ SCRIPT = Path(__file__).parent.parent / "executable_search_sessions.py"
 # Import module directly for unit tests
 sys.path.insert(0, str(SCRIPT.parent))
 from executable_search_sessions import (
+    CodexProvider,
     build_resume_command,
     build_session_name_index,
     cwd_to_slug,
@@ -18,6 +19,7 @@ from executable_search_sessions import (
     get_match_contexts,
     get_search_dirs,
     get_session_metadata,
+    normalize_iso_timestamp,
     parse_messages,
 )
 
@@ -33,6 +35,43 @@ def make_jsonl_line(type_, role, content, timestamp="2026-01-01T00:00:00", cwd=N
     if cwd:
         obj["cwd"] = cwd
     return json.dumps(obj)
+
+
+def make_codex_session_meta(session_id="019ecodex-test", cwd="/repo", timestamp="2026-06-15T10:00:00.000Z"):
+    return json.dumps({
+        "timestamp": timestamp,
+        "type": "session_meta",
+        "payload": {
+            "id": session_id,
+            "timestamp": timestamp,
+            "cwd": cwd,
+            "originator": "codex-tui",
+            "cli_version": "0.137.0",
+        },
+    })
+
+
+def make_codex_message(role, content, timestamp="2026-06-15T10:00:01.000Z"):
+    return json.dumps({
+        "timestamp": timestamp,
+        "type": "response_item",
+        "payload": {
+            "type": "message",
+            "role": role,
+            "content": content,
+        },
+    })
+
+
+def make_codex_event(text, timestamp="2026-06-15T10:00:02.000Z"):
+    return json.dumps({
+        "timestamp": timestamp,
+        "type": "event_msg",
+        "payload": {
+            "type": "agent_message",
+            "message": text,
+        },
+    })
 
 
 def run_script(*args):
@@ -85,6 +124,47 @@ def test_build_resume_command_quotes_paths_with_spaces():
     assert build_resume_command("codex", data) == (
         "cd '/Users/chris/Project With Spaces' && codex resume 019ecodex-real-id"
     )
+
+
+def test_codex_parse_messages_extracts_user_and_assistant_text(tmp_path):
+    f = tmp_path / "rollout-2026-06-15T10-00-00-019ecodex-test.jsonl"
+    f.write_text("\n".join([
+        make_codex_session_meta(),
+        make_codex_message("developer", [{"type": "input_text", "text": "ignore policy text"}]),
+        make_codex_message("user", [{"type": "input_text", "text": "Find marketplace session"}]),
+        make_codex_message("assistant", [{"type": "output_text", "text": "Found it"}]),
+        make_codex_message("assistant", "Plain assistant text"),
+        make_codex_event("ignore event text"),
+    ]) + "\n")
+
+    provider = CodexProvider(sessions_root=tmp_path)
+    messages = provider.parse_messages(f)
+
+    assert messages == [
+        {"role": "user", "text": "Find marketplace session", "timestamp": "2026-06-15T10:00:01.000Z"},
+        {"role": "assistant", "text": "Found it", "timestamp": "2026-06-15T10:00:01.000Z"},
+        {"role": "assistant", "text": "Plain assistant text", "timestamp": "2026-06-15T10:00:01.000Z"},
+    ]
+
+
+def test_codex_metadata_uses_session_meta_id_not_filename(tmp_path):
+    f = tmp_path / "rollout-2026-06-15T10-00-00-not-the-id.jsonl"
+    f.write_text("\n".join([
+        make_codex_session_meta(session_id="019ecodex-real-id", cwd="/repo"),
+        make_codex_message("user", [{"type": "input_text", "text": "hello"}]),
+    ]) + "\n")
+
+    provider = CodexProvider(sessions_root=tmp_path)
+    metadata = provider.get_metadata(f)
+
+    assert metadata["session_id"] == "019ecodex-real-id"
+    assert metadata["cwd"] == "/repo"
+    assert metadata["first_timestamp"] == "2026-06-15T10:00:00.000Z"
+
+
+def test_normalize_iso_timestamp_converts_offsets_to_utc():
+    assert normalize_iso_timestamp("2026-06-15T03:00:00-07:00") == "2026-06-15T10:00:00.000Z"
+    assert normalize_iso_timestamp("2026-06-15T10:00:00.123Z") == "2026-06-15T10:00:00.123Z"
 
 
 def test_session_name_index_uses_first_non_slash_command():
@@ -299,6 +379,40 @@ def test_extract_session_data_returns_none_for_no_user_messages(tmp_path):
     f = tmp_path / "auto.jsonl"
     f.write_text("\n".join(lines) + "\n")
     assert extract_session_data(f, ["anything"], depth="quick") is None
+
+
+def test_codex_extract_session_data_requires_keywords_in_normalized_messages(tmp_path):
+    f = tmp_path / "rollout-2026-06-15T10-00-00-019ecodex-filter.jsonl"
+    f.write_text("\n".join([
+        make_codex_session_meta(session_id="019ecodex-filter", cwd="/repo"),
+        make_codex_message("developer", [{"type": "input_text", "text": "marketplace only here"}]),
+        make_codex_message("user", [{"type": "input_text", "text": "Find session"}]),
+    ]) + "\n")
+
+    provider = CodexProvider(sessions_root=tmp_path)
+
+    assert provider.extract_session_data(f, ["marketplace", "session"], "quick") is None
+
+
+def test_codex_extract_session_data_builds_normalized_record(tmp_path):
+    f = tmp_path / "rollout-2026-06-15T10-00-00-019ecodex-record.jsonl"
+    f.write_text("\n".join([
+        make_codex_session_meta(session_id="019ecodex-record", cwd="/repo", timestamp="2026-06-15T10:00:00.000Z"),
+        make_codex_message("user", [{"type": "input_text", "text": "Find marketplace session"}], timestamp="2026-06-15T10:00:01.000Z"),
+        make_codex_message("assistant", [{"type": "output_text", "text": "Found marketplace details"}], timestamp="2026-06-15T10:00:02.000Z"),
+    ]) + "\n")
+
+    provider = CodexProvider(sessions_root=tmp_path)
+    data = provider.extract_session_data(f, ["marketplace"], "quick")
+
+    assert data is not None
+    assert data["agent"] == "codex"
+    assert data["session_id"] == "019ecodex-record"
+    assert data["project_dir"] == "/repo"
+    assert data["first_timestamp"] == "2026-06-15T10:00:00.000Z"
+    assert data["last_timestamp"] == "2026-06-15T10:00:02.000Z"
+    assert data["match_count"] >= 1
+    assert data["resume_command"] == "cd /repo && codex resume 019ecodex-record"
 
 
 def test_find_matching_files_returns_empty_for_empty_dirs():

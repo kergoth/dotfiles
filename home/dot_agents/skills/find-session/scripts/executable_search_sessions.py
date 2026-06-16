@@ -19,6 +19,27 @@ CODEX_SESSIONS = CODEX_HOME / "sessions"
 CODEX_STATE_DB = CODEX_HOME / "state_5.sqlite"
 
 
+def normalize_iso_timestamp(value: str) -> str:
+    if not value:
+        return ""
+    parseable = value[:-1] + "+00:00" if value.endswith("Z") else value
+    try:
+        parsed = datetime.fromisoformat(parseable)
+    except ValueError:
+        return value
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    normalized = parsed.astimezone(timezone.utc)
+    return normalized.isoformat(timespec="milliseconds").replace("+00:00", "Z")
+
+
+def unix_to_iso(value: int | None, *, milliseconds: bool = False) -> str:
+    if value is None:
+        return ""
+    seconds = value / 1000 if milliseconds else value
+    return datetime.fromtimestamp(seconds, tz=timezone.utc).isoformat().replace("+00:00", "Z")
+
+
 def cwd_to_slug(cwd: str) -> str:
     """Convert an absolute path to the Claude projects directory slug.
 
@@ -315,6 +336,29 @@ def get_match_contexts(
     return contexts
 
 
+def all_keywords_match(messages: list[dict], keywords: list[str]) -> bool:
+    combined = "\n".join(m["text"] for m in messages)
+    return all(re.search(re.escape(kw), combined, re.IGNORECASE) for kw in keywords)
+
+
+def build_exchanges(msg_list: list[dict], count: int, from_end: bool = False) -> list[dict]:
+    """Extract up to `count` consecutive user+assistant exchange pairs."""
+    exchanges = []
+    indices = range(len(msg_list) - 1, -1, -1) if from_end else range(len(msg_list))
+    for i in indices:
+        if len(exchanges) >= count:
+            break
+        if msg_list[i]["role"] == "user":
+            j = i + 1
+            asst = msg_list[j] if j < len(msg_list) and msg_list[j]["role"] == "assistant" else None
+            pair = {"user": msg_list[i], "assistant": asst}
+            if from_end:
+                exchanges.insert(0, pair)
+            else:
+                exchanges.append(pair)
+    return exchanges
+
+
 def extract_session_data(
     jsonl_path: Path,
     keywords: list[str],
@@ -333,23 +377,6 @@ def extract_session_data(
 
     num_exchanges = 1 if depth == "quick" else 3
     context_size = 2 if depth == "quick" else 5
-
-    def build_exchanges(msg_list: list[dict], count: int, from_end: bool = False) -> list[dict]:
-        """Extract up to `count` consecutive user+assistant exchange pairs."""
-        exchanges = []
-        indices = range(len(msg_list) - 1, -1, -1) if from_end else range(len(msg_list))
-        for i in indices:
-            if len(exchanges) >= count:
-                break
-            if msg_list[i]["role"] == "user":
-                j = i + 1
-                asst = msg_list[j] if j < len(msg_list) and msg_list[j]["role"] == "assistant" else None
-                pair = {"user": msg_list[i], "assistant": asst}
-                if from_end:
-                    exchanges.insert(0, pair)
-                else:
-                    exchanges.append(pair)
-        return exchanges
 
     first_exchanges = build_exchanges(messages, num_exchanges, from_end=False)
     last_exchanges = build_exchanges(messages, num_exchanges, from_end=True)
@@ -409,6 +436,87 @@ class ClaudeProvider:
 class CodexProvider:
     name = "codex"
 
+    def __init__(
+        self,
+        sessions_root: Path = CODEX_SESSIONS,
+        state_db: Path = CODEX_STATE_DB,
+        history_path: Path = CODEX_HOME / "history.jsonl",
+        session_index_path: Path = CODEX_HOME / "session_index.jsonl",
+    ):
+        self.sessions_root = sessions_root
+        self.state_db = state_db
+        self.history_path = history_path
+        self.session_index_path = session_index_path
+
+    def extract_text(self, content) -> str:
+        if isinstance(content, str):
+            return content
+        if isinstance(content, list):
+            return "".join(
+                block["text"]
+                for block in content
+                if isinstance(block, dict)
+                and block.get("type") in ("input_text", "output_text")
+                and isinstance(block.get("text"), str)
+            )
+        return ""
+
+    def iter_json_objects(self, jsonl_path: Path):
+        try:
+            f = open(jsonl_path, errors="replace")
+        except OSError:
+            return
+        with f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    yield json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+
+    def parse_messages(self, jsonl_path: Path) -> list[dict]:
+        messages = []
+        for obj in self.iter_json_objects(jsonl_path):
+            if obj.get("type") != "response_item":
+                continue
+            payload = obj.get("payload", {})
+            if payload.get("type") != "message":
+                continue
+            role = payload.get("role")
+            if role not in ("user", "assistant"):
+                continue
+            text = self.extract_text(payload.get("content", "")).strip()
+            if not text:
+                continue
+            messages.append({
+                "role": role,
+                "text": text,
+                "timestamp": normalize_iso_timestamp(obj.get("timestamp", "")),
+            })
+        return messages
+
+    def get_metadata(self, jsonl_path: Path) -> dict:
+        session_id = ""
+        cwd = ""
+        first_timestamp = ""
+        for obj in self.iter_json_objects(jsonl_path):
+            if obj.get("type") != "session_meta":
+                continue
+            payload = obj.get("payload", {})
+            session_id = payload.get("id", "") or session_id
+            cwd = payload.get("cwd", "") or cwd
+            first_timestamp = normalize_iso_timestamp(payload.get("timestamp", "") or obj.get("timestamp", ""))
+            break
+        return {
+            "session_id": session_id,
+            "cwd": cwd,
+            "first_timestamp": first_timestamp,
+            "custom_title": "",
+            "away_summary": "",
+        }
+
     def search_files(self, scope: str, cwd: str, keywords: list[str]) -> list[Path]:
         return []
 
@@ -419,7 +527,40 @@ class CodexProvider:
         return []
 
     def extract_session_data(self, jsonl_path: Path, keywords: list[str], depth: str) -> dict | None:
-        return None
+        metadata = self.get_metadata(jsonl_path)
+        messages = self.parse_messages(jsonl_path)
+
+        user_messages = [m for m in messages if m["role"] == "user"]
+        if not user_messages:
+            return None
+        if keywords and not all_keywords_match(messages, keywords):
+            return None
+
+        num_exchanges = 1 if depth == "quick" else 3
+        context_size = 2 if depth == "quick" else 5
+
+        first_exchanges = build_exchanges(messages, num_exchanges, from_end=False)
+        last_exchanges = build_exchanges(messages, num_exchanges, from_end=True)
+        match_contexts = get_match_contexts(messages, keywords, context_size)
+
+        last_timestamp = messages[-1]["timestamp"] if messages else ""
+        data = {
+            "agent": self.name,
+            "session_id": metadata["session_id"],
+            "session_name": None,
+            "has_custom_name": False,
+            "away_summary": None,
+            "project_dir": metadata["cwd"],
+            "first_timestamp": metadata["first_timestamp"],
+            "last_timestamp": last_timestamp,
+            "match_count": len(match_contexts),
+            "resume_command": "",
+            "first_exchanges": first_exchanges,
+            "last_exchanges": last_exchanges,
+            "match_contexts": match_contexts,
+        }
+        data["resume_command"] = build_resume_command(self.name, data)
+        return data
 
     def enrich_results(self, results: list[dict]) -> None:
         return None
