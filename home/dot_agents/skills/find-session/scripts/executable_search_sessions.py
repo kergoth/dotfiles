@@ -5,12 +5,18 @@ import argparse
 import json
 import os
 import re
+import shlex
+import sqlite3
 import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 
 CLAUDE_PROJECTS = Path.home() / ".claude" / "projects"
+CODEX_HOME = Path.home() / ".codex"
+CODEX_SESSIONS = CODEX_HOME / "sessions"
+CODEX_STATE_DB = CODEX_HOME / "state_5.sqlite"
 
 
 def cwd_to_slug(cwd: str) -> str:
@@ -367,11 +373,123 @@ def extract_session_data(
     }
 
 
+class ClaudeProvider:
+    name = "claude"
+
+    def __init__(self, projects_root: Path = CLAUDE_PROJECTS):
+        self.projects_root = projects_root
+
+    def search_files(self, scope: str, cwd: str, keywords: list[str]) -> list[Path]:
+        return find_matching_files(get_search_dirs(scope, cwd, self.projects_root), keywords)
+
+    def files_by_session_ids(self, session_ids: list[str]) -> list[Path]:
+        return find_files_by_session_ids(session_ids, self.projects_root)
+
+    def session_id_matches(self, session_id: str) -> list[tuple[Path, str]]:
+        matches = list(self.projects_root.glob(f"*/{session_id}.jsonl"))
+        if not matches:
+            matches = list(self.projects_root.glob(f"*/{session_id}*.jsonl"))
+        return [(path, path.stem) for path in matches]
+
+    def extract_session_data(self, jsonl_path: Path, keywords: list[str], depth: str) -> dict | None:
+        data = extract_session_data(jsonl_path, keywords, depth)
+        if data is None:
+            return None
+        data["agent"] = self.name
+        data["resume_command"] = build_resume_command(self.name, data)
+        return data
+
+    def enrich_results(self, results: list[dict]) -> None:
+        history_index = build_session_name_index()
+        for data in results:
+            if data["session_name"] is None:
+                data["session_name"] = history_index.get(data["session_id"])
+
+
+class CodexProvider:
+    name = "codex"
+
+    def search_files(self, scope: str, cwd: str, keywords: list[str]) -> list[Path]:
+        return []
+
+    def files_by_session_ids(self, session_ids: list[str]) -> list[Path]:
+        return []
+
+    def session_id_matches(self, session_id: str) -> list[tuple[Path, str]]:
+        return []
+
+    def extract_session_data(self, jsonl_path: Path, keywords: list[str], depth: str) -> dict | None:
+        return None
+
+    def enrich_results(self, results: list[dict]) -> None:
+        return None
+
+
+PROVIDERS = {
+    "claude": ClaudeProvider(),
+    "codex": CodexProvider(),
+}
+
+
+def selected_providers(agent: str) -> list[object]:
+    if agent == "all":
+        return [PROVIDERS["claude"], PROVIDERS["codex"]]
+    return [PROVIDERS[agent]]
+
+
+def build_resume_command(agent: str, data: dict) -> str:
+    project_dir = shlex.quote(data.get("project_dir") or ".")
+    session_id = shlex.quote(data["session_id"])
+    if agent == "codex":
+        return f"cd {project_dir} && codex resume {session_id}"
+    return f"cd {project_dir} && claude --resume {session_id}"
+
+
+def find_files_by_session_ids_across_providers(providers: list[object], session_ids: list[str]) -> list[tuple[object, Path]]:
+    matches_by_sid: dict[str, list[tuple[object, Path, str]]] = {sid: [] for sid in session_ids}
+    errors = []
+
+    for sid in session_ids:
+        for provider in providers:
+            for path, resolved_id in provider.session_id_matches(sid):
+                matches_by_sid[sid].append((provider, path, resolved_id))
+
+        matches = matches_by_sid[sid]
+        if len(matches) == 1:
+            continue
+        if len(matches) > 1:
+            labels = [f"{provider.name}:{resolved_id}" for provider, _path, resolved_id in matches]
+            errors.append(
+                f"Ambiguous session prefix {sid!r} matches {len(matches)} sessions: "
+                + ", ".join(labels)
+            )
+        else:
+            provider_names = ", ".join(provider.name for provider in providers)
+            errors.append(f"Session {sid!r} not found in selected providers: {provider_names}")
+
+    if errors:
+        for err in errors:
+            print(f"Error: {err}", file=sys.stderr)
+        sys.exit(1)
+
+    return [
+        (provider, path)
+        for matches in matches_by_sid.values()
+        for provider, path, _resolved_id in matches
+    ]
+
+
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Search Claude Code session history by keyword"
+        description="Search agent session history by keyword"
     )
     parser.add_argument("keywords", nargs="*", help="Keywords to search for")
+    parser.add_argument(
+        "--agent",
+        choices=["claude", "codex", "all"],
+        default="all",
+        help="Session provider to search: claude, codex, or all (default: all)",
+    )
     parser.add_argument(
         "--scope",
         choices=["project", "global"],
@@ -415,21 +533,23 @@ def parse_args():
 def main():
     args = parse_args()
 
+    providers = selected_providers(args.agent)
+
+    matching_by_provider: list[tuple[object, Path]] = []
     if args.session_ids:
-        matching_files = find_files_by_session_ids(args.session_ids)
+        matching_by_provider = find_files_by_session_ids_across_providers(providers, args.session_ids)
     else:
         if not args.keywords:
             print("Error: keywords are required unless --session-ids is provided", file=sys.stderr)
             sys.exit(1)
-        search_dirs = get_search_dirs(args.scope, args.cwd)
-        matching_files = find_matching_files(search_dirs, args.keywords)
-
-    history_index = build_session_name_index()
+        for provider in providers:
+            for path in provider.search_files(args.scope, args.cwd, args.keywords):
+                matching_by_provider.append((provider, path))
 
     results = []
-    for jsonl_path in matching_files:
+    for provider, jsonl_path in matching_by_provider:
         try:
-            data = extract_session_data(jsonl_path, args.keywords, args.depth)
+            data = provider.extract_session_data(jsonl_path, args.keywords, args.depth)
         except Exception as e:
             print(f"Warning: failed to process {jsonl_path}: {type(e).__name__}: {e}", file=sys.stderr)
             continue
@@ -437,9 +557,10 @@ def main():
             continue
         if data["session_id"] in args.exclude:
             continue
-        if data["session_name"] is None:
-            data["session_name"] = history_index.get(data["session_id"])
         results.append(data)
+
+    for provider in providers:
+        provider.enrich_results([r for r in results if r.get("agent") == provider.name])
 
     # Sort by match_count descending (more hits = more likely to be the primary topic),
     # with last_timestamp as tiebreaker so equally-relevant sessions show newest first.

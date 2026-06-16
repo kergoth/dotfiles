@@ -4,11 +4,12 @@ import sys
 import tempfile
 from pathlib import Path
 
-SCRIPT = Path(__file__).parent.parent / "search_sessions.py"
+SCRIPT = Path(__file__).parent.parent / "executable_search_sessions.py"
 
 # Import module directly for unit tests
 sys.path.insert(0, str(SCRIPT.parent))
-from search_sessions import (
+from executable_search_sessions import (
+    build_resume_command,
     build_session_name_index,
     cwd_to_slug,
     extract_text,
@@ -64,6 +65,26 @@ def test_accepts_valid_args():
     assert "total_matching" in result
     assert "sessions" in result
     assert isinstance(result["sessions"], list)
+
+
+def test_default_agent_is_all():
+    rc, out, err = run_script("--help")
+    assert rc == 0
+    assert "--agent" in out
+    assert "claude" in out
+    assert "codex" in out
+    assert "all" in out
+
+
+def test_build_resume_command_quotes_paths_with_spaces():
+    data = {
+        "project_dir": "/Users/chris/Project With Spaces",
+        "session_id": "019ecodex-real-id",
+    }
+
+    assert build_resume_command("codex", data) == (
+        "cd '/Users/chris/Project With Spaces' && codex resume 019ecodex-real-id"
+    )
 
 
 def test_session_name_index_uses_first_non_slash_command():
