@@ -10,8 +10,8 @@
 {{- $retrodeck := false -}}
 
 {{/* boolean feature flags */}}
-{{- $ephemeral := false -}}{{/* true if this machine is ephemeral, e.g. a cloud or VM instance */}}
-{{- $headless := false -}}{{/* true if this machine does not have a screen and keyboard */}}
+{{- $ephemeral := false -}}{{/* true if this machine is short-lived (e.g. cloud, VM, container instance); gates whether persistent setup (scheduled jobs, long-lived app config) is worth doing. Independent of $headless. */}}
+{{- $headless := false -}}{{/* true if this machine has no screen/keyboard; gates GUI/display-dependent setup. Independent of $ephemeral. */}}
 {{- $has_init := false -}}{{/* true if this machine has a usable init system */}}
 {{- $personal := false -}}{{/* true if this machine should have personal secrets */}}
 {{- $work := false -}}{{/* true if this machine is used for work */}}
