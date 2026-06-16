@@ -13,6 +13,7 @@
 {{- $ephemeral := false -}}{{/* true if this machine is short-lived (e.g. cloud, VM, container instance); gates whether persistent setup (scheduled jobs, long-lived app config) is worth doing. Independent of $headless. */}}
 {{- $headless := false -}}{{/* true if this machine has no screen/keyboard; gates GUI/display-dependent setup. Independent of $ephemeral. */}}
 {{- $has_init := false -}}{{/* true if this machine has a usable init system */}}
+{{- $has_systemd := false -}}{{/* true if systemctl is present and the system manager is systemd */}}
 {{- $personal := false -}}{{/* true if this machine should have personal secrets */}}
 {{- $work := false -}}{{/* true if this machine is used for work */}}
 {{- $work_email := false -}}{{/* true if this machine should use a work email (implicitly set by $work) */}}
@@ -161,12 +162,15 @@
 {{-   if ne .chezmoi.os "linux" -}}
 {{-     $has_init = true -}}
 {{-   else -}}
-{{-     $has_systemd := and (lookPath "systemctl") (stat "/run/systemd/system") -}}
+{{-     $has_systemd = and (lookPath "systemctl") (stat "/run/systemd/system") -}}
 {{-     if any $has_systemd (lookPath "dinitctl") (lookPath "rc-service") (lookPath "service") -}}
 {{-       $has_init = true -}}
 {{-     end -}}
 {{-   end -}}
 {{- end -}}
+
+{{/* whether systemd user services (e.g. the nix-clean timer) should be installed */}}
+{{- $systemd_user_services := and (eq .chezmoi.os "linux") (not $ephemeral) $use_nix $has_systemd -}}
 
 {{/* prompt for overrides */}}
 {{- if and $interactive $prompt -}}
@@ -286,6 +290,7 @@ encryption = "age"
     ephemeral = {{ $ephemeral }}
     headless = {{ $headless }}
     has_init = {{ $has_init }}
+    systemd_user_services = {{ $systemd_user_services }}
     container_runtime = {{ $container_runtime }}
     container_runtime_crossarch = {{ $container_runtime_crossarch }}
     personal = {{ $personal }}
