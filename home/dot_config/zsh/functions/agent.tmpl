@@ -20,16 +20,14 @@ case "${CLITHEME:-auto}" in
                 local ri=$((16#$r)) gi=$((16#$g)) bi=$((16#$b))
                 local lum=$(( (ri * 299 + gi * 587 + bi * 114) / 1000 ))
                 if (( lum > 128 )); then
-                    export CLITHEME=light
+                    CLITHEME=light
                 else
-                    export CLITHEME=dark
+                    CLITHEME=dark
                 fi
             fi
         fi
         [[ -n "$old_stty" ]] && stty "$old_stty" < /dev/tty 2>/dev/null
     fi
-    # Spec: auto without detection (non-tty or OSC failure) → dark
-    [[ "${CLITHEME:-auto}" == auto ]] && export CLITHEME=dark
     ;;
 esac
 env FPATH="$FPATH" CLITHEME="$CLITHEME" agent "$@"
