@@ -127,7 +127,7 @@ Installed software varies by platform based on package availability and platform
 
 #### CLI Software on Windows
 
-- **[gow](https://github.com/bmatzelle/gow)**: Unix command line utilities installer for Windows.
+- **[Coreutils for Windows](https://github.com/microsoft/coreutils)**: UNIX-style core utilities for Windows. The same commands and pipelines you use on Linux, macOS, and WSL - natively.
 - **[gsudo](https://github.com/gerardog/gsudo)**: Sudo for Windows.
 - [PowerShell](https://learn.microsoft.com/en-us/powershell/) ([Open-Source](https://github.com/PowerShell/PowerShell))
 - **[recycle-bin](https://github.com/sindresorhus/recycle-bin)**: Move files and folders to the Windows recycle bin within command line.
