@@ -68,10 +68,6 @@ if ! (( $+commands[rsync] )) && (( $+commands[openrsync] )); then
     alias rsync=openrsync
 fi
 
-if (( $+commands[batgrep] )); then
-    alias rg=batgrep
-fi
-
 if (( $+commands[podman] )) && ! (( $+commands[docker] )); then
     alias docker=podman
 fi

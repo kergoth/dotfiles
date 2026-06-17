@@ -1,0 +1,5 @@
+if [[ -o interactive ]] && [[ -t 1 ]] && (( $+commands[batgrep] )); then
+    batgrep "$@"
+else
+    command rg "$@"
+fi
