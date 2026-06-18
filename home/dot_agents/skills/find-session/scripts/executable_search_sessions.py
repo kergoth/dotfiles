@@ -11,12 +11,32 @@ import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import unquote
 
 
 CLAUDE_PROJECTS = Path.home() / ".claude" / "projects"
 CODEX_HOME = Path.home() / ".codex"
 CODEX_SESSIONS = CODEX_HOME / "sessions"
 CODEX_STATE_DB = CODEX_HOME / "state_5.sqlite"
+CURSOR_PROJECTS = Path.home() / ".cursor" / "projects"
+
+USER_QUERY_RE = re.compile(r"<user_query>\s*(.*?)\s*</user_query>", re.DOTALL)
+
+
+def strip_cursor_user_query(text: str) -> str:
+    match = USER_QUERY_RE.search(text.strip())
+    if match:
+        return match.group(1).strip()
+    return text.strip()
+
+
+def cursor_workspace_storage_dirs() -> list[Path]:
+    """Return Cursor workspaceStorage paths for this platform (may not exist)."""
+    home = Path.home()
+    return [
+        home / "Library" / "Application Support" / "Cursor" / "User" / "workspaceStorage",
+        home / ".config" / "Cursor" / "User" / "workspaceStorage",
+    ]
 
 
 def normalize_iso_timestamp(value: str) -> str:
@@ -47,6 +67,94 @@ def cwd_to_slug(cwd: str) -> str:
     Example: '/Users/chris/foo' -> '-Users-chris-foo'
     """
     return cwd.replace("/", "-")
+
+
+def normalize_path(path: str) -> str:
+    if not path:
+        return ""
+    return os.path.realpath(path)
+
+
+def cursor_project_matches_cwd(
+    project_dir: str,
+    cwd: str,
+    workspace_index: dict[str, str],
+) -> bool:
+    """Return whether a transcript's project_dir matches project-scoped cwd.
+
+    Prefer workspaceStorage mapping for cwd when present; otherwise compare
+    realpaths so symlinked cwd paths can still match.
+    """
+    if not project_dir:
+        return False
+    resolved_project = normalize_path(project_dir)
+    indexed_cwd_folder = workspace_index.get(cursor_slug(cwd))
+    if indexed_cwd_folder:
+        return resolved_project == normalize_path(indexed_cwd_folder)
+    return resolved_project == normalize_path(cwd)
+
+
+def cursor_slug(cwd: str) -> str:
+    """Convert an absolute path to the Cursor projects directory slug."""
+    path = cwd[1:] if cwd.startswith("/") else cwd
+    path = path.replace("/", "-").replace(".", "-")
+    return re.sub(r"-+", "-", path)
+
+
+def cursor_transcript_parent_id(jsonl_path: Path) -> str:
+    """Return the parent agent session UUID for a transcript file."""
+    parts = jsonl_path.parts
+    if "subagents" in parts:
+        idx = parts.index("subagents")
+        return parts[idx - 1]
+    return jsonl_path.parent.name
+
+
+def cursor_parent_jsonl(jsonl_path: Path) -> Path:
+    """Return the parent session JSONL path for parent or subagent transcripts."""
+    parent_id = cursor_transcript_parent_id(jsonl_path)
+    if "subagents" in jsonl_path.parts:
+        # .../<parent>/subagents/<sub>.jsonl -> .../<parent>/<parent>.jsonl
+        return jsonl_path.parent.parent / f"{parent_id}.jsonl"
+    # .../<parent>/<parent>.jsonl -> same file
+    return jsonl_path.parent / f"{parent_id}.jsonl"
+
+
+def build_cursor_workspace_index(
+    workspace_storage: Path | list[Path] | None = None,
+) -> dict[str, str]:
+    """Build project-slug -> folder path from Cursor workspaceStorage."""
+    roots = (
+        [workspace_storage]
+        if isinstance(workspace_storage, Path)
+        else list(workspace_storage or cursor_workspace_storage_dirs())
+    )
+    index: dict[str, str] = {}
+    for root in roots:
+        if not root.exists():
+            continue
+        for entry in root.iterdir():
+            if not entry.is_dir():
+                continue
+            workspace_json = entry / "workspace.json"
+            if not workspace_json.exists():
+                continue
+            try:
+                data = json.loads(workspace_json.read_text())
+            except (OSError, json.JSONDecodeError):
+                continue
+
+            folder = data.get("folder")
+            if not folder and isinstance(data.get("configuration"), dict):
+                folders = data["configuration"].get("folders") or []
+                if folders and isinstance(folders[0], dict):
+                    folder = folders[0].get("path")
+            if not folder:
+                continue
+            if folder.startswith("file://"):
+                folder = unquote(folder[len("file://"):])
+            index[cursor_slug(folder)] = folder
+    return index
 
 
 def get_search_dirs(
@@ -695,15 +803,241 @@ class CodexProvider:
             data["resume_command"] = build_resume_command(self.name, data)
 
 
+class CursorProvider:
+    name = "cursor"
+
+    def __init__(
+        self,
+        projects_root: Path = CURSOR_PROJECTS,
+        workspace_storage: Path | list[Path] | None = None,
+    ):
+        self.projects_root = projects_root
+        self.workspace_storage = workspace_storage
+        self._workspace_index: dict[str, str] | None = None
+
+    def workspace_index(self) -> dict[str, str]:
+        if self._workspace_index is None:
+            self._workspace_index = build_cursor_workspace_index(self.workspace_storage)
+        return self._workspace_index
+
+    def extract_text(self, content) -> str:
+        if isinstance(content, str):
+            return strip_cursor_user_query(content)
+        if isinstance(content, list):
+            return "".join(
+                block.get("text", "")
+                for block in content
+                if isinstance(block, dict) and block.get("type") == "text"
+            ).strip()
+        return ""
+
+    def parse_messages(self, jsonl_path: Path) -> list[dict]:
+        messages = []
+        try:
+            f = open(jsonl_path, errors="replace")
+        except OSError:
+            return messages
+        with f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    obj = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                if obj.get("type") == "turn_ended":
+                    continue
+                role = obj.get("role")
+                if role not in ("user", "assistant"):
+                    continue
+                text = self.extract_text(obj.get("message", {}).get("content", "")).strip()
+                if role == "user":
+                    text = strip_cursor_user_query(text)
+                if not text:
+                    continue
+                messages.append({"role": role, "text": text, "timestamp": ""})
+        return messages
+
+    def project_slug_from_path(self, jsonl_path: Path) -> str:
+        parts = jsonl_path.parts
+        if "agent-transcripts" not in parts:
+            return ""
+        idx = parts.index("agent-transcripts")
+        if idx == 0:
+            return ""
+        return parts[idx - 1]
+
+    def project_dir_for_path(self, jsonl_path: Path) -> str:
+        slug = self.project_slug_from_path(jsonl_path)
+        if not slug:
+            return ""
+        folder = self.workspace_index().get(slug, "")
+        if not folder:
+            print(
+                f"Warning: no workspace mapping for Cursor project slug {slug!r}",
+                file=sys.stderr,
+            )
+        return folder
+
+    def mtime_iso(self, path: Path) -> str:
+        try:
+            ts = path.stat().st_mtime
+        except OSError:
+            return ""
+        return datetime.fromtimestamp(ts, tz=timezone.utc).isoformat(
+            timespec="milliseconds"
+        ).replace("+00:00", "Z")
+
+    def is_subagent_transcript(self, jsonl_path: Path) -> bool:
+        return "subagents" in jsonl_path.parts
+
+    def parent_session_name(self, jsonl_path: Path, fallback_messages: list[dict]) -> str | None:
+        parent_jsonl = cursor_parent_jsonl(jsonl_path)
+        if parent_jsonl.exists():
+            parent_users = [m for m in self.parse_messages(parent_jsonl) if m["role"] == "user"]
+            if parent_users:
+                return parent_users[0]["text"][:80] or None
+        fallback_users = [m for m in fallback_messages if m["role"] == "user"]
+        if fallback_users:
+            return fallback_users[0]["text"][:80] or None
+        return None
+
+    def extract_session_data(self, jsonl_path: Path, keywords: list[str], depth: str) -> dict | None:
+        messages = self.parse_messages(jsonl_path)
+        user_messages = [m for m in messages if m["role"] == "user"]
+        if not user_messages:
+            return None
+        if keywords and not all_keywords_match(messages, keywords):
+            return None
+
+        parent_id = cursor_transcript_parent_id(jsonl_path)
+        parent_jsonl = cursor_parent_jsonl(jsonl_path)
+        timestamp_path = parent_jsonl if parent_jsonl.exists() else jsonl_path
+        mtime = self.mtime_iso(timestamp_path)
+
+        num_exchanges = 1 if depth == "quick" else 3
+        context_size = 2 if depth == "quick" else 5
+        first_exchanges = build_exchanges(messages, num_exchanges, from_end=False)
+        last_exchanges = build_exchanges(messages, num_exchanges, from_end=True)
+        match_contexts = get_match_contexts(messages, keywords, context_size)
+
+        data = {
+            "agent": self.name,
+            "session_id": parent_id,
+            "session_name": self.parent_session_name(jsonl_path, messages),
+            "has_custom_name": False,
+            "away_summary": None,
+            "project_dir": self.project_dir_for_path(jsonl_path),
+            "first_timestamp": mtime,
+            "last_timestamp": mtime,
+            "match_count": len(match_contexts),
+            "match_source": "subagent" if self.is_subagent_transcript(jsonl_path) else "parent",
+            "resume_command": "",
+            "first_exchanges": first_exchanges,
+            "last_exchanges": last_exchanges,
+            "match_contexts": match_contexts,
+        }
+        data["resume_command"] = build_resume_command(self.name, data)
+        return data
+
+    def enrich_results(self, results: list[dict]) -> None:
+        # resume_command is set in extract_session_data; no SQLite-style enrichment.
+        return
+
+    def all_transcript_files(self) -> list[Path]:
+        if not self.projects_root.exists():
+            return []
+        return sorted(self.projects_root.glob("**/agent-transcripts/**/*.jsonl"))
+
+    def search_files(self, scope: str, cwd: str, keywords: list[str]) -> list[Path]:
+        if not keywords:
+            return []
+
+        fallback_filter_cwd = None
+        if scope == "project":
+            slug = cursor_slug(cwd)
+            transcript_root = self.projects_root / slug / "agent-transcripts"
+            if transcript_root.exists():
+                search_roots = [transcript_root]
+            else:
+                print(
+                    f"Warning: no Cursor project dir found for {cwd!r}, searching globally",
+                    file=sys.stderr,
+                )
+                search_roots = [self.projects_root] if self.projects_root.exists() else []
+                fallback_filter_cwd = cwd
+        else:
+            search_roots = [self.projects_root] if self.projects_root.exists() else []
+
+        candidates = find_matching_jsonl_files(search_roots, keywords)
+
+        results = []
+        workspace_index = self.workspace_index() if fallback_filter_cwd else None
+        for path in candidates:
+            if fallback_filter_cwd:
+                project_dir = self.project_dir_for_path(path)
+                if not cursor_project_matches_cwd(
+                    project_dir, fallback_filter_cwd, workspace_index
+                ):
+                    continue
+            messages = self.parse_messages(path)
+            if not all_keywords_match(messages, keywords):
+                continue
+            results.append(path)
+        return sorted(results)
+
+    def session_id_matches(self, session_id: str) -> list[tuple[Path, str]]:
+        seen: dict[str, Path] = {}
+        for path in self.all_transcript_files():
+            parent_id = cursor_transcript_parent_id(path)
+            if parent_id == session_id or parent_id.startswith(session_id):
+                seen.setdefault(parent_id, cursor_parent_jsonl(path))
+        return [(path, pid) for pid, path in seen.items()]
+
+    def files_by_session_ids(self, session_ids: list[str]) -> list[Path]:
+        return [
+            path
+            for _provider, path in find_files_by_session_ids_across_providers([self], session_ids)
+        ]
+
+
 PROVIDERS = {
     "claude": ClaudeProvider(),
     "codex": CodexProvider(),
+    "cursor": CursorProvider(),
 }
+
+
+def rollup_session_results(results: list[dict]) -> list[dict]:
+    """Merge duplicate Cursor session rows (parent + subagent file hits)."""
+    merged: dict[tuple[str, str], dict] = {}
+    passthrough: list[dict] = []
+    for data in results:
+        if data.get("agent") != "cursor":
+            passthrough.append(data)
+            continue
+        key = (data.get("agent", ""), data.get("session_id", ""))
+        if key not in merged:
+            merged[key] = data
+            continue
+        existing = merged[key]
+        existing["match_count"] = existing.get("match_count", 0) + data.get("match_count", 0)
+        existing["match_contexts"] = existing.get("match_contexts", []) + data.get("match_contexts", [])
+        if data.get("last_timestamp", "") > existing.get("last_timestamp", ""):
+            existing["last_timestamp"] = data["last_timestamp"]
+        if existing.get("match_source") == "subagent" and data.get("match_source") == "parent":
+            existing["match_source"] = "parent"
+        elif existing.get("match_source") != "parent":
+            existing["match_source"] = data.get("match_source", existing.get("match_source"))
+        if not existing.get("session_name") and data.get("session_name"):
+            existing["session_name"] = data["session_name"]
+    return passthrough + list(merged.values())
 
 
 def selected_providers(agent: str) -> list[object]:
     if agent == "all":
-        return [PROVIDERS["claude"], PROVIDERS["codex"]]
+        return [PROVIDERS["claude"], PROVIDERS["codex"], PROVIDERS["cursor"]]
     return [PROVIDERS[agent]]
 
 
@@ -712,6 +1046,8 @@ def build_resume_command(agent: str, data: dict) -> str:
     session_id = shlex.quote(data["session_id"])
     if agent == "codex":
         return f"cd {project_dir} && codex resume {session_id}"
+    if agent == "cursor":
+        return f"cd {project_dir} && agent --resume {session_id}"
     return f"cd {project_dir} && claude --resume {session_id}"
 
 
@@ -756,9 +1092,9 @@ def parse_args():
     parser.add_argument("keywords", nargs="*", help="Keywords to search for")
     parser.add_argument(
         "--agent",
-        choices=["claude", "codex", "all"],
+        choices=["claude", "codex", "cursor", "all"],
         default="all",
-        help="Session provider to search: claude, codex, or all (default: all)",
+        help="Session provider to search: claude, codex, cursor, or all (default: all)",
     )
     parser.add_argument(
         "--scope",
@@ -828,6 +1164,8 @@ def main():
         if data["session_id"] in args.exclude:
             continue
         results.append(data)
+
+    results = rollup_session_results(results)
 
     for provider in providers:
         provider.enrich_results([r for r in results if r.get("agent") == provider.name])

@@ -14,9 +14,16 @@ sys.path.insert(0, str(SCRIPT.parent))
 from executable_search_sessions import (
     ClaudeProvider,
     CodexProvider,
+    CursorProvider,
+    build_cursor_workspace_index,
     build_resume_command,
     build_session_name_index,
     cwd_to_slug,
+    cursor_parent_jsonl,
+    cursor_project_matches_cwd,
+    cursor_slug,
+    cursor_transcript_parent_id,
+    cursor_workspace_storage_dirs,
     extract_text,
     extract_session_data,
     find_files_by_session_ids_across_providers,
@@ -26,7 +33,26 @@ from executable_search_sessions import (
     get_session_metadata,
     normalize_iso_timestamp,
     parse_messages,
+    strip_cursor_user_query,
 )
+
+
+def make_cursor_message(role, text):
+    return json.dumps({
+        "role": role,
+        "message": {"content": [{"type": "text", "text": text}]},
+    })
+
+
+def make_cursor_tool_use(name="Read"):
+    return json.dumps({
+        "role": "assistant",
+        "message": {"content": [{"type": "tool_use", "name": name, "input": {}}]},
+    })
+
+
+def make_cursor_turn_ended():
+    return json.dumps({"type": "turn_ended", "status": "completed"})
 
 
 def make_jsonl_line(type_, role, content, timestamp="2026-01-01T00:00:00", cwd=None, session_id="test-session"):
@@ -117,7 +143,67 @@ def test_default_agent_is_all():
     assert "--agent" in out
     assert "claude" in out
     assert "codex" in out
+    assert "cursor" in out
     assert "all" in out
+
+
+def test_default_agent_help_includes_cursor():
+    rc, out, _ = run_script("--help")
+    assert rc == 0
+    assert "cursor" in out
+
+
+def test_rollup_session_results_merges_subagent_hits():
+    from executable_search_sessions import rollup_session_results
+
+    parent = "efc4a65e-6720-4793-8d9c-0d923d3a771a"
+    parent_row = {
+        "agent": "cursor",
+        "session_id": parent,
+        "match_count": 1,
+        "match_source": "parent",
+        "last_timestamp": "2026-06-15T10:00:00.000Z",
+        "match_contexts": [{"match": {"text": "parent hit"}}],
+    }
+    sub_row = {
+        "agent": "cursor",
+        "session_id": parent,
+        "match_count": 2,
+        "match_source": "subagent",
+        "last_timestamp": "2026-06-16T10:00:00.000Z",
+        "match_contexts": [{"match": {"text": "sub hit"}}],
+    }
+    merged = rollup_session_results([parent_row, sub_row])
+    assert len(merged) == 1
+    assert merged[0]["match_count"] == 3
+    assert merged[0]["match_source"] == "parent"
+    assert merged[0]["last_timestamp"] == "2026-06-16T10:00:00.000Z"
+    assert len(merged[0]["match_contexts"]) == 2
+
+
+def test_rollup_session_results_subagent_only():
+    from executable_search_sessions import rollup_session_results
+
+    parent = "efc4a65e-6720-4793-8d9c-0d923d3a771a"
+    sub_row = {
+        "agent": "cursor",
+        "session_id": parent,
+        "match_count": 2,
+        "match_source": "subagent",
+        "last_timestamp": "2026-06-16T10:00:00.000Z",
+        "match_contexts": [{"match": {"text": "sub hit"}}],
+    }
+    merged = rollup_session_results([sub_row])
+    assert merged[0]["match_source"] == "subagent"
+
+
+def test_rollup_session_results_does_not_merge_other_agents():
+    from executable_search_sessions import rollup_session_results
+
+    row_a = {"agent": "codex", "session_id": "019eabc", "match_count": 1, "match_contexts": []}
+    row_b = {"agent": "codex", "session_id": "019eabc", "match_count": 2, "match_contexts": []}
+    merged = rollup_session_results([row_a, row_b])
+    assert len(merged) == 2
 
 
 def test_script_accepts_agent_all_argument():
@@ -654,3 +740,344 @@ def test_script_exits_zero_on_unmatched_keyword():
     result = json.loads(out)
     assert isinstance(result, dict)
     assert "sessions" in result
+
+
+def test_cursor_slug_dotfiles():
+    assert cursor_slug("/Users/chris/.dotfiles") == "Users-chris-dotfiles"
+
+
+def test_cursor_slug_github_repo():
+    assert cursor_slug("/Users/chris/Repos/github.com/panoai/pano-ec") == (
+        "Users-chris-Repos-github-com-panoai-pano-ec"
+    )
+
+
+def test_cursor_slug_worktree():
+    path = "/Users/chris/Repos/github.com/panoai/pano-ec/.worktrees/RD-17319-fix"
+    assert cursor_slug(path) == (
+        "Users-chris-Repos-github-com-panoai-pano-ec-worktrees-RD-17319-fix"
+    )
+
+
+def test_cursor_transcript_parent_id_parent_file(tmp_path):
+    parent = "efc4a65e-6720-4793-8d9c-0d923d3a771a"
+    path = tmp_path / "agent-transcripts" / parent / f"{parent}.jsonl"
+    path.parent.mkdir(parents=True)
+    path.touch()
+    assert cursor_transcript_parent_id(path) == parent
+
+
+def test_cursor_transcript_parent_id_subagent_file(tmp_path):
+    parent = "efc4a65e-6720-4793-8d9c-0d923d3a771a"
+    sub = "75d8aebb-f4bc-4220-97ca-9452166d1f16"
+    path = tmp_path / "agent-transcripts" / parent / "subagents" / f"{sub}.jsonl"
+    path.parent.mkdir(parents=True)
+    path.touch()
+    assert cursor_transcript_parent_id(path) == parent
+
+
+def test_cursor_parent_jsonl_parent_file(tmp_path):
+    parent = "efc4a65e-6720-4793-8d9c-0d923d3a771a"
+    path = tmp_path / "agent-transcripts" / parent / f"{parent}.jsonl"
+    path.parent.mkdir(parents=True)
+    path.touch()
+    assert cursor_parent_jsonl(path) == path
+
+
+def test_cursor_parent_jsonl_subagent_file(tmp_path):
+    parent = "efc4a65e-6720-4793-8d9c-0d923d3a771a"
+    sub = "75d8aebb-f4bc-4220-97ca-9452166d1f16"
+    sub_path = tmp_path / "agent-transcripts" / parent / "subagents" / f"{sub}.jsonl"
+    parent_path = tmp_path / "agent-transcripts" / parent / f"{parent}.jsonl"
+    sub_path.parent.mkdir(parents=True)
+    sub_path.touch()
+    parent_path.touch()
+    assert cursor_parent_jsonl(sub_path) == parent_path
+
+
+def test_build_cursor_workspace_index_reads_folder(tmp_path):
+    index_root = tmp_path / "workspaceStorage"
+    ws = index_root / "abc123"
+    ws.mkdir(parents=True)
+    (ws / "workspace.json").write_text(
+        json.dumps({"folder": "file:///Users/chris/.dotfiles"})
+    )
+
+    index = build_cursor_workspace_index(index_root)
+    assert index["Users-chris-dotfiles"] == "/Users/chris/.dotfiles"
+
+
+def test_cursor_workspace_storage_dirs_includes_linux(tmp_path, monkeypatch):
+    monkeypatch.setenv("HOME", str(tmp_path))
+    dirs = cursor_workspace_storage_dirs()
+    assert tmp_path / ".config" / "Cursor" / "User" / "workspaceStorage" in dirs
+    assert (
+        tmp_path / "Library" / "Application Support" / "Cursor" / "User" / "workspaceStorage"
+        in dirs
+    )
+
+
+def test_cursor_strip_user_query_tags():
+    raw = "<user_query>\nFind marketplace session\n</user_query>"
+    assert strip_cursor_user_query(raw) == "Find marketplace session"
+
+
+def test_cursor_strip_user_query_with_surrounding_content():
+    raw = (
+        "<user_info>OS: darwin</user_info>\n"
+        "<user_query>\nFind marketplace session\n</user_query>\n"
+        "<rules>follow AGENTS.md</rules>"
+    )
+    assert strip_cursor_user_query(raw) == "Find marketplace session"
+
+
+def test_cursor_provider_parse_messages(tmp_path):
+    f = tmp_path / "session.jsonl"
+    f.write_text("\n".join([
+        make_cursor_message("user", "<user_query>\nFind marketplace\n</user_query>"),
+        make_cursor_message("assistant", "Found marketplace details"),
+        make_cursor_turn_ended(),
+        make_cursor_tool_use("Read"),
+    ]) + "\n")
+
+    provider = CursorProvider(projects_root=tmp_path)
+    messages = provider.parse_messages(f)
+
+    assert len(messages) == 2
+    assert messages[0]["role"] == "user"
+    assert messages[0]["text"] == "Find marketplace"
+    assert messages[1]["text"] == "Found marketplace details"
+
+
+def test_build_resume_command_cursor():
+    data = {
+        "project_dir": "/Users/chris/.dotfiles",
+        "session_id": "efc4a65e-6720-4793-8d9c-0d923d3a771a",
+    }
+    assert build_resume_command("cursor", data) == (
+        "cd /Users/chris/.dotfiles && agent --resume efc4a65e-6720-4793-8d9c-0d923d3a771a"
+    )
+
+
+def test_cursor_extract_session_data_builds_record(tmp_path):
+    slug = "Users-chris-dotfiles"
+    parent = "efc4a65e-6720-4793-8d9c-0d923d3a771a"
+    projects = tmp_path / "projects" / slug / "agent-transcripts" / parent
+    projects.mkdir(parents=True)
+    parent_file = projects / f"{parent}.jsonl"
+    parent_file.write_text("\n".join([
+        make_cursor_message("user", "<user_query>\nFind marketplace\n</user_query>"),
+        make_cursor_message("assistant", "marketplace details here"),
+    ]) + "\n")
+
+    ws_root = tmp_path / "workspaceStorage" / "ws1"
+    ws_root.mkdir(parents=True)
+    (ws_root / "workspace.json").write_text(
+        json.dumps({"folder": "file:///Users/chris/.dotfiles"})
+    )
+
+    provider = CursorProvider(
+        projects_root=tmp_path / "projects",
+        workspace_storage=ws_root.parent,
+    )
+    data = provider.extract_session_data(parent_file, ["marketplace"], "quick")
+
+    assert data is not None
+    assert data["agent"] == "cursor"
+    assert data["session_id"] == parent
+    assert data["project_dir"] == "/Users/chris/.dotfiles"
+    assert data["session_name"] == "Find marketplace"
+    assert data["match_source"] == "parent"
+    assert data["has_custom_name"] is False
+    assert data["away_summary"] is None
+    assert data["match_count"] >= 1
+    assert "agent --resume" in data["resume_command"]
+
+
+def test_cursor_extract_session_data_subagent_only_uses_parent_name(tmp_path):
+    slug = "Users-chris-dotfiles"
+    parent = "efc4a65e-6720-4793-8d9c-0d923d3a771a"
+    sub = "75d8aebb-f4bc-4220-97ca-9452166d1f16"
+    parent_dir = tmp_path / "projects" / slug / "agent-transcripts" / parent
+    parent_dir.mkdir(parents=True)
+    parent_file = parent_dir / f"{parent}.jsonl"
+    sub_file = parent_dir / "subagents" / f"{sub}.jsonl"
+    parent_file.write_text("\n".join([
+        make_cursor_message("user", "<user_query>\nParent topic about zoxide\n</user_query>"),
+    ]) + "\n")
+    sub_file.parent.mkdir(parents=True, exist_ok=True)
+    sub_file.write_text("\n".join([
+        make_cursor_message("user", "Search for marketplace in subagent task"),
+    ]) + "\n")
+
+    ws_root = tmp_path / "workspaceStorage" / "ws1"
+    ws_root.mkdir(parents=True)
+    (ws_root / "workspace.json").write_text(
+        json.dumps({"folder": "file:///Users/chris/.dotfiles"})
+    )
+
+    provider = CursorProvider(
+        projects_root=tmp_path / "projects",
+        workspace_storage=ws_root.parent,
+    )
+    data = provider.extract_session_data(sub_file, ["marketplace"], "quick")
+
+    assert data is not None
+    assert data["match_source"] == "subagent"
+    assert data["session_name"] == "Parent topic about zoxide"
+
+
+def test_cursor_search_files_global_and_filter(tmp_path):
+    slug = "Users-chris-dotfiles"
+    parent = "efc4a65e-6720-4793-8d9c-0d923d3a771a"
+    good = tmp_path / slug / "agent-transcripts" / parent / f"{parent}.jsonl"
+    bad = tmp_path / slug / "agent-transcripts" / "other" / "other.jsonl"
+    good.parent.mkdir(parents=True)
+    bad.parent.mkdir(parents=True)
+    good.write_text("\n".join([
+        make_cursor_message("user", "Find marketplace proposal"),
+    ]) + "\n")
+    # rg finds "marketplace" in raw JSON inside tool_use; parse_messages drops it
+    bad.write_text("\n".join([
+        make_cursor_message("user", "Find proposal"),
+        json.dumps({
+            "role": "assistant",
+            "message": {"content": [{"type": "tool_use", "name": "Grep", "input": {"pattern": "marketplace"}}]},
+        }),
+    ]) + "\n")
+
+    provider = CursorProvider(projects_root=tmp_path)
+    files = provider.search_files("global", "/Users/chris/.dotfiles", ["marketplace", "proposal"])
+    assert files == [good]
+
+
+def test_cursor_search_files_project_scope(tmp_path):
+    slug = "Users-chris-dotfiles"
+    other_slug = "Users-chris-other"
+    parent = "efc4a65e-6720-4793-8d9c-0d923d3a771a"
+    keep = tmp_path / slug / "agent-transcripts" / parent / f"{parent}.jsonl"
+    drop = tmp_path / other_slug / "agent-transcripts" / "x" / "x.jsonl"
+    keep.parent.mkdir(parents=True)
+    drop.parent.mkdir(parents=True)
+    keep.write_text(make_cursor_message("user", "marketplace here") + "\n")
+    drop.write_text(make_cursor_message("user", "marketplace here") + "\n")
+
+    ws_root = tmp_path / "workspaceStorage" / "ws1"
+    ws_root.mkdir(parents=True)
+    (ws_root / "workspace.json").write_text(
+        json.dumps({"folder": "file:///Users/chris/.dotfiles"})
+    )
+
+    provider = CursorProvider(
+        projects_root=tmp_path,
+        workspace_storage=ws_root.parent,
+    )
+    files = provider.search_files("project", "/Users/chris/.dotfiles", ["marketplace"])
+    assert files == [keep]
+
+
+def test_cursor_search_files_project_scope_fallback(tmp_path):
+    """Slug dir missing: strict cwd filter rejects unrelated --cwd paths."""
+    mapped_slug = "Users-chris-dotfiles"
+    other_slug = "Users-chris-other"
+    parent = "efc4a65e-6720-4793-8d9c-0d923d3a771a"
+    keep = tmp_path / mapped_slug / "agent-transcripts" / parent / f"{parent}.jsonl"
+    drop = tmp_path / other_slug / "agent-transcripts" / "x" / "x.jsonl"
+    keep.parent.mkdir(parents=True)
+    drop.parent.mkdir(parents=True)
+    keep.write_text(make_cursor_message("user", "marketplace here") + "\n")
+    drop.write_text(make_cursor_message("user", "marketplace here") + "\n")
+
+    ws_root = tmp_path / "workspaceStorage" / "ws1"
+    ws_root.mkdir(parents=True)
+    (ws_root / "workspace.json").write_text(
+        json.dumps({"folder": "file:///Users/chris/.dotfiles"})
+    )
+
+    provider = CursorProvider(
+        projects_root=tmp_path,
+        workspace_storage=ws_root.parent,
+    )
+    files = provider.search_files("project", "/Users/chris/missing", ["marketplace"])
+    assert files == []
+
+
+def test_cursor_search_files_project_scope_fallback_two_indexed(tmp_path):
+    """Unrelated cwd returns no hits even when multiple projects are indexed."""
+    slug_a = "Users-chris-dotfiles"
+    slug_b = "Users-chris-other"
+    parent = "efc4a65e-6720-4793-8d9c-0d923d3a771a"
+    a = tmp_path / slug_a / "agent-transcripts" / parent / f"{parent}.jsonl"
+    b = tmp_path / slug_b / "agent-transcripts" / "x" / "x.jsonl"
+    a.parent.mkdir(parents=True)
+    b.parent.mkdir(parents=True)
+    a.write_text(make_cursor_message("user", "marketplace here") + "\n")
+    b.write_text(make_cursor_message("user", "marketplace here") + "\n")
+
+    ws_a = tmp_path / "workspaceStorage" / "ws1"
+    ws_a.mkdir(parents=True)
+    (ws_a / "workspace.json").write_text(
+        json.dumps({"folder": "file:///Users/chris/.dotfiles"})
+    )
+    ws_b = tmp_path / "workspaceStorage" / "ws2"
+    ws_b.mkdir(parents=True)
+    (ws_b / "workspace.json").write_text(
+        json.dumps({"folder": "file:///Users/chris/other"})
+    )
+
+    provider = CursorProvider(
+        projects_root=tmp_path,
+        workspace_storage=ws_a.parent,
+    )
+    files = provider.search_files("project", "/Users/chris/unrelated", ["marketplace"])
+    assert files == []
+
+
+def test_cursor_search_files_project_scope_fallback_direct_path(tmp_path):
+    """When cwd is absent from workspace index, match project_dir by realpath."""
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    link = tmp_path / "repo-link"
+    link.symlink_to(repo)
+
+    transcript_slug = cursor_slug(str(repo))
+    parent = "efc4a65e-6720-4793-8d9c-0d923d3a771a"
+    keep = tmp_path / transcript_slug / "agent-transcripts" / parent / f"{parent}.jsonl"
+    keep.parent.mkdir(parents=True)
+    keep.write_text(make_cursor_message("user", "marketplace here") + "\n")
+
+    ws_root = tmp_path / "workspaceStorage" / "ws1"
+    ws_root.mkdir(parents=True)
+    (ws_root / "workspace.json").write_text(
+        json.dumps({"folder": f"file://{repo}"})
+    )
+
+    provider = CursorProvider(
+        projects_root=tmp_path,
+        workspace_storage=ws_root.parent,
+    )
+    assert cursor_slug(str(link)) != transcript_slug
+    files = provider.search_files("project", str(link), ["marketplace"])
+    assert files == [keep]
+
+
+def test_cursor_project_matches_cwd_uses_index_then_realpath():
+    index = {"Users-chris-dotfiles": "/Users/chris/.dotfiles"}
+    assert cursor_project_matches_cwd("/Users/chris/.dotfiles", "/Users/chris/.dotfiles", index)
+    assert not cursor_project_matches_cwd("/Users/chris/other", "/Users/chris/.dotfiles", index)
+    assert not cursor_project_matches_cwd("/Users/chris/.dotfiles", "/Users/chris/missing", {})
+    assert cursor_project_matches_cwd("/Users/chris/.dotfiles", "/Users/chris/.dotfiles", {})
+
+
+def test_cursor_files_by_session_ids(tmp_path):
+    parent = "efc4a65e-6720-4793-8d9c-0d923d3a771a"
+    sub = "75d8aebb-f4bc-4220-97ca-9452166d1f16"
+    parent_path = tmp_path / "Users-chris-dotfiles" / "agent-transcripts" / parent / f"{parent}.jsonl"
+    sub_path = parent_path.parent / "subagents" / f"{sub}.jsonl"
+    parent_path.parent.mkdir(parents=True)
+    parent_path.write_text(make_cursor_message("user", "hello") + "\n")
+    sub_path.parent.mkdir(parents=True, exist_ok=True)
+    sub_path.write_text(make_cursor_message("user", "subagent hello") + "\n")
+
+    provider = CursorProvider(projects_root=tmp_path)
+    assert provider.files_by_session_ids(["efc4a65e"]) == [parent_path]

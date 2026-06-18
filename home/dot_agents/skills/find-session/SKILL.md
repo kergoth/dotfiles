@@ -1,20 +1,21 @@
 ---
 name: find-session
 description: >
-  Find and resume a past Claude Code or Codex conversation by searching session
-  history files by keyword. Use this skill whenever the user wants to find a
-  previous conversation, can't remember which directory or agent they were using,
-  wants to look up work from a past session, needs to resume a session they can't
-  locate with /resume or codex resume, or says something like "I know we
-  discussed X somewhere" or "where was that session about Y". Infers search
-  scope, agent, and keywords from the user's description and presents matching
-  sessions with summaries before asking which to resume. Always use this skill
-  rather than manually searching ~/.claude/ or ~/.codex/ yourself.
+  Find and resume a past Claude Code, Codex, or Cursor Agent conversation by
+  searching session history files by keyword. Use this skill whenever the user
+  wants to find a previous conversation, can't remember which directory or agent
+  they were using, wants to look up work from a past session, needs to resume a
+  session they can't locate with /resume, codex resume, or agent --resume, or
+  says something like "I know we discussed X somewhere" or "where was that
+  session about Y". Infers search scope, agent, and keywords from the user's
+  description and presents matching sessions with summaries before asking which
+  to resume. Always use this skill rather than manually searching ~/.claude/,
+  ~/.codex/, or ~/.cursor/ yourself.
 ---
 
 # Find Session
 
-Search past Claude Code or Codex session history by keyword and present matching sessions for resumption.
+Search past Claude Code, Codex, or Cursor Agent session history by keyword and present matching sessions for resumption.
 
 ## Step 1: Infer scope and extract keywords
 
@@ -29,6 +30,7 @@ From the user's description:
 **Agent:**
 - User says "Claude", "Claude Code", or asks for a Claude session -> `--agent claude`
 - User says "Codex" or asks for a Codex session -> `--agent codex`
+- User says "Cursor" or asks for a Cursor Agent session -> `--agent cursor`
 - User does not identify the agent -> `--agent all`
 
 **Keywords:** Extract 2–4 specific, concrete terms. Prefer domain nouns over generic verbs.
@@ -39,7 +41,7 @@ From the user's description:
 
 ```bash
 python ~/.agents/skills/find-session/scripts/search_sessions.py \
-  --agent <claude|codex|all> \
+  --agent <claude|codex|cursor|all> \
   --scope <project|global> \
   --depth quick \
   --cwd <path> \
@@ -57,16 +59,17 @@ If a result is clearly the current session (the one you're running in right now)
   "total_matching": number,            // total files rg matched (may exceed sessions shown)
   "sessions": [
     {
-      "agent":           "claude" | "codex",
+      "agent":           "claude" | "codex" | "cursor",
       "session_id":      string,           // UUID
       "session_name":    string | null,    // explicit /rename title if set; falls back to first prompt from history.jsonl (may be a slash-command when no other entries exist); null if neither available
       "has_custom_name": boolean,          // true only when session_name came from an explicit /rename; false for fallback names
       "resume_command":  string,           // agent-specific resume command
       "away_summary":    string | null,    // recap summary stored by Claude Code on session pause; null if none
-      "project_dir":     string,           // absolute path to project cwd
+      "project_dir":     string,           // absolute path to project cwd; Cursor may be "" when workspaceStorage is unmapped
       "first_timestamp": string,           // ISO8601
       "last_timestamp":  string,           // ISO8601
       "match_count":     number,           // keyword hit count (relevance signal)
+      "match_source":    "parent" | "subagent",  // optional; Cursor only — where the keyword hit occurred
       "first_exchanges": [                 // up to 1 (quick) or 3 (thorough)
         { "user":      {role, text, timestamp},
           "assistant": {role, text, timestamp} | null }
@@ -85,7 +88,7 @@ If a result is clearly the current session (the one you're running in right now)
 To fetch thorough context for specific sessions by ID (bypassing keyword search):
 ```bash
 python ~/.agents/skills/find-session/scripts/search_sessions.py \
-  --agent <claude|codex|all> \
+  --agent <claude|codex|cursor|all> \
   --depth thorough \
   --session-ids <id1> --session-ids <id2> \
   <keyword1> [keyword2 ...]
@@ -109,7 +112,7 @@ Extract full session IDs from the quick search output — never truncate and the
 
 ```bash
 python ~/.agents/skills/find-session/scripts/search_sessions.py \
-  --agent <claude|codex|all> \
+  --agent <claude|codex|cursor|all> \
   --depth thorough \
   --session-ids <id1> --session-ids <id2> \
   <same keywords>
@@ -159,12 +162,15 @@ printenv CLAUDE_CODE_ENTRYPOINT
 
 For each session write a short (≤10 word) summary label. Always include a `Session ID` column for unnamed sessions so the resume command can target the exact session without another lookup.
 
+When `match_source` is `"subagent"`, mention that the keyword match came from subagent work in that session; resume still uses the parent `session_id`.
+
 ```
 Found N sessions matching "<keywords>":
 
 #  Agent   Date        Project          Name                      Session ID    Summary
 1  codex   2026-06-15  dotfiles                                  019ecea4      Find-session Codex support design
 2  claude  2026-03-30  backend-service                           a1b2c3d4      Auth token refresh design sync
+3  cursor  2026-06-10  dotfiles                                  f7e8d9c0      Cursor workspace path mapping (subagent match)
 ```
 
 **Agent:** `agent`.
@@ -189,6 +195,18 @@ Codex example:
 ```bash
 cd <project_dir> && codex resume <session_id>
 ```
+
+Cursor example:
+
+```bash
+cd <project_dir> && agent --resume <session_id>
+```
+
+**Cursor resume warning:** `agent --resume` with an invalid UUID silently starts a fresh session instead of erroring. Always use the full parent UUID from search output.
+
+**Cursor platform note:** `project_dir` resolution reads Cursor `workspaceStorage/*/workspace.json` from macOS (`~/Library/Application Support/Cursor/User/workspaceStorage`) and Linux (`~/.config/Cursor/User/workspaceStorage`). Unmapped workspaces or hosts without Cursor installed leave `project_dir` empty; resume falls back to `cd .`.
+
+**Cursor project scope:** When the expected slug directory is missing, search falls back to a global scan but still filters by `--cwd`: prefer the `workspaceStorage` mapping for that path, otherwise compare realpaths (symlinks resolve). Unrelated `--cwd` values return no results; use `--scope global` to search all projects.
 
 **Interactive mode (`cli`):**
 
