@@ -23,4 +23,17 @@ cols="${COLUMNS:-$(tput cols 2>/dev/null || echo 80)}"
 usable=$(( cols > "$usable_buffer" ? cols - "$usable_buffer" : cols ))
 width=$(( usable < configured_width ? usable : configured_width ))
 
-command glow -w "$width" "$@"
+if [[ -t 1 ]]; then
+    set_clitheme
+    case "$CLITHEME" in
+        light)
+            glow_style=light
+            ;;
+        dark|auto)
+            glow_style=dracula
+            ;;
+    esac
+else
+    glow_style=auto
+fi
+command glow -s "$glow_style" -w "$width" "$@"
