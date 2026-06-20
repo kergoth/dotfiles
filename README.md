@@ -197,7 +197,7 @@ Skills live in `~/.agents/skills/` and are available to all agent tools (Claude 
 - **[Cram](home/dot_agents/skills/cram/SKILL.md)**: Write, read, and debug [cram](https://bitheap.org/cram/) functional tests (.t files).
 - **[Dispatch External Model](home/dot_agents/skills/dispatch-external-model/SKILL.md)**: CLI syntax for dispatching prompts to external model agents (claude, cursor, codex, gemini).
 - **[Evaluate Open-Source Project](home/dot_agents/skills/evaluate-open-source-project/SKILL.md)**: Due diligence for adopting open-source projects, plugins, or skills (trust, maintainer health, security risk).
-- **[Find Session](home/dot_agents/skills/find-session/SKILL.md)**: Find and resume past Claude Code conversations by keyword search.
+- **[Find Session](home/dot_agents/skills/find-session/SKILL.md)**: Find and resume past Claude Code, Codex, or Cursor Agent conversations by searching session history files by keyword.
 - **[Git Commits](home/dot_agents/skills/git-commits/SKILL.md)**: Personal conventions for Git commit messages, staging, history curation, and bisectability.
 - **[Git PRs](home/dot_agents/skills/git-prs/SKILL.md)**: Personal conventions for pull request descriptions, templates, and reviewer-facing content.
 - **[GitHub Issue Triage](home/dot_agents/skills/github-issue-triage/SKILL.md)**: End-to-end GitHub issue triage with complexity scoring and execution-lane recommendations.
