@@ -94,5 +94,18 @@
   "effortLevel": "medium",
   "autoDreamEnabled": true,
   "skipDangerousModePermissionPrompt": true,
-  "cleanupPeriodDays": 3650
+  "cleanupPeriodDays": 3650{{ if ne .chezmoi.os "windows" }},
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "command": "bash {{ .chezmoi.homeDir }}/.claude/hooks/archive-session.sh",
+            "timeout": 10,
+            "type": "command"
+          }
+        ]
+      }
+    ]
+  }{{ end }}
 }
