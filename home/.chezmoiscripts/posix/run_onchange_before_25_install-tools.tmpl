@@ -94,6 +94,7 @@
 {{-     $claude := includeTemplate "find-tool" (dict "root" . "tool" "claude") -}}
 {{-     $claude_tag := index $lock "claude_code" -}}
 {{-     $claude_version := trimPrefix "v" $claude_tag -}}
+{{-     $install_claude := and (not .steamdeck) (or (eq .chezmoi.os "darwin") (eq .chezmoi.os "linux")) -}}
 {{-     $gh_cmd := includeTemplate "find-tool" (dict "root" . "tool" "gh") -}}
 
 #!/usr/bin/env bash
@@ -102,8 +103,8 @@ set -euo pipefail
 scriptsdir="$CHEZMOI_WORKING_TREE/scripts"
 PATH="$scriptsdir:$PATH"
 
-{{ if or $install_distrobox $eget_to_install -}}
-tmpdir=$(mktemp -d)
+{{ if or $install_distrobox $eget_to_install $install_claude -}}
+tmpdir=$(mktemp -d -p "${TMPDIR:-/tmp}")
 trap 'rm -rf "$tmpdir"' EXIT
 {{- end }}
 
@@ -182,7 +183,9 @@ fi
 {{         if or (eq .chezmoi.os "darwin") (eq .chezmoi.os "linux") }}
 if [ "$need_claude_install" -eq 1 ]; then
     echo >&2 "Installing Claude Code {{ $claude_version }} via official installer"
-    curl -fsSL https://claude.ai/install.sh | bash -s {{ $claude_version }}
+    mkdir -p "$tmpdir/curl-home"
+    curl -q -fsSL https://claude.ai/install.sh |
+        CURL_HOME="$tmpdir/curl-home" bash -s {{ $claude_version }}
 fi
 {{         end }}
 {{       end }}
