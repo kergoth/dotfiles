@@ -15,6 +15,7 @@ from urllib.parse import unquote
 
 
 CLAUDE_PROJECTS = Path.home() / ".claude" / "projects"
+CLAUDE_ARCHIVE = Path.home() / ".claude" / "projects-archive"
 CODEX_HOME = Path.home() / ".codex"
 CODEX_SESSIONS = CODEX_HOME / "sessions"
 CODEX_STATE_DB = CODEX_HOME / "state_5.sqlite"
@@ -362,6 +363,17 @@ def build_session_name_index(history_path: Path = Path.home() / ".claude" / "his
     return {sid: first_real.get(sid, first_any[sid]) for sid in first_any}
 
 
+def load_archive_meta(archive_root: Path, session_id: str) -> dict | None:
+    """Read the .meta.json sidecar for an archived session, if it exists."""
+    matches = list(archive_root.glob(f"*/{session_id}.meta.json"))
+    if not matches:
+        return None
+    try:
+        return json.loads(matches[0].read_text(errors="replace"))
+    except (OSError, json.JSONDecodeError):
+        return None
+
+
 def get_session_metadata(jsonl_path: Path) -> dict:
     """Extract session_id, cwd, first timestamp, custom title, and away_summary from a JSONL file.
 
@@ -517,12 +529,43 @@ class ClaudeProvider:
 
     def __init__(self, projects_root: Path = CLAUDE_PROJECTS):
         self.projects_root = projects_root
+        archive_env = os.environ.get("CLAUDE_SESSION_ARCHIVE")
+        archive_root = Path(archive_env) if archive_env else CLAUDE_ARCHIVE
+        self.archive_root = archive_root if archive_root.exists() else None
 
     def search_files(self, scope: str, cwd: str, keywords: list[str]) -> list[Path]:
-        return find_matching_files(get_search_dirs(scope, cwd, self.projects_root), keywords)
+        live = find_matching_files(get_search_dirs(scope, cwd, self.projects_root), keywords)
+        if self.archive_root is None:
+            return live
+        archive = find_matching_files(get_search_dirs(scope, cwd, self.archive_root), keywords)
+        # Dedup by session_id (stem); live wins over archive for the same session
+        seen: dict[str, Path] = {p.stem: p for p in live}
+        for p in archive:
+            if p.stem not in seen:
+                seen[p.stem] = p
+        return sorted(seen.values())
 
     def files_by_session_ids(self, session_ids: list[str]) -> list[Path]:
-        return find_files_by_session_ids(session_ids, self.projects_root)
+        if self.archive_root is None:
+            return find_files_by_session_ids(session_ids, self.projects_root)
+        # find_files_by_session_ids sys.exits on missing IDs, so we can't call it on
+        # both roots — it would exit before the archive fallback runs. Use glob directly:
+        # live wins, archive provides fallback for sessions no longer in projects/.
+        seen: dict[str, Path] = {}
+        for root in [self.projects_root, self.archive_root]:
+            for sid in session_ids:
+                if sid in seen:
+                    continue
+                matches = list(root.glob(f"*/{sid}.jsonl"))
+                if not matches:
+                    matches = list(root.glob(f"*/{sid}*.jsonl"))
+                if len(matches) == 1:
+                    seen[sid] = matches[0]
+        missing = [sid for sid in session_ids if sid not in seen]
+        if missing:
+            # Delegate to find_files_by_session_ids for proper error messages + sys.exit
+            find_files_by_session_ids(missing, self.projects_root)
+        return list(seen.values())
 
     def session_id_matches(self, session_id: str) -> list[tuple[Path, str]]:
         matches = list(self.projects_root.glob(f"*/{session_id}.jsonl"))
@@ -538,11 +581,15 @@ class ClaudeProvider:
         data["resume_command"] = build_resume_command(self.name, data)
         return data
 
-    def enrich_results(self, results: list[dict]) -> None:
-        history_index = build_session_name_index()
+    def enrich_results(self, results: list[dict], history_path: Path | None = None) -> None:
+        history_index = build_session_name_index(history_path) if history_path is not None else build_session_name_index()
         for data in results:
             if data["session_name"] is None:
                 data["session_name"] = history_index.get(data["session_id"])
+            if data["session_name"] is None and self.archive_root is not None:
+                meta = load_archive_meta(self.archive_root, data["session_id"])
+                if meta:
+                    data["session_name"] = meta.get("session_name") or None
 
 
 class CodexProvider:

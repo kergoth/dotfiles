@@ -1081,3 +1081,136 @@ def test_cursor_files_by_session_ids(tmp_path):
 
     provider = CursorProvider(projects_root=tmp_path)
     assert provider.files_by_session_ids(["efc4a65e"]) == [parent_path]
+
+
+# ---------------------------------------------------------------------------
+# Archive extension tests
+# ---------------------------------------------------------------------------
+
+import os
+
+
+def make_claude_jsonl(path: Path, session_id: str, keyword: str = "test", cwd: str = "/tmp/proj"):
+    """Write a minimal Claude JSONL transcript to path."""
+    path.write_text(
+        json.dumps({
+            "type": "user",
+            "role": "user",
+            "content": keyword,
+            "timestamp": "2026-01-01T00:00:00",
+            "cwd": cwd,
+        }) + "\n"
+    )
+
+
+def make_archive_meta(path: Path, session_name: str, archived_at: str = "2026-01-01T00:00:00Z"):
+    path.write_text(json.dumps({"session_name": session_name, "archived_at": archived_at}) + "\n")
+
+
+def test_load_archive_meta_reads_sidecar(tmp_path):
+    slug_dir = tmp_path / "slug-abc"
+    slug_dir.mkdir()
+    make_archive_meta(slug_dir / "session-1.meta.json", "My archived session")
+    from executable_search_sessions import load_archive_meta
+    result = load_archive_meta(tmp_path, "session-1")
+    assert result is not None
+    assert result["session_name"] == "My archived session"
+
+
+def test_load_archive_meta_missing_returns_none(tmp_path):
+    from executable_search_sessions import load_archive_meta
+    result = load_archive_meta(tmp_path, "nonexistent-session")
+    assert result is None
+
+
+def test_claude_provider_searches_archive_root(tmp_path, monkeypatch):
+    """Session in archive but not in live projects/ surfaces in search results."""
+    live_root = tmp_path / "projects"
+    live_root.mkdir()
+    archive_root = tmp_path / "archive"
+    slug_dir = archive_root / "slug-xyz"
+    slug_dir.mkdir(parents=True)
+
+    make_claude_jsonl(slug_dir / "session-archive.jsonl", "session-archive", keyword="frobnicate")
+
+    monkeypatch.setenv("CLAUDE_SESSION_ARCHIVE", str(archive_root))
+    provider = ClaudeProvider(projects_root=live_root)
+    assert provider.archive_root == archive_root
+
+    results = provider.search_files("global", "/tmp/proj", ["frobnicate"])
+    ids = [p.stem for p in results]
+    assert "session-archive" in ids
+
+
+def test_claude_provider_deduplicates_live_wins(tmp_path, monkeypatch):
+    """Session in both live and archive appears once; live path is returned."""
+    live_root = tmp_path / "projects"
+    slug_live = live_root / "slug-xyz"
+    slug_live.mkdir(parents=True)
+    archive_root = tmp_path / "archive"
+    slug_arch = archive_root / "slug-xyz"
+    slug_arch.mkdir(parents=True)
+
+    live_path = slug_live / "session-dup.jsonl"
+    arch_path = slug_arch / "session-dup.jsonl"
+    make_claude_jsonl(live_path, "session-dup", keyword="deduptest")
+    make_claude_jsonl(arch_path, "session-dup", keyword="deduptest")
+
+    monkeypatch.setenv("CLAUDE_SESSION_ARCHIVE", str(archive_root))
+    provider = ClaudeProvider(projects_root=live_root)
+
+    results = provider.search_files("global", "/tmp/proj", ["deduptest"])
+    matching = [p for p in results if p.stem == "session-dup"]
+    assert len(matching) == 1
+    assert matching[0] == live_path
+
+
+def test_claude_provider_no_archive_root_when_missing(tmp_path, monkeypatch):
+    """archive_root is None when the directory does not exist."""
+    monkeypatch.setenv("CLAUDE_SESSION_ARCHIVE", str(tmp_path / "nonexistent"))
+    provider = ClaudeProvider(projects_root=tmp_path / "projects")
+    assert provider.archive_root is None
+
+
+def test_claude_provider_uses_archive_meta_for_name(tmp_path, monkeypatch):
+    """enrich_results falls back to .meta.json when history.jsonl has no entry."""
+    live_root = tmp_path / "projects"
+    live_root.mkdir()
+    archive_root = tmp_path / "archive"
+    slug_dir = archive_root / "slug-abc"
+    slug_dir.mkdir(parents=True)
+
+    make_claude_jsonl(slug_dir / "session-named.jsonl", "session-named", keyword="nametest")
+    make_archive_meta(slug_dir / "session-named.meta.json", "My Named Session")
+
+    monkeypatch.setenv("CLAUDE_SESSION_ARCHIVE", str(archive_root))
+    provider = ClaudeProvider(projects_root=live_root)
+
+    # Construct a minimal result dict as enrich_results receives it
+    result = {
+        "agent": "claude",
+        "session_id": "session-named",
+        "session_name": None,
+        "has_custom_name": False,
+    }
+    # Pass empty history path so history lookup returns nothing
+    provider.enrich_results([result], history_path=tmp_path / "nonexistent_history.jsonl")
+    assert result["session_name"] == "My Named Session"
+
+
+def test_claude_provider_files_by_session_ids_finds_archive_only(tmp_path, monkeypatch):
+    """files_by_session_ids resolves sessions that exist only in the archive."""
+    live_root = tmp_path / "projects"
+    live_root.mkdir()
+    archive_root = tmp_path / "archive"
+    slug_dir = archive_root / "slug-abc"
+    slug_dir.mkdir(parents=True)
+    arch_path = slug_dir / "session-arch-only.jsonl"
+    make_claude_jsonl(arch_path, "session-arch-only", keyword="archiveonly")
+
+    monkeypatch.setenv("CLAUDE_SESSION_ARCHIVE", str(archive_root))
+    provider = ClaudeProvider(projects_root=live_root)
+
+    results = provider.files_by_session_ids(["session-arch-only"])
+    assert len(results) == 1
+    assert results[0] == arch_path
