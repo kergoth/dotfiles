@@ -5,6 +5,7 @@ import argparse
 import hashlib
 import re
 import sys
+import urllib.error
 import urllib.request
 from pathlib import Path
 
@@ -150,7 +151,7 @@ def main(argv: list[str] | None = None) -> int:
 
     try:
         diff_lines = update_versions(path, dry_run=args.dry_run)
-    except RuntimeError as exc:
+    except (RuntimeError, urllib.error.URLError) as exc:
         print(exc, file=sys.stderr)
         return 1
 
