@@ -1,0 +1,5 @@
+{{- $gh := includeTemplate "find-tool" (dict "root" . "tool" "gh") -}}
+{{- if $gh -}}
+set_glamourstyle
+command env GLAMOUR_STYLE="$GLAMOUR_STYLE" gh "$@"
+{{ end -}}

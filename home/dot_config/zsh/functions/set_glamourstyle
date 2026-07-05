@@ -1,0 +1,7 @@
+# Set GLAMOUR_STYLE from CLITHEME (glamour/glow/gh markdown rendering).
+# Only "light" is light-appropriate; dracula covers dark (ADR-0005 CLITHEME).
+set_clitheme
+case "$CLITHEME" in
+  light) export GLAMOUR_STYLE=light ;;
+  dark|*) export GLAMOUR_STYLE=dracula ;;
+esac

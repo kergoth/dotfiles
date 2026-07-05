@@ -1,1 +1,2 @@
-export GLAMOUR_STYLE=dracula
+autoload -Uz set_clitheme set_glamourstyle
+set_glamourstyle
