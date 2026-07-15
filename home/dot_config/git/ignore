@@ -52,5 +52,6 @@ __pycache__
 Session.vim
 
 # Assistants
+**/.claude/.cc-writes/
 **/.claude/settings.local.json
 .agent/tasks/
