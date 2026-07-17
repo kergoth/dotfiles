@@ -107,7 +107,7 @@
 	user = {{ .github_username }}
 
 [pretty]
-	lg = format:%Cred%h%Creset %Cgreen%ad%Creset%C(yellow)%d%Creset %s %C(bold blue)<%an>%Creset
+	lg = format:%Cred%h%Creset %Cgreen%ad%Creset%C(auto)%d%Creset %s %C(bold blue)<%an>%Creset
 
 [pull]
 	ff = only
@@ -174,29 +174,43 @@
 [color]
 	ui = auto
 
+; Native-adaptive: prefer palette-aware names and attributes over fixed 256/hex
+; values so colors track the terminal's own light/dark theme. Delta owns rich
+; diff presentation when paging; these porcelain colors cover output delta does
+; not touch (log, status, branch, decorations).
 [color "diff"]
-	commit = 227 bold
-	meta = 227
+	commit = red bold
+	meta = normal dim
 	frag = magenta bold
+	func = blue bold
 	old = red bold
 	new = green bold
 	whitespace = red reverse
 
 [color "diff-highlight"]
 	oldNormal = red bold
-	oldHighlight = red bold 52
+	oldHighlight = red bold reverse
 	newNormal = green bold
-	newHighlight = green bold 22
+	newHighlight = green bold reverse
 
 [color "branch"]
-	current = yellow reverse
-	local = yellow
-	remote = green
+	current = normal bold ul
+	local = blue
+	remote = magenta
+
+[color "decorate"]
+	HEAD = normal bold
+	branch = blue
+	remoteBranch = magenta
+	tag = yellow bold
+	stash = cyan
 
 [color "status"]
 	added = green bold
-	changed = yellow bold
+	changed = magenta bold
 	untracked = red
+	unmerged = red bold
+	branch = normal bold
 
 [notes]
 	rewriteRef = refs/notes/*
