@@ -1,0 +1,188 @@
+#!/usr/bin/env bash
+# Usage: mas-check-pricing [options] [file ...]
+#
+# Check pricing (free vs paid) for Mac App Store items in Brewfile templates.
+# Reads mas entries from the given files (or stdin), queries the iTunes Search
+# API, and reports each app's price.
+#
+# Options:
+#     -p          Show only paid apps
+#     -f          Show only free apps
+#     -n          Dry run, show parsed entries without querying
+#     -v          Increase verbosity
+#     -q          Decrease verbosity
+#     -h          Show this help message
+set -euo pipefail
+
+scriptname=${BASH_SOURCE[0]##*/}
+
+verbosity=0
+dry_run=0
+filter=all
+
+msg() {
+    local fmt=$1
+    if [ $# -gt 1 ]; then
+        shift
+    fi
+    # shellcheck disable=SC2059
+    printf -- "$fmt\n" "$@" >&2
+}
+
+msg_color() {
+    local color=$1
+    shift
+    local fmt=$1
+    shift
+    # shellcheck disable=SC2059
+    if [ -n "${NO_COLOR:-}" ] || { [ -z "${COLOR:-}" ] && ! [ -t 1 ]; }; then
+        printf "${fmt}\n" "$@" >&2
+    else
+        printf "\033[${color}m${fmt}\033[0m\n" "$@" >&2
+    fi
+}
+
+msg_green() { msg_color "32" "$@"; }
+msg_red() { msg_color "31" "$@"; }
+msg_yellow() { msg_color "33" "$@"; }
+msg_verbose() {
+    if [ "${verbosity:-0}" -gt 0 ]; then
+        msg_yellow "$@"
+    fi
+}
+
+die() {
+    msg_red "$@"
+    exit 1
+}
+
+usage() {
+    sed -n '/^# Usage:/,/^# *-h /p' "${BASH_SOURCE[0]}" | sed 's/^# *//'
+}
+
+process_arguments() {
+    while getopts "pfnvqh" opt; do
+        case $opt in
+        p) filter=paid ;;
+        f) filter=free ;;
+        n) dry_run=1 ;;
+        v) verbosity=$((verbosity + 1)) ;;
+        q) verbosity=$((verbosity - 1)) ;;
+        h)
+            usage
+            exit 0
+            ;;
+        \?)
+            echo "Unknown option: -$OPTARG" >&2
+            usage >&2
+            exit 1
+            ;;
+        esac
+    done
+    shift $((OPTIND - 1))
+
+    files=("$@")
+}
+
+extract_mas_entries() {
+    # Extract 'mas "Name", id: 12345' lines, stripping template conditionals
+    local line name app_id
+    while IFS= read -r line; do
+        if [[ $line =~ ^[[:space:]]*mas[[:space:]]+\"([^\"]+)\",?[[:space:]]*id:[[:space:]]*([0-9]+) ]]; then
+            name=${BASH_REMATCH[1]}
+            app_id=${BASH_REMATCH[2]}
+            printf '%s\t%s\n' "$app_id" "$name"
+        fi
+    done
+}
+
+query_pricing() {
+    local ids=$1
+    curl -sf "https://itunes.apple.com/lookup?media=software&entity=desktopSoftware&country=US&id=$ids" \
+        | jq -r '.results[] | [(.trackId | tostring), .trackName, (.price // 0 | tostring), (.formattedPrice // "Unknown")] | @tsv'
+}
+
+main() {
+    process_arguments "$@"
+
+    local entries
+    if [ ${#files[@]} -eq 0 ]; then
+        entries=$(extract_mas_entries)
+    else
+        entries=$(cat "${files[@]}" | extract_mas_entries)
+    fi
+
+    if [ -z "$entries" ]; then
+        die "No mas entries found"
+    fi
+
+    local ids
+    ids=$(echo "$entries" | cut -f1 | paste -sd, -)
+    local count
+    count=$(echo "$entries" | wc -l | tr -d ' ')
+
+    msg_verbose "Found %d app(s), querying iTunes API..." "$count"
+
+    if [ "$dry_run" -eq 1 ]; then
+        msg "Parsed entries (dry run):"
+        echo "$entries" | while IFS=$'\t' read -r app_id name; do
+            printf "  %s  %s\n" "$app_id" "$name"
+        done
+        return
+    fi
+
+    local results
+    results=$(query_pricing "$ids")
+
+    if [ -z "$results" ]; then
+        die "No results from iTunes API"
+    fi
+
+    local found_ids
+    found_ids=$(echo "$results" | cut -f1)
+
+    local missing_ids
+    missing_ids=$(comm -23 \
+        <(echo "$entries" | cut -f1 | sort) \
+        <(echo "$found_ids" | sort))
+
+    local free_count=0
+    local paid_count=0
+
+    while IFS=$'\t' read -r app_id name price formatted; do
+        local is_free=0
+        if [ "$price" = "0" ] || [ "$formatted" = "Free" ]; then
+            is_free=1
+        fi
+
+        if [ "$filter" = "paid" ] && [ "$is_free" -eq 1 ]; then
+            continue
+        fi
+        if [ "$filter" = "free" ] && [ "$is_free" -eq 0 ]; then
+            continue
+        fi
+
+        if [ "$is_free" -eq 1 ]; then
+            free_count=$((free_count + 1))
+            msg_green "  FREE   %s (id: %s)" "$name" "$app_id"
+        else
+            paid_count=$((paid_count + 1))
+            msg_yellow "  %-6s %s (id: %s)" "$formatted" "$name" "$app_id"
+        fi
+    done <<< "$results"
+
+    if [ -n "$missing_ids" ]; then
+        while IFS= read -r mid; do
+            local mname
+            mname=$(echo "$entries" | grep "^$mid" | cut -f2)
+            msg_red "  ???    %s (id: %s) — not found in App Store" "$mname" "$mid"
+        done <<< "$missing_ids"
+    fi
+
+    if [ "$filter" = "all" ]; then
+        msg ""
+        msg "Total: %d free, %d paid" "$free_count" "$paid_count"
+    fi
+}
+
+main "$@"
