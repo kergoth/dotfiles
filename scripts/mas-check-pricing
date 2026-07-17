@@ -5,9 +5,16 @@
 # Reads mas entries from the given files (or stdin), queries the iTunes Search
 # API, and reports each app's price.
 #
+# With -i, free apps are also checked for in-app purchases by fetching the App
+# Store page and reading the Information list with pup (one request per free
+# app; page markup can change). FREE+IAP means the store lists In-App Purchases,
+# not that payment is required to use the app. Requires pup on PATH, or nix to
+# run nixpkgs#pup.
+#
 # Options:
 #     -p          Show only paid apps
-#     -f          Show only free apps
+#     -f          Show only free apps (includes FREE+IAP when -i is set)
+#     -i          Also detect in-app purchases on free apps (App Store + pup)
 #     -n          Dry run, show parsed entries without querying
 #     -v          Increase verbosity
 #     -q          Decrease verbosity
@@ -19,6 +26,8 @@ scriptname=${BASH_SOURCE[0]##*/}
 verbosity=0
 dry_run=0
 filter=all
+check_iap=0
+pup_bin=
 
 msg() {
     local fmt=$1
@@ -45,6 +54,7 @@ msg_color() {
 msg_green() { msg_color "32" "$@"; }
 msg_red() { msg_color "31" "$@"; }
 msg_yellow() { msg_color "33" "$@"; }
+msg_cyan() { msg_color "36" "$@"; }
 msg_verbose() {
     if [ "${verbosity:-0}" -gt 0 ]; then
         msg_yellow "$@"
@@ -61,10 +71,11 @@ usage() {
 }
 
 process_arguments() {
-    while getopts "pfnvqh" opt; do
+    while getopts "pfinvqh" opt; do
         case $opt in
         p) filter=paid ;;
         f) filter=free ;;
+        i) check_iap=1 ;;
         n) dry_run=1 ;;
         v) verbosity=$((verbosity + 1)) ;;
         q) verbosity=$((verbosity - 1)) ;;
@@ -85,7 +96,6 @@ process_arguments() {
 }
 
 extract_mas_entries() {
-    # Extract 'mas "Name", id: 12345' lines, stripping template conditionals
     local line name app_id
     while IFS= read -r line; do
         if [[ $line =~ ^[[:space:]]*mas[[:space:]]+\"([^\"]+)\",?[[:space:]]*id:[[:space:]]*([0-9]+) ]]; then
@@ -100,6 +110,59 @@ query_pricing() {
     local ids=$1
     curl -sf "https://itunes.apple.com/lookup?media=software&entity=desktopSoftware&country=US&id=$ids" \
         | jq -r '.results[] | [(.trackId | tostring), .trackName, (.price // 0 | tostring), (.formattedPrice // "Unknown")] | @tsv'
+}
+
+ensure_pup() {
+    if [ -n "$pup_bin" ]; then
+        return
+    fi
+
+    if command -v pup >/dev/null 2>&1; then
+        pup_bin=$(command -v pup)
+        msg_verbose "Using pup at %s" "$pup_bin"
+        return
+    fi
+
+    if ! command -v nix >/dev/null 2>&1; then
+        die "IAP checks require pup on PATH, or nix to run nixpkgs#pup"
+    fi
+
+    msg_verbose "pup not on PATH; resolving nixpkgs#pup..."
+    local pup_out
+    pup_out=$(nix build --no-link --print-out-paths nixpkgs#pup) \
+        || die "Failed to resolve nixpkgs#pup"
+    pup_bin=${pup_out}/bin/pup
+    if [ ! -x "$pup_bin" ]; then
+        die "Resolved nixpkgs#pup but %s is not executable" "$pup_bin"
+    fi
+    msg_verbose "Using pup at %s" "$pup_bin"
+}
+
+# Returns: 0 = has IAP, 1 = no IAP, 2 = unknown / fetch failed
+app_has_iap() {
+    local app_id=$1
+    local html dts
+    local curl_status=0
+
+    html=$(curl -sfL --max-time 30 -A 'Mozilla/5.0' \
+        "https://apps.apple.com/us/app/id${app_id}") || curl_status=$?
+    if [ "$curl_status" -ne 0 ] || [ -z "$html" ]; then
+        return 2
+    fi
+
+    dts=$(printf '%s' "$html" | "$pup_bin" 'dt text{}') || return 2
+    if [ -z "$dts" ]; then
+        return 2
+    fi
+
+    # Match ASCII or Unicode non-breaking hyphen variants in the label.
+    if printf '%s\n' "$dts" | grep -qE '^In[-‑]App Purchases$'; then
+        return 0
+    fi
+    if printf '%s\n' "$dts" | grep -q '^Seller$'; then
+        return 1
+    fi
+    return 2
 }
 
 main() {
@@ -131,6 +194,10 @@ main() {
         return
     fi
 
+    if [ "$check_iap" -eq 1 ]; then
+        ensure_pup
+    fi
+
     local results
     results=$(query_pricing "$ids")
 
@@ -147,7 +214,9 @@ main() {
         <(echo "$found_ids" | sort))
 
     local free_count=0
+    local free_iap_count=0
     local paid_count=0
+    local iap_unknown_count=0
 
     while IFS=$'\t' read -r app_id name price formatted; do
         local is_free=0
@@ -163,11 +232,36 @@ main() {
         fi
 
         if [ "$is_free" -eq 1 ]; then
-            free_count=$((free_count + 1))
-            msg_green "  FREE   %s (id: %s)" "$name" "$app_id"
+            local iap_status=none
+            if [ "$check_iap" -eq 1 ]; then
+                local iap_rc=0
+                msg_verbose "Checking IAP for %s (id: %s)..." "$name" "$app_id"
+                app_has_iap "$app_id" || iap_rc=$?
+                case $iap_rc in
+                0) iap_status=yes ;;
+                1) iap_status=no ;;
+                *) iap_status=unknown ;;
+                esac
+            fi
+
+            case $iap_status in
+            yes)
+                free_iap_count=$((free_iap_count + 1))
+                msg_cyan "  FREE+IAP %s (id: %s)" "$name" "$app_id"
+                ;;
+            unknown)
+                free_count=$((free_count + 1))
+                iap_unknown_count=$((iap_unknown_count + 1))
+                msg_green "  FREE?    %s (id: %s) — IAP check failed" "$name" "$app_id"
+                ;;
+            *)
+                free_count=$((free_count + 1))
+                msg_green "  FREE     %s (id: %s)" "$name" "$app_id"
+                ;;
+            esac
         else
             paid_count=$((paid_count + 1))
-            msg_yellow "  %-6s %s (id: %s)" "$formatted" "$name" "$app_id"
+            msg_yellow "  %-8s %s (id: %s)" "$formatted" "$name" "$app_id"
         fi
     done <<< "$results"
 
@@ -175,13 +269,21 @@ main() {
         while IFS= read -r mid; do
             local mname
             mname=$(echo "$entries" | grep "^$mid" | cut -f2)
-            msg_red "  ???    %s (id: %s) — not found in App Store" "$mname" "$mid"
+            msg_red "  ???      %s (id: %s) — not found in App Store" "$mname" "$mid"
         done <<< "$missing_ids"
     fi
 
     if [ "$filter" = "all" ]; then
         msg ""
-        msg "Total: %d free, %d paid" "$free_count" "$paid_count"
+        if [ "$check_iap" -eq 1 ]; then
+            msg "Total: %d free, %d free+iap, %d paid" \
+                "$free_count" "$free_iap_count" "$paid_count"
+            if [ "$iap_unknown_count" -gt 0 ]; then
+                msg "(%d free app(s) could not be checked for IAP)" "$iap_unknown_count"
+            fi
+        else
+            msg "Total: %d free, %d paid" "$free_count" "$paid_count"
+        fi
     fi
 }
 
