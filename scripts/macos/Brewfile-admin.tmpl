@@ -1,5 +1,13 @@
 cask "karabiner-elements"
 
+# Requires /Library/ paths for zap, needs admin access
+cask "vivaldi"
+
+# Safari Extensions
+mas "Declutter", id: 1574021257
+mas "Obsidian Web Clipper", id: 6720708363
+mas "uBlock Origin Lite", id: 6745342698
+
 {{ if not .work -}}
 # Commercial Apps I own personally
 cask "carbon-copy-cloner@6"
@@ -13,9 +21,6 @@ cask "oversight"
 
 # I don't use this at work
 cask "parallels"
-
-# Requires /Library/ paths for zap, needs admin access
-cask "vivaldi"
 
 # VPN for personal network
 mas "Tailscale", id: 1475387142
@@ -32,18 +37,15 @@ mas "WiFi Signal", id: 525912054
 cask "1password"
 mas "1Password for Safari", id: 1569813296
 mas "DeArrow", id: 6451469297
-mas "Declutter", id: 1574021257
 mas "Hush", id: 1544743900
 mas "Kagi for Safari", id: 1622835804
 mas "Noir", id: 1592917505
-mas "Obsidian Web Clipper", id: 6720708363
 mas "Save to Reader", id: 1640236961
 mas "SessionRestore", id: 1463334954
 mas "SponsorBlock", id: 1573461917
 mas "StopTheMadness Pro", id: 6471380298
 mas "Tampermonkey Classic", id: 1482490089
 mas "Things To Get Me", id: 6447106500
-mas "uBlock Origin Lite", id: 6745342698
 mas "Vinegar", id: 1591303229
 
 {{   if .gaming -}}
