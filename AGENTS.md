@@ -284,6 +284,12 @@ Per-source review metadata:
 Agent rules, skills, and subagent configs are managed through a shared pipeline. Edit the source templates in this repository, not generated files under `~/.claude`, `~/.codex`, `~/.cursor`, or `~/.agents`.
 
 - **Rules**: edit `home/dot_agents/rules/*.md.tmpl`. These are sorted alphabetically and rendered by `home/.chezmoitemplates/render-agent-rules.md.tmpl` with an `agent` parameter.
+  Topic map (edit the matching file; do not duplicate sections across files):
+  - `10-personal.md.tmpl` — identity, interaction, personal tooling (`~/Repos`, package preference), planning
+  - `14-conventions.md.tmpl` — docs lookup, **Source Lookup Precedence**, bash/security/git/shell/writing conventions
+  - `15-implementation-discipline.md.tmpl` — removal, design conformance, review quality
+  - `20-work.md.tmpl` — work-only encrypted fragment (when `.work` + `.secrets`)
+  - `30-skill-workflows.md.tmpl` — skills workflow, agent tooling design, **CLI Tool Discovery**
   - Claude output: `~/.claude/CLAUDE.md`, rendered from `home/dot_claude/CLAUDE.md.tmpl`
   - Codex output: `~/.codex/AGENTS.md`, rendered from `home/dot_codex/AGENTS.md.tmpl`
   - Cursor output: `~/.cursor/rules/agent-rules.mdc`, rendered from `home/dot_cursor/rules/agent-rules.mdc.tmpl`
