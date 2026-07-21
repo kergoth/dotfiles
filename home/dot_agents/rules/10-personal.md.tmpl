@@ -29,6 +29,7 @@
 - `~/bin/`: personal scripts. Check before writing new one. Default destination for standalone non-templated scripts.
 - Package install preference: chezmoi externals > Nix > Homebrew > upstream installers > language pkg mgrs > system pkg mgrs.
 - `~/Repos/`: clean ghq clones at `~/Repos/{host}/{owner}/{repo}`. Prefer over `~/Workspace/` for clean reference reads (Workspace clones may have branch-specific changes). `git -C <path> pull` when freshness matters.
+  See Source Lookup Precedence for when to reach for a clone vs. deepwiki vs. a direct Read.
 
 ## Agent Planning
 - Project-local guidance overrides defaults.

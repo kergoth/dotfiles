@@ -6,6 +6,15 @@
 - **Training knowledge last**: Only for stable APIs (Python stdlib, git basics).
 - **Trigger signs**: If reimplementing existing features, STOP — verify current API docs.
 
+## Source Lookup Precedence
+When source-level inspection is required (not just usage docs or API references):
+1. **Currently active working tree** (the project being edited this session, regardless of size) — always Read/grep directly. Ground truth of current branch state and uncommitted edits matters more than a synced snapshot.
+2. Otherwise, for **reference material not being edited** (a dependency, a CLI tool, an unfamiliar repo consulted for context):
+   - **Small** (a handful of files, e.g. a `~/bin` script or single-file tool) — Read directly.
+   - **Large or unfamiliar, and GitHub-indexed** — deepwiki first; cheaper than cold-reading an unfamiliar tree and gives a navigable summary. Currency is not critical for orientation purposes.
+   - **Large or unfamiliar, not GitHub-indexed** (GitLab, self-hosted, etc.) — skip straight to step 3.
+3. **deepwiki insufficient, or exact current source needed** — use the existing ghq clone at `~/Repos/{host}/{owner}/{repo}` if present (`git -C <path> pull` for freshness). If no clone exists, create one (`ghq get <host>/<owner>/<repo>`) rather than ad hoc `curl`/temp clones.
+
 ## Bash Command Discipline{{- if eq $agent "claude" }} (Claude Code){{- end }}
 - **Prefer built-in tools**: Read over `cat`, Grep over `grep`, Glob over `find`. Tool calls reviewable, skip Bash permission checks.
 - **`>` or `>>` re-prompt despite allowlist** ([claude-code#20449](https://github.com/anthropics/claude-code/issues/20449)); use Write/Edit for file output.

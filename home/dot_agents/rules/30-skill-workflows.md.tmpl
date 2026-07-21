@@ -10,6 +10,7 @@
 - Script interfaces: high-level intent flags + precise targeting so agents avoid assembling complex args.
 
 ## CLI Tool Discovery
-- Try `<tool> -h`, `<tool> --help`, or `man <tool>` before reading source. Source only when help missing/insufficient or need internals (debugging, modifying, behavior beyond docs).
-- Source reading expensive: typical script 5-25 KB, help output <1 KB. Compounds across long sessions.
-- getopts scripts often accept `-h` not `--help`; argparse accepts both. Try `-h` first; unknown option → try `--help`; both fail → Read.
+Escalate in order — each step only when the prior one is missing, thin, or ambiguous:
+1. **`<tool> -h`**, then `--help`, then `man <tool>` — but skip straight to `--help`/`man` for tools where `-h` is known to mean something other than help (e.g. `du`, `df`, `ls`, `sort`, `grep`, `tar`, `rsync`). When unsure, `--help` is always safe to try; `-h` is only a shortcut when known safe. getopts scripts often accept `-h` not `--help`; argparse accepts both.
+2. **MCP docs** (context7/deepwiki), if the tool is covered. Per Documentation Lookup Priority, training data is last resort — that applies here too, not just to library APIs.
+3. **Source**, only when internals are needed (debugging, modifying, behavior beyond docs) — not as a docs substitute. See Source Lookup Precedence above. Source reading is expensive (typical script 5-25 KB vs. <1 KB help output), and this cost compounds across long sessions.
