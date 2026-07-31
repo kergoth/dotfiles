@@ -19,6 +19,7 @@ alias smem='smem -k'
 alias shfmt='shfmt -i 4 -ci -bn -s'
 alias mr='mr -d "$(find_up .mrconfig || echo .)"'
 alias sshnew='ssh -o "ControlPath none"'
+alias sshexit='ssh -O exit'
 alias diff='diff -urNd'
 alias bc='bc -ql'
 alias wfp=wait-for-process
