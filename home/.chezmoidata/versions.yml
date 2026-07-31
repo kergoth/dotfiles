@@ -1,12 +1,12 @@
 versions:
   op_cli:
     linux:
-      version: "2.34.0"
+      version: "2.38.1"
       sha256:
-        amd64: "198b05dcf9a0972778ce5a4e262c459979b0c837257b5da65e2fba6187734226"
-        arm64: "7b5c361a23e738a3969cf676960f4843af4aa9aa68dbec23d18a9134da428ba3"
+        amd64: "7a7b7168f521d31838f0cc59abf172527853308c9b9cceee34895121acb0be0f"
+        arm64: "854f92932dcfebc26434e83e426729933a8d0aae447889e439cf01f1b213a7fd"
     freebsd:
-      version: "2.34.0"
+      version: "2.38.1"
       sha256:
-        amd64: "0c6c5c7c2728aab8faafab3748c0f0e1f13d4649f093b20dd2a0228294a132ce"
-        arm64: "ba4fc86caffb2c7ef584fa991327ecd4176db1adec95435740279266b8613ded"
+        amd64: "308ed4f44bef95eb65c4ddc3074e1261963dbaba1d7b4710dfc585fe4798f717"
+        arm64: "9af8c1ab203eb2b704b6a8f13c971aff75d1d5aafe9d3b0809b2f7b6d3c89d84"
