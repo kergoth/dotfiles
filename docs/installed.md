@@ -9,6 +9,7 @@ Installed software varies by platform based on package availability and platform
 - **[gh](https://cli.github.com)**: GitHub’s official command line tool.
   - **[gh-dash](https://github.com/dlvhdr/gh-dash)**: GitHub CLI extension providing a terminal dashboard for pull requests and issues.
   - **[gh-pr-review](https://github.com/agynio/gh-pr-review)**: GitHub CLI extension that adds full inline PR review comment support directly from the terminal.
+  - **[gh-stack](https://github.com/github/gh-stack)**: GitHub's official CLI extension for managing stacked branches and pull requests.
 - **[git](https://git-scm.com)**: A free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency.
 - **[git-lfs](https://git-lfs.github.com)**: An open source Git extension for versioning large files.
 - **[neovim](https://neovim.io)**: Hyperextensible Vim-based text editor.

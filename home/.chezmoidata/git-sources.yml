@@ -14,6 +14,10 @@ git_sources:
     repo: https://github.com/kergoth/gh-pr-review
     ref: tighten-security-guardrails
     review_note: "Focus primarily on SKILL.md and any documentation or code changes that affect the advertised skill workflow or command interface. The released gh extension binary remains pinned separately via the tagged gh_pr_review entry; this source exists only to pin skill content."
+  gh_stack:
+    repo: https://github.com/github/gh-stack
+    tagged: true
+    review_note: "Official GitHub CLI extension for stacked PRs; the same tag pins both the released binary and the bundled skills/gh-stack skill content."
   86box_assets:
     repo: https://github.com/86Box/assets
     ref: main

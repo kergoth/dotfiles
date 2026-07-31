@@ -30,6 +30,12 @@ url = {{ printf "https://github.com/agynio/gh-pr-review/archive/%s.tar.gz" (inde
 exact = true
 stripComponents = 1
 
+[".agents/external-sources/gh-stack"]
+type = "archive"
+url = {{ printf "https://github.com/github/gh-stack/archive/%s.tar.gz" (index $lock "gh_stack") | toToml }}
+exact = true
+stripComponents = 1
+
 [".agents/external-sources/readwise_skills"]
 type = "archive"
 url = {{ printf "https://github.com/readwiseio/readwise-skills/archive/%s.tar.gz" (index $lock "readwise_skills") | toToml }}

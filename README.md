@@ -219,6 +219,7 @@ Skills live in `~/.agents/skills/` and are available to all agent tools (Claude 
   - **uv**: Managing Python projects, packages, and tools.
 - **[avoid-ai-writing](https://github.com/conorbronsdon/avoid-ai-writing)**: Vocabulary and structural pattern detection for reducing AI writing patterns. Used as the base layer for the clean-prose skill.
 - **[gh-pr-review](https://github.com/agynio/gh-pr-review)**: GitHub PR review threads and inline review comments with structured terminal workflows.
+- **[gh-stack](https://github.com/github/gh-stack/tree/main/skills/gh-stack)**: Manage stacked branches and pull requests with the `gh stack` CLI extension.
 - **[Readwise Skills](https://github.com/readwiseio/readwise-skills/tree/main/skills)**: Readwise Reader workflows.
   - **build-persona**: Build a reading profile from library history; personalizes quiz and feed-catchup output.
   - **feed-catchup**: Batch-process RSS feeds and newsletters to surface valuable content.

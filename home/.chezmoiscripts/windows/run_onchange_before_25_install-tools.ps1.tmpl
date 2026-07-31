@@ -187,5 +187,10 @@ if ($ghPrReviewInstalled -ne "{{ index $lock "gh_pr_review" }}") {
     {{ $gh_cmd }} extension remove agynio/gh-pr-review 2>$null
     {{ $gh_cmd }} extension install --pin {{ index $lock "gh_pr_review" }} agynio/gh-pr-review
 }
+$ghStackInstalled = ({{ $gh_cmd }} extension list 2>$null | Where-Object { $_ -match "github/gh-stack" } | ForEach-Object { ($_ -split '\s+')[-1] })
+if ($ghStackInstalled -ne "{{ index $lock "gh_stack" }}") {
+    {{ $gh_cmd }} extension remove github/gh-stack 2>$null
+    {{ $gh_cmd }} extension install --pin {{ index $lock "gh_stack" }} github/gh-stack
+}
 {{-   end }}
 {{- end }}
