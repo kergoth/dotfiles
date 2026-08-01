@@ -119,6 +119,7 @@ Software I install occasionally as needed rather than on every machine. See the 
 - **[TaskExplorer](https://objective-see.org/products/taskexplorer.html)**: Explore all the tasks (processes) running on your Mac with TaskExplorer.
 - **[TestFlight](https://developer.apple.com/testflight/)**: Test beta versions of apps. Available via Mac App Store.
 - **[UTM](https://mac.getutm.app/)** ([Open-Source](https://github.com/utmapp/UTM)): Virtual machine manager for macOS. Available via brew as `utm` and Mac App Store.
+- **[WhatCable](https://github.com/darrylmorley/whatcable)**: Identify USB-C and Thunderbolt cables, report charging wattage, cable certification, and power delivery profiles from the menu bar. Includes a CLI and terminal dashboard. Available via direct download from GitHub releases; signed and notarized.
 - **[XLD](https://tmkk.undo.jp/xld/index_e.html)**: Lossless audio decoder.
 
 ### As Needed GUI Software for Windows
