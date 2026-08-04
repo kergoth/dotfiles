@@ -144,17 +144,6 @@
 {{-   $skip_gpg_secret_import = has (lower $dotfiles_skip_gpg_secret_import) (list "1" "true" "yes" "on") -}}
 {{- end -}}
 
-{{/* determine secrets access - must come after hostname defaults and env var overrides */}}
-{{- $secrets := false -}}
-{{- $dotfiles_secrets := (env "DOTFILES_SECRETS") -}}
-{{- if ne $dotfiles_secrets "" -}}
-{{-   $secrets = has (lower $dotfiles_secrets) (list "1" "true" "yes" "on") -}}
-{{- else -}}
-{{-   if and (or $personal $work) (not $ephemeral) (not $steamdeck) -}}
-{{-     $secrets = true -}}
-{{-   end -}}
-{{- end -}}
-
 {{/* override init detection via env var (explicit) */}}
 {{- $dotfiles_has_init := (env "DOTFILES_HAS_INIT") -}}
 {{- if ne $dotfiles_has_init "" -}}
@@ -214,6 +203,17 @@
 {{-   $work = has (lower $dotfiles_work) (list "1" "true" "yes" "on") -}}
 {{-   if $work -}}
 {{-     $personal = false -}}
+{{-   end -}}
+{{- end -}}
+
+{{/* determine secrets access - must come after hostname defaults, prompts, and env var overrides */}}
+{{- $secrets := false -}}
+{{- $dotfiles_secrets := (env "DOTFILES_SECRETS") -}}
+{{- if ne $dotfiles_secrets "" -}}
+{{-   $secrets = has (lower $dotfiles_secrets) (list "1" "true" "yes" "on") -}}
+{{- else -}}
+{{-   if and (or $personal $work) (not $ephemeral) (not $steamdeck) -}}
+{{-     $secrets = true -}}
 {{-   end -}}
 {{- end -}}
 
