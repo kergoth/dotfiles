@@ -1,0 +1,13 @@
+{{- /* Dracula dark theme for gh-dash */ -}}
+{{ includeTemplate (joinPath .chezmoi.workingTree "settings/gh-dash/config.yml.tmpl") (dict
+    "text_primary"    "#F8F8F2"
+    "text_secondary"  "#9A9A9A"
+    "text_inverted"   "#282A36"
+    "text_faint"      "#6272A4"
+    "text_warning"    "#FF5555"
+    "text_success"    "#50FA7B"
+    "bg_selected"     "#44475A"
+    "border_primary"  "#BD93F9"
+    "border_secondary" "#44475A"
+    "border_faint"    "#343746"
+) -}}

@@ -80,7 +80,7 @@ defaults:
 keybindings:
   prs:
     - key: T
-      command: gh enhance -R {{.RepoName}} {{.PrNumber}}
+      command: gh enhance -R {{`{{.RepoName}}`}} {{`{{.PrNumber}}`}}
 repoPaths:
   kergoth/dotfiles: ~/.dotfiles
   kergoth/scripts: ~/bin
@@ -98,15 +98,15 @@ theme:
       compact: false
   colors:
     text:
-      primary: "#F8F8F2"
-      secondary: "#9A9A9A"
-      inverted: "#282A36"
-      faint: "#6272A4"
-      warning: "#FF5555"
-      success: "#50FA7B"
+      primary: "{{ .text_primary }}"
+      secondary: "{{ .text_secondary }}"
+      inverted: "{{ .text_inverted }}"
+      faint: "{{ .text_faint }}"
+      warning: "{{ .text_warning }}"
+      success: "{{ .text_success }}"
     background:
-      selected: "#44475A"
+      selected: "{{ .bg_selected }}"
     border:
-      primary: "#BD93F9"
-      secondary: "#44475A"
-      faint: "#343746"
+      primary: "{{ .border_primary }}"
+      secondary: "{{ .border_secondary }}"
+      faint: "{{ .border_faint }}"

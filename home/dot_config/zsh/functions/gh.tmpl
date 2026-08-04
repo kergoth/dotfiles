@@ -1,5 +1,10 @@
 {{- $gh := includeTemplate "find-tool" (dict "root" . "tool" "gh") -}}
 {{- if $gh -}}
 set_glamourstyle
-command env GLAMOUR_STYLE="$GLAMOUR_STYLE" gh "$@"
+local gh_dash_config
+case "$CLITHEME" in
+  light) gh_dash_config="${XDG_CONFIG_HOME:-$HOME/.config}/gh-dash/config-light.yml" ;;
+  dark|*) gh_dash_config="${XDG_CONFIG_HOME:-$HOME/.config}/gh-dash/config-dark.yml" ;;
+esac
+command env GLAMOUR_STYLE="$GLAMOUR_STYLE" GH_DASH_CONFIG="$gh_dash_config" gh "$@"
 {{ end -}}
