@@ -6,6 +6,12 @@
 - **Training knowledge last**: Only for stable APIs (Python stdlib, git basics).
 - **Trigger signs**: If reimplementing existing features, STOP — verify current API docs.
 
+## Web Access Fallback Chain
+- **Search**: WebSearch first. Persistent failure (not a single transient error) → DuckDuckGo MCP.
+- **Kagi MCP**: human-approved per use, never automatic. Suggest it when: product/purchase research prone to SEO-affiliate manipulation, sentiment/discussion queries (use its Discussions lens), or DuckDuckGo results just came back thin/spam-heavy.
+- **Fetch**: WebFetch first. Empty/SPA content or 403/challenge page → Firecrawl MCP. Don't default every fetch to Firecrawl — reserve for WebFetch failures or known JS-heavy/anti-bot domains.
+- **Interactive**: Playwright MCP for tasks needing real form/click interaction (address-lookup widgets, logins) — a capability tier, not a fallback; invoke when the task requires it.
+
 ## Source Lookup Precedence
 When source-level inspection is required (not just usage docs or API references):
 1. **Currently active working tree** (the project being edited this session, regardless of size) — always Read/grep directly. Ground truth of current branch state and uncommitted edits matters more than a synced snapshot.
