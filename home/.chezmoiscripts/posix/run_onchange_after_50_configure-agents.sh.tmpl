@@ -89,6 +89,11 @@ codex_add_mcp_server context7 -- npx -y @upstash/context7-mcp
 codex_add_mcp_server duckduckgo -- uvx duckduckgo-mcp-server
 codex_add_mcp_server playwright -- npx -y @playwright/mcp@latest --browser firefox
 
+{{ if .secrets -}}
+codex_add_mcp_server firecrawl --env FIRECRAWL_API_KEY="{{ joinPath .chezmoi.workingTree "settings/agents/firecrawl-api-key.age" | include | decrypt | trim }}" -- npx -y firecrawl-mcp
+codex_add_mcp_server kagi --env KAGI_API_KEY="{{ joinPath .chezmoi.workingTree "settings/agents/kagi-api-key.age" | include | decrypt | trim }}" -- uvx kagimcp
+{{- end }}
+
 
 {{ $set_toml := joinPath .chezmoi.sourceDir ".." "scripts" "set-toml-value" -}}
 # Enable my preferred codex status line
@@ -100,6 +105,11 @@ claude_add_mcp_server deepwiki --scope user --transport http https://mcp.deepwik
 add_mcp_json context7 '{"type":"stdio","command":"npx","args":["-y","@upstash/context7-mcp"]}' --scope user
 add_mcp_json duckduckgo '{"type":"stdio","command":"uvx","args":["duckduckgo-mcp-server"]}' --scope user
 add_mcp_json playwright '{"type":"stdio","command":"npx","args":["-y","@playwright/mcp@latest","--browser","firefox"]}' --scope user
+
+{{   if and .personal .secrets -}}
+claude_add_mcp_server firecrawl --scope user -e FIRECRAWL_API_KEY="{{ joinPath .chezmoi.workingTree "settings/agents/firecrawl-api-key.age" | include | decrypt | trim }}" -- npx -y firecrawl-mcp
+claude_add_mcp_server kagi --scope user -e KAGI_API_KEY="{{ joinPath .chezmoi.workingTree "settings/agents/kagi-api-key.age" | include | decrypt | trim }}" -- uvx kagimcp
+{{-   end }}
 
 
 {{   if .work -}}

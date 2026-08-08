@@ -246,6 +246,8 @@ Skills live in `~/.agents/skills/` and are available to all agent tools (Claude 
 - **[DeepWiki](https://deepwiki.com)**: Query documentation and knowledge from GitHub repositories. _Claude Code: unconditional. Codex: personal machines. Cursor: work machines._
 - **[DuckDuckGo](https://github.com/nickclyde/duckduckgo-mcp-server)**: Keyless web search and page-content retrieval. _Claude Code: unconditional. Codex: personal machines. Cursor: unconditional._
 - **[Playwright](https://github.com/microsoft/playwright-mcp)**: Browser automation for interactive pages (forms, clicks, logins) that plain fetch tools can't handle. _Claude Code: unconditional. Codex: personal machines. Cursor: unconditional._
+- **[Firecrawl](https://github.com/firecrawl/firecrawl-mcp-server)**: JS-rendering, anti-bot-resistant page fetch/scrape/crawl. _Claude Code: personal machines. Codex: personal machines. Cursor: not configured (personal API key)._
+- **[Kagi](https://github.com/kagisearch/kagimcp)**: Spam-resistant, non-commercial-weighted search; human-approved use only, never an automatic fallback. _Claude Code: personal machines. Codex: personal machines. Cursor: not configured (personal API key)._
 
 ### Fonts
 
