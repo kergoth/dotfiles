@@ -59,7 +59,7 @@ For commit message bodies longer than two sentences, invoke the clean-prose skil
 The merged history is the project's narrative: what changed and why, told in logical steps. Optimize for the future reader running `git log`, `git blame`, or `git bisect`, not the chronology of how you wrote the code.
 
 - One logical change per commit. A commit is the unit of revert, review, and bisect.
-- **Bisectability:** every commit on the trunk should build and pass tests on its own. This is the falsifiable test for whether a commit is well-formed.
+- **Bisectability:** every commit on the trunk should build and pass tests at that commit, not just at HEAD — the falsifiable test for whether a commit is well-formed. Two quiet failure modes: a commit referencing something a *later* commit introduces (forward reference, e.g. docs naming tools before they're registered), and tests batched into a final commit instead of landing with the code they cover — each earlier commit "passes" only because nothing yet exercises the new code, not because it works, so a regression goes uncaught until the batch commit.
 - A branch is a reviewable patch series, not a bag of commits. If the series doesn't tell a coherent story when the PR opens, restructure it first.
 - During development, commit freely (WIPs, dead ends, fixups). Before pushing for review, curate the series via interactive rebase, autosquash, or `git absorb`.
 - Commit each logical change as soon as it's complete rather than batching unrelated changes into one editing session. If bundling happens anyway and `git add -p` is unavailable (no TTY, agent context), split via reset-and-redo: back up the working file, `git checkout HEAD -- <path>`, re-apply the edits in commit-aligned groups, and commit between phases.
