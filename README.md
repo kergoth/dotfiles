@@ -244,6 +244,8 @@ Skills live in `~/.agents/skills/` and are available to all agent tools (Claude 
 
 - **[Context7](https://github.com/upstash/context7-mcp)**: Fetch up-to-date library documentation and code examples from source repositories. _Claude Code: unconditional. Codex: personal machines. Cursor: work machines._
 - **[DeepWiki](https://deepwiki.com)**: Query documentation and knowledge from GitHub repositories. _Claude Code: unconditional. Codex: personal machines. Cursor: work machines._
+- **[DuckDuckGo](https://github.com/nickclyde/duckduckgo-mcp-server)**: Keyless web search and page-content retrieval. _Claude Code: unconditional. Codex: personal machines. Cursor: unconditional._
+- **[Playwright](https://github.com/microsoft/playwright-mcp)**: Browser automation for interactive pages (forms, clicks, logins) that plain fetch tools can't handle. _Claude Code: unconditional. Codex: personal machines. Cursor: unconditional._
 
 ### Fonts
 

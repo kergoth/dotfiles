@@ -2,6 +2,8 @@
 {{- if .work -}}
 {{-   $_ := set $servers "deepwiki" (dict "url" "https://mcp.deepwiki.com/mcp" "type" "http") -}}
 {{-   $_ := set $servers "context7" (dict "type" "stdio" "command" "npx" "args" (list "-y" "@upstash/context7-mcp")) -}}
+{{-   $_ := set $servers "duckduckgo" (dict "type" "stdio" "command" "uvx" "args" (list "duckduckgo-mcp-server")) -}}
+{{-   $_ := set $servers "playwright" (dict "type" "stdio" "command" "npx" "args" (list "-y" "@playwright/mcp@latest" "--browser" "firefox")) -}}
 {{-   range $k, $v := (joinPath .chezmoi.workingTree "settings/agents/work-mcp-cursor.json.age" | include | decrypt | fromJson) -}}
 {{-     $_ := set $servers $k $v -}}
 {{-   end -}}
@@ -9,6 +11,8 @@
 {{- if and .personal (not .ephemeral) -}}
 {{-   $_ := set $servers "readwise" (dict "url" "https://mcp2.readwise.io/mcp" "type" "http") -}}
 {{-   $_ := set $servers "context7" (dict "type" "stdio" "command" "npx" "args" (list "-y" "@upstash/context7-mcp")) -}}
+{{-   $_ := set $servers "duckduckgo" (dict "type" "stdio" "command" "uvx" "args" (list "duckduckgo-mcp-server")) -}}
+{{-   $_ := set $servers "playwright" (dict "type" "stdio" "command" "npx" "args" (list "-y" "@playwright/mcp@latest" "--browser" "firefox")) -}}
 {{- end -}}
 {{- if $servers -}}
 {{ dict "mcpServers" $servers | toPrettyJson }}

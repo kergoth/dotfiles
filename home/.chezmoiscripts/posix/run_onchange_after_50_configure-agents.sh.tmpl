@@ -74,9 +74,20 @@ add_marketplace() {
 }
 
 
+{{ if or $claude (and $codex (not .work)) -}}
+# Playwright MCP needs a real browser binary; install is a no-op if already present.
+# firefox, not chrome: the chrome channel install requires root on macOS.
+# @playwright/mcp bundles its own playwright-core version, which can pin a
+# different firefox build than the bare `playwright` CLI installs — use its
+# own installer so the version actually matches what it launches.
+npx --yes @playwright/mcp install-browser firefox
+{{- end }}
+
 {{ if and $codex ( not .work ) -}}
 codex_add_mcp_server deepwiki --url https://mcp.deepwiki.com/mcp
 codex_add_mcp_server context7 -- npx -y @upstash/context7-mcp
+codex_add_mcp_server duckduckgo -- uvx duckduckgo-mcp-server
+codex_add_mcp_server playwright -- npx -y @playwright/mcp@latest --browser firefox
 
 
 {{ $set_toml := joinPath .chezmoi.sourceDir ".." "scripts" "set-toml-value" -}}
@@ -87,6 +98,8 @@ uvx --from tomlkit python3 {{ $set_toml }} ~/.codex/config.toml tui.status_line 
 {{   if $claude -}}
 claude_add_mcp_server deepwiki --scope user --transport http https://mcp.deepwiki.com/mcp
 add_mcp_json context7 '{"type":"stdio","command":"npx","args":["-y","@upstash/context7-mcp"]}' --scope user
+add_mcp_json duckduckgo '{"type":"stdio","command":"uvx","args":["duckduckgo-mcp-server"]}' --scope user
+add_mcp_json playwright '{"type":"stdio","command":"npx","args":["-y","@playwright/mcp@latest","--browser","firefox"]}' --scope user
 
 
 {{   if .work -}}
