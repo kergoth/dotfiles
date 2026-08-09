@@ -10,6 +10,7 @@ This file provides guidance to AI coding agents when working with code in this r
 - [Repository Architecture](#repository-architecture)
 - [Editing Managed Files](#editing-managed-files)
 - [Chezmoi Patterns](#chezmoi-patterns)
+- [Commit Message Scope](#commit-message-scope)
 - [Documenting Architectural Decisions](#documenting-architectural-decisions)
 - [Script Conventions](#script-conventions)
 - [Troubleshooting](#troubleshooting)
@@ -333,6 +334,10 @@ Chimera uses musl libc — glibc-linked binaries (1Password, Vivaldi, Zed) can't
 - None use `lookPath` — search is path-list-only (from `paths.yml` data) for consistent behavior independent of shell `$PATH`.
 - `packagesForMissingTools` wraps `availableTools`: takes a dict of `cmd→install-spec` (bare pkg name, or full arg string like `--git https://...` for cargo), returns only the specs whose commands are missing.
 - Individual `find-tool` calls scale fine for 1–3 tools; prefer `packagesForMissingTools` for larger sets. Multi-package install scripts will likely migrate to this pattern.
+
+## Commit Message Scope
+
+Repo spans many unrelated components (shell config, editor config, Home Manager packages, scripts, agent skills). Bare subject like "Fix the timeout bug" doesn't say which one. Prefix subject with affected component, lowercase, colon + space: `claude:`, `zsh:`, `chezmoi:`, `find-session:`, `git-commits:`. Use directory/tool name a reader already recognizes; skip prefix only for genuinely repo-wide changes (e.g. top-level README edit). Rest of subject lowercase too: `claude: fix timeout bug`, not `claude: Fix Timeout Bug`. Don't restate scope in description: `claude: point at git-commits skill`, not `claude: point CLAUDE.md at git-commits skill` — prefix already says whose territory this is.
 
 ## Documenting Architectural Decisions
 
