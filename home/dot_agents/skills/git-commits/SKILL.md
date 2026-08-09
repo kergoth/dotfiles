@@ -56,6 +56,14 @@ folders before first run.
 
 For commit message bodies longer than two sentences, invoke the clean-prose skill before finalizing. Subject lines and one-line bodies don't need it.
 
+**Commit message input:** Do not trust `git commit -m` to format body text.
+Git stores each message argument exactly as passed; it never wraps long lines.
+For any body longer than one short line, write a temporary message file, verify
+line lengths with `awk '{ print length, $0 }'`, then commit with
+`git commit -F <absolute-path>`. Use the same absolute path when creating and
+committing the file; do not rebuild it from `$TMPDIR`, because sandboxed and
+unsandboxed shells may see different temp directories.
+
 ## History
 
 The merged history is the project's narrative: what changed and why, told in logical steps. Optimize for the future reader running `git log`, `git blame`, or `git bisect`, not the chronology of how you wrote the code.
