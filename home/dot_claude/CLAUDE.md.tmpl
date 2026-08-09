@@ -3,3 +3,4 @@
 ## Claude Code Specifics
 
 - `$TMPDIR` differs between sandbox and non-sandbox modes (sandbox: an isolated path under `/tmp/`; non-sandbox: normal user TMPDIR). A path written in one mode may not be valid in the other — re-resolve `$TMPDIR` per tool call rather than passing paths between them. `/tmp` itself isn't writable in sandbox mode; use `$TMPDIR`.
+- Sandbox blocks `gpg-agent`/`ssh-agent` sockets, breaking signed `git commit`/`git push`. See `git-commits` skill for the fix; don't allowlist `~/.gnupg/` or `~/.ssh/`.
