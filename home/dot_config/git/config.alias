@@ -101,7 +101,7 @@
 	diff-old-head = range-diff HEAD@{1}...HEAD
 
 	# Run git test-sequence against the commits we'll be pushing
-	test-outgoing = !git test-sequence @{u}..
+	test-outgoing = !git test-sequence @{push}..
 
 	# Push with lease
 	please = push --force-with-lease
