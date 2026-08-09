@@ -76,7 +76,6 @@
 	remote-ref = rev-parse --symbolic-full-name @{u}
 	in = !git fetch && git lg \"..@{u}\"
 	out = !git fetch && git lg \"@{push}..\"
-	out-diff = "!f(){ merge_base=${1:-$(git merge-base @{push} HEAD)}; git range-diff $merge_base..@{push} $merge_base..;}; f"
 
 	# Update without merge commits
 	up = !git fetch "$(git tracking-remote)" && git merge --no-ff "@{u}"
@@ -94,11 +93,15 @@
 	rebase-upstream = rebase -i @{u}
 	ru = !git rebase-upstream
 
-	# Run a range diff between HEAD and upstream
-	diff-out = range-diff @{push}...HEAD
-	diff-in = range-diff @{u}...HEAD
-	diff-upstream = range-diff @{u}...HEAD
-	diff-old-head = range-diff HEAD@{1}...HEAD
+	# Branch status vs remote, rewrite-aware (pairs commits by content
+	# instead of relying on SHA/ahead-behind, which misreports rewritten
+	# commits as diverged)
+	brstat-upstream = range-diff @{u}...HEAD
+	brstat-push = range-diff @{push}...HEAD
+	brstat = !git brstat-push
+
+	# Range-diff against this branch's own pre-rewrite state
+	seriesdiff-rewrite = range-diff HEAD@{1}...HEAD
 
 	# Run git test-sequence against the commits we'll be pushing
 	test-outgoing = !git test-sequence @{push}..
