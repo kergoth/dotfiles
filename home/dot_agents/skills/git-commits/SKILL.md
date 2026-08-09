@@ -32,7 +32,7 @@ Follow the [seven rules of commit messages](https://cbea.ms/git-commit):
 - Subject lines name the change at a high level of abstraction — this aids navigation and is fine. Bodies explain WHY: motivation, constraints, and context the diff lacks.
 - Never narrate implementation detail the diff already shows. If the message would become redundant with `git show`, it is too low-level. "Fix session timeout under high load" is a good subject; "Add `last_event_time` field to `SessionStatus` dataclass, initialized via `__post_init__` to `start_time`" is diff narration.
 
-Subjects describe the change, not the workflow event that produced it. Replace "Fix tests", "Address review", or "Continue work on X" with descriptions of the actual code change.
+Subject and body alike: describe the change, not the workflow event that produced it. Subject: replace "Fix tests", "Address review", "Continue work on X" with the actual code change. Body: cut narration of how the change was found ("Noticed while debugging X...", "Discovered mid-session that..."), even before a real WHY sentence. State the motivation directly, skip the lead-up.
 
 **Body-echoes-subject is not a body.** A body that merely rephrases the subject in past tense conveys nothing and is a strong AI-generation signal. Delete it or replace it with actual motivation:
 
@@ -49,6 +49,8 @@ The tool ships as a sidecar beside the game exe; without setup
 instructions users won't know to configure the dump/replacement
 folders before first run.
 ```
+
+**Bodies must be self-contained.** "The fix", "that issue", "this problem" lean on context only the current conversation has. A reader six months out via `git blame` has none of it. Restate the concrete problem instead of pointing at it: not "documents the fix in more detail", but "the sandbox blocks the gpg-agent/ssh-agent sockets signed commits need".
 
 **Avoid "Update X with Y" subject construction.** Using `with` as a connector ("Update README with details on X") obscures intent and makes every commit look identical at a glance. Prefer a verb that names the actual change: "Document X in README", "Explain X setup", "Clarify X behavior", "Remove Y from Z".
 
