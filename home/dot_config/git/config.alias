@@ -73,7 +73,6 @@
 
 	# Upstream
 	tracking-remote = "!f() { git rev-parse --symbolic-full-name '@{u}' | sed -n 's,refs/remotes/\\([^/][^/]*\\)/.*,\\1,p'; }; f"
-	tracking-ref = rev-parse --symbolic-full-name @{u}
 	remote-ref = rev-parse --symbolic-full-name @{u}
 	in = !git fetch && git lg \"..@{u}\"
 	out = !git fetch && git lg \"@{push}..\"
