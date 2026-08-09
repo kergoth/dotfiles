@@ -86,3 +86,7 @@ The merged history is the project's narrative: what changed and why, told in log
 ## Claude Code: sandbox and agent sockets
 
 The sandbox blocks Unix socket connections to authentication agents. `git commit` reaches `gpg-agent` for signing; `git push` reaches `ssh-agent` for SSH key auth. Both require `dangerouslyDisableSandbox: true`. Configure Bash permissions to auto-allow `git commit` and `git push` if you want to avoid the prompts.
+
+## Codex: sandbox and agent sockets
+
+The sandbox blocks Unix socket connections to authentication agents. `git commit` reaches `gpg-agent` for signing; `git push` reaches `ssh-agent` for SSH key auth. Both require shell escalation with `sandbox_permissions: "require_escalated"` when signing or SSH auth is required. Use a focused command approval for `git commit` or `git push`; don't allowlist `~/.gnupg/` or `~/.ssh/`.

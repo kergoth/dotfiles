@@ -1,1 +1,5 @@
-{{- includeTemplate (joinPath .chezmoi.workingTree "home/.chezmoitemplates/render-agent-rules.md.tmpl") (dict "root" . "agent" "codex") -}}
+{{ includeTemplate (joinPath .chezmoi.workingTree "home/.chezmoitemplates/render-agent-rules.md.tmpl") (dict "root" . "agent" "codex") }}
+
+## Codex Specifics
+
+- Sandbox blocks `gpg-agent`/`ssh-agent` sockets, breaking signed `git commit` and SSH-authenticated `git push`. Use Codex shell escalation (`require_escalated`) for those commands when signing or SSH auth is required; don't allowlist `~/.gnupg/` or `~/.ssh/`.
