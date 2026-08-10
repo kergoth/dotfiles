@@ -484,6 +484,183 @@ def normalize_ai_cmd(ai_cmd: str) -> str:
     return AI_AGENT_ALIASES.get(ai_cmd, ai_cmd)
 
 
+KNOWN_AGENTS = {"claude", "codex", "agent", "qwen", "pi"}
+
+
+def load_ai_config(json_str: str | None) -> dict:
+    """Parse and validate AI review config JSON. Returns empty dict for no/empty config."""
+    if not json_str or json_str.strip() in ("", "{}"):
+        return {}
+
+    try:
+        config = json.loads(json_str)
+    except json.JSONDecodeError as exc:
+        console.print(f"Error: malformed --config-json: {exc}", style="red")
+        raise SystemExit(2)
+
+    if not isinstance(config, dict):
+        console.print("Error: --config-json must be a JSON object", style="red")
+        raise SystemExit(2)
+
+    # Validate fallback_chain type and contents
+    chain = config.get("fallback_chain")
+    if chain is not None and not isinstance(chain, list):
+        console.print("Error: fallback_chain must be a list", style="red")
+        raise SystemExit(2)
+    for agent in (chain or []):
+        if not isinstance(agent, str) or agent not in KNOWN_AGENTS:
+            console.print(
+                f"Error: unknown agent {agent!r} in fallback_chain "
+                f"(known: {', '.join(sorted(KNOWN_AGENTS))})",
+                style="red",
+            )
+            raise SystemExit(2)
+
+    # Validate agents dict type and contents
+    agents = config.get("agents", {})
+    if not isinstance(agents, dict):
+        console.print("Error: agents must be a dict", style="red")
+        raise SystemExit(2)
+    for agent_name, agent_cfg in agents.items():
+        if not isinstance(agent_cfg, dict):
+            console.print(
+                f"Error: agents.{agent_name} must be a dict, got {type(agent_cfg).__name__}",
+                style="red",
+            )
+            raise SystemExit(2)
+        if agent_name not in KNOWN_AGENTS:
+            console.print(
+                f"Error: unknown agent {agent_name!r} in agents config "
+                f"(known: {', '.join(sorted(KNOWN_AGENTS))})",
+                style="red",
+            )
+            raise SystemExit(2)
+        timeout = agent_cfg.get("timeout")
+        if timeout is not None and (
+            isinstance(timeout, bool) or not isinstance(timeout, int) or timeout <= 0
+        ):
+            console.print(
+                f"Error: agent {agent_name!r} timeout must be a positive integer, got {timeout!r}",
+                style="red",
+            )
+            raise SystemExit(2)
+        for model, mt in agent_cfg.get("model_timeouts", {}).items():
+            if isinstance(mt, bool) or not isinstance(mt, int) or mt <= 0:
+                console.print(
+                    f"Error: agent {agent_name!r} model_timeout for {model!r} must be "
+                    f"a positive integer, got {mt!r}",
+                    style="red",
+                )
+                raise SystemExit(2)
+
+    # Validate fallback_timeout
+    ft = config.get("fallback_timeout")
+    if ft is not None and (
+        isinstance(ft, bool) or not isinstance(ft, int) or ft <= 0
+    ):
+        console.print(
+            f"Error: fallback_timeout must be a positive integer, got {ft!r}",
+            style="red",
+        )
+        raise SystemExit(2)
+
+    return config
+
+
+def resolve_timeout(
+    agent: str,
+    model: str | None,
+    ai_timeout_cli: int | None,
+    config: dict,
+) -> int:
+    """Resolve timeout via 5-level cascade. Uses None sentinel, not truthiness."""
+    # Level 1: explicit CLI override
+    if ai_timeout_cli is not None:
+        return ai_timeout_cli
+
+    agents = config.get("agents", {})
+    agent_cfg = agents.get(agent, {})
+
+    # Level 2: model-specific timeout from config
+    if model is not None:
+        model_timeouts = agent_cfg.get("model_timeouts", {})
+        mt = model_timeouts.get(model)
+        if mt is not None:
+            return mt
+
+    # Level 3: agent default timeout from config
+    at = agent_cfg.get("timeout")
+    if at is not None:
+        return at
+
+    # Level 4: fallback_timeout from config
+    ft = config.get("fallback_timeout")
+    if ft is not None:
+        return ft
+
+    # Level 5: hardcoded fallback
+    return AGENT_DEFAULT_TIMEOUTS.get(agent, FALLBACK_AGENT_TIMEOUT)
+
+
+def resolve_model(
+    agent: str,
+    ai_model_cli: str | None,
+    config: dict,
+    is_preferred: bool,
+) -> str | None:
+    """Resolve model via 3-level cascade. CLI model applies only to preferred agent."""
+    # Level 1: CLI override (only for preferred agent)
+    if is_preferred and ai_model_cli is not None:
+        return ai_model_cli
+
+    # Level 2: config default model for this agent
+    agents = config.get("agents", {})
+    agent_cfg = agents.get(agent, {})
+    cfg_model = agent_cfg.get("model")
+    if cfg_model is not None:
+        return cfg_model
+
+    # Level 3: no model
+    return None
+
+
+def get_candidates(
+    ai_cmd: str | None,
+    config: dict,
+    name: str | None,
+) -> list[str]:
+    """Build ordered agent candidate list from config + per-source override."""
+    label = name or "unknown"
+
+    # Determine base chain — explicit empty list means no agents,
+    # only fall back to hardcoded AGENT_CLIS when key is absent
+    if "fallback_chain" in config:
+        base = [a for a in config["fallback_chain"] if shutil.which(a)]
+    else:
+        base = [cli for cli in AGENT_CLIS if shutil.which(cli)]
+
+    if ai_cmd is None:
+        return base
+
+    # Normalize and prepend preferred agent
+    normalized = normalize_ai_cmd(ai_cmd)
+    if not shutil.which(normalized):
+        remaining_display = ", ".join(base) if base else "(none)"
+        console.print(
+            Panel(
+                f"Preferred agent {ai_cmd!r} is not available on $PATH for {label!r}.\n"
+                f"  Falling back to configured chain: {remaining_display}",
+                title="⚠ WARNING",
+                style="bold yellow",
+            )
+        )
+        return base
+
+    # Prepend and deduplicate
+    candidates = [normalized] + [a for a in base if a != normalized]
+    return candidates
+
+
 def build_agent_cmd(agent_cmd: str, ai_model: str | None = None) -> list[str]:
     if agent_cmd == "claude":
         return ["claude", "--model", ai_model or "sonnet", "--print", "--no-session-persistence"]
