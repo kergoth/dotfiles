@@ -339,6 +339,14 @@ Chimera uses musl libc — glibc-linked binaries (1Password, Vivaldi, Zed) can't
 
 Repo spans many unrelated components (shell config, editor config, Home Manager packages, scripts, agent skills). Bare subject like "Fix the timeout bug" doesn't say which one. Prefix subject with affected component, lowercase, colon + space: `claude:`, `zsh:`, `chezmoi:`, `find-session:`, `git-commits:`. Use directory/tool name a reader already recognizes; skip prefix only for genuinely repo-wide changes (e.g. top-level README edit). Rest of subject lowercase too: `claude: fix timeout bug`, not `claude: Fix Timeout Bug`. Don't restate scope in description: `claude: point at git-commits skill`, not `claude: point CLAUDE.md at git-commits skill` — prefix already says whose territory this is.
 
+## Development Workflow
+
+Personal repository; no pull request workflow. Feature branches and worktrees for non-trivial work, merged directly to `main` when done. GitHub Issues track planned work and bugs.
+
+- Branch from `main` for features; use worktrees when working in parallel.
+- Merge to `main` when complete. Never open PRs or suggest PR-based review flows.
+- Reference GitHub Issues in commit bodies when a commit closes or advances one.
+
 ## Documenting Architectural Decisions
 
 Significant architectural decisions belong in `docs/decisions/` as MADR-format ADRs.
