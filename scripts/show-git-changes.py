@@ -88,6 +88,10 @@ def parse_args():
         "--tag-pattern",
         help="Regex for matching release tags when --kind tag is used",
     )
+    parser.add_argument(
+        "--config-json",
+        help="AI review config as inline JSON (from ai-review.yml via pipeline)",
+    )
     return parser.parse_args()
 
 
@@ -834,8 +838,10 @@ def render_changes(
     review_note: str | None = None,
     review_paths: list[str] | None = None,
     release_notes: str | None = None,
+    ai_config: dict | None = None,
 ):
     """Render the tiered review output."""
+    config = ai_config or {}
     label = name or "unknown"
     header = f"{label}: {_display_ref(old_sha)} → {_display_ref(new_sha)}"
 
@@ -849,14 +855,20 @@ def render_changes(
     # Tier 2: AI-generated review (if available)
     if not skip_ai:
         notes = release_notes or data.get("release_notes")
-        if ai_cmd:
-            candidates = [ai_cmd] if shutil.which(ai_cmd) else []
-        else:
-            candidates = [cli for cli in AGENT_CLIS if shutil.which(cli)]
+        candidates = get_candidates(ai_cmd, config, name)
+        normalized_preferred = normalize_ai_cmd(ai_cmd) if ai_cmd else None
 
         review = None
         used_agent = None
         for agent in candidates:
+            is_preferred = (agent == normalized_preferred)
+            agent_model = resolve_model(agent, ai_model, config, is_preferred)
+            agent_timeout = resolve_timeout(
+                agent, agent_model,
+                ai_timeout if is_preferred else None,
+                config,
+            )
+
             console.print(f"Running AI review via {agent}...", style="dim")
             review = run_ai_review(
                 agent,
@@ -866,15 +878,29 @@ def render_changes(
                 review_note,
                 review_paths,
                 notes,
-                ai_model,
-                ai_timeout,
+                ai_model=agent_model,
+                ai_timeout=agent_timeout,
             )
             if review:
                 used_agent = agent
                 break
-            console.print(
-                f"AI review via {agent} produced no output, trying next...", style="dim"
-            )
+
+            if is_preferred:
+                remaining = [a for a in candidates if a != agent]
+                remaining_display = ", ".join(remaining) if remaining else "(none)"
+                console.print(
+                    Panel(
+                        f"Preferred agent {ai_cmd!r} produced no output for {label!r}.\n"
+                        f"  Falling back to configured chain: {remaining_display}",
+                        title="⚠ WARNING",
+                        style="bold yellow",
+                    )
+                )
+            else:
+                console.print(
+                    f"AI review via {agent} produced no output, trying next...",
+                    style="dim",
+                )
 
         if review:
             stdout_console.print(
@@ -906,6 +932,8 @@ def main():
     args = parse_args()
     cache_dir = get_cache_dir(args.cache_dir)
 
+    ai_config = load_ai_config(getattr(args, "config_json", None))
+
     if args.ai_model and not args.ai_agent:
         console.print(
             "Error: --ai-model requires --ai-agent (CLI-specific model namespaces)",
@@ -914,9 +942,6 @@ def main():
         return 2
 
     normalized_ai_cmd = normalize_ai_cmd(args.ai_agent) if args.ai_agent else None
-    if normalized_ai_cmd and not shutil.which(normalized_ai_cmd):
-        console.print(f"Error: AI CLI not found for agent: {args.ai_agent}", style="red")
-        return 2
 
     data = fetch_changes(
         args.repo_url,
@@ -950,6 +975,7 @@ def main():
         review_note=args.review_note,
         review_paths=args.review_paths,
         release_notes=data.get("release_notes"),
+        ai_config=ai_config,
     )
     return 0
 

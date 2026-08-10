@@ -248,3 +248,88 @@ class TestGetCandidates:
         with patch("shutil.which", side_effect=lambda x: f"/usr/bin/{x}"):
             result = _mod.get_candidates(None, config, "test-source")
         assert result == []
+
+
+class TestCliConfigJson:
+    def test_config_json_arg_parsed(self):
+        cfg = json.dumps({"fallback_chain": ["claude"]})
+        with patch("sys.argv", [
+            "show-git-changes.py", "https://github.com/x/y", "a" * 40, "b" * 40,
+            "--config-json", cfg,
+        ]):
+            args = _mod.parse_args()
+        assert args.config_json == cfg
+
+    def test_config_json_absent_is_none(self):
+        with patch("sys.argv", [
+            "show-git-changes.py", "https://github.com/x/y", "a" * 40, "b" * 40,
+        ]):
+            args = _mod.parse_args()
+        assert args.config_json is None
+
+
+class TestRenderChangesWithConfig:
+    def test_preferred_agent_fallback_on_no_output(self):
+        """Preferred agent fails → fallback tried, model not leaked."""
+        call_log = []
+
+        def fake_review(agent_cmd, log, diff, name,
+                        review_note=None, review_paths=None,
+                        release_notes=None, ai_model=None, ai_timeout=None):
+            call_log.append((agent_cmd, ai_model))
+            if agent_cmd == "claude":
+                return None
+            return "safe to apply"
+
+        config = {
+            "fallback_chain": ["claude", "codex"],
+            "agents": {
+                "claude": {"model": "sonnet", "timeout": 120},
+                "codex": {"timeout": 120},
+            },
+        }
+        data = {"log": "log", "shortlog": "shortlog", "diff": "diff"}
+        with (
+            patch.object(_mod, "run_ai_review", side_effect=fake_review),
+            patch("shutil.which", return_value="/usr/bin/x"),
+        ):
+            _mod.render_changes(
+                name="test-source", old_sha="a" * 40, new_sha="b" * 40,
+                data=data, ai_cmd="claude", ai_config=config,
+                skip_ai=False, skip_log=True,
+            )
+
+        assert len(call_log) >= 2
+        assert call_log[0] == ("claude", "sonnet")
+        assert call_log[1][0] == "codex"
+        assert call_log[1][1] is None
+
+    def test_per_source_model_not_leaked_to_fallback(self):
+        """Per-source ai_model applies only to preferred agent."""
+        call_log = []
+
+        def fake_review(agent_cmd, log, diff, name,
+                        review_note=None, review_paths=None,
+                        release_notes=None, ai_model=None, ai_timeout=None):
+            call_log.append((agent_cmd, ai_model))
+            if agent_cmd == "claude":
+                return None
+            return "safe"
+
+        config = {
+            "fallback_chain": ["claude", "codex"],
+            "agents": {"claude": {"timeout": 120}, "codex": {"timeout": 120}},
+        }
+        data = {"log": "log", "shortlog": "shortlog", "diff": "diff"}
+        with (
+            patch.object(_mod, "run_ai_review", side_effect=fake_review),
+            patch("shutil.which", return_value="/usr/bin/x"),
+        ):
+            _mod.render_changes(
+                name="test", old_sha="a" * 40, new_sha="b" * 40,
+                data=data, ai_cmd="claude", ai_model="opus", ai_config=config,
+                skip_ai=False, skip_log=True,
+            )
+
+        assert call_log[0] == ("claude", "opus")
+        assert call_log[1][1] is None

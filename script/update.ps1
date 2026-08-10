@@ -271,7 +271,17 @@ if (Test-Path $gitLockUpdater) {
             } else {
                 # Write JSON to temp file
                 $resolveOutput | Out-File -FilePath $changesFile -Encoding utf8
-                $changes = Get-Content $changesFile -Raw | ConvertFrom-Json
+                $rawData = Get-Content $changesFile -Raw | ConvertFrom-Json
+                if ($rawData -is [System.Object[]] -or $rawData -is [array]) {
+                    $changes = $rawData
+                    $aiConfigJson = '{}'
+                } else {
+                    $changes = $rawData.changes
+                    $aiConfig = $rawData.ai_review
+                    $aiConfigJson = if ($aiConfig -and ($aiConfig | Get-Member -MemberType NoteProperty).Count -gt 0) {
+                        $aiConfig | ConvertTo-Json -Depth 4 -Compress
+                    } else { '{}' }
+                }
 
                 # Step 2: Review (unless --no-review)
                 if (-not $NoReview) {
@@ -290,6 +300,7 @@ if (Test-Path $gitLockUpdater) {
                                     $reviewArgs += @('--review-paths', $reviewPath)
                                 }
                             }
+                            $reviewArgs += @('--config-json', $aiConfigJson)
                             uv run (Join-Path $repodir "scripts/show-git-changes.py") @reviewArgs
                         }
                     }
@@ -323,6 +334,7 @@ if (Test-Path $gitLockUpdater) {
                                                     $reviewArgs += @('--review-paths', $reviewPath)
                                                 }
                                             }
+                                            $reviewArgs += @('--config-json', $aiConfigJson)
                                             uv run (Join-Path $repodir "scripts/show-git-changes.py") @reviewArgs
                                         }
                                     }

@@ -248,9 +248,20 @@ def main() -> int:
         except json.JSONDecodeError as e:
             print(f"error: invalid JSON in {args.apply_resolved}: {e}", file=sys.stderr)
             return 1
+        if isinstance(changes, dict):
+            if "changes" not in changes:
+                print(
+                    f"error: JSON object missing 'changes' key in "
+                    f"{args.apply_resolved}",
+                    file=sys.stderr,
+                )
+                return 1
+            changes = changes["changes"]
         if not isinstance(changes, list):
             print(
-                f"error: expected JSON array in {args.apply_resolved}", file=sys.stderr
+                f"error: expected JSON array or object with 'changes' key in "
+                f"{args.apply_resolved}",
+                file=sys.stderr,
             )
             return 1
         merged = dict(old_locks)
@@ -385,7 +396,11 @@ def main() -> int:
         if not changes:
             return 2
         if args.json:
-            print(json.dumps(changes, indent=2))
+            output_obj = {
+                "changes": changes,
+                "ai_review": data.get("ai_review", {}),
+            }
+            print(json.dumps(output_obj, indent=2))
         else:
             for line in format_diff_lines(old_locks, new_locks, sources, selected):
                 print(line)

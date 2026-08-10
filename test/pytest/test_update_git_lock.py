@@ -59,9 +59,11 @@ def test_format_diff_lines_tagged_missing_externals_key():
     assert result == ["stale: aaa0000 → bbb0000 (main)"]
 
 
-def _run_main_dry_run_json(sources: dict, ids: list[str]) -> list:
-    """Call main() directly with mocked data, return parsed JSON changes list."""
+def _run_main_dry_run_json(sources: dict, ids: list[str], ai_review: dict | None = None) -> dict:
+    """Call main() directly with mocked data, return parsed JSON output object."""
     fake_data = {"git_sources": sources, "git_lock": {}}
+    if ai_review is not None:
+        fake_data["ai_review"] = ai_review
     fake_sha = "a" * 40
 
     captured = io.StringIO()
@@ -83,7 +85,8 @@ def test_dry_run_json_branch_has_kind():
     sources = {
         "_test_kind": {"repo": "https://github.com/x/y", "ref": "master"},
     }
-    changes = _run_main_dry_run_json(sources, ["_test_kind"])
+    result = _run_main_dry_run_json(sources, ["_test_kind"])
+    changes = result["changes"]
     assert len(changes) == 1, f"expected 1 change, got {changes}"
     assert changes[0]["kind"] == "branch"
 
@@ -96,7 +99,8 @@ def test_dry_run_json_tag_has_kind():
             "tagged": True,
         },
     }
-    changes = _run_main_dry_run_json(sources, ["_test_kind"])
+    result = _run_main_dry_run_json(sources, ["_test_kind"])
+    changes = result["changes"]
     assert len(changes) == 1, f"expected 1 change, got {changes}"
     assert changes[0]["kind"] == "tag"
     assert changes[0]["tag_pattern"] is None
@@ -113,7 +117,8 @@ def test_dry_run_json_preserves_review_note_for_tagged_entry():
             "review_note": "Review CHANGELOG.md only.",
         },
     }
-    changes = _run_main_dry_run_json(sources, ["_test_claude_code"])
+    result = _run_main_dry_run_json(sources, ["_test_claude_code"])
+    changes = result["changes"]
     assert len(changes) == 1
     assert changes[0]["kind"] == "tag"
     assert changes[0]["tag_source"] is None
@@ -130,7 +135,8 @@ def test_dry_run_json_preserves_ai_agent():
             "ai_agent": "claude",
         },
     }
-    changes = _run_main_dry_run_json(sources, ["_test_ai_agent"])
+    result = _run_main_dry_run_json(sources, ["_test_ai_agent"])
+    changes = result["changes"]
     assert len(changes) == 1
     assert changes[0]["ai_agent"] == "claude"
 
@@ -144,7 +150,8 @@ def test_dry_run_json_preserves_review_paths():
             "review_paths": ["CHANGELOG.md"],
         },
     }
-    changes = _run_main_dry_run_json(sources, ["_test_paths"])
+    result = _run_main_dry_run_json(sources, ["_test_paths"])
+    changes = result["changes"]
     assert len(changes) == 1
     assert changes[0]["review_paths"] == ["CHANGELOG.md"]
 
@@ -154,9 +161,35 @@ def test_dry_run_json_review_paths_absent_when_not_set():
     sources = {
         "_test_no_paths": {"repo": "https://github.com/x/y", "ref": "main"},
     }
-    changes = _run_main_dry_run_json(sources, ["_test_no_paths"])
+    result = _run_main_dry_run_json(sources, ["_test_no_paths"])
+    changes = result["changes"]
     assert len(changes) == 1
     assert changes[0]["review_paths"] is None
+
+
+def test_dry_run_json_output_is_object():
+    """--dry-run --json output is an object with changes and ai_review keys."""
+    sources = {"_test": {"repo": "https://github.com/x/y", "ref": "main"}}
+    result = _run_main_dry_run_json(sources, ["_test"])
+    assert isinstance(result, dict)
+    assert "changes" in result
+    assert "ai_review" in result
+    assert isinstance(result["changes"], list)
+
+
+def test_dry_run_json_ai_review_passed_through():
+    """ai_review config from chezmoi data is included in JSON output."""
+    sources = {"_test": {"repo": "https://github.com/x/y", "ref": "main"}}
+    ai_cfg = {"fallback_chain": ["claude"], "fallback_timeout": 300}
+    result = _run_main_dry_run_json(sources, ["_test"], ai_review=ai_cfg)
+    assert result["ai_review"] == ai_cfg
+
+
+def test_dry_run_json_ai_review_empty_when_absent():
+    """ai_review is {} when not present in chezmoi data."""
+    sources = {"_test": {"repo": "https://github.com/x/y", "ref": "main"}}
+    result = _run_main_dry_run_json(sources, ["_test"])
+    assert result["ai_review"] == {}
 
 
 def _gh_result(data):
@@ -703,17 +736,18 @@ def test_main_maps_cursor_ai_agent_to_agent_cli():
     assert rc == 0
 
 
-def test_main_rejects_missing_ai_cmd_binary():
-    """Unknown --ai-agent fails fast."""
+def test_main_missing_ai_agent_falls_back():
+    """Missing --ai-agent binary triggers fallback, not hard fail."""
     with (
         patch("sys.argv", [
             "show-git-changes.py", "https://github.com/x/y", "a" * 40, "b" * 40,
             "--ai-agent", "agent",
         ]),
         patch("shutil.which", return_value=None),
+        patch.object(_sgc_mod, "fetch_changes", return_value={"log": "", "shortlog": "", "diff": ""}),
     ):
         rc = _sgc_mod.main()
-    assert rc == 2
+    assert rc == 0
 
 
 def test_run_ai_review_scope_restriction_before_review_note():
@@ -763,11 +797,11 @@ def test_run_ai_review_no_scope_restriction_without_paths():
 def test_render_changes_passes_review_paths_to_ai():
     """render_changes forwards review_paths to run_ai_review."""
     captured_paths = []
-    original = _sgc_mod.run_ai_review
 
     def capturing_run_ai_review(agent_cmd, log, diff, name,
                                 review_note=None, review_paths=None,
-                                release_notes=None):
+                                release_notes=None, ai_model=None,
+                                ai_timeout=None):
         captured_paths.append(review_paths)
         return "safe"
 
@@ -781,6 +815,7 @@ def test_render_changes_passes_review_paths_to_ai():
             data=data, show_diff=False, ai_cmd="claude",
             skip_ai=False, skip_log=True,
             review_note=None, review_paths=["CHANGELOG.md"],
+            ai_config={},
         )
 
     assert captured_paths == [["CHANGELOG.md"]]

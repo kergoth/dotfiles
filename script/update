@@ -202,7 +202,10 @@ if [ -f "$sourcedir/scripts/update-git-lock.py" ]; then
             if [ "$no_review" -eq 0 ]; then
                 cat <<'EOF' | uv run python3 - "$changes_file" "$sourcedir/scripts/show-git-changes.py"
 import json, subprocess, sys
-changes = json.load(open(sys.argv[1]))
+raw = json.load(open(sys.argv[1]))
+changes = raw["changes"] if isinstance(raw, dict) else raw
+ai_config = raw.get("ai_review", {}) if isinstance(raw, dict) else {}
+ai_config_json = json.dumps(ai_config)
 script = sys.argv[2]
 for c in changes:
     if c.get('review', True):
@@ -223,6 +226,7 @@ for c in changes:
             cmd += ['--ai-timeout', str(c['ai_timeout'])]
         for pat in (c.get('review_paths') or []):
             cmd += ['--review-paths', pat]
+        cmd += ['--config-json', ai_config_json]
         subprocess.run(cmd)
 EOF
             fi
@@ -242,7 +246,10 @@ EOF
                             [Dd]|[Dd]iff)
                                 cat <<'EOF' | uv run python3 - "$changes_file" "$sourcedir/scripts/show-git-changes.py"
 import json, subprocess, sys
-changes = json.load(open(sys.argv[1]))
+raw = json.load(open(sys.argv[1]))
+changes = raw["changes"] if isinstance(raw, dict) else raw
+ai_config = raw.get("ai_review", {}) if isinstance(raw, dict) else {}
+ai_config_json = json.dumps(ai_config)
 script = sys.argv[2]
 for c in changes:
     if c.get('review', True):
@@ -263,6 +270,7 @@ for c in changes:
             cmd += ['--ai-timeout', str(c['ai_timeout'])]
         for pat in (c.get('review_paths') or []):
             cmd += ['--review-paths', pat]
+        cmd += ['--config-json', ai_config_json]
         subprocess.run(cmd)
 EOF
                                 ;;
@@ -291,7 +299,8 @@ EOF
                         echo "Git lock updates:"
                         cat <<'EOF' | uv run python3 - "$changes_file"
 import json, sys
-changes = json.load(open(sys.argv[1]))
+raw = json.load(open(sys.argv[1]))
+changes = raw["changes"] if isinstance(raw, dict) else raw
 for c in changes:
     if c.get('kind') == 'tag':
         old = c['old_sha'] if c['old_sha'] else '(new)'
