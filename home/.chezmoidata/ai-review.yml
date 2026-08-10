@@ -1,0 +1,21 @@
+ai_review:
+  fallback_chain: [claude, codex, pi]
+
+  fallback_timeout: 480
+
+  agents:
+    claude:
+      model: sonnet
+      timeout: 120
+      model_timeouts:
+        opus: 300
+    codex:
+      timeout: 120
+    agent:
+      timeout: 120
+    pi:
+      timeout: 120
+      model_timeouts:
+        local: 60
+    qwen:
+      timeout: 480
