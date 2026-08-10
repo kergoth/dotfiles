@@ -55,3 +55,4 @@ Session.vim
 **/.claude/.cc-writes/
 **/.claude/settings.local.json
 .agent/tasks/
+.superpowers/
