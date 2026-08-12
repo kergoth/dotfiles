@@ -279,6 +279,7 @@ Per-source review metadata:
 - `chezmoi-edit-encrypted` script for editing encrypted files
 - Bootstrap scripts retrieve age key from 1Password during setup
 - **Encrypted fragment inclusion**: non-managed `.age` files can be spliced into templates via `include | decrypt` (e.g., `joinPath .chezmoi.sourceDir ".chezmoitemplates/external/agent-content-work.toml.age" | include | decrypt`). Used for work-only chezmoi externals where the content (repo URLs) must stay encrypted in the public repo.
+- **Commit messages touching encrypted content**: this repo is public. When a commit changes an `.age` file, keep the subject and body vague — describe the shape of the change ("correct team org structure", "add a new entry") without naming plaintext specifics (people, companies, tools, internal URLs) the encryption is meant to protect.
 
 ### Agent Configuration
 
@@ -338,6 +339,8 @@ Chimera uses musl libc — glibc-linked binaries (1Password, Vivaldi, Zed) can't
 ## Commit Message Scope
 
 Repo spans many unrelated components (shell config, editor config, Home Manager packages, scripts, agent skills). Bare subject like "Fix the timeout bug" doesn't say which one. Prefix subject with affected component, lowercase, colon + space: `claude:`, `zsh:`, `chezmoi:`, `find-session:`, `git-commits:`. Use directory/tool name a reader already recognizes; skip prefix only for genuinely repo-wide changes (e.g. top-level README edit). Rest of subject lowercase too: `claude: fix timeout bug`, not `claude: Fix Timeout Bug`. Don't restate scope in description: `claude: point at git-commits skill`, not `claude: point CLAUDE.md at git-commits skill` — prefix already says whose territory this is.
+
+Scope by subsystem, not by containing top-level directory. Directories like `settings/` or `scripts/` hold many unrelated components and are exactly the kind of umbrella the prefix exists to avoid — `settings:` for a change under `settings/agents/rules/` is as uninformative as no prefix at all. Name the subsystem instead: `agents:` for agent rule/config content, even though the file lives under `settings/agents/`.
 
 ## Development Workflow
 
