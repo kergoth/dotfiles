@@ -273,6 +273,12 @@ docker_server_arch() {
     printf "%s" "unknown"
 }
 
+check_docker_running() {
+    if ! docker info >/dev/null 2>&1; then
+        die "docker daemon not reachable; is Docker/Colima running?"
+    fi
+}
+
 build_image() {
     image_name=$1
     build_context=$2
@@ -280,6 +286,7 @@ build_image() {
 
     msg "Building %s..." "$image_name"
     if [ "${distro:-}" = "arch" ]; then
+        check_docker_running
         arch=$(docker_server_arch)
         case "$arch" in
             amd64)
