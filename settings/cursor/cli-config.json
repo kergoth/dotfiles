@@ -5,5 +5,9 @@
     "type": "command",
     "command": "~/.cursor/statusline.sh",
     "padding": 2
+  },
+  "attribution": {
+    "attributeCommitsToAgent": false,
+    "attributePRsToAgent": false
   }
 }
