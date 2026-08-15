@@ -52,6 +52,17 @@ it would play and choose a better construction:
 The goal is not to swap em dashes for other punctuation. It is to
 restructure the sentence so no dash-like pivot is needed.
 
+**Don't let the colon become the new dash.** "Term: gloss" is a common
+fallback when converting a dash away. In running prose, a colon needs a
+complete clause in front of it. "These topics are about participation:
+can people join…" works; "Topics about participation: can people
+join…" does not, since the noun-phrase fragment before the colon is a
+label. Labels are fine in a list item or heading, not in prose,
+regardless of where in the paragraph the sentence falls. This holds
+even for a single instance; it's not just a repetition problem, though
+repeating the same label-colon shape across several sentences or list
+items compounds the mechanical feel.
+
 ## Additional structural guidance
 
 These patterns are how careful readers spot AI-generated prose even when
@@ -73,6 +84,18 @@ a conjunction.
 **Let paragraphs end.** Not every paragraph needs a transition to the
 next. Sometimes the thought is complete and the next paragraph can start
 fresh without a bridge.
+
+**Watch for compound-modifier neologisms.** Bolting a suffix like
+`-facing`, `-oriented`, `-driven`, `-first`, or `-forward` onto a noun to
+mint an on-the-spot classification label ("participation-facing,"
+"purpose-facing") manufactures a taxonomy term instead of reaching for
+an existing word. Flag it when the compound isn't one you'd find in
+ordinary use; nobody says "participation-facing" outside this
+construction. Leave established compounds alone: "user-facing,"
+"customer-facing," "data-driven," "mobile-first," and similar are
+standard vocabulary, not neologisms. Name the actual distinction in
+plain language instead: "about participation" beats
+"participation-facing."
 
 ## Context adjustments
 
