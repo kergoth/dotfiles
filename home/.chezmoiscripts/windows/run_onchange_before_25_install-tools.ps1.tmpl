@@ -21,7 +21,7 @@ RefreshEnvPath
 {{-   $codex_url := "" -}}
 {{-   if $codex_rust_target -}}
 {{-     $codex_sha256 = index .fetch_lock (index $codex_windows_fetch_key_map .chezmoi.arch) -}}
-{{-     $codex_url = printf "https://github.com/openai/codex/releases/download/%s/codex-%s.exe.tar.gz" $codex_tag $codex_rust_target -}}
+{{-     $codex_url = printf "https://github.com/openai/codex/releases/download/%s/codex-package-%s.tar.gz" $codex_tag $codex_rust_target -}}
 {{-   end -}}
 {{-   $rg := includeTemplate "find-tool" (dict "root" . "tool" "rg") -}}
 {{-   $codex_direct_install := and $rg (eq (len $codex_sha256) 64) -}}
@@ -118,17 +118,70 @@ if (Get-Command codex -ErrorAction SilentlyContinue) {
 if ($currentCodexVersion -ne "{{ $codex_version }}") {
     Write-Host "Installing Codex {{ $codex_version }}"
     $codexTmpDir = Join-Path $env:TEMP "codex-install-$([System.IO.Path]::GetRandomFileName())"
+    $codexHome = if ([string]::IsNullOrWhiteSpace($env:CODEX_HOME)) {
+        Join-Path $env:USERPROFILE ".codex"
+    } else {
+        $env:CODEX_HOME
+    }
+    $codexStandaloneRoot = Join-Path $codexHome "packages\standalone"
+    $codexReleasesDir = Join-Path $codexStandaloneRoot "releases"
+    $codexReleaseDir = Join-Path $codexReleasesDir "{{ $codex_version }}-{{ $codex_rust_target }}"
+    $codexCurrentDir = Join-Path $codexStandaloneRoot "current"
+    $codexVisibleBinDir = $env:XDG_BIN_HOME
     New-Item -ItemType Directory -Path $codexTmpDir -Force | Out-Null
     try {
-        $codexArchive = Join-Path $codexTmpDir "codex.exe.tar.gz"
+        $codexArchive = Join-Path $codexTmpDir "codex-package.tar.gz"
+        $codexStagingDir = Join-Path $codexReleasesDir ".staging.{{ $codex_version }}-{{ $codex_rust_target }}.$PID"
         & "$env:CHEZMOI_COMMAND_DIR\scripts\fetch-verified.ps1" `
             "{{ $codex_url }}" `
             "{{ $codex_sha256 }}" `
             -OutFile $codexArchive
-        tar -xzf $codexArchive -C $codexTmpDir
-        $codexExe = Get-ChildItem -Path $codexTmpDir -Filter "codex.exe" -Recurse | Select-Object -First 1
-        New-Item -ItemType Directory -Path $env:XDG_BIN_HOME -Force | Out-Null
-        Move-Item -Force $codexExe.FullName (Join-Path $env:XDG_BIN_HOME "codex.exe")
+
+        New-Item -ItemType Directory -Path $codexReleasesDir -Force | Out-Null
+        if (Test-Path -LiteralPath $codexStagingDir) {
+            Remove-Item -LiteralPath $codexStagingDir -Recurse -Force
+        }
+        New-Item -ItemType Directory -Path $codexStagingDir -Force | Out-Null
+        tar -xzf $codexArchive -C $codexStagingDir
+
+        $codexRequiredPackagePaths = @(
+            "codex-package.json",
+            "bin\codex.exe",
+            "bin\codex-code-mode-host.exe",
+            "codex-path\rg.exe",
+            "codex-resources\codex-command-runner.exe",
+            "codex-resources\codex-windows-sandbox-setup.exe"
+        )
+        foreach ($codexRequiredPackagePath in $codexRequiredPackagePaths) {
+            $codexFullPath = Join-Path $codexStagingDir $codexRequiredPackagePath
+            if (-not (Test-Path -LiteralPath $codexFullPath)) {
+                throw "Codex package is missing expected entry: $codexRequiredPackagePath"
+            }
+        }
+
+        $codexInstalledVersion = ""
+        $codexVersionOutput = & (Join-Path $codexStagingDir "bin\codex.exe") --version 2>$null
+        if ($codexVersionOutput -match '([0-9]+\.[0-9]+\.[0-9]+)') {
+            $codexInstalledVersion = $Matches[1]
+        }
+        if ($codexInstalledVersion -ne "{{ $codex_version }}") {
+            throw "Installed Codex version $codexInstalledVersion does not match expected {{ $codex_version }}"
+        }
+
+        if (Test-Path -LiteralPath $codexReleaseDir) {
+            Remove-Item -LiteralPath $codexReleaseDir -Recurse -Force
+        }
+        Move-Item -LiteralPath $codexStagingDir -Destination $codexReleaseDir
+
+        if (Test-Path -LiteralPath $codexCurrentDir) {
+            Remove-Item -LiteralPath $codexCurrentDir -Recurse -Force
+        }
+        New-Item -ItemType Junction -Path $codexCurrentDir -Target $codexReleaseDir | Out-Null
+
+        if (Test-Path -LiteralPath $codexVisibleBinDir) {
+            Remove-Item -LiteralPath $codexVisibleBinDir -Recurse -Force
+        }
+        New-Item -ItemType Junction -Path $codexVisibleBinDir -Target (Join-Path $codexCurrentDir "bin") | Out-Null
     } finally {
         Remove-Item -Recurse -Force $codexTmpDir
     }

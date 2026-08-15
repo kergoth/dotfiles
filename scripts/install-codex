@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # Usage: install-codex --tag TAG --version VERSION --url URL --sha256 DIGEST
 #
-# Install a pinned Codex release asset and remove any legacy package-manager
-# installation. Idempotent: skips the download if the requested version is
-# already present at ~/.local/bin/codex.
+# Install a pinned Codex package release and remove any legacy package-manager
+# installation. Idempotent: skips the download if the requested package is
+# already installed under ~/.codex/packages/standalone.
 #
 # Options:
 #     --tag TAG         Git tag for the release (e.g. rust-v0.122.0)
@@ -23,6 +23,43 @@ usage() {
 die() {
     printf '%s: %s\n' "$scriptname" "$*" >&2
     exit 1
+}
+
+replace_path_with_symlink() {
+    local link_path=$1
+    local target_path=$2
+    local tmp_link=$3
+
+    ln -s "$target_path" "$tmp_link"
+    mv -f "$tmp_link" "$link_path"
+}
+
+version_from_binary() {
+    "$1" --version 2>/dev/null \
+        | sed -E 's/.*([0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z]+)*)/\1/' \
+        | head -n1
+}
+
+release_dir_is_complete() {
+    local release_dir=$1
+    local expected_version=$2
+    local expected_target=$3
+
+    [ -d "$release_dir" ] || return 1
+    [ "$(basename "$release_dir")" = "$expected_version-$expected_target" ] || return 1
+    [ -f "$release_dir/codex-package.json" ] || return 1
+    [ -x "$release_dir/bin/codex" ] || return 1
+    [ -x "$release_dir/bin/codex-code-mode-host" ] || return 1
+    [ -x "$release_dir/codex" ] || return 1
+    [ -x "$release_dir/codex-path/rg" ] || return 1
+
+    case "$expected_target" in
+        *linux*)
+            [ -x "$release_dir/codex-resources/bwrap" ] || return 1
+            ;;
+    esac
+
+    [ "$(version_from_binary "$release_dir/bin/codex")" = "$expected_version" ]
 }
 
 tag=
@@ -73,28 +110,46 @@ main() {
     [ -n "$url" ] || die "missing --url"
     [ -n "$sha256" ] || die "missing --sha256"
 
-    local local_bin="$HOME/.local/bin/codex"
+    local bin_dir="$HOME/.local/bin"
+    local local_bin="$bin_dir/codex"
+    local host_bin="$bin_dir/codex-code-mode-host"
+    local standalone_root="$HOME/.codex/packages/standalone"
+    local releases_dir="$standalone_root/releases"
+    local current_link="$standalone_root/current"
     local need_install=0
     local legacy_brew=0
     local legacy_npm=0
-    local current_version
     local archive_name
     local archive
-    local extracted
-    local candidate
+    local target
+    local release_dir
+    local stage_release
     local candidate_version
+    local tmp_link
 
-    mkdir -p "$HOME/.local/bin"
+    mkdir -p "$bin_dir" "$releases_dir"
 
-    current_version=
-    if [ -x "$local_bin" ]; then
-        current_version=$("$local_bin" --version 2>/dev/null \
-            | sed -E 's/.*([0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z]+)*)/\1/' \
-            | head -n1)
+    archive_name=${url##*/}
+    target=${archive_name#codex-package-}
+    target=${target%.tar.gz}
+    [ "$target" != "$archive_name" ] || die "expected codex package archive URL, got $archive_name"
+    [ -n "$target" ] || die "could not determine Codex target from $archive_name"
+    release_dir="$releases_dir/$version-$target"
+
+    if ! release_dir_is_complete "$release_dir" "$version" "$target"; then
+        need_install=1
     fi
 
-    if [ "$current_version" != "$version" ]; then
-        need_install=1
+    if [ "$need_install" -eq 0 ]; then
+        if [ "$(readlink "$local_bin" 2>/dev/null || true)" != "$current_link/bin/codex" ]; then
+            need_install=1
+        fi
+    fi
+
+    if [ "$need_install" -eq 0 ]; then
+        if [ "$(readlink "$host_bin" 2>/dev/null || true)" != "$current_link/bin/codex-code-mode-host" ]; then
+            need_install=1
+        fi
     fi
 
     if command -v brew >/dev/null 2>&1 && brew list --cask codex >/dev/null 2>&1; then
@@ -113,24 +168,37 @@ main() {
     fi
 
     printf 'Installing Codex %s from pinned release asset\n' "$version"
-    archive_name=${url##*/}
     archive="$tmpdir/$archive_name"
     fetch-verified -o "$archive" "$url" "$sha256"
-    tar -xzf "$archive" -C "$tmpdir"
 
-    extracted="$tmpdir/${archive_name%.tar.gz}"
-    [ -f "$extracted" ] || die "expected extracted binary $extracted"
+    stage_release="$releases_dir/.staging.$version-$target.$$"
+    rm -rf "$stage_release"
+    mkdir -p "$stage_release"
+    tar -xzf "$archive" -C "$stage_release"
+    chmod 0755 \
+        "$stage_release/bin/codex" \
+        "$stage_release/bin/codex-code-mode-host" \
+        "$stage_release/codex-path/rg"
+    if [ -f "$stage_release/codex-resources/bwrap" ]; then
+        chmod 0755 "$stage_release/codex-resources/bwrap"
+    fi
+    ln -sf "bin/codex" "$stage_release/codex"
 
-    candidate="$tmpdir/codex"
-    install -c -m 0755 "$extracted" "$candidate"
-
-    candidate_version=$("$candidate" --version 2>/dev/null \
-        | sed -E 's/.*([0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z]+)*)/\1/' \
-        | head -n1)
+    candidate_version=$(version_from_binary "$stage_release/bin/codex")
     [ "$candidate_version" = "$version" ] \
         || die "installed Codex version $candidate_version does not match expected $version"
 
-    mv "$candidate" "$local_bin"
+    rm -rf "$release_dir"
+    mv "$stage_release" "$release_dir"
+
+    tmp_link="$standalone_root/.current.$$"
+    replace_path_with_symlink "$current_link" "$release_dir" "$tmp_link"
+
+    tmp_link="$bin_dir/.codex.$$"
+    replace_path_with_symlink "$local_bin" "$current_link/bin/codex" "$tmp_link"
+
+    tmp_link="$bin_dir/.codex-code-mode-host.$$"
+    replace_path_with_symlink "$host_bin" "$current_link/bin/codex-code-mode-host" "$tmp_link"
 
     if [ "$legacy_brew" -eq 1 ]; then
         printf 'Removing legacy Homebrew Codex install\n'
@@ -144,7 +212,8 @@ main() {
         hash -r 2>/dev/null || true
     fi
 
-    command -v rg >/dev/null 2>&1 || die "ripgrep (rg) is unavailable after Codex migration"
+    "$local_bin" --version >/dev/null
+    [ -x "$host_bin" ] || die "Codex code-mode host is unavailable after install"
 }
 
 main "$@"

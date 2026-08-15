@@ -6,6 +6,7 @@ import subprocess
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 TEMPLATE = ROOT / "home/.chezmoiscripts/posix/run_onchange_before_25_install-tools.tmpl"
+WINDOWS_TEMPLATE = ROOT / "home/.chezmoiscripts/windows/run_onchange_before_25_install-tools.ps1.tmpl"
 
 
 def test_chimera_install_tools_template_renders_valid_bash():
@@ -159,3 +160,15 @@ def test_claude_installer_runs_with_isolated_curl_config():
 
     assert "curl -q -fsSL https://claude.ai/install.sh |\n" in rendered
     assert 'CURL_HOME="$tmpdir/curl-home" bash -s 2.1.197' in rendered
+
+
+def test_windows_codex_install_template_preserves_package_layout():
+    source = WINDOWS_TEMPLATE.read_text()
+
+    assert "codex-package-%s.tar.gz" in source
+    assert 'Join-Path $codexHome "packages\\standalone"' in source
+    assert "New-Item -ItemType Junction" in source
+    assert '"codex-path\\rg.exe"' in source
+    assert '"codex-resources\\codex-command-runner.exe"' in source
+    assert '"codex-resources\\codex-windows-sandbox-setup.exe"' in source
+    assert "Move-Item -Force $codexExe" not in source

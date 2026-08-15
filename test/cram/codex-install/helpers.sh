@@ -18,13 +18,24 @@ make_codex_archive() {
     version=$1
     stage="$WORKDIR/archive-stage"
     rm -rf "$stage"
-    mkdir -p "$stage"
-    cat >"$stage/codex-aarch64-apple-darwin" <<EOF
+    mkdir -p "$stage/bin" "$stage/codex-path"
+    printf '{}\n' >"$stage/codex-package.json"
+    cat >"$stage/bin/codex" <<EOF
 #!/bin/sh
 printf 'codex %s\n' "$version"
 EOF
-    chmod +x "$stage/codex-aarch64-apple-darwin"
-    tar -czf "$WORKDIR/codex-aarch64-apple-darwin.tar.gz" -C "$stage" codex-aarch64-apple-darwin
+    cat >"$stage/bin/codex-code-mode-host" <<'EOF'
+#!/bin/sh
+printf 'codex-code-mode-host\n'
+EOF
+    cat >"$stage/codex-path/rg" <<'EOF'
+#!/bin/sh
+printf 'package-rg\n'
+EOF
+    chmod +x "$stage/bin/codex"
+    chmod +x "$stage/bin/codex-code-mode-host"
+    chmod +x "$stage/codex-path/rg"
+    tar -czf "$WORKDIR/codex-package-aarch64-apple-darwin.tar.gz" -C "$stage" .
 }
 
 write_fake_fetch_verified() {
@@ -53,7 +64,7 @@ cp "$FAKE_FETCH_ARCHIVE" "$outfile"
 EOF
     chmod +x "$BINDIR/fetch-verified"
     export FAKE_FETCH_MODE=$mode
-    export FAKE_FETCH_ARCHIVE="$WORKDIR/codex-aarch64-apple-darwin.tar.gz"
+    export FAKE_FETCH_ARCHIVE="$WORKDIR/codex-package-aarch64-apple-darwin.tar.gz"
     : >"$WORKDIR/fetch-verified.log"
 }
 
@@ -89,6 +100,6 @@ run_install_codex() {
     bash "$REPO_ROOT/scripts/install-codex" \
         --tag rust-v0.122.0 \
         --version 0.122.0 \
-        --url https://example.invalid/codex-aarch64-apple-darwin.tar.gz \
+        --url https://example.invalid/codex-package-aarch64-apple-darwin.tar.gz \
         --sha256 deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
 }

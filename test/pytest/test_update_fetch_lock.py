@@ -61,7 +61,7 @@ def test_resolve_url_with_codex_release_tag_preserves_full_tag():
     source = {
         "url_template": (
             "https://github.com/openai/codex/releases/download/"
-            "{version}/codex-aarch64-apple-darwin.tar.gz"
+            "{version}/codex-package-aarch64-apple-darwin.tar.gz"
         ),
         "version_source": "git_lock.codex_cli",
     }
@@ -69,7 +69,7 @@ def test_resolve_url_with_codex_release_tag_preserves_full_tag():
     assert (
         resolve_url(data, source)
         == "https://github.com/openai/codex/releases/download/"
-        "rust-v0.122.0/codex-aarch64-apple-darwin.tar.gz"
+        "rust-v0.122.0/codex-package-aarch64-apple-darwin.tar.gz"
     )
 
 

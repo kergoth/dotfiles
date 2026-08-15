@@ -11,8 +11,15 @@ Migration from Homebrew installs the pinned local binary and removes the cask:
   Removing legacy Homebrew Codex install
   $ "$HOME/.local/bin/codex" --version
   codex 0.122.0
+  $ "$HOME/.local/bin/codex-code-mode-host"
+  codex-code-mode-host
+  $ readlink "$HOME/.local/bin/codex"
+  */.codex/packages/standalone/current/bin/codex (glob)
+  $ readlink "$HOME/.local/bin/codex-code-mode-host"
+  */.codex/packages/standalone/current/bin/codex-code-mode-host (glob)
+  $ test -x "$HOME/.codex/packages/standalone/current/codex-path/rg"
   $ cat "$WORKDIR/fetch-verified.log"
-  -o */codex-aarch64-apple-darwin.tar.gz https://example.invalid/codex-aarch64-apple-darwin.tar.gz deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef (glob)
+  -o */codex-package-aarch64-apple-darwin.tar.gz https://example.invalid/codex-package-aarch64-apple-darwin.tar.gz deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef (glob)
   $ cat "$WORKDIR/brew.log"
   list --cask codex
   uninstall --cask codex
