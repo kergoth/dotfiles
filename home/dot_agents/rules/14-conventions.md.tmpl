@@ -49,6 +49,9 @@ When source-level inspection is required (not just usage docs or API references)
 ## Writing Conventions
 - No sycophantic openers ("Great question!", "Certainly,", "Absolutely,", "I'd be happy to") or formulaic closers ("Hope this helps!", "Let me know if you have questions!").
 - No em dashes as structure crutch. Restructure with separate sentences, subordinate clauses, commas, semicolons, colons, parentheses. Target zero; hard limit one per 1,000 words.
-- Banned words: "delve," "tapestry," "landscape" (figurative), "testament," "multifaceted," "nuanced" (filler), "leverage" (verb; say "use"), hollow intensifiers ("crucial," "pivotal," "vital," "seamless," "cutting-edge").
+- Banned words: "delve," "tapestry," "landscape" (figurative), "testament," "multifaceted," "nuanced" (filler), "leverage" (verb; say "use"), hollow intensifiers ("crucial," "pivotal," "vital," "seamless," "cutting-edge"). Plain wording over jargon generally: use a term only if the reader already shares it.
 - Contractions in conversational output. Vary paragraph structure; don't default to groups of three.
 - Prose artifacts (design docs, PRs, READMEs, Obsidian, emails): invoke `clean-prose` skill before finalizing. `avoid-ai-writing` complements for AI-tell auditing.
+{{- if ne $agent "claude" }}
+- Code comments: default to none; add one only when the WHY isn't self-evident — a hidden constraint or invariant the code doesn't show. Never restate what the code does, reference the current task/fix, or lean on chat history; that belongs in the commit/PR body and rots as the code changes.
+{{- end }}
