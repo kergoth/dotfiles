@@ -2,6 +2,25 @@
 
 This document captures preferred Bash/POSIX shell scripting style.
 
+## Table of Contents
+
+- [Interpreter and Safety](#interpreter-and-safety)
+- [File Structure](#file-structure)
+- [Comments](#comments)
+- [Argument Parsing](#argument-parsing)
+- [Saving and Restoring Arguments (POSIX sh only)](#saving-and-restoring-arguments-posix-sh-only)
+- [Formatting](#formatting)
+- [Variable Practices](#variable-practices)
+- [Temporary Files and Cleanup](#temporary-files-and-cleanup)
+- [Messaging Functions](#messaging-functions)
+- [Command Execution](#command-execution)
+- [Control Practices](#control-practices)
+- [Function Practices](#function-practices)
+- [File System and State](#file-system-and-state)
+- [Tools and Parsing](#tools-and-parsing)
+- [Error Handling](#error-handling)
+- [Miscellaneous](#miscellaneous)
+
 ## Interpreter and Safety
 
 - Bash scripts start with `#!/usr/bin/env bash` and `set -euo pipefail`.
@@ -13,7 +32,7 @@ This document captures preferred Bash/POSIX shell scripting style.
 
 ## File Structure
 
-**Note on script complexity**: The guidance below applies to scripts of moderate to high complexity. For extremely simple scripts (e.g., simple filters that only process stdin/stdout with no arguments, single-command wrappers), it's acceptable to skip the full structure (argument parsing, verbosity handling, `main()` function, etc.) and keep the script minimal. Use your judgment - if the script is just a shebang and a simple command or pipeline, the full structure is unnecessary overhead.
+**Note on script complexity**: This structure applies to scripts of moderate to high complexity. Simple scripts (stdin/stdout filters, single-command wrappers) can skip it and stay minimal - a shebang plus a command or pipeline is fine on its own.
 
 - Include a `usage()` or `show_help()` function at the top before all other functions.
 - Use `main()` as the entry point and keep top-level code minimal.
@@ -290,7 +309,7 @@ EOF
 ## Control Practices
 
 - Allow `|| true` only when intentionally masking errors.
-- Avoid `[[ … ]] && action` with `set -e`.
+- Avoid `predicate && action` with `set -e` as a standalone statement (`[[ … ]]`, `[ … ]`, `grep -q`, `command -v`, or any other test-like command used as a pseudo-if). When the predicate is false, the whole `&&` list's exit status is nonzero, and since the statement isn't inside an `if`/`while`/`until` condition or another `&&`/`||` chain, `set -e` treats that as a script-ending error rather than an expected false result. This only bites when the first command is a check whose failure is a normal outcome; plain sequential commands like `mkdir -p foo && cd foo` don't have this problem; mkdir failing should stop the script anyway.
 - Avoid `A && B || C` as a substitute for `if/else`. The intent is usually "if A succeeds do B, otherwise do C", but `C` runs whenever `B` fails too — not only when `A` fails. Use an explicit `if/else`:
   ```bash
   # Wrong: "Failed" also prints if chmod fails, even though cp succeeded
@@ -363,11 +382,6 @@ EOF
   **Exception cases where `grep -q` is safe**:
   - `echo "text" | grep -q "pattern"` is fine because echo only outputs one line, so early exit doesn't matter
   - POSIX sh scripts with `set -eu` (without `pipefail`) don't have this issue
-
-  **The fix**: Always use `>/dev/null` instead of `-q` when grep is in a pipeline with `pipefail` enabled. The performance difference is negligible in practice, and correctness is more important.
-- **Options for improving error handling**:
-  - Drop `-e` and add explicit error checking everywhere, but this is error-prone in its own way since it's easy to miss checks.
-  - Use exit/error signal handlers (ERR trap) to provide useful information when exiting due to `set -e`, even to the point of providing tracebacks. This approach is on the radar as a future improvement but hasn't been incorporated into the style yet.
 
 ## Miscellaneous
 
