@@ -54,7 +54,7 @@ folders before first run.
 
 **Avoid "Update X with Y" subject construction.** Using `with` as a connector ("Update README with details on X") obscures intent and makes every commit look identical at a glance. Prefer a verb that names the actual change: "Document X in README", "Explain X setup", "Clarify X behavior", "Remove Y from Z".
 
-For commit message bodies longer than two sentences, invoke the clean-prose skill before finalizing. Subject lines and one-line bodies don't need it.
+For commit message bodies longer than two sentences, invoke the clean-prose skill before finalizing. That pass is what catches jargon-heavy bodies that still pass the structural checks below. Subject lines and one-line bodies don't need it.
 
 **Commit message input:** Do not trust `git commit -m` to format body text.
 Git stores each message argument exactly as passed; it never wraps long lines.
@@ -88,7 +88,7 @@ The merged history is the project's narrative: what changed and why, told in log
 - Before staging, run `git status`. If files you're about to modify already have unstaged or staged work, surface it before proceeding rather than mingling unrelated changes into your commit.
 - Verify edits actually succeeded before committing; check `git diff` if uncertain.
 - Before committing, run `git diff --cached` and confirm the staged diff contains only the changes you intended. If pre-existing work has been staged alongside, separate it with `git restore --staged <path>`, `git stash --keep-index`, or `git add -p` before committing.
-- After committing or amending, verify the final commit message before reporting success. Check subject length, body wrapping, blank-line structure, self-contained body content, and absence of workflow narration. If any check fails, amend immediately.
+- After committing or amending, verify the final commit message before reporting success. Check subject length, body wrapping, blank-line structure, self-contained body content, and absence of workflow narration. If the body is more than two sentences, confirm the clean-prose skill was applied. Reciting the patch's field and flag names is not a WHY; keep a name only when it is the distinction the reader needs (which lock, which path, which silent-failure flag). If any check fails, amend immediately.
 - Before pushing for review, run `git log <base>..HEAD` (where `<base>` is the merge target, usually `main` or `origin/main`) and read the series. Each subject describes a code change rather than a workflow event; bodies explain why the change exists rather than narrating implementation detail (a common autosquash and agent artifact); no `fixup!` or `squash!` commits remain; the order tells a coherent story. If any check fails, curate before pushing.
 
 ## Claude Code: sandbox and agent sockets
