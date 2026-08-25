@@ -65,7 +65,8 @@ If a result is clearly the current session (the one you're running in right now)
       "has_custom_name": boolean,          // true only when session_name came from an explicit /rename; false for fallback names
       "resume_command":  string,           // agent-specific resume command
       "away_summary":    string | null,    // recap summary stored by Claude Code on session pause; null if none
-      "project_dir":     string,           // absolute path to project cwd; Cursor may be "" when workspaceStorage is unmapped
+      "project_dir":     string,           // absolute path to project cwd; empty when unresolved
+      "project_slug":    string,           // Cursor only — ~/.cursor/projects/<slug> directory name
       "first_timestamp": string,           // ISO8601
       "last_timestamp":  string,           // ISO8601
       "match_count":     number,           // keyword hit count (relevance signal)
@@ -182,7 +183,7 @@ Found N sessions matching "<keywords>":
 
 ## Step 6: Provide resume command(s)
 
-Use `resume_command` from the search output when available.
+Use `resume_command` from the search output when it is non-empty. Do not invent a `cd` directory. If `resume_command` is empty, do not guess from the prompt, a filename, or `cd .` — Cursor `--resume` is workspace-scoped and a wrong directory silently starts a new session. Tell the user the session was found (`session_id`, `project_slug` if present) but the workspace path could not be resolved uniquely.
 
 Claude example:
 
@@ -202,9 +203,9 @@ Cursor example:
 cd <project_dir> && agent --resume <session_id>
 ```
 
-**Cursor resume warning:** `agent --resume` with an invalid UUID silently starts a fresh session instead of erroring. Always use the full parent UUID from search output.
+**Cursor resume warning:** `agent --resume` with an invalid UUID, or a valid UUID from the wrong workspace, silently starts a fresh session instead of erroring. Always use the full parent UUID from search output. Never run `cd . && agent --resume …` as a substitute.
 
-**Cursor platform note:** `project_dir` resolution reads Cursor `workspaceStorage/*/workspace.json` from macOS (`~/Library/Application Support/Cursor/User/workspaceStorage`) and Linux (`~/.config/Cursor/User/workspaceStorage`). Unmapped workspaces or hosts without Cursor installed leave `project_dir` empty; resume falls back to `cd .`.
+**Cursor platform note:** `project_dir` resolution prefers Cursor `workspaceStorage/*/workspace.json` (macOS `~/Library/Application Support/Cursor/User/workspaceStorage`, Linux `~/.config/Cursor/User/workspaceStorage`). If that mapping is missing, the script reconstructs a unique existing directory whose Cursor slug matches `project_slug` (`.` and `/` both become `-` in slugs). Missing or ambiguous reconstructions leave `project_dir` and `resume_command` empty.
 
 **Cursor project scope:** When the expected slug directory is missing, search falls back to a global scan but still filters by `--cwd`: prefer the `workspaceStorage` mapping for that path, otherwise compare realpaths (symlinks resolve). Unrelated `--cwd` values return no results; use `--scope global` to search all projects.
 

@@ -1,4 +1,5 @@
 import json
+import shlex
 import sqlite3
 import subprocess
 import sys
@@ -24,6 +25,7 @@ from executable_search_sessions import (
     cursor_slug,
     cursor_transcript_parent_id,
     cursor_workspace_storage_dirs,
+    resolve_cursor_slug_path,
     extract_text,
     extract_session_data,
     find_files_by_session_ids_across_providers,
@@ -859,6 +861,41 @@ def test_build_resume_command_cursor():
     )
 
 
+def test_build_resume_command_empty_project_dir():
+    data = {
+        "project_dir": "",
+        "session_id": "efc4a65e-6720-4793-8d9c-0d923d3a771a",
+    }
+    assert build_resume_command("cursor", data) == ""
+    assert build_resume_command("claude", data) == ""
+
+
+def test_resolve_cursor_slug_path_dotted_directory(tmp_path):
+    target = tmp_path / "Downloads" / "developer.axis.com" / "vapix-md"
+    target.mkdir(parents=True)
+    slug = cursor_slug(str(target))
+
+    assert resolve_cursor_slug_path(slug, search_roots=[tmp_path]) == str(target)
+
+
+def test_resolve_cursor_slug_path_ambiguous(tmp_path):
+    dotted = tmp_path / "Downloads" / "developer.axis.com" / "vapix-md"
+    split = tmp_path / "Downloads" / "developer" / "axis" / "com" / "vapix-md"
+    dotted.mkdir(parents=True)
+    split.mkdir(parents=True)
+    slug = cursor_slug(str(dotted))
+    assert cursor_slug(str(split)) == slug
+
+    assert resolve_cursor_slug_path(slug, search_roots=[tmp_path]) == ""
+
+
+def test_resolve_cursor_slug_path_missing(tmp_path):
+    assert resolve_cursor_slug_path(
+        "Downloads-missing-workspace",
+        search_roots=[tmp_path],
+    ) == ""
+
+
 def test_cursor_extract_session_data_builds_record(tmp_path):
     slug = "Users-chris-dotfiles"
     parent = "efc4a65e-6720-4793-8d9c-0d923d3a771a"
@@ -892,6 +929,62 @@ def test_cursor_extract_session_data_builds_record(tmp_path):
     assert data["away_summary"] is None
     assert data["match_count"] >= 1
     assert "agent --resume" in data["resume_command"]
+
+
+def test_cursor_extract_session_data_reconstructs_unmapped_slug(tmp_path):
+    workspace = tmp_path / "Downloads" / "developer.axis.com" / "vapix-md"
+    workspace.mkdir(parents=True)
+    slug = cursor_slug(str(workspace))
+    parent = "99e734eb-20cd-4733-8b39-a22667f49fba"
+    transcript_dir = tmp_path / "projects" / slug / "agent-transcripts" / parent
+    transcript_dir.mkdir(parents=True)
+    parent_file = transcript_dir / f"{parent}.jsonl"
+    parent_file.write_text("\n".join([
+        make_cursor_message("user", "<user_query>\naxis capture\n</user_query>"),
+        make_cursor_message("assistant", "axis capture details"),
+    ]) + "\n")
+
+    empty_ws = tmp_path / "workspaceStorage"
+    empty_ws.mkdir()
+    provider = CursorProvider(
+        projects_root=tmp_path / "projects",
+        workspace_storage=empty_ws,
+        slug_search_roots=[tmp_path],
+    )
+    data = provider.extract_session_data(parent_file, ["axis"], "quick")
+
+    assert data is not None
+    assert data["project_slug"] == slug
+    assert data["project_dir"] == str(workspace)
+    assert data["resume_command"] == (
+        f"cd {shlex.quote(str(workspace))} && agent --resume {parent}"
+    )
+
+
+def test_cursor_extract_session_data_omits_resume_when_unresolved(tmp_path):
+    slug = "Downloads-missing-workspace"
+    parent = "99e734eb-20cd-4733-8b39-a22667f49fba"
+    transcript_dir = tmp_path / "projects" / slug / "agent-transcripts" / parent
+    transcript_dir.mkdir(parents=True)
+    parent_file = transcript_dir / f"{parent}.jsonl"
+    parent_file.write_text("\n".join([
+        make_cursor_message("user", "<user_query>\naxis capture\n</user_query>"),
+        make_cursor_message("assistant", "axis capture details"),
+    ]) + "\n")
+
+    empty_ws = tmp_path / "workspaceStorage"
+    empty_ws.mkdir()
+    provider = CursorProvider(
+        projects_root=tmp_path / "projects",
+        workspace_storage=empty_ws,
+        slug_search_roots=[tmp_path],
+    )
+    data = provider.extract_session_data(parent_file, ["axis"], "quick")
+
+    assert data is not None
+    assert data["project_slug"] == slug
+    assert data["project_dir"] == ""
+    assert data["resume_command"] == ""
 
 
 def test_cursor_extract_session_data_subagent_only_uses_parent_name(tmp_path):
@@ -1058,6 +1151,26 @@ def test_cursor_search_files_project_scope_fallback_direct_path(tmp_path):
     )
     assert cursor_slug(str(link)) != transcript_slug
     files = provider.search_files("project", str(link), ["marketplace"])
+    assert files == [keep]
+
+
+def test_cursor_search_files_project_scope_fallback_reconstructed_path(tmp_path):
+    workspace = tmp_path / "Downloads" / "developer.axis.com" / "vapix-md"
+    workspace.mkdir(parents=True)
+    slug = cursor_slug(str(workspace))
+    parent = "efc4a65e-6720-4793-8d9c-0d923d3a771a"
+    keep = tmp_path / slug / "agent-transcripts" / parent / f"{parent}.jsonl"
+    keep.parent.mkdir(parents=True)
+    keep.write_text(make_cursor_message("user", "marketplace here") + "\n")
+
+    empty_ws = tmp_path / "workspaceStorage"
+    empty_ws.mkdir()
+    provider = CursorProvider(
+        projects_root=tmp_path,
+        workspace_storage=empty_ws,
+        slug_search_roots=[tmp_path],
+    )
+    files = provider.search_files("project", str(workspace), ["marketplace"])
     assert files == [keep]
 
 

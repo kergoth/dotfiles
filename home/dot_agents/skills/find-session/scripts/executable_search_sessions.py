@@ -102,6 +102,83 @@ def cursor_slug(cwd: str) -> str:
     return re.sub(r"-+", "-", path)
 
 
+def _cursor_slug_is_prefix(path_slug: str, target_slug: str) -> bool:
+    if not path_slug:
+        return True
+    return target_slug == path_slug or target_slug.startswith(path_slug + "-")
+
+
+def _default_cursor_slug_roots(slug: str) -> list[Path]:
+    home = Path.home()
+    home_slug = cursor_slug(str(home))
+    roots: list[Path] = []
+    if home_slug and _cursor_slug_is_prefix(home_slug, slug):
+        roots.append(home)
+    roots.append(Path("/"))
+    return roots
+
+
+def _walk_cursor_slug_matches(root: Path, slug: str) -> list[Path]:
+    """Descend only into directories whose cursor slug prefixes the target."""
+    matches: list[Path] = []
+    if not root.exists() or not root.is_dir():
+        return matches
+    root_slug = "" if root == Path("/") else cursor_slug(str(root))
+    if root_slug == slug:
+        return [root]
+    if not _cursor_slug_is_prefix(root_slug, slug):
+        return matches
+
+    stack = [root]
+    while stack:
+        current = stack.pop()
+        try:
+            children = list(current.iterdir())
+        except OSError:
+            continue
+        for child in children:
+            try:
+                if child.is_symlink() or not child.is_dir():
+                    continue
+            except OSError:
+                continue
+            child_slug = cursor_slug(str(child))
+            if child_slug == slug:
+                matches.append(child)
+            elif _cursor_slug_is_prefix(child_slug, slug):
+                stack.append(child)
+    return matches
+
+
+def resolve_cursor_slug_path(
+    slug: str,
+    *,
+    search_roots: list[Path] | None = None,
+) -> str:
+    """Return the unique existing directory whose cursor_slug equals slug.
+
+    Cursor slugs collapse both '/' and '.' to '-', so one slug can match more
+    than one path. Return empty string when the path is missing or ambiguous.
+    """
+    if not slug:
+        return ""
+    roots = search_roots if search_roots is not None else _default_cursor_slug_roots(slug)
+    seen: set[str] = set()
+    matches: list[Path] = []
+    for root in roots:
+        for match in _walk_cursor_slug_matches(root, slug):
+            resolved = str(match)
+            if resolved in seen:
+                continue
+            seen.add(resolved)
+            matches.append(match)
+            if len(matches) > 1:
+                return ""
+    if len(matches) != 1:
+        return ""
+    return str(matches[0])
+
+
 def cursor_transcript_parent_id(jsonl_path: Path) -> str:
     """Return the parent agent session UUID for a transcript file."""
     parts = jsonl_path.parts
@@ -857,9 +934,11 @@ class CursorProvider:
         self,
         projects_root: Path = CURSOR_PROJECTS,
         workspace_storage: Path | list[Path] | None = None,
+        slug_search_roots: list[Path] | None = None,
     ):
         self.projects_root = projects_root
         self.workspace_storage = workspace_storage
+        self.slug_search_roots = slug_search_roots
         self._workspace_index: dict[str, str] | None = None
 
     def workspace_index(self) -> dict[str, str]:
@@ -920,6 +999,9 @@ class CursorProvider:
         if not slug:
             return ""
         folder = self.workspace_index().get(slug, "")
+        if folder:
+            return folder
+        folder = resolve_cursor_slug_path(slug, search_roots=self.slug_search_roots)
         if not folder:
             print(
                 f"Warning: no workspace mapping for Cursor project slug {slug!r}",
@@ -975,6 +1057,7 @@ class CursorProvider:
             "session_name": self.parent_session_name(jsonl_path, messages),
             "has_custom_name": False,
             "away_summary": None,
+            "project_slug": self.project_slug_from_path(jsonl_path),
             "project_dir": self.project_dir_for_path(jsonl_path),
             "first_timestamp": mtime,
             "last_timestamp": mtime,
@@ -1089,13 +1172,16 @@ def selected_providers(agent: str) -> list[object]:
 
 
 def build_resume_command(agent: str, data: dict) -> str:
-    project_dir = shlex.quote(data.get("project_dir") or ".")
+    project_dir = data.get("project_dir") or ""
+    if not project_dir:
+        return ""
+    quoted_dir = shlex.quote(project_dir)
     session_id = shlex.quote(data["session_id"])
     if agent == "codex":
-        return f"cd {project_dir} && codex resume {session_id}"
+        return f"cd {quoted_dir} && codex resume {session_id}"
     if agent == "cursor":
-        return f"cd {project_dir} && agent --resume {session_id}"
-    return f"cd {project_dir} && claude --resume {session_id}"
+        return f"cd {quoted_dir} && agent --resume {session_id}"
+    return f"cd {quoted_dir} && claude --resume {session_id}"
 
 
 def find_files_by_session_ids_across_providers(providers: list[object], session_ids: list[str]) -> list[tuple[object, Path]]:
