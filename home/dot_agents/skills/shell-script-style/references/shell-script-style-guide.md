@@ -97,7 +97,7 @@ This document captures preferred Bash/POSIX shell scripting style.
   }
   ```
 
--## Saving and Restoring Arguments (POSIX sh only)
+## Saving and Restoring Arguments (POSIX sh only)
 
 - When a POSIX sh wrapper needs to consume only some arguments but later replay or reorder the remainder, saving and restoring the positional args can help keep the logic linear.
 - Use the `saved` string and `eval set -- "$saved"` approach rather than manipulating `$@` directly; bash scripts should prefer arrays instead.
@@ -318,3 +318,61 @@ EOF
 ## File System and State
 
 - Prefer XDG directories for cache/state.
+- Avoid stale state across runs.
+- Use `.part` files and rename them on success.
+- Prune and namespace state to avoid reuse of stale artifacts.
+
+## Tools and Parsing
+
+- Use `jq` for JSON parsing whenever possible.
+- If JSON isn't available, fall back to clear `awk`/`grep` parsing.
+
+## Error Handling
+
+- Fail fast with explicit messages and exit codes.
+- Branch explicitly on alternatives.
+- **Use of `set -e`**: The `set -e` option (used in `set -euo pipefail`) is good to avoid continuing when the script should not. However, be careful with commands that legitimately return non-zero exit codes, especially in pipelines with `pipefail`.
+- **Storing exit codes with `set -e`**: If you need to store the exit code of a command for your logic, don't temporarily disable `set -e` with `set +e` - that gets messy fast. If you must temporarily disable it due to a complex case, do it in a subshell rather than in the parent and then re-enabling `set -e` when done. For simpler cases, use this common pattern:
+  ```bash
+  ret=0
+  some_command || ret=$?
+  # ... do something with $ret ...
+  ```
+  Always use `ret` as the variable name when storing exit/return codes, in this pattern or otherwise. This pattern also works well with multiple commands when you want to see if any of a series of commands failed, or when you want to continue but store a non-zero exit code for exiting later (such as a `-k` argument to continue as much as possible).
+- **Common pitfall with `grep` in pipelines**: When using `grep` in a pipeline, it returns a non-zero exit code when nothing is found, which will cause the script to exit immediately with `set -e` and `pipefail`. For example:
+  ```bash
+  # This will exit immediately if 'something' isn't found:
+  check_for_error=$(some command | grep something)
+  ```
+  To handle this, either:
+  - Use `|| true` to mask the expected non-zero exit: `check_for_error=$(some command | grep something || true)`
+  - Restructure to check the exit code explicitly before using the result
+  - In bash scripts with `pipefail`, redirect to `/dev/null` instead of using `-q` (see critical warning below)
+- **CRITICAL: Never use `grep -q` in pipelines with `pipefail`**: When `pipefail` is set (as in `set -euo pipefail` for bash scripts), using `grep -q` in a pipeline can cause the pipeline to fail even when grep successfully matches. This happens because `grep -q` exits immediately on the first match as a performance optimization, which sends `SIGPIPE` to the upstream process. This causes the upstream process to fail, which triggers `pipefail` to make the whole pipeline fail.
+  ```bash
+  # BAD - Can fail even when grep matches:
+  if some_command | grep -q "pattern"; then
+      echo "Found it"
+  fi
+
+  # GOOD - Use redirection to /dev/null instead:
+  if some_command | grep "pattern" >/dev/null; then
+      echo "Found it"
+  fi
+  ```
+  **Exception cases where `grep -q` is safe**:
+  - `echo "text" | grep -q "pattern"` is fine because echo only outputs one line, so early exit doesn't matter
+  - POSIX sh scripts with `set -eu` (without `pipefail`) don't have this issue
+
+  **The fix**: Always use `>/dev/null` instead of `-q` when grep is in a pipeline with `pipefail` enabled. The performance difference is negligible in practice, and correctness is more important.
+- **Options for improving error handling**:
+  - Drop `-e` and add explicit error checking everywhere, but this is error-prone in its own way since it's easy to miss checks.
+  - Use exit/error signal handlers (ERR trap) to provide useful information when exiting due to `set -e`, even to the point of providing tracebacks. This approach is on the radar as a future improvement but hasn't been incorporated into the style yet.
+
+## Miscellaneous
+
+- Avoid `.sh` suffixes in filenames.
+- Prefer dashes instead of underscores in script filenames.
+- Check scripts with the `shellcheck` tool to identify common issues.
+- Prefer the `shfmt` tool to format the script.
+- **When complexity grows too far**: If a shell script is becoming overly complex, difficult to maintain, or requiring workarounds for shell limitations (such as complex signal handling, intricate data structures, or sophisticated error recovery), it's time to switch to Python instead of shell.
