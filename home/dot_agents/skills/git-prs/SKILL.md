@@ -13,6 +13,10 @@ Check `.github/pull_request_template.md` and `.github/PULL_REQUEST_TEMPLATE.md`.
 
 Invoke the `clean-prose` skill before finalizing the PR description.
 
+## Title
+
+Same rule as commit subjects: goal/behavior over mechanism, unless the mechanism itself is the change (a migration, a protocol swap). It's what reviewers scan later, and often becomes the squash-merge commit subject. "Externalize tagging rules from the script", not "Load tagging rules from an external TOML config".
+
 ## Description hygiene
 
 - Remove or replace any placeholder text that would render in the PR body (for example, "type your description here") so the submitted description contains actual content rather than author instructions. Strip HTML comments and template scaffolding (for example, `<!-- replace this with X -->`); these don't render on GitHub but keep the description clean for future edits and copy-paste.
