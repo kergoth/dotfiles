@@ -270,6 +270,9 @@ My Kindle Content
 # Personal secrets
 .config/rclone/rclone.conf
 .config/chezmoi_github_token
+
+# Personal encrypted configuration
+.config/goodlinks/autotag.toml
 {{-   else }}
 # Work secrets
 .config/.jira/.config.yml
@@ -286,6 +289,9 @@ My Kindle Content
 .ssh/keys/work
 .ssh/keys/work.pub
 .config/chezmoi_github_token
+
+{{/* personal configuration encrypted with age */}}
+.config/goodlinks/autotag.toml
 
 {{/* common secrets */}}
 .gnupg
