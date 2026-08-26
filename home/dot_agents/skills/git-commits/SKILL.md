@@ -24,6 +24,8 @@ Local constraint: in `.jj` repos, invoke only for explicit Git-only commit inten
 
 ## Commit messages
 
+**Documented convention beats inferred, inferred beats default.** If no CONTRIBUTING/AGENTS.md/CLAUDE.md convention applies, check `git log --oneline` for an established local pattern — scope prefixes (`component: change`), tagging style, subject shape — before applying the defaults below, and match it if one exists. A subject that breaks a repo's own established shape is harder to scan against its own history, even where it satisfies every rule below on its own terms.
+
 Follow the [seven rules of commit messages](https://cbea.ms/git-commit):
 
 - Imperative mood in subject ("Add feature" not "Added feature")
