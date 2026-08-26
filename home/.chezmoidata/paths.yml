@@ -9,11 +9,13 @@ paths:
     - .cargo/bin
     - .local/share/cargo/bin
     - .nix-profile/bin
+    - .local/state/nix/profiles/profile/bin
   home_bins_windows:
     - AppData/Local/Microsoft/WindowsApps
     - AppData/Local/Programs/bin
 
   system_bins_darwin:
+    - /nix/var/nix/profiles/default/bin
     - /opt/homebrew/bin
     - /usr/local/bin
     - /opt/local/bin
@@ -21,6 +23,7 @@ paths:
     - /bin
 
   system_bins_linux:
+    - /nix/var/nix/profiles/default/bin
     - /usr/local/bin
     - /opt/bin
     - /usr/bin
