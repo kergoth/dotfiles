@@ -32,6 +32,8 @@ Follow the [seven rules of commit messages](https://cbea.ms/git-commit):
 - Subject lines name the change at a high level of abstraction — this aids navigation and is fine. Bodies explain WHY: motivation, constraints, and context the diff lacks.
 - Never narrate implementation detail the diff already shows. If the message would become redundant with `git show`, it is too low-level. "Fix session timeout under high load" is a good subject; "Add `last_event_time` field to `SessionStatus` dataclass, initialized via `__post_init__` to `start_time`" is diff narration.
 
+**Prefer goal/behavior over mechanism in the subject.** Name what changed, not the implementation reached for, unless the mechanism itself is the change (a migration, a protocol swap). Test: what would you `grep` history for later? "Load rules from an external TOML config" names the vehicle; "Externalize tagging rules from the public script" names the reason.
+
 Subject and body alike: describe the change, not the workflow event that produced it. Subject: replace "Fix tests", "Address review", "Continue work on X" with the actual code change. Body: cut narration of how the change was found ("Noticed while debugging X...", "Discovered mid-session that..."), even before a real WHY sentence. State the motivation directly, skip the lead-up.
 
 **Body-echoes-subject is not a body.** A body that merely rephrases the subject in past tense conveys nothing and is a strong AI-generation signal. Delete it or replace it with actual motivation:
