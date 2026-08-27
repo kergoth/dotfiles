@@ -67,7 +67,8 @@
 {{-     $codex_url := "" -}}
 {{-     $codex_sha256 := "" -}}
 {{-     $codex_direct_install := false -}}
-{{-     $npm_tools := dict -}}
+{{-     $pi_version := trimPrefix "v" (index $lock "pi") -}}
+{{-     $npm_tools := dict "pi" (printf "@earendil-works/pi-coding-agent@%s" $pi_version) -}}
 {{-     if not .steamdeck -}}
 {{-       $codex_tag = index $lock "codex_cli" -}}
 {{-       $codex_version = trimPrefix "rust-v" $codex_tag -}}

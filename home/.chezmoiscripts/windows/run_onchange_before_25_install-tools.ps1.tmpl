@@ -14,6 +14,7 @@ RefreshEnvPath
 {{-   $claude_version := trimPrefix "v" (index $lock "claude_code") -}}
 {{-   $codex_tag := index $lock "codex_cli" -}}
 {{-   $codex_version := trimPrefix "rust-v" $codex_tag -}}
+{{-   $pi_version := trimPrefix "v" (index $lock "pi") -}}
 {{-   $codex_windows_target_map := dict "amd64" "x86_64-pc-windows-msvc" "arm64" "aarch64-pc-windows-msvc" -}}
 {{-   $codex_windows_fetch_key_map := dict "amd64" "codex_windows_amd64_release" "arm64" "codex_windows_arm64_release" -}}
 {{-   $codex_rust_target := index $codex_windows_target_map .chezmoi.arch -}}
@@ -213,6 +214,21 @@ Write-Host "Installing cargo tool: {{ . }}"
 {{-     if $uv_path }}
 {{-       range $uv_to_install }}
 & "{{ $uv_path }}" tool install {{ . }}
+{{-       end }}
+{{-     end }}
+{{-   end }}
+
+{{-   $npm_tools := dict "pi" (printf "@earendil-works/pi-coding-agent@%s" $pi_version) -}}
+{{-   $npm_to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $npm_tools) | fromJson -}}
+{{-   if $npm_to_install -}}
+{{-     $npm_path := includeTemplate "find-tool" (dict "root" . "tool" "npm") -}}
+{{-     if $npm_path }}
+$env:NPM_CONFIG_PREFIX = Join-Path $env:USERPROFILE ".local"
+$env:NPM_CONFIG_CACHE = Join-Path $env:USERPROFILE ".cache\npm"
+$env:NPM_CONFIG_FUND = "false"
+$env:NPM_CONFIG_AUDIT = "false"
+{{-       range $npm_to_install }}
+& "{{ $npm_path }}" install -g {{ . }}
 {{-       end }}
 {{-     end }}
 {{-   end }}

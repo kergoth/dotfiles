@@ -50,6 +50,7 @@ Installed software varies by platform based on package availability and platform
 - **[jira-cli](https://github.com/ankitpokhrel/jira-cli)** (_Only on Work machines_): Feature-rich interactive Jira command line.
 - **[jujutsu](https://github.com/jj-vcs/jj)** ([Open-Source](https://github.com/jj-vcs/jj)): Git-compatible VCS that is both simple and powerful.
 - **[jq](https://github.com/stedolan/jq)**: A lightweight and flexible command-line JSON processor.
+- **[pi](https://pi.dev)** ([Open-Source](https://github.com/earendil-works/pi)): Minimal terminal coding agent harness.
 - **[ripgrep](https://github.com/BurntSushi/ripgrep)**: A line-oriented search tool that recursively searches the current directory for a regex pattern.
 - **[rusage.com](https://justine.lol/rusage/)**: Provides the best possible way to report resource usage statistics when launching command line programs.
 - **[sad](https://github.com/ms-jpq/sad)**: CLI search and replace | Space Age seD.
@@ -288,4 +289,3 @@ Installed software varies by platform based on package availability and platform
 - **[WiFi Analyzer](https://apps.microsoft.com/detail/9NBLGGH33N0N?hl=en-US&gl=US)**: Identify Wi-Fi problems or find the best channel.
 - **[Windows Firewall Control](https://www.binisoft.org/wfc)**: Managing Windows Firewall is now easier than ever.
 - [Windows Terminal](https://apps.microsoft.com/store/detail/9N0DX20HK701?hl=en-us&gl=US) ([Open-Source](https://github.com/microsoft/terminal))
-
