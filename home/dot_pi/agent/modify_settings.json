@@ -6,7 +6,7 @@
 
        "packages" is concatenated rather than replaced: `pi install` appends
        to this array live, so a flat overwrite would drop packages installed
-       outside chezmoi. */ -}}
+       outside chezmoi. Explicit removals handle managed package migrations. */ -}}
 {{- $managed := includeTemplate (joinPath .chezmoi.workingTree "settings/pi/settings.json.tmpl") . | fromJson -}}
 {{- if eq .chezmoi.stdin "" -}}
 {{-   $managed | toPrettyJson -}}
@@ -14,10 +14,15 @@
 {{-   $existing := fromJson .chezmoi.stdin -}}
 {{-   $existingPackages := dig "packages" (list) $existing -}}
 {{-   $managedPackages := dig "packages" (list) $managed -}}
+{{-   $removedPackages := list "git:github.com/kergoth/pi-statusline@f1805048422a046393b1ef1a4cc3aad2e9af097c" -}}
 {{-   $merged := mergeOverwrite $existing $managed -}}
 {{-   $mergedPackages := concat $existingPackages $managedPackages | uniq -}}
+{{-   range $removedPackages -}}
+{{-     $mergedPackages = without $mergedPackages . -}}
+{{-   end -}}
 {{-   if $mergedPackages -}}
 {{-     $_ := set $merged "packages" $mergedPackages -}}
 {{-   end -}}
+{{-   $_ := unset $merged "statusLine" -}}
 {{-   $merged | toPrettyJson -}}
 {{- end -}}
