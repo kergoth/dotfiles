@@ -180,14 +180,14 @@ run_diff() {
     esac
 
     if command -v difft >/dev/null 2>&1; then
-        difft "$src" "$target_path"
+        difft "$src" "$target_path" || ret=$?
     elif command -v nix >/dev/null 2>&1; then
-        nix run 'nixpkgs#difftastic' -- "$src" "$target_path"
+        nix run 'nixpkgs#difftastic' -- "$src" "$target_path" || ret=$?
     else
         diff -ud "$src" "$target_path" || ret=$?
-        if [ "$ret" -gt 1 ]; then
-            return "$ret"
-        fi
+    fi
+    if [ "$ret" -gt 1 ]; then
+        return "$ret"
     fi
 }
 

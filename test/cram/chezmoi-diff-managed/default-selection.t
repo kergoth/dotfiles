@@ -65,6 +65,7 @@ Default selection includes changed targets and managed modifiers only.
   $ cat >bin/difft <<'EOF'
   > #!/usr/bin/env bash
   > printf '%s %s\n' "${1##*/}" "${2##*/}"
+  > exit 1
   > EOF
   $ cat >bin/jd <<'EOF'
   > #!/usr/bin/env bash
@@ -106,6 +107,21 @@ Directory arguments use scoped managed discovery.
   == destination: */destination/config/modified.json == (glob)
   
   src.json modified.json
+
+Comparator errors stop later comparisons.
+
+  $ cat >bin/difft <<'EOF'
+  > #!/usr/bin/env bash
+  > printf '%s %s\n' "${1##*/}" "${2##*/}"
+  > exit 2
+  > EOF
+  $ chmod +x bin/difft
+  $ bash "$TESTDIR/../../../scripts/chezmoi-diff-managed" "$PWD/destination/changed.txt" "$PWD/destination/modified.json"
+  == managed (rendered): */source/changed.txt.tmpl == (glob)
+  == destination: */destination/changed.txt == (glob)
+  
+  src.txt changed.txt
+  [2]
 
 The plain diff fallback continues after expected differences.
 
