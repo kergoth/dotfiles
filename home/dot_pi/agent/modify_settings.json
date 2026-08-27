@@ -1,0 +1,23 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- /* Merge managed pi settings into the existing settings.json.
+       Managed keys (from settings/pi/settings.json.tmpl) override; any other
+       live-only keys (lastChangelogVersion, etc.) are preserved. mergeOverwrite
+       does recursive object merge.
+
+       "packages" is concatenated rather than replaced: `pi install` appends
+       to this array live, so a flat overwrite would drop packages installed
+       outside chezmoi. */ -}}
+{{- $managed := includeTemplate (joinPath .chezmoi.workingTree "settings/pi/settings.json.tmpl") . | fromJson -}}
+{{- if eq .chezmoi.stdin "" -}}
+{{-   $managed | toPrettyJson -}}
+{{- else -}}
+{{-   $existing := fromJson .chezmoi.stdin -}}
+{{-   $existingPackages := dig "packages" (list) $existing -}}
+{{-   $managedPackages := dig "packages" (list) $managed -}}
+{{-   $merged := mergeOverwrite $existing $managed -}}
+{{-   $mergedPackages := concat $existingPackages $managedPackages | uniq -}}
+{{-   if $mergedPackages -}}
+{{-     $_ := set $merged "packages" $mergedPackages -}}
+{{-   end -}}
+{{-   $merged | toPrettyJson -}}
+{{- end -}}

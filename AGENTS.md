@@ -295,9 +295,15 @@ Agent rules, skills, and subagent configs are managed through a shared pipeline.
   - Claude output: `~/.claude/CLAUDE.md`, rendered from `home/dot_claude/CLAUDE.md.tmpl`
   - Codex output: `~/.codex/AGENTS.md`, rendered from `home/dot_codex/AGENTS.md.tmpl`
   - Cursor output: `~/.cursor/rules/agent-rules.mdc`, rendered from `home/dot_cursor/rules/agent-rules.mdc.tmpl`
+  - pi output: `~/.pi/agent/AGENTS.md`, rendered from `home/dot_pi/agent/AGENTS.md.tmpl`
 - **Skills**: all agent tools symlink to `~/.agents/skills/`. Source content comes from external archives, local skills in `home/dot_agents/skills/`, and work-only encrypted repos linked by `run_onchange_after_40_link-work-agent-content.tmpl`.
 - **Agents** (Claude Code only): `~/.claude/agents` points at `~/.agents/agents/`. Static source links live in `home/dot_agents/agents/`; work-only agents are linked into repo-name subdirectories by `run_onchange_after_40_link-work-agent-content.tmpl`.
 - **Agent-specific conditionals**: templates can branch on the `agent` parameter, for example `{{ eq $agent "claude" }}`.
+- **MCP servers**: registration mechanism differs per agent, no single shared config file.
+  - Claude and Codex: idempotent shell calls (`claude mcp add`, `codex mcp add`) in `home/.chezmoiscripts/posix/run_onchange_after_50_configure-agents.sh.tmpl`, writing into `~/.claude.json` / `~/.codex/config.toml` — not chezmoi-rendered files directly, so a plain template can't manage them.
+  - Cursor: declarative JSON, `home/dot_cursor/private_mcp.json.tmpl` → `~/.cursor/mcp.json`.
+  - pi (via `pi-mcp-adapter` extension): declarative JSON, `home/dot_pi/agent/mcp.json.tmpl` → `~/.pi/agent/mcp.json` (one of pi's own MCP config precedence layers; see `pi-mcp-adapter` README for the full list).
+  - Adding a server to more than one agent means updating each pattern separately; there's no single source of truth across agents.
 
 Useful render checks after changing agent rules:
 
@@ -305,6 +311,7 @@ Useful render checks after changing agent rules:
 scripts/chezmoi-execute-template home/dot_claude/CLAUDE.md.tmpl
 scripts/chezmoi-execute-template home/dot_codex/AGENTS.md.tmpl
 scripts/chezmoi-execute-template home/dot_cursor/rules/agent-rules.mdc.tmpl
+scripts/chezmoi-execute-template home/dot_pi/agent/AGENTS.md.tmpl
 ```
 
 ### Ensuring Directories Exist

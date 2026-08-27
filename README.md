@@ -184,11 +184,11 @@ These files are not tracked in the repository and allow per-machine customizatio
 
 #### Rules
 
-Rules are rendered from repo-managed templates into always-loaded context files for each agent tool: `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, and `~/.cursor/rules/agent-rules.mdc`.
+Rules are rendered from repo-managed templates into always-loaded context files for each agent tool: `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, `~/.cursor/rules/agent-rules.mdc`, and `~/.pi/agent/AGENTS.md`.
 
 #### Skills
 
-Skills live in `~/.agents/skills/` and are available to all agent tools (Claude Code, Codex, Cursor) unless noted otherwise.
+Skills live in `~/.agents/skills/` and are available to all agent tools (Claude Code, Codex, Cursor, pi) unless noted otherwise.
 
 ##### First-Party
 
@@ -242,12 +242,12 @@ Skills live in `~/.agents/skills/` and are available to all agent tools (Claude 
 
 #### MCP Servers
 
-- **[Context7](https://github.com/upstash/context7-mcp)**: Fetch up-to-date library documentation and code examples from source repositories. _Claude Code: unconditional. Codex: personal machines. Cursor: work machines._
-- **[DeepWiki](https://deepwiki.com)**: Query documentation and knowledge from GitHub repositories. _Claude Code: unconditional. Codex: personal machines. Cursor: work machines._
-- **[DuckDuckGo](https://github.com/nickclyde/duckduckgo-mcp-server)**: Keyless web search and page-content retrieval. _Claude Code: unconditional. Codex: personal machines. Cursor: unconditional._
-- **[Playwright](https://github.com/microsoft/playwright-mcp)**: Browser automation for interactive pages (forms, clicks, logins) that plain fetch tools can't handle. _Claude Code: unconditional. Codex: personal machines. Cursor: unconditional._
-- **[Firecrawl](https://github.com/firecrawl/firecrawl-mcp-server)**: JS-rendering, anti-bot-resistant page fetch/scrape/crawl. _Claude Code: personal machines. Codex: personal machines. Cursor: not configured (personal API key)._
-- **[Kagi](https://github.com/kagisearch/kagimcp)**: Spam-resistant, non-commercial-weighted search; human-approved use only, never an automatic fallback. _Claude Code: personal machines. Codex: personal machines. Cursor: not configured (personal API key)._
+- **[Context7](https://github.com/upstash/context7-mcp)**: Fetch up-to-date library documentation and code examples from source repositories. _Claude Code: unconditional. Codex: personal machines. Cursor: work machines. pi: unconditional._
+- **[DeepWiki](https://deepwiki.com)**: Query documentation and knowledge from GitHub repositories. _Claude Code: unconditional. Codex: personal machines. Cursor: work machines. pi: unconditional._
+- **[DuckDuckGo](https://github.com/nickclyde/duckduckgo-mcp-server)**: Keyless web search and page-content retrieval. _Claude Code: unconditional. Codex: personal machines. Cursor: unconditional. pi: unconditional._
+- **[Playwright](https://github.com/microsoft/playwright-mcp)**: Browser automation for interactive pages (forms, clicks, logins) that plain fetch tools can't handle. _Claude Code: unconditional. Codex: personal machines. Cursor: unconditional. pi: unconditional._
+- **[Firecrawl](https://github.com/firecrawl/firecrawl-mcp-server)**: JS-rendering, anti-bot-resistant page fetch/scrape/crawl. _Claude Code: personal machines. Codex: personal machines. Cursor: not configured (personal API key). pi: personal machines._
+- **[Kagi](https://github.com/kagisearch/kagimcp)**: Spam-resistant, non-commercial-weighted search; human-approved use only, never an automatic fallback. _Claude Code: personal machines. Codex: personal machines. Cursor: not configured (personal API key). pi: personal machines._
 
 ### Fonts
 

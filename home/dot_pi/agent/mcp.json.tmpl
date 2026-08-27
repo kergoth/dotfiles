@@ -1,0 +1,10 @@
+{{- $servers := dict -}}
+{{- $_ := set $servers "deepwiki" (dict "type" "http" "url" "https://mcp.deepwiki.com/mcp") -}}
+{{- $_ := set $servers "context7" (dict "type" "stdio" "command" "npx" "args" (list "-y" "@upstash/context7-mcp")) -}}
+{{- $_ := set $servers "duckduckgo" (dict "type" "stdio" "command" "uvx" "args" (list "duckduckgo-mcp-server")) -}}
+{{- $_ := set $servers "playwright" (dict "type" "stdio" "command" "npx" "args" (list "-y" "@playwright/mcp@latest" "--browser" "firefox")) -}}
+{{- if and .personal .secrets -}}
+{{-   $_ := set $servers "firecrawl" (dict "type" "stdio" "command" "npx" "args" (list "-y" "firecrawl-mcp") "env" (dict "FIRECRAWL_API_KEY" (joinPath .chezmoi.workingTree "settings/agents/firecrawl-api-key.age" | include | decrypt | trim))) -}}
+{{-   $_ := set $servers "kagi" (dict "type" "stdio" "command" "uvx" "args" (list "kagimcp") "env" (dict "KAGI_API_KEY" (joinPath .chezmoi.workingTree "settings/agents/kagi-api-key.age" | include | decrypt | trim))) -}}
+{{- end -}}
+{{ dict "mcpServers" $servers | toPrettyJson }}

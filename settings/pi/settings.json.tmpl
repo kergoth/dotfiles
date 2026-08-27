@@ -1,0 +1,27 @@
+{
+  "defaultModel": "gpt-5.6-terra",
+  "defaultProvider": "openai-codex",
+  "theme": "light/dracula",
+  "packages": [
+    "npm:@sherif-fanous/pi-dracula",
+    "npm:pi-json-tools",
+    "npm:pi-claude-bridge",
+    "npm:@cmcconomy/pi-qwen-tool-parser",
+    "npm:pi-web-access",
+    "npm:pi-mcp-adapter",
+    "npm:pi-subagents",
+    "git:github.com/kergoth/pi-statusline@f1805048422a046393b1ef1a4cc3aad2e9af097c"
+  ],
+  "hideThinkingBlock": true,
+  "showHardwareCursor": true,
+  "defaultThinkingLevel": "medium",
+  "tuiMode": "fullscreen",
+  "steeringMode": "all",
+  "followUpMode": "all",
+  "enabledModels": ["claude-bridge/*", "openai-codex/*", "local-*/**", "mtplx/*"],
+  "skills": ["~/.agents/skills"],
+  "statusLine": {
+    "type": "command",
+    "command": "~/.pi/agent/statusline-command.sh"
+  }
+}
