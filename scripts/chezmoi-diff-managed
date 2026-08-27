@@ -131,11 +131,12 @@ diff_modify() {
             (exec "$source_path")
         fi >"$src"
 
-    run_diff "$src" "$target_path"
+    run_diff "$src" "$source_path" "$target_path"
 }
 
 diff_standard() {
-    local target_path=$1
+    local source_path=$1
+    local target_path=$2
     local ext
     local src
 
@@ -143,18 +144,22 @@ diff_standard() {
     src="$tmpdir/src${ext:+.$ext}"
     chezmoi cat --source-path "$target_path" >"$src"
 
-    run_diff "$src" "$target_path"
+    run_diff "$src" "$source_path" "$target_path"
 }
 
 run_diff() {
     local src=$1
-    local target_path=$2
+    local source_path=$2
+    local target_path=$3
     local ret=0
     local -a options=()
 
     if cmp -s "$src" "$target_path"; then
         return
     fi
+
+    printf '== managed (rendered): %s ==\n== destination: %s ==\n\n' \
+        "$source_path" "$target_path"
 
     case "$target_path" in
         *.json|*.yaml|*.yml)
@@ -239,7 +244,7 @@ main() {
 
         case "$source_path" in
             */modify_*) diff_modify "$source_path" "$target_path" ;;
-            *) diff_standard "$target_path" ;;
+            *) diff_standard "$source_path" "$target_path" ;;
         esac
     done
 }
