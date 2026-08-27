@@ -74,11 +74,38 @@ function contextColor(palette, percentage) {
   return CONTEXT_COLORS[palette].green;
 }
 
+// Route tags distinguish Cursor SDK vs Claude Code subscription vs other
+// backends when display names collide ("Claude Opus 4.6", "GPT-5.6 Terra").
+// CU/CC match home/dot_cursor and home/dot_claude statusline agent labels.
+const ROUTE_TAGS = {
+  cursor: "CU",
+  "claude-bridge": "CC",
+};
+
+function generatedRouteTag(provider) {
+  const parts = provider.split("-").filter(Boolean);
+  if (parts.length >= 2) {
+    return parts.map((part) => part[0].toUpperCase()).join("");
+  }
+  return provider.slice(0, 2).toUpperCase();
+}
+
+function routeTag(provider) {
+  const id = provider?.trim();
+  if (!id) return "";
+  return ROUTE_TAGS[id] ?? generatedRouteTag(id);
+}
+
+function modelLabel(data) {
+  const tag = routeTag(data.provider);
+  return tag ? `${tag}·${data.model}` : data.model;
+}
+
 export function formatStatusLine(data) {
   const palette = PALETTES[data.palette];
   const context = contextColor(data.palette, data.contextPercent);
   const segments = [
-    `${palette.modelPill.background}${BOLD}${palette.modelPill.foreground} PI·${data.model} ${RESET}`,
+    `${palette.modelPill.background}${BOLD}${palette.modelPill.foreground} PI·${modelLabel(data)} ${RESET}`,
     `${palette.path}${shortenPath(data.cwd)}${RESET}`,
   ];
 

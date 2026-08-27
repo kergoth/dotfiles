@@ -45,6 +45,28 @@ test("keeps the complete Claude model name", () => {
   assert.match(line, /PI·Claude Sonnet 4\.6/);
 });
 
+function lineFor(model, provider) {
+  return formatStatusLine({
+    model,
+    provider,
+    cwd: "/Users/testuser/projects/myapp",
+    branch: "main",
+    contextPercent: 0,
+    palette: "dark",
+  });
+}
+
+test("uses CU and CC route tags to match the Cursor and Claude Code statuslines", () => {
+  assert.match(lineFor("Auto", "cursor"), /PI·CU·Auto/);
+  assert.match(lineFor("Claude Opus 4.6", "claude-bridge"), /PI·CC·Claude Opus 4\.6/);
+});
+
+test("generates an uppercase route tag from other provider ids", () => {
+  assert.match(lineFor("GPT-5.6 Terra", "openai-codex"), /PI·OC·GPT-5\.6 Terra/);
+  assert.match(lineFor("Sonar", "mtplx"), /PI·MT·Sonar/);
+  assert.match(lineFor("llama3", "local-ollama"), /PI·LO·llama3/);
+});
+
 test("documents the Dracula and Catppuccin Latte palette sources", () => {
   assert.equal(PALETTES.dark.name, "Dracula");
   assert.equal(PALETTES.light.name, "Catppuccin Latte");

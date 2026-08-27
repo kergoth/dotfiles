@@ -13,6 +13,7 @@ function paletteName(ctx: any): "dark" | "light" {
 
 function installFooter(ctx: any): void {
   const model = ctx.model?.displayName ?? ctx.model?.name ?? ctx.model?.id ?? "Pi";
+  const provider = ctx.model?.provider;
 
   ctx.ui.setFooter((tui: any, _theme: any, footerData: any) => ({
     dispose: footerData.onBranchChange(() => tui.requestRender()),
@@ -20,6 +21,7 @@ function installFooter(ctx: any): void {
     render(width: number) {
       const line = formatStatusLine({
         model,
+        provider,
         cwd: ctx.cwd,
         branch: footerData.getGitBranch(),
         contextPercent: contextPercent(ctx),
