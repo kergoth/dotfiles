@@ -1,0 +1,226 @@
+#!/usr/bin/env bash
+# Usage: chezmoi-diff-managed [options] [target ...]
+#
+# Compare destination files with their managed baselines. Unlike chezmoi diff,
+# modify_ sources are rendered without the current destination as input.
+#
+# Without target arguments, compare files that chezmoi would modify and all
+# active managed modify_ targets.
+#
+# Examples:
+#   chezmoi-diff-managed
+#   chezmoi-diff-managed ~/.claude/settings.json
+#
+# Options:
+#   -h, --help    Show this help message
+
+set -euo pipefail
+
+exclude='/\.ssh/'
+scriptname=${BASH_SOURCE[0]##*/}
+tmpdir=
+targets=()
+
+cleanup() {
+    if [ -n "$tmpdir" ]; then
+        rm -rf -- "$tmpdir"
+    fi
+}
+
+usage() {
+    sed -n '/^# Usage:/,/^#   -h, --help/p' "${BASH_SOURCE[0]}" \
+        | sed -e 's/^# //' -e 's/^#$//'
+}
+
+process_arguments() {
+    local opt
+
+    case "${1:-}" in
+        --help)
+            usage
+            exit 0
+            ;;
+        --) ;;
+        --*)
+            printf 'Unknown option: %s\n' "$1" >&2
+            usage >&2
+            exit 1
+            ;;
+    esac
+
+    while getopts ':h' opt; do
+        case "$opt" in
+            h)
+                usage
+                exit 0
+                ;;
+            ?)
+                printf 'Unknown option: -%s\n' "$OPTARG" >&2
+                usage >&2
+                exit 1
+                ;;
+        esac
+    done
+    shift "$((OPTIND - 1))"
+
+    if [ "${1:-}" = "--" ]; then
+        shift
+    elif [[ "${1:-}" = --* ]]; then
+        printf 'Unknown option: %s\n' "$1" >&2
+        usage >&2
+        exit 1
+    fi
+
+    targets=("$@")
+}
+
+source_extension() {
+    local filename=${1##*/}
+
+    case "$filename" in
+        .*|*.) ;;
+        *.*) printf '%s\n' "${filename##*.}" ;;
+    esac
+}
+
+default_paths() {
+    {
+        chezmoi status --include=files --path-style=absolute \
+            | awk 'substr($0, 2, 1) != " " { print substr($0, 4) }'
+        chezmoi managed --include=files --path-style=source-absolute \
+            | awk -F/ '$NF ~ /^modify_/ { print }' \
+            | while read -r source_path; do
+                chezmoi target-path --source-path "$source_path"
+            done
+    } | sort -u
+}
+
+diff_modify() {
+    local source_path=$1
+    local target_path=$2
+    local ext
+    local src
+
+    ext=$(source_extension "$target_path")
+    src="$tmpdir/src${ext:+.$ext}"
+    printf '' \
+        | if grep -F '{{- /* chezmoi:modify-template */ -}}' "$source_path" >/dev/null; then
+            chezmoi execute-template --file --with-stdin "$source_path"
+        else
+            (exec "$source_path")
+        fi >"$src"
+
+    run_diff "$src" "$target_path"
+}
+
+diff_standard() {
+    local target_path=$1
+    local ext
+    local src
+
+    ext=$(source_extension "$target_path")
+    src="$tmpdir/src${ext:+.$ext}"
+    chezmoi cat --source-path "$target_path" >"$src"
+
+    run_diff "$src" "$target_path"
+}
+
+run_diff() {
+    local src=$1
+    local target_path=$2
+    local ret=0
+    local -a options=()
+
+    if cmp -s "$src" "$target_path"; then
+        return
+    fi
+
+    case "$target_path" in
+        *.json|*.yaml|*.yml)
+            if command -v jd >/dev/null 2>&1; then
+                if [ -t 1 ] && [ -z "${NO_COLOR:-}" ]; then
+                    options+=(-color)
+                fi
+                case "$target_path" in
+                    *.yaml|*.yml) options+=(-yaml) ;;
+                esac
+                jd "${options[@]}" "$src" "$target_path" || ret=$?
+                if [ "$ret" -gt 1 ]; then
+                    return "$ret"
+                fi
+                return 0
+            fi
+            ;;
+    esac
+
+    if command -v difft >/dev/null 2>&1; then
+        difft "$src" "$target_path"
+    elif command -v nix >/dev/null 2>&1; then
+        nix run 'nixpkgs#difftastic' -- "$src" "$target_path"
+    else
+        diff -ud "$src" "$target_path" || ret=$?
+        if [ "$ret" -gt 1 ]; then
+            return "$ret"
+        fi
+    fi
+}
+
+target_directory() {
+    local target
+
+    target=$(chezmoi data 2>/dev/null | jq -r '.chezmoi.destDir // empty' 2>/dev/null) || target=
+    if [ -n "$target" ]; then
+        printf '%s\n' "$target"
+        return
+    fi
+
+    printf '%s\n' "$HOME"
+}
+
+main() {
+    local target
+    local source_path
+    local target_path
+
+    process_arguments "$@"
+    target=$(target_directory)
+    tmpdir=$(mktemp -d -p "${TMPDIR:-/tmp}" "$scriptname.XXXXXX")
+    trap cleanup EXIT
+
+    if [ "${#targets[@]}" -eq 0 ]; then
+        default_paths | awk -v exclude="$exclude" '$0 !~ exclude'
+    else
+        printf '%s\n' "${targets[@]}"
+    fi | while read -r target_path; do
+        case "$target_path" in
+            /*) ;;
+            *) target_path="$target/$target_path" ;;
+        esac
+        if [ ! -e "$target_path" ]; then
+            if [ "${#targets[@]}" -gt 0 ]; then
+                printf 'Target does not exist: %s\n' "$target_path" >&2
+            fi
+            continue
+        fi
+
+        if ! source_path=$(chezmoi source-path "$target_path" 2>/dev/null); then
+            if [ "${#targets[@]}" -gt 0 ]; then
+                printf 'Target is not managed by chezmoi: %s\n' "$target_path" >&2
+            fi
+            continue
+        fi
+        if [ ! -e "$source_path" ]; then
+            if [ "${#targets[@]}" -gt 0 ]; then
+                printf 'Source does not exist: %s\n' "$source_path" >&2
+            fi
+            continue
+        fi
+
+        case "$source_path" in
+            */modify_*) diff_modify "$source_path" "$target_path" ;;
+            *) diff_standard "$target_path" ;;
+        esac
+    done
+}
+
+main "$@"
