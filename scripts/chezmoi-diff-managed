@@ -5,10 +5,12 @@
 # modify_ sources are rendered without the current destination as input.
 #
 # Without target arguments, compare files that chezmoi would modify and all
-# active managed modify_ targets.
+# active managed modify_ targets. File arguments are compared directly;
+# directory arguments use managed discovery within that subtree.
 #
 # Examples:
 #   chezmoi-diff-managed
+#   chezmoi-diff-managed ~/.claude/
 #   chezmoi-diff-managed ~/.claude/settings.json
 #
 # Options:
@@ -85,14 +87,33 @@ source_extension() {
 
 default_paths() {
     {
-        chezmoi status --include=files --path-style=absolute \
+        chezmoi status --include=files --path-style=absolute "$@" \
             | awk 'substr($0, 2, 1) != " " { print substr($0, 4) }'
-        chezmoi managed --include=files --path-style=source-absolute \
+        chezmoi managed --include=files --path-style=source-absolute "$@" \
             | awk -F/ '$NF ~ /^modify_/ { print }' \
             | while read -r source_path; do
                 chezmoi target-path --source-path "$source_path"
             done
     } | sort -u
+}
+
+expand_targets() {
+    local target_dir=$1
+    local arg
+    local target_path
+
+    shift
+    for arg; do
+        case "$arg" in
+            /*) target_path=$arg ;;
+            *) target_path="$target_dir/$arg" ;;
+        esac
+        if [ -d "$target_path" ]; then
+            default_paths "$target_path"
+        else
+            printf '%s\n' "$arg"
+        fi
+    done | sort -u
 }
 
 diff_modify() {
@@ -190,7 +211,7 @@ main() {
     if [ "${#targets[@]}" -eq 0 ]; then
         default_paths | awk -v exclude="$exclude" '$0 !~ exclude'
     else
-        printf '%s\n' "${targets[@]}"
+        expand_targets "$target" "${targets[@]}"
     fi | while read -r target_path; do
         case "$target_path" in
             /*) ;;
