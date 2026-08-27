@@ -42,18 +42,20 @@ chezmoi cat --source-path ~/.config/zsh/.zshrc
 Test entrypoints:
 
 ```bash
-# Run all automated tests (pytest + cram)
+# Run all automated tests (pytest + cram + node)
 ./script/test
 
 # Run specific test types
 ./script/test -p                              # pytest only
 ./script/test -t                              # cram only
-./script/test -p test/pytest/<test_file>.py  # specific pytest file
-./script/test -t test/cram/<suite>           # specific cram suite
+./script/test -p test/pytest/<test_file>.py   # specific pytest file
+./script/test -t test/cram/<suite>            # specific cram suite
+./script/test -n test/node/<test_file>.mjs    # specific node test file
 
 # Invoke runners directly (same as script/test delegates to)
 ./test/run-pytest                        # all tests under test/pytest/
 ./test/run-cram                          # all Cram suites under test/cram/
+./test/run-node                          # all node suites under test/node/
 
 # Manually launch a container for interactive testing; requires Docker
 ./test/run-container arch      # specific distro
@@ -121,6 +123,7 @@ Pick the cheapest verification that covers the changed behavior. Prefer render c
 | PowerShell scripts | PSScriptAnalyzer when available |
 | Python helpers | `./test/run-pytest test/pytest/<test_file>.py` |
 | Cram scenarios | `./test/run-cram test/cram/<suite>` |
+| Node helpers | `./test/run-node test/node/<test_file>.mjs` |
 | Linux setup or package-flow changes | `./test/run-container <distro>` or `./test/run-container -w <distro>` when GUI app installation is in scope |
 | Cross-platform package changes | Combine the relevant render checks with the narrowest matching Cram or container test |
 
@@ -166,9 +169,11 @@ This is a **chezmoi-managed dotfiles** repository supporting macOS, Linux (Arch,
     - `container/` - Container-backed dotfiles scenario tests
     - `statusline/` - Statusline transcript tests
   - `pytest/` - Python unit tests for scripts and helpers
+  - `node/` - Node unit tests for scripts and helpers
   - `run-container` - Container test driver script
   - `run-cram` - Wrapper around `uvx cram`
   - `run-pytest` - Wrapper around `uvx pytest`
+  - `run-node` - Wrapper around `node --test`
 - **`docs/`** - Documentation
   - `decisions/` - Architectural Decision Records (MADR format)
   - `decisions/templates/` - MADR templates; use `adr-template.md` for new ADRs
