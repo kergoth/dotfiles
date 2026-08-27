@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Wrapper for Node's built-in test runner.
+
+set -euo pipefail
+
+scriptdir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
+
+if [ "$#" -eq 0 ]; then
+    shopt -s nullglob
+    tests=("$scriptdir"/node/*.test.mjs)
+    if [ "${#tests[@]}" -eq 0 ]; then
+        exit 0
+    fi
+    set -- "${tests[@]}"
+fi
+
+exec node --test --test-reporter=tap "$@"

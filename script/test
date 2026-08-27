@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 # Usage: script/test [options] [path...]
 #
-# Run automated test suites. With no options runs all pytest and cram tests.
+# Run automated test suites. With no options runs Python, Cram, and Node tests.
 #
 # Options:
 #   -p          Run Python (pytest) tests only
 #   -t          Run Cram transcript tests only
+#   -j          Run JavaScript (Node) tests only
 #   -n          Dry run, don't actually do anything
 #   -v          Increase verbosity
 #   -q          Decrease verbosity
@@ -32,13 +33,15 @@ run() {
 process_arguments() {
     run_pytest=0
     run_cram=0
+    run_node=0
     dry_run=0
     verbosity=0
 
-    while getopts ":ptnvqh" opt; do
+    while getopts ":ptjnvqh" opt; do
         case "$opt" in
             p) run_pytest=1 ;;
             t) run_cram=1 ;;
+            j) run_node=1 ;;
             n) dry_run=1 ;;
             v) verbosity=$((verbosity + 1)) ;;
             q) verbosity=$((verbosity - 1)) ;;
@@ -48,9 +51,10 @@ process_arguments() {
     done
     shift $((OPTIND - 1))
 
-    if [ "$run_pytest" -eq 0 ] && [ "$run_cram" -eq 0 ]; then
+    if [ "$run_pytest" -eq 0 ] && [ "$run_cram" -eq 0 ] && [ "$run_node" -eq 0 ]; then
         run_pytest=1
         run_cram=1
+        run_node=1
     fi
 
     targets=("$@")
@@ -59,8 +63,9 @@ process_arguments() {
 main() {
     process_arguments "$@"
 
-    if [ "${#targets[@]}" -gt 0 ] && [ "$run_pytest" -eq 1 ] && [ "$run_cram" -eq 1 ]; then
-        printf 'error: cannot specify paths with both -p and -t; use separate invocations\n' >&2
+    local selected_suites=$((run_pytest + run_cram + run_node))
+    if [ "${#targets[@]}" -gt 0 ] && [ "$selected_suites" -gt 1 ]; then
+        printf 'error: cannot specify paths with multiple test suite options; use separate invocations\n' >&2
         usage >&2
         exit 1
     fi
@@ -80,6 +85,14 @@ main() {
             run "$testdir/run-cram" "${targets[@]}" || ret=$?
         else
             run "$testdir/run-cram" || ret=$?
+        fi
+    fi
+
+    if [ "$run_node" -eq 1 ]; then
+        if [ "${#targets[@]}" -gt 0 ]; then
+            run "$testdir/run-node" "${targets[@]}" || ret=$?
+        else
+            run "$testdir/run-node" || ret=$?
         fi
     fi
 
