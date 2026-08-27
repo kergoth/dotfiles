@@ -74,12 +74,13 @@ function contextColor(palette, percentage) {
   return CONTEXT_COLORS[palette].green;
 }
 
-// Route tags distinguish Cursor SDK vs Claude Code subscription vs other
-// backends when display names collide ("Claude Opus 4.6", "GPT-5.6 Terra").
-// CU/CC match home/dot_cursor and home/dot_claude statusline agent labels.
+// Route tags identify the execution backend when model display names collide.
+// Explicit tags use recognizable application abbreviations; other providers
+// fall back to generated initials.
 const ROUTE_TAGS = {
   cursor: "CU",
   "claude-bridge": "CC",
+  "openai-codex": "CX",
 };
 
 function generatedRouteTag(provider) {

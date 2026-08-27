@@ -61,8 +61,11 @@ test("uses CU and CC route tags to match the Cursor and Claude Code statuslines"
   assert.match(lineFor("Claude Opus 4.6", "claude-bridge"), /PI·CC·Claude Opus 4\.6/);
 });
 
-test("generates an uppercase route tag from other provider ids", () => {
-  assert.match(lineFor("GPT-5.6 Terra", "openai-codex"), /PI·OC·GPT-5\.6 Terra/);
+test("uses CX as the explicit Codex route tag", () => {
+  assert.match(lineFor("GPT-5.6 Terra", "openai-codex"), /PI·CX·GPT-5\.6 Terra/);
+});
+
+test("generates uppercase route tags for other provider ids", () => {
   assert.match(lineFor("Sonar", "mtplx"), /PI·MT·Sonar/);
   assert.match(lineFor("llama3", "local-ollama"), /PI·LO·llama3/);
 });
