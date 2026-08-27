@@ -1,6 +1,18 @@
 #!/usr/bin/env bash
+
 set -euo pipefail
 
-for tmpl in "$@"; do
-  cat "$tmpl" | chezmoi execute-template
-done
+init=
+stdin=
+case "${1:-}" in
+    --init)
+        shift
+        init=1
+        ;;
+    --with-stdin)
+        shift
+        stdin=1
+        ;;
+esac
+
+chezmoi execute-template ${init:+--init} ${stdin:+--with-stdin} --file "$@"
