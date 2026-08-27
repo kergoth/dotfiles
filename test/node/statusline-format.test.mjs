@@ -65,9 +65,13 @@ test("uses CX as the explicit Codex route tag", () => {
   assert.match(lineFor("GPT-5.6 Terra", "openai-codex"), /PI·CX·GPT-5\.6 Terra/);
 });
 
+test("uses LO for local providers", () => {
+  assert.match(lineFor("Coder", "local-coder"), /PI·LO·Coder/);
+  assert.match(lineFor("llama3", "local-ollama"), /PI·LO·llama3/);
+});
+
 test("generates uppercase route tags for other provider ids", () => {
   assert.match(lineFor("Sonar", "mtplx"), /PI·MT·Sonar/);
-  assert.match(lineFor("llama3", "local-ollama"), /PI·LO·llama3/);
 });
 
 test("documents the Dracula and Catppuccin Latte palette sources", () => {

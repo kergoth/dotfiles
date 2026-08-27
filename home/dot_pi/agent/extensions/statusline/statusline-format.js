@@ -75,8 +75,8 @@ function contextColor(palette, percentage) {
 }
 
 // Route tags identify the execution backend when model display names collide.
-// Explicit tags use recognizable application abbreviations; other providers
-// fall back to generated initials.
+// Recognizable applications have explicit tags, local variants share LO, and
+// other providers fall back to generated initials.
 const ROUTE_TAGS = {
   cursor: "CU",
   "claude-bridge": "CC",
@@ -94,6 +94,7 @@ function generatedRouteTag(provider) {
 function routeTag(provider) {
   const id = provider?.trim();
   if (!id) return "";
+  if (id.startsWith("local-")) return "LO";
   return ROUTE_TAGS[id] ?? generatedRouteTag(id);
 }
 
