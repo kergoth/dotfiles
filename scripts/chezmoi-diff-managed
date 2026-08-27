@@ -171,6 +171,7 @@ run_diff() {
                     *.yaml|*.yml) options+=(-yaml) ;;
                 esac
                 jd "${options[@]}" "$src" "$target_path" || ret=$?
+                echo
                 if [ "$ret" -gt 1 ]; then
                     return "$ret"
                 fi
@@ -186,6 +187,7 @@ run_diff() {
     else
         diff -ud "$src" "$target_path" || ret=$?
     fi
+    echo
     if [ "$ret" -gt 1 ]; then
         return "$ret"
     fi
