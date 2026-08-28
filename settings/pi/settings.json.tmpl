@@ -6,6 +6,19 @@
     "npm:pi-claude-bridge",
     "npm:@cmcconomy/pi-qwen-tool-parser",
     "npm:pi-web-access",
+    {
+      "skills": [
+        "-skills/mcp-scripting/SKILL.md"
+      ],
+      "source": "npm:pi-mcp-adapter"
+    },
+    {
+      "skills": [
+        "-skills/council-mode/SKILL.md"
+      ],
+      "source": "npm:pi-subagents"
+    },
+    "npm:@nicknisi/pi-session-name@0.1.10",
     "npm:pi-mcp-adapter",
     "npm:pi-subagents"
   ],
@@ -17,5 +30,10 @@
   "steeringMode": "all",
   "followUpMode": "all",
   "enabledModels": ["claude-bridge/*", "openai-codex/*", "cursor/*", "local-*/**", "mtplx/*"],
-  "skills": ["~/.agents/skills"]
+  "skills": ["~/.agents/skills"],
+  "terminal": {
+    "showTerminalProgress": true
+  },
+  "enableInstallTelemetry": false,
+  "collapseChangelog": true
 }
