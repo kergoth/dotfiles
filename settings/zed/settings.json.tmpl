@@ -48,6 +48,7 @@
 {{ end -}}
   },
   "edit_predictions": {
+    "allow_data_collection": "no",
     "mode": "subtle",
     "provider": "copilot"
   },
@@ -69,6 +70,12 @@
 {{- end }}
 {{- end }}
   "agent": {
+    "single_file_review": true,
+    "play_sound_when_agent_done": "when_hidden",
+    "auto_compact": {
+      "threshold": "90%"
+    },
+    "thinking_display": "preview",
     "tool_permissions": {
       "default": "allow"
     },
