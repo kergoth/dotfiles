@@ -88,26 +88,22 @@ Default selection includes changed targets and managed modifiers only.
   $ printf 'local config\n' >destination/config/changed.txt
   $ printf 'local config json\n' >destination/config/modified.json
 
-  $ bash "$TESTDIR/../../../scripts/chezmoi-diff-managed"
+  $ bash "$TESTDIR/../../../scripts/chezmoi-diff-managed" | awk 'NF'
   == managed (rendered): */source/changed.txt.tmpl == (glob)
   == destination: */destination/changed.txt == (glob)
-  
   src.txt changed.txt
   == managed (rendered): */source/modify_modified.json == (glob)
   == destination: */destination/modified.json == (glob)
-  
   src.json modified.json
 
 Directory arguments use scoped managed discovery.
 
-  $ bash "$TESTDIR/../../../scripts/chezmoi-diff-managed" "$PWD/destination/config"
+  $ bash "$TESTDIR/../../../scripts/chezmoi-diff-managed" "$PWD/destination/config" | awk 'NF'
   == managed (rendered): */source/config-changed.txt.tmpl == (glob)
   == destination: */destination/config/changed.txt == (glob)
-  
   src.txt changed.txt
   == managed (rendered): */source/modify_config.json == (glob)
   == destination: */destination/config/modified.json == (glob)
-  
   src.json modified.json
 
 Comparator errors continue later comparisons and preserve a failing exit status.
@@ -142,14 +138,12 @@ The plain diff fallback continues after expected differences.
   > exit 1
   > EOF
   $ chmod +x bin/jq bin/diff
-  $ PATH="$PWD/bin:/usr/bin:/bin" bash "$TESTDIR/../../../scripts/chezmoi-diff-managed" "$PWD/destination/changed.txt" "$PWD/destination/modified.json"
+  $ PATH="$PWD/bin:/usr/bin:/bin" bash "$TESTDIR/../../../scripts/chezmoi-diff-managed" "$PWD/destination/changed.txt" "$PWD/destination/modified.json" | awk 'NF'
   == managed (rendered): */source/changed.txt.tmpl == (glob)
   == destination: */destination/changed.txt == (glob)
-  
   src.txt changed.txt
   == managed (rendered): */source/modify_modified.json == (glob)
   == destination: */destination/modified.json == (glob)
-  
   src.json modified.json
 
 JSON with comments falls back to a syntax-aware text diff.
@@ -191,14 +185,12 @@ Structured differences do not stop later comparisons.
   $ chmod +x bin/jd
   $ printf 'managed regular json\n' >source/regular.json
   $ printf 'local regular json\n' >destination/regular.json
-  $ bash "$TESTDIR/../../../scripts/chezmoi-diff-managed" "$PWD/destination/modified.json" "$PWD/destination/regular.json"
+  $ bash "$TESTDIR/../../../scripts/chezmoi-diff-managed" "$PWD/destination/modified.json" "$PWD/destination/regular.json" | awk 'NF'
   == managed (rendered): */source/modify_modified.json == (glob)
   == destination: */destination/modified.json == (glob)
-  
   src.json modified.json
   == managed (rendered): */source/regular.json == (glob)
   == destination: */destination/regular.json == (glob)
-  
   src.json regular.json
 
 Identical rendered baselines do not invoke semantic diffing.

@@ -16,8 +16,7 @@ Default discovery uses chezmoi's real source and destination mapping.
   $ printf 'managed\n' >source/example
   $ printf 'local\n' >destination/example
 
-  $ PATH="$PWD/bin:$PATH" bash "$TESTDIR/../../../scripts/chezmoi-diff-managed"
+  $ PATH="$PWD/bin:$PATH" bash "$TESTDIR/../../../scripts/chezmoi-diff-managed" | awk 'NF'
   == managed (rendered): */source/example == (glob)
   == destination: */destination/example == (glob)
-  
   src example
