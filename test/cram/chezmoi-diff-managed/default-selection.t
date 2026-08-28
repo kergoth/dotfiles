@@ -110,7 +110,7 @@ Directory arguments use scoped managed discovery.
   
   src.json modified.json
 
-Comparator errors stop later comparisons.
+Comparator errors continue later comparisons and preserve a failing exit status.
 
   $ cat >bin/difft <<'EOF'
   > #!/usr/bin/env bash
@@ -118,11 +118,13 @@ Comparator errors stop later comparisons.
   > exit 2
   > EOF
   $ chmod +x bin/difft
-  $ bash "$TESTDIR/../../../scripts/chezmoi-diff-managed" "$PWD/destination/changed.txt" "$PWD/destination/modified.json"
+  $ (set -o pipefail; bash "$TESTDIR/../../../scripts/chezmoi-diff-managed" "$PWD/destination/changed.txt" "$PWD/destination/modified.json" | awk 'NF')
   == managed (rendered): */source/changed.txt.tmpl == (glob)
   == destination: */destination/changed.txt == (glob)
-  
   src.txt changed.txt
+  == managed (rendered): */source/modify_modified.json == (glob)
+  == destination: */destination/modified.json == (glob)
+  src.json modified.json
   [2]
 
 The plain diff fallback continues after expected differences.

@@ -222,6 +222,7 @@ main() {
     local target
     local source_path
     local target_path
+    local ret
 
     process_arguments "$@"
     target=$(target_directory)
@@ -232,7 +233,10 @@ main() {
         default_paths | awk -v exclude="$exclude" '$0 !~ exclude'
     else
         expand_targets "$target" "${targets[@]}"
-    fi | while read -r target_path; do
+    fi >"$tmpdir/paths"
+
+    ret=0
+    while read -r target_path; do
         case "$target_path" in
             /*) ;;
             *) target_path="$target/$target_path" ;;
@@ -260,8 +264,9 @@ main() {
         case "$source_path" in
             */modify_*) diff_modify "$source_path" "$target_path" ;;
             *) diff_standard "$source_path" "$target_path" ;;
-        esac
-    done
+        esac || ret=$?
+    done <"$tmpdir/paths"
+    return $ret
 }
 
 main "$@"
