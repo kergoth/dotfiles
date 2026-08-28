@@ -48,6 +48,7 @@ Default selection includes changed targets and managed modifiers only.
   >     */config/modified.json) printf '%s/source/modify_config.json\n' "$PWD" ;;
   >     */modified.json) printf '%s/source/modify_modified.json\n' "$PWD" ;;
   >     */regular.json) printf '%s/source/regular.json\n' "$PWD" ;;
+  >     */zed-settings.json) printf '%s/source/zed-settings.json\n' "$PWD" ;;
   >     */identical.txt) printf '%s/source/identical.txt\n' "$PWD" ;;
   >     esac
   >     ;;
@@ -57,6 +58,7 @@ Default selection includes changed targets and managed modifiers only.
   > cat)
   >     case "$3" in
   >     */regular.json) cat "$PWD/source/regular.json" ;;
+  >     */zed-settings.json) cat "$PWD/source/zed-settings.json" ;;
   >     */identical.txt) cat "$PWD/source/identical.txt" ;;
   >     esac
   >     ;;
@@ -147,6 +149,33 @@ The plain diff fallback continues after expected differences.
   == destination: */destination/modified.json == (glob)
   
   src.json modified.json
+
+JSON with comments falls back to a syntax-aware text diff.
+
+  $ cat >bin/jq <<'EOF'
+  > #!/usr/bin/env bash
+  > case "$1" in
+  > -r) printf '%s/destination\n' "$PWD" ;;
+  > empty) exit 1 ;;
+  > esac
+  > EOF
+  $ cat >bin/jd <<'EOF'
+  > #!/usr/bin/env bash
+  > echo unexpected jd invocation >&2
+  > exit 2
+  > EOF
+  $ cat >bin/difft <<'EOF'
+  > #!/usr/bin/env bash
+  > printf '%s %s' "${1##*/}" "${2##*/}"
+  > exit 1
+  > EOF
+  $ chmod +x bin/jq bin/jd bin/difft
+  $ printf '// managed\n{ "key": "managed" }\n' >source/zed-settings.json
+  $ printf '// local\n{ "key": "local" }\n' >destination/zed-settings.json
+  $ bash "$TESTDIR/../../../scripts/chezmoi-diff-managed" "$PWD/destination/zed-settings.json" | awk 'NF'
+  == managed (rendered): */source/zed-settings.json == (glob)
+  == destination: */destination/zed-settings.json == (glob)
+  src.json zed-settings.json
 
 Structured differences do not stop later comparisons.
 

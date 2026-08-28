@@ -147,6 +147,19 @@ diff_standard() {
     run_diff "$src" "$source_path" "$target_path"
 }
 
+can_use_jd() {
+    local src=$1
+    local target_path=$2
+
+    if ! command -v jd >/dev/null 2>&1; then
+        return 1
+    fi
+
+    if [[ "$target_path" =~ \.json$ ]]; then
+        jq empty "$src" "$target_path" >/dev/null 2>&1
+    fi
+}
+
 run_diff() {
     local src=$1
     local source_path=$2
@@ -163,7 +176,7 @@ run_diff() {
 
     case "$target_path" in
         *.json|*.yaml|*.yml)
-            if command -v jd >/dev/null 2>&1; then
+            if can_use_jd "$src" "$target_path"; then
                 if [ -t 1 ] && [ -z "${NO_COLOR:-}" ]; then
                     options+=(-color)
                 fi
