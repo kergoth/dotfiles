@@ -27,9 +27,9 @@ Personal dotfiles and system setup, managed with [chezmoi] and [Nix Home Manager
 
 ## How It Works
 
-[Chezmoi][chezmoi] manages dotfiles: it templates configuration files, applies them to `$HOME`, handles encrypted secrets via [age], and runs setup scripts as part of the apply process. [Nix Home Manager][home-manager] provides the primary method of declarative, reproducible package management at the user level where Nix and nixpkgs are viable, supplemented by [Homebrew] on macOS, [Scoop] on Windows, and language-specific package managers as needed. Where that path is unavailable or incomplete, the setup falls back to system package managers and other installation methods. See [Platform Notes](#platform-notes) for FreeBSD and Chimera Linux.
+[Chezmoi][chezmoi] manages dotfiles: it templates configuration files, applies them to `$HOME`, handles encrypted secrets via [age], and runs setup scripts as part of the apply process. [Nix Home Manager][home-manager] provides the primary method of declarative, reproducible package management at the user level where Nix and nixpkgs are viable, supplemented by [Homebrew] on macOS, [Scoop] on Windows, and language-specific package managers as needed. Where that path is unavailable or incomplete, the setup falls back to system package managers and other installation methods. See [Repository Architecture](docs/repository-architecture.md) for the setup layers and directory responsibilities, and [Platform Notes](#platform-notes) for FreeBSD and Chimera Linux.
 
-Chezmoi templates drive per-machine configuration. Flags in `~/.config/chezmoi/chezmoi.toml` control what gets installed and configured: for example, whether the machine is a work system, has a container runtime, or is headless. Sensitive files are encrypted with age, with the key bootstrapped from 1Password on first setup if not placed manually.
+Chezmoi templates drive per-machine configuration. Flags in `~/.config/chezmoi/chezmoi.toml` control what gets installed and configured: for example, whether the machine is a work system, has a container runtime, or is headless. [Authoring Chezmoi Configuration](docs/chezmoi-authoring.md#data-and-template-variables) documents the intent behind those flags. Sensitive files are encrypted with age, with the key bootstrapped from 1Password on first setup if not placed manually.
 
 **A note on scope:** This is not intended as a starter template, as adopting it wholesale would likely be more complex than most people need.
 
@@ -103,6 +103,9 @@ If the repository is already cloned:
 chezmoi edit --watch ~/.config/zsh/.zshrc
 ```
 
+See [Authoring Chezmoi Configuration](docs/chezmoi-authoring.md) for source
+resolution, template rendering, and safe inspection before applying changes.
+
 ### Apply dotfiles changes to the home directory
 
 This step is implicitly done by the setup script. To run it manually, for example, after editing files inside the repository checkout, run this:
@@ -116,6 +119,9 @@ chezmoi apply
 ```console
 ./script/update
 ```
+
+See [Updating External Content](docs/updating-externals.md) for the review-first
+source and lock workflow.
 
 ## Local Configuration
 
@@ -182,72 +188,14 @@ These files are not tracked in the repository and allow per-machine customizatio
 
 ### Agent Additions
 
-#### Rules
+Shared rule templates render instructions for Claude Code, Codex, Cursor, and
+Pi. Skills live under `~/.agents/skills/` where each tool's discovery mechanism
+can use them. MCP registration remains agent-specific because the tools do not
+share one configuration format.
 
-Rules are rendered from repo-managed templates into always-loaded context files for each agent tool: `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, `~/.cursor/rules/agent-rules.mdc`, and `~/.pi/agent/AGENTS.md`.
-
-#### Skills
-
-Skills live in `~/.agents/skills/` and are available to all agent tools (Claude Code, Codex, Cursor, pi) unless noted otherwise.
-
-##### First-Party
-
-- **[Clean Prose](home/dot_agents/skills/clean-prose/SKILL.md)**: Improve prose quality and reduce AI writing patterns in written artifacts.
-- **[CLI Design](home/dot_agents/skills/cli-design/SKILL.md)**: Guidelines for designing and implementing command-line interfaces, with [clig.dev](https://clig.dev/) as the baseline.
-- **[Cram](home/dot_agents/skills/cram/SKILL.md)**: Write, read, and debug [cram](https://bitheap.org/cram/) functional tests (.t files).
-- **[Dispatch External Model](home/dot_agents/skills/dispatch-external-model/SKILL.md)**: CLI syntax for dispatching prompts to external model agents (claude, cursor, codex, gemini).
-- **[Evaluate Open-Source Project](home/dot_agents/skills/evaluate-open-source-project/SKILL.md)**: Due diligence for adopting open-source projects, plugins, or skills (trust, maintainer health, security risk).
-- **[Find Session](home/dot_agents/skills/find-session/SKILL.md)**: Find and resume past Claude Code, Codex, or Cursor Agent conversations by searching session history files by keyword.
-- **[Git Commits](home/dot_agents/skills/git-commits/SKILL.md)**: Personal conventions for Git commit messages, staging, history curation, and bisectability.
-- **[Git PRs](home/dot_agents/skills/git-prs/SKILL.md)**: Personal conventions for pull request descriptions, templates, and reviewer-facing content.
-- **[GitHub Issue Triage](home/dot_agents/skills/github-issue-triage/SKILL.md)**: End-to-end GitHub issue triage with complexity scoring and execution-lane recommendations.
-- **[Issue Tracking Conventions](home/dot_agents/skills/issue-tracking-conventions/SKILL.md)**: Structural conventions for issues, epics, and bug reports across trackers.
-- **[jj Commits](home/dot_agents/skills/jj-commits/SKILL.md)**: Commit policy for Jujutsu repositories (paired with the Jujutsu skill).
-- **[Jujutsu](home/dot_agents/skills/jujutsu/SKILL.md)**: Version control for [Jujutsu (jj)](https://github.com/jj-vcs/jj) repositories.
-- **[Obsidian CLI](home/dot_agents/skills/obsidian-cli/SKILL.md)**: Work with the [Obsidian](https://obsidian.md) CLI.
-- **[Shell Script Style](home/dot_agents/skills/shell-script-style/SKILL.md)**: Apply personal Bash/POSIX shell script style conventions.
-
-##### External
-
-- **[Anthropic Official Plugins](https://github.com/anthropics/claude-plugins-official/tree/main/plugins)**: Claude Code setup, maintenance, and skill authoring.
-  - **[claude-automation-recommender](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/claude-code-setup)**: Analyze codebase and recommend Claude Code automations (hooks, subagents, skills, MCP servers).
-  - **[claude-md-improver](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/claude-md-management)**: Audit and improve CLAUDE.md files.
-  - **[skill-creator](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/skill-creator)**: Create and refine skills.
-- **[Astral](https://github.com/astral-sh/claude-code-plugins/tree/main/plugins/astral/skills)**: Python tooling skills. Also installed as a Claude Code plugin for `ty` LSP integration.
-  - **ruff**: Linting and formatting Python code.
-  - **ty**: Type checking Python code.
-  - **uv**: Managing Python projects, packages, and tools.
-- **[avoid-ai-writing](https://github.com/conorbronsdon/avoid-ai-writing)**: Vocabulary and structural pattern detection for reducing AI writing patterns. Used as the base layer for the clean-prose skill.
-- **[gh-pr-review](https://github.com/agynio/gh-pr-review)**: GitHub PR review threads and inline review comments with structured terminal workflows.
-- **[gh-stack](https://github.com/github/gh-stack/tree/main/skills/gh-stack)**: Manage stacked branches and pull requests with the `gh stack` CLI extension.
-- **[Readwise Skills](https://github.com/readwiseio/readwise-skills/tree/main/skills)**: Readwise Reader workflows.
-  - **build-persona**: Build a reading profile from library history; personalizes quiz and feed-catchup output.
-  - **feed-catchup**: Batch-process RSS feeds and newsletters to surface valuable content.
-  - **quiz**: Self-assessment on recently read content with grading.
-  - **reader-recap**: Conversational briefing on recent reading activity.
-- **[Superpowers](https://github.com/obra/superpowers/tree/main/skills)**: Core workflow skills for agentic coding.
-  - **brainstorming**: Explore intent, requirements, and design before implementation.
-  - **dispatching-parallel-agents**: Coordinate independent tasks across multiple agents.
-  - **executing-plans**: Execute written implementation plans with review checkpoints.
-  - **finishing-a-development-branch**: Structured options for merging, PRs, or cleanup when work is complete.
-  - **receiving-code-review**: Process review feedback with technical rigor, not blind agreement.
-  - **requesting-code-review**: Verify work meets requirements before merging.
-  - **subagent-driven-development**: Execute implementation plans with independent in-session tasks.
-  - **systematic-debugging**: Structured approach to bugs and test failures before proposing fixes.
-  - **test-driven-development**: Write tests before implementation code.
-  - **using-git-worktrees**: Isolate feature work in git worktrees.
-  - **using-superpowers**: Session entry point; establishes skill discovery and invocation discipline.
-  - **verification-before-completion**: Require evidence before claiming work is done.
-  - **writing-plans**: Plan multi-step tasks before touching code.
-
-#### MCP Servers
-
-- **[Context7](https://github.com/upstash/context7-mcp)**: Fetch up-to-date library documentation and code examples from source repositories. _Claude Code: unconditional. Codex: personal machines. Cursor: work machines. pi: unconditional._
-- **[DeepWiki](https://deepwiki.com)**: Query documentation and knowledge from GitHub repositories. _Claude Code: unconditional. Codex: personal machines. Cursor: work machines. pi: unconditional._
-- **[DuckDuckGo](https://github.com/nickclyde/duckduckgo-mcp-server)**: Keyless web search and page-content retrieval. _Claude Code: unconditional. Codex: personal machines. Cursor: unconditional. pi: unconditional._
-- **[Playwright](https://github.com/microsoft/playwright-mcp)**: Browser automation for interactive pages (forms, clicks, logins) that plain fetch tools can't handle. _Claude Code: unconditional. Codex: personal machines. Cursor: unconditional. pi: unconditional._
-- **[Firecrawl](https://github.com/firecrawl/firecrawl-mcp-server)**: JS-rendering, anti-bot-resistant page fetch/scrape/crawl. _Claude Code: personal machines. Codex: personal machines. Cursor: not configured (personal API key). pi: personal machines._
-- **[Kagi](https://github.com/kagisearch/kagimcp)**: Spam-resistant, non-commercial-weighted search; human-approved use only, never an automatic fallback. _Claude Code: personal machines. Codex: personal machines. Cursor: not configured (personal API key). pi: personal machines._
+See [Agent Configuration](docs/agent-configuration.md) for source ownership,
+conditional rendering, MCP mechanisms, and read-only verification commands.
+The repository source directories are the current skill and server inventory.
 
 ### Fonts
 
@@ -288,10 +236,18 @@ The home-level `~/.envrc` is a `direnv` bridge for shell entry points that bypas
 
 ## Installed Software
 
-See [docs/installed.md](docs/installed.md) for installed software.
+See [docs/installed.md](docs/installed.md) for installed software. Changes to
+the inventory and installation policy are covered by
+[Adding Software](docs/contributing-software.md).
 
 ## Additional Docs
 
+- **[Repository Architecture](docs/repository-architecture.md)**: Setup progression, directory responsibilities, and the source-to-rendered flow.
+- **[Authoring Chezmoi Configuration](docs/chezmoi-authoring.md)**: Template variables, source patterns, rendering, runtime directories, and removals.
+- **[Testing and Verification](docs/testing.md)**: Automated suites, container setup tests, and the verification matrix.
+- **[Agent Configuration](docs/agent-configuration.md)**: Shared rules and skills, rendered destinations, and MCP configuration.
+- **[Updating External Content](docs/updating-externals.md)**: Review-first source, lock, and container-pin updates.
+- **[Adding Software](docs/contributing-software.md)**: Installation policy, platform patterns, inventory updates, and software-specific checks.
 - **[Architectural Decision Records](docs/decisions/)**: Significant architectural decisions, documented using the [MADR](https://adr.github.io/madr/) standard.
 - **[Installed Software](docs/installed.md)**: Installed software inventory by platform and category.
 - **[As-Needed Software](docs/as-needed.md)**: Software I install occasionally as needed rather than on every machine, with details on how they can be installed.
@@ -302,7 +258,9 @@ See [docs/installed.md](docs/installed.md) for installed software.
 
 Questions, comments, feedback, and contributions are always welcome, please open an issue.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for ways to get started contributing to this project.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for ways to get started contributing to
+this project and [Testing and Verification](docs/testing.md) for the current
+test entry points.
 
 Please adhere to this project's [Code of Conduct](CODE_OF_CONDUCT.md) and follow [The Ethical Source Principles](https://ethicalsource.dev/principles/).
 
