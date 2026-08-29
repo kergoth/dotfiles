@@ -100,5 +100,6 @@ choices and platform-specific installation patterns.
 ## Related Documentation
 
 - [Authoring Chezmoi Configuration](chezmoi-authoring.md)
+- [Testing and Verification](testing.md)
 - [Adding Software](contributing-software.md)
 - [Architectural Decision Records](decisions/)

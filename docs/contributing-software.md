@@ -486,20 +486,18 @@ Software summary lines must be source-backed, not inferred.
 
 ## Verification Checklist
 
-Pick the cheapest verification that covers the changed behavior. Agents should prefer render and template checks before live install checks; commands that apply changes to the current machine are manual unless the task explicitly asks for them.
+Use the general matrix in [Testing and Verification](testing.md) to select the
+narrowest check. Software changes also require these checks where applicable:
 
-Baseline checks:
-
-- [ ] **Markdown-only docs**: inspect the changed section with `sed -n` or `rg -n`
-- [ ] **Software summary provenance** (when adding/changing README software descriptions): verify wording against official source links and confirm naming/capitalization matches the source
-- [ ] **Chezmoi template syntax**: `scripts/chezmoi-execute-template <template>`
-- [ ] **Managed target rendering**: `chezmoi cat --source-path <source-path>`
-- [ ] **Final rendered diff**: `chezmoi diff`
-- [ ] **Shell scripts**: `sh -n <script>` plus `shellcheck` when available
-- [ ] **PowerShell scripts**: render with `chezmoi execute-template`; run PSScriptAnalyzer when available
-- [ ] **Python helpers**: `uv run --with pytest pytest scripts/tests/<test_file>.py -q`
-- [ ] **Cram scenarios**: `./test/run-cram test/cram/<suite>`
-- [ ] **Linux package-flow changes**: the narrowest matching container test, for example `./script/test <distro>` or `./script/test -w <distro>` for GUI app paths
+- [ ] **Software summary provenance**: verify README wording and capitalization
+  against an official source.
+- [ ] **Template rendering**: render every changed installation template with
+  `scripts/chezmoi-execute-template <template>`.
+- [ ] **Managed output**: inspect the affected target with
+  `chezmoi cat --source-path <source-path>` and review `chezmoi diff`.
+- [ ] **Linux package flow**: use the narrowest matching container test, such
+  as `./test/run-container <distro>` or `./test/run-container -w <distro>` for
+  a GUI installation path.
 
 Manual or apply-time checks:
 

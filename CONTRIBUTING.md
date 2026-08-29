@@ -28,7 +28,10 @@ Request features on the [Issue Tracker](https://github.com/kergoth/dotfiles/issu
 
 ## How to submit changes
 
-Open a [Pull Request](https://github.com/kergoth/dotfiles/pulls) to submit changes to this project.
+Open a [Pull Request](https://github.com/kergoth/dotfiles/pulls) to submit
+changes to this project. This pull-request workflow applies to external
+contributors. Agents operating directly in the repository owner's working tree
+follow the workflow in [AGENTS.md](AGENTS.md) instead.
 
 Your pull request needs to meet the following guidelines for acceptance:
 
@@ -39,44 +42,30 @@ It is recommended to open an issue before starting work on anything. This will a
 
 ## Development and testing
 
-The repository has two complementary test entrypoints:
+The repository has two complementary test entry points:
 
-- **`./script/test`**: manual container bring-up and debugging for Linux setup flows.
-- **`./test/run-cram`**: structured Cram regression suites for repeatable scenario coverage.
-
-Both rely on Docker for the container-backed Linux setup tests.
+- `./script/test` dispatches the automated pytest, Cram, and Node suites.
+- `./test/run-container` builds a Linux test image and runs setup phases for
+  distribution-specific validation or interactive debugging.
 
 ```console
-# Run all distros through the manual container test entrypoint
+# Run every automated suite.
 ./script/test
 
-# Run a specific distro
-./script/test arch
+# Run one Cram suite.
+./script/test -t test/cram/statusline
 
-# Drop into a user shell after setup (useful for debugging)
-./script/test -i debian
+# Exercise setup on one distribution.
+./test/run-container arch
 
-# Stop after setup-root, then drop into a shell
-./script/test -r -i debian
-
-# Run a command as the test user after setup
-./script/test -c 'chezmoi data | grep -E "work|personal"' debian
-
-# Run all structured Cram suites
-./test/run-cram
-
-# Run only the container-backed dotfiles scenarios
-./test/run-cram test/cram/container
-
-# Run only the statusline transcript tests
-./test/run-cram test/cram/statusline
+# Preserve the terminal and enter a shell after setup.
+./test/run-container -i -s debian
 ```
 
-Supported distros: `arch`, `chimera`, `debian`, `fedora`, `ubuntu`.
+See [Testing and Verification](docs/testing.md) for suite selection, supported
+distributions, container controls, credential pass-through, and the
+verification matrix.
 
-Pass `GITHUB_TOKEN` in the environment to authenticate private dependency downloads
-during setup.
-
-The container Cram suite currently lives under `test/cram/container/`. These
-tests keep `./script/test` as the human-facing container entrypoint, but define
-named scenarios in Cram with helper scripts for matrix coverage and assertions.
+Use [Authoring Chezmoi Configuration](docs/chezmoi-authoring.md) for managed
+source and template conventions. Changes to installed applications or packages
+must follow [Adding Software](docs/contributing-software.md).
