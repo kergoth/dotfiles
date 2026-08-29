@@ -74,6 +74,9 @@ When adding a new tool in this class, document why the ordinary hierarchy is ins
 
 ## File Reference
 
+See [Repository Architecture](repository-architecture.md) for the role of each
+top-level directory and the source-to-rendered flow.
+
 ### User-Level Installation Files
 
 | Purpose | File Path |
@@ -106,29 +109,13 @@ When adding a new tool in this class, document why the ordinary hierarchy is ins
 
 ## Conditional Flags
 
-Available flags from `.chezmoi.toml.tmpl` for conditional installation:
+Software templates combine machine-role, capability, and workload flags to
+select the narrowest applicable installation. See
+[Data and Template Variables](chezmoi-authoring.md#data-and-template-variables)
+for the complete flag reference and the intent behind each value.
 
-| Flag | Purpose | Typical Use |
-|------|---------|-------------|
-| `.ephemeral` | Temporary machine (VM, container) | Skip persistent/large apps |
-| `.headless` | No GUI available | Skip all GUI apps |
-| `.personal` | Personal machine with secrets | Personal-only apps |
-| `.work` | Work machine | Work tools, skip personal |
-| `.coding` | Development workstation | Dev tools (IDEs, DevPod) |
-| `.container_runtime` | Container runtime needed | Docker, Podman, DevPod |
-| `.gaming` | Gaming machine | Steam, game clients |
-| `.video` | Video playback needed | VLC, media players |
-| `.music` | Music playback | Music apps |
-| `.music_library` | Manage music library | MusicBrainz Picard |
-| `.ebook_library` | Manage ebook library | Calibre |
-| `.gaming_device_library` | Manage gaming device library | ScummVM, ROM tools |
-| `.retro_computing` | Retro computing emulation | 86Box |
-| `.use_nix` | Nix is available | Use Nix/home-manager for package management |
-| `.user_setup` | Full user setup (not just dotfiles) | Gate package installation; false means dotfiles-only |
-| `.secrets` | Has access to secrets | Encryption, 1Password |
-| `.steamdeck` | Running on Steam Deck | SteamOS-specific setup |
-| `.wsl2` | Running in WSL2 | WSL-specific setup |
-| `.devpod` | Running in DevPod container | Skip GPG setup |
+Common software conditions appear in the examples below and in
+[Common Conditional Patterns](#common-conditional-patterns).
 
 ## Code Examples by Installation Method
 
@@ -390,46 +377,14 @@ flatpak install -y flathub org.example.AppName || true
 
 ## Helper Templates
 
-All three helpers search path lists defined in `paths.yml` data. They do not use `lookPath`, so results are consistent regardless of the invoking shell's `$PATH`.
+The shared `find-tool`, `availableTools`, and `packagesForMissingTools`
+templates determine which packages are missing before emitting installation
+commands. Their path-selection rules and calling conventions are documented in
+[Shared Template and Script Helpers](chezmoi-authoring.md#shared-template-and-script-helpers).
 
-### find-tool
-
-Locates a single executable. Accepts optional `home_paths` (bool, default true) and `system_paths` (bool, default true) to control which path sets are searched:
-
-```go
-{{- $tool := includeTemplate "find-tool" (dict "root" . "tool" "toolname") -}}
-{{- if not $tool }}
-# Tool not found, install it
-{{- end }}
-
-{{/* System-paths only (e.g. checking a system-installed binary) */}}
-{{- $tool := includeTemplate "find-tool" (dict "root" . "tool" "toolname" "home_paths" false) -}}
-```
-
-### availableTools
-
-Checks multiple tools at once. Same `home_paths`/`system_paths` arguments. Returns a dict of `cmd→path` (empty string if not found):
-
-```go
-{{- $results := includeTemplate "availableTools" (dict "root" . "tools" (list "zoxide" "atuin" "fzf")) | fromJson -}}
-```
-
-### packagesForMissingTools
-
-Wraps `availableTools`. Takes a dict of `cmd→install-spec`, returns only the install specs whose commands are missing. The install spec is whatever string the caller needs: a bare package name, or a full argument string like `--git https://github.com/owner/repo` for cargo. Same `home_paths`/`system_paths` arguments. Prefer this over multiple `find-tool` calls when checking more than 2 or 3 tools:
-
-```go
-{{/* Package names */}}
-{{- $tools := dict "cmd1" "pkg1" "cmd2" "pkg2" -}}
-
-{{/* Cargo: install spec includes flags */}}
-{{- $cargo_tools := dict "choose" "--git https://github.com/theryangeary/choose" -}}
-
-{{- $to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $tools) | fromJson -}}
-{{- range $to_install }}
-# Install {{ . }}
-{{- end }}
-```
+For software installation, use `find-tool` for a small number of independent
+checks. Use `packagesForMissingTools` when one installer can process a larger
+set or needs a complete install specification such as Cargo `--git` arguments.
 
 ## Common Conditional Patterns
 
@@ -453,86 +408,66 @@ Wraps `availableTools`. Takes a dict of `cmd→install-spec`, returns only the i
 
 ## Script Naming Conventions
 
-Format: `run_[onchange_][before|after]_NN_description[.ps1].tmpl`
+See [Run Script Naming and Timing](chezmoi-authoring.md#run-script-naming-and-timing)
+for chezmoi prefixes, execution semantics, and numeric phases.
 
-| Prefix | Meaning |
-|--------|---------|
-| `run_` | Always runs |
-| `run_onchange_` | Runs only when content changes |
-| `before_` | Before dotfiles applied |
-| `after_` | After dotfiles applied |
+For software changes, place CLI tool installation in a `before_` script when
+rendered configuration may detect the command. Place GUI applications in an
+`after_` script because they do not affect dotfile rendering and may take
+longer to install.
 
-### Critical: CLI vs GUI Timing
+Examples:
 
-**CLI tools should use `before_` scripts** because:
-- Dotfile templates may use `find-tool` to detect CLI tools
-- Tool availability affects generated configuration
-- CLI tools are typically small and fast to install
+- `run_onchange_before_25_install-tools.tmpl`: POSIX CLI tools via eget,
+  Cargo, or uv
+- `run_onchange_before_25_install-tools.ps1.tmpl`: Windows CLI tools via
+  Scoop, Cargo, or uv
+- `run_onchange_after_10_install-apps.tmpl`: Linux GUI applications
+- `run_onchange_after_10_install-apps.ps1.tmpl`: Windows GUI applications
 
-**GUI apps should use `after_` scripts** because:
-- GUI apps don't affect dotfile templates
-- GUI apps are often large and slow to install
-- Delaying dotfiles for GUI installation is unnecessary
+## Software Inventory Documentation
 
-**Examples:**
-- `run_onchange_before_25_install-tools.tmpl` - CLI tools via eget/cargo/uv (POSIX)
-- `run_onchange_before_25_install-tools.ps1.tmpl` - CLI tools via Scoop/cargo/uv (Windows)
-- `run_onchange_after_10_install-apps.tmpl` - GUI apps (Zed, DevPod)
-- `run_onchange_after_10_install-apps.ps1.tmpl` - GUI apps on Windows
-
-| Number | Purpose |
-|--------|---------|
-| `00_` | Bootstrap (1Password, age key) |
-| `10_` | Early setup (homebrew install), GUI apps |
-| `20_` | Package managers (home-manager) |
-| `25_` | CLI tools (eget, cargo, uv) |
-| `30_` | Configuration |
-| `40_` | Updates |
-| `50_` | Final setup (shell, SSH) |
-
-## README Documentation
-
-When adding software, update `README.md` in the appropriate section:
+Automatically installed software belongs in `docs/installed.md`. Software
+kept only as a future installation reference belongs in `docs/as-needed.md`.
+README links to those inventories rather than containing their entries.
 
 ### Section Selection
 
-Use the most specific section whose platform list matches where the software is actually installed. When a platform is added, move the entry up to the broader section rather than duplicating it. No entry should appear in more than one section.
+Use the most specific heading whose platform list matches where the software
+is installed. When another platform gains the software, move the entry to a
+broader heading rather than duplicating it.
 
-Before editing, inspect the current headings in `README.md`; do not rely only on the heading examples below. Some headings may appear more than once for historical reasons. If a heading is duplicated, place the entry next to the closest related software or first consolidate the duplicate headings in a separate cleanup.
+Before editing, inspect the current headings in the destination file. Some
+headings repeat for historical reasons; place an entry beside related software
+or consolidate duplicate headings as a separate cleanup.
 
-**CLI Software** (`### Installed CLI Software` and subsections):
-- Main section: all supported platforms
-- `#### CLI Software on Linux, macOS, and FreeBSD`: excludes Windows
-- `#### CLI Software on Linux and macOS`: excludes FreeBSD and Windows
-- `#### CLI Software on Linux (non-Chimera), macOS, FreeBSD, and Windows`: excludes Chimera
-- Narrower subsections: single platform or distro, such as FreeBSD, macOS, Windows, Linux, Arch, WSL2, or Chimera
+For `docs/installed.md`:
 
-**GUI Software** (`### Installed GUI Software` and subsections):
-- Main section: all supported platforms including FreeBSD
-- `#### GUI Software on Windows, macOS, and Linux`: excludes FreeBSD
-- `#### GUI Software on Windows, macOS, and FreeBSD`: excludes Linux
-- `#### GUI Software on Windows and macOS`: excludes Linux and FreeBSD
-- Platform-specific subsections: single platform, or macOS version-gated
+- `### Installed CLI Software` and `### Installed GUI Software` cover all
+  supported platforms.
+- Subheadings such as `#### CLI Software on Linux, macOS, and FreeBSD` exclude
+  the platforms they do not name.
+- Platform-specific and version-gated headings cover narrower installations.
 
-**As-Needed Software** (`### As needed CLI Software`): not auto-installed. Include `Available via brew, nix, scoop, ...` install guidance instead of conditional notes.
+For `docs/as-needed.md`, use the applicable CLI or GUI heading and include
+installation guidance such as `Available via brew, nix, or scoop`.
 
-When removing software, move the README entry to `docs/formerly-used.md` unless the software was only an internal implementation detail.
+When removing installed software, move its entry to `docs/formerly-used.md`
+unless it was only an internal implementation detail.
 
-### For Always-Installed Software
+### For Installed Software
 
 ```markdown
-### Installed CLI Software
-
 - [ToolName](https://example.com) ([Open-Source](https://github.com/owner/repo)): Brief description.
 ```
 
-### For Conditional Software
+Append a conditional note when installation depends on a flag:
 
 ```markdown
-- [ToolName](https://example.com): Description. _Conditional: This is installed when the X flag is enabled._
+- [ToolName](https://example.com): Description. _Conditional: Installed when the X flag is enabled._
 ```
 
-### For As-Needed Software (not auto-installed)
+### For As-Needed Software
 
 Include installation instructions:
 
