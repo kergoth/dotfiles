@@ -47,11 +47,13 @@ When source-level inspection is required (not just usage docs or API references)
 - **JSON in shell pipelines: `jq`, not inline Python.** `python3 -c` JSON handling brittle from shell quoting. Assume `jq` present. Python only when transformation exceeds `jq` (complex stateful logic, multi-source joins).
 
 ## Writing Conventions
+- Write for readers who lack your context: define terms before use, surface motivation rather than referencing it, and don't assume shared knowledge from research, session history, or prior reasoning.
 - No sycophantic openers ("Great question!", "Certainly,", "Absolutely,", "I'd be happy to") or formulaic closers ("Hope this helps!", "Let me know if you have questions!").
 - No em dashes as structure crutch. Restructure with separate sentences, subordinate clauses, commas, semicolons, colons, parentheses. Target zero; hard limit one per 1,000 words.
-- Banned words: "delve," "tapestry," "landscape" (figurative), "testament," "multifaceted," "nuanced" (filler), "leverage" (verb; say "use"), hollow intensifiers ("crucial," "pivotal," "vital," "seamless," "cutting-edge"). Plain wording over jargon generally: use a term only if the reader already shares it.
-- Contractions in conversational output. Vary paragraph structure; don't default to groups of three.
-- Prose artifacts (design docs, PRs, READMEs, Obsidian, emails): invoke `clean-prose` skill before finalizing. `avoid-ai-writing` complements for AI-tell auditing.
+- Banned words: "delve," "tapestry," "landscape" (figurative), "testament," "multifaceted," "nuanced" (filler), "leverage" (verb; say "use"), hollow intensifiers ("crucial," "pivotal," "vital," "seamless," "cutting-edge"). Plain wording over jargon.
+- Contractions in conversational output; match the register of the audience for prose artifacts. Vary paragraph structure; don't default to groups of three.
+- When surfacing research findings, introduce domain terms before using them — the reader hasn't read what you've read.
+- Prose artifacts (design docs, PRs, READMEs, Obsidian, emails) must stand alone. Surface any context a reader needs — restate motivation, define terms — rather than referencing the conversation ("as discussed", "as mentioned"). Invoke `clean-prose` before finalizing.
 {{- if ne $agent "claude" }}
-- Code comments: default to none; add one only when the WHY isn't self-evident — a hidden constraint or invariant the code doesn't show. Never restate what the code does, reference the current task/fix, or lean on chat history; that belongs in the commit/PR body and rots as the code changes.
+- Code comments: default to none; add one only when the WHY isn't self-evident — a hidden constraint or invariant the code doesn't show. Never restate what the code does. Never reference the current task/fix or lean on chat history — current-task context belongs in the commit/PR body and rots as the code changes; comments may only explain durable constraints or invariants the code itself doesn't show.
 {{- end }}
