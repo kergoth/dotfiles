@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+scriptdir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
+# shellcheck source=./common.sh
+. "$scriptdir/common.sh"
+
+if [ $# -eq 0 ]; then
+    echo >&2 "${0##*/} Brewfile [Brewfile..]"
+    exit 2
+fi
+
+for brewfile; do
+    if [ -d "$brewfile" ]; then
+        while IFS= read -r -d '' brewfile; do
+            brewfile_cat "$brewfile"
+        done < <(find "$brewfile" -type f -not -name .DS_Store -print0)
+    else
+        brewfile_cat "$brewfile"
+    fi
+done | brewfile-diff-installed -
