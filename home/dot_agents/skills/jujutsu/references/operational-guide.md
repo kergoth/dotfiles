@@ -52,11 +52,34 @@ Do not give hand-wavy advice like "restore some changes and reapply them later" 
 - Use `jj resolve` only when an interactive merge-tool flow is acceptable.
 - After resolving, inspect with `jj diff` and verify status with `jj st`.
 
+## Run A Command Across A Stack (0.43.0+)
+
+`jj run <command> [-r REVSET]` runs a command against each revision in the
+revset, each with its own private working copy. Commands may update the
+working copy; changes and conflicts propagate automatically.
+
+Common uses:
+- `jj run -- cargo check --all-features`
+- `jj run -- cargo fix`
+- `jj run -r 'main::@' -- ./run-tests.sh`
+
+Flags:
+- `--jobs N`: run N revisions concurrently (start order is still guaranteed)
+- `--passthrough`: connect subprocess stdout/stderr to terminal
+- `--ignore-changes`: avoid editing any revision even if the command modifies the working copy
+- `--ignore-errors`: continue across remaining revisions on nonzero exit
+
+This is safer and more efficient than a loop of `jj edit`/mutate/`jj new`
+and avoids manual rebasing between steps.
+
 ## Agent-Specific Cautions
 
 - Prefer `-m` flags instead of opening an editor.
 - Avoid assuming TUIs are acceptable just because a command supports one.
 - Re-run `jj st` after mutating operations to confirm the resulting working-copy state.
+- To suppress working-copy snapshot on a read query, use `--ignore-working-copy`.
+  Use `--no-integrate-operation` (0.41.0+) only when suppressing the operation
+  from the op log is also intended — it is broader and hides more state.
 
 ## Read Next
 

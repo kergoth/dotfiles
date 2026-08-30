@@ -34,6 +34,7 @@ This updates the workspace and may create a recovery commit if needed.
 
 - `0.38.0`: `jj workspace root` gained `--name`.
 - `0.39.0`: `jj workspace add` now links with relative paths, which matters for moved repos and containers.
+- `0.44.0`: `jj workspace list` shows workspace roots by default; output customizable via `templates.workspace_list` or `-T`.
 
 ## Read Next
 

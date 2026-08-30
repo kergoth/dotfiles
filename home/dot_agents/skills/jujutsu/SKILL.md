@@ -11,7 +11,7 @@ Use this skill to keep VCS behavior accurate in jj repositories. Prefer `jj` for
 
 Local constraint: for `.jj` commit paths, pair with `jj-commits` for generic intent or `git-commits` for explicit Git-only intent.
 
-Validated against jj `0.39.0` on 2026-03-12 using `jj/docs/`, `jj/cli/docs/`, and the `v0.38.0` and `v0.39.0` release notes.
+Validated against jj `0.44.0` on 2026-08-30 using `jj/docs/`, `jj/cli/docs/`, and the `v0.38.0` through `v0.44.0` release notes.
 
 ## Detect The Repo First
 
@@ -32,6 +32,8 @@ Validated against jj `0.39.0` on 2026-03-12 using `jj/docs/`, `jj/cli/docs/`, an
 | `git commit --amend` | keep editing `@`, or `jj squash` | The working copy is already a commit. |
 | `git commit` for a new step | `jj new`, then `jj desc -m "..."` | Start a fresh working-copy commit. |
 | `git branch` | `jj bookmark` | Bookmarks are the Git-facing movable names. |
+| `git tag` | `jj tag` | Tracked tags work like bookmarks as of 0.44.0; use `jj tag track`/`untrack`. |
+| (loop: stash, checkout, run, restore) | `jj run -- <cmd>` | Runs the command across a revision set, each with a private working copy. 0.43.0+. |
 | `git rebase` | `jj rebase` | jj rebases descendants automatically after rewrites. |
 | `git reflog` | `jj op log` | Repository-wide operation history. |
 | `git reset --hard` for recovery | `jj undo`, `jj restore`, `jj op restore` | Prefer reversible recovery tools. |
@@ -71,4 +73,4 @@ Before changing this skill for a newer jj release:
 - update `references/version-notes.md`
 - adjust command guidance only after confirming docs or release notes
 
-If the installed `jj` is older than `0.39.0`, treat command examples as baseline guidance rather than guaranteed syntax and verify drift-prone commands with `jj help ...` before relying on them. If the installed `jj` is newer than `0.39.0`, review newer release notes before assuming the skill is fully current.
+If the installed `jj` is older than `0.44.0`, treat command examples as baseline guidance rather than guaranteed syntax and verify drift-prone commands with `jj help ...` before relying on them. If the installed `jj` is newer than `0.44.0`, review newer release notes before assuming the skill is fully current.
