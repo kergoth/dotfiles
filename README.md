@@ -186,17 +186,6 @@ These files are not tracked in the repository and allow per-machine customizatio
 - **[zsh-nix-shell](https://github.com/chisui/zsh-nix-shell)**: Zsh plugin that lets you use zsh in nix-shell shells.
 - **[zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting)**: Fish shell like syntax highlighting for Zsh.
 
-### Agent Additions
-
-Shared rule templates render instructions for Claude Code, Codex, Cursor, and
-Pi. Skills live under `~/.agents/skills/` where each tool's discovery mechanism
-can use them. MCP registration remains agent-specific because the tools do not
-share one configuration format.
-
-See [Agent Configuration](docs/agent-configuration.md) for source ownership,
-conditional rendering, MCP mechanisms, and read-only verification commands.
-The repository source directories are the current skill and server inventory.
-
 ### Fonts
 
 - **[iA-Fonts](https://github.com/iaolo/iA-Fonts)**: iA Writer Mono, Duo, and Quattro.
