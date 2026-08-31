@@ -235,6 +235,7 @@ the inventory and installation policy are covered by
 - **[Authoring Chezmoi Configuration](docs/chezmoi-authoring.md)**: Template variables, source patterns, rendering, runtime directories, and removals.
 - **[Testing and Verification](docs/testing.md)**: Automated suites, container setup tests, and the verification matrix.
 - **[Agent Configuration](docs/agent-configuration.md)**: Shared rules and skills, rendered destinations, and MCP configuration.
+- **[Theming](docs/theming.md)**: Dark/light mode detection, palette selection, and per-tool theme configuration.
 - **[Updating External Content](docs/updating-externals.md)**: Review-first source, lock, and container-pin updates.
 - **[Adding Software](docs/contributing-software.md)**: Installation policy, platform patterns, inventory updates, and software-specific checks.
 - **[Architectural Decision Records](docs/decisions/)**: Significant architectural decisions, documented using the [MADR](https://adr.github.io/madr/) standard.
