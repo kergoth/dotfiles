@@ -26,6 +26,8 @@ This repository is public. When a commit changes an `.age` file, keep the subjec
 | `docs/chezmoi-authoring.md` | Editing templates, variables, run scripts, secrets, or troubleshooting |
 | `docs/testing.md` | Choosing the right verification method for a change |
 | `docs/contributing-software.md` | Adding, removing, or configuring software packages |
+| `docs/inventory.md` | Finding installed software, included external projects, plugins, fonts, scripts, and system or desktop components |
+| `docs/customization.md` | Understanding local override paths and machine-specific customization escape hatches |
 | `docs/agent-configuration.md` | Managing agent rules, skills, or subagent configs |
 | `docs/updating-externals.md` | Reviewing and applying external dependency updates |
 | `docs/decisions/` | Understanding past architectural decisions (list via `ls docs/decisions/`) |

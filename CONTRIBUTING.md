@@ -68,4 +68,6 @@ verification matrix.
 
 Use [Authoring Chezmoi Configuration](docs/chezmoi-authoring.md) for managed
 source and template conventions. Changes to installed applications or packages
-must follow [Adding Software](docs/contributing-software.md).
+must follow [Adding Software](docs/contributing-software.md). Changes to shipped
+agent rules, skills, or MCP configuration should also follow
+[Agent Configuration](docs/agent-configuration.md).
