@@ -240,6 +240,9 @@ ES-DE
 # Work / Personal Non-secret ignores
 {{ if .work -}}
 My Kindle Content
+
+# I don't use goodlinks at work
+.config/goodlinks/*
 {{- end }}
 
 # Credentials / secrets (materialized plaintext outputs and machine-local sensitive state)
