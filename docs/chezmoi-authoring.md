@@ -2,7 +2,7 @@
 
 This guide records the intent behind repository-specific template data and
 source patterns. `chezmoi data` is authoritative for values resolved on the
-current machine; it cannot explain why a flag exists or what behavior it
+current machine. It cannot explain why a flag exists or what behavior it
 should control.
 
 ## Edit Source, Not Rendered Files
@@ -10,7 +10,8 @@ should control.
 Edit files in this repository, not rendered targets under `$HOME`. Chezmoi
 will overwrite direct target edits on the next apply.
 
-Use this read-only loop when changing managed content:
+These commands inspect source and rendered output before the live home
+directory is changed:
 
 ```console
 # Resolve a managed target to its repository source.
@@ -26,8 +27,8 @@ scripts/chezmoi-execute-template home/dot_config/zsh/dot_zprofile.tmpl
 chezmoi diff
 ```
 
-`chezmoi apply` changes the live home directory and may run setup scripts. It
-is not part of routine source or render verification.
+`chezmoi apply` changes the live home directory and may run setup scripts. Use
+it when the rendered change is ready to become active on the current machine.
 
 ## Data and Template Variables
 
@@ -71,7 +72,7 @@ emulator choices and paths only when applicable.
 where an agent socket already exists or a test explicitly disables secret-key
 import.
 
-### Software and Workload Flags
+### Software Use Case Flags
 
 | Variable | Intent |
 | --- | --- |
@@ -84,9 +85,9 @@ import.
 | `.gaming_device_library` | Install tools for managing handheld and other gaming-device libraries. |
 | `.retro_computing` | Install retro-computing emulators and related tools. |
 
-Combine role, capability, and workload flags narrowly. For example, a GUI
-development tool may require `.coding`, a non-headless host, and a supported
-installation method. The [software contribution guide](contributing-software.md)
+Combine role, capability, and software use case flags narrowly. For example, a
+GUI development tool may require `.coding`, a non-headless host, and a
+supported installation method. The [software contribution guide](contributing-software.md)
 contains installation-specific examples.
 
 ## Run Script Naming and Timing
@@ -122,7 +123,7 @@ Use existing numeric phases before creating another:
 
 ## Shared Template and Script Helpers
 
-Maintained shell scripts should source `scripts/common.sh`; PowerShell scripts
+Maintained shell scripts should source `scripts/common.sh`. PowerShell scripts
 should use `scripts/common.ps1`. Inspect those files before adding a helper so
 the implementation does not acquire a second copy of existing package,
 logging, privilege, or platform behavior.
@@ -160,15 +161,10 @@ Use individual `find-tool` calls for one to three commands. Use
 
 ## Secrets
 
-The README describes age encryption and identity bootstrap. Two authoring
-constraints require additional care:
-
-- A non-managed encrypted fragment can be included and decrypted inside a
-  template. Work-only external definitions use this pattern so private source
-  locations are not exposed in the public repository.
-- Commit messages for `.age` changes must describe only the shape or purpose
-  of the change. Do not reveal people, organizations, products, internal URLs,
-  or other plaintext details protected by encryption.
+The README describes age encryption and identity bootstrap. Non-managed
+encrypted fragments can be included and decrypted inside a template. Work-only
+external definitions use this pattern so private source locations are not
+exposed in the public repository.
 
 Use the repository's encrypted-file editor rather than decrypting secrets into
 an untracked plaintext file.
@@ -183,8 +179,8 @@ files, whitelist the directory in `.chezmoiignore.tmpl` and ignore its
 contents. This lets chezmoi create the directory without trying to own runtime
 files. `.local/state/zsh` and `.local/share/wget` are examples.
 
-Do not add `mkdir -p` to a run script for a directory that chezmoi should
-manage.
+A directory that belongs to chezmoi should be represented in the source tree,
+rather than created separately by a run script.
 
 ## Removing Managed Files
 
@@ -217,8 +213,8 @@ chezmoi cat --source-path ~/.config/zsh/.zshrc
 
 To debug an eligible script without applying all managed state, render it and
 pipe the result to the relevant interpreter with tracing. Check
-`chezmoi status` first when a `run_once_` or `run_onchange_` script did not run;
-chezmoi may consider its state current.
+`chezmoi status` first when a `run_once_` or `run_onchange_` script did not run.
+Chezmoi may consider its state current.
 
 ## Related Documentation
 

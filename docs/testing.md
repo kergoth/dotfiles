@@ -1,17 +1,8 @@
 # Testing and Verification
 
 The repository separates automated regression suites from Docker-backed host
-setup tests. Start with the narrowest check that exercises the changed
-behavior; broad setup tests are slower and require more host resources.
-
-## Choosing the Narrowest Check
-
-Render and inspect template changes before running installation paths. Use a
-unit or transcript suite when it covers the behavior, and use a container only
-when the change depends on a Linux distribution or a complete setup phase.
-
-Documentation-only changes require direct review, local-link checks, and
-`git diff --check`. They do not require container setup tests.
+setup tests. This guide describes what each check covers and where it fits in
+the change workflow.
 
 ## Automated Test Dispatcher
 
@@ -22,7 +13,7 @@ option it runs all three:
 ./script/test
 ```
 
-Select one suite with `-p`, `-t`, or `-j`; a path can be passed when exactly
+Select one suite with `-p`, `-t`, or `-j`. A path can be passed when exactly
 one suite is selected:
 
 ```console
@@ -40,7 +31,7 @@ Node suite:
 
 Use `./script/test -h` for verbosity and other dispatcher options.
 
-## Direct Test Runners
+### Direct Test Runners
 
 The dispatcher delegates to these wrappers:
 
@@ -83,8 +74,9 @@ post-setup commands, secret seeding, and cache options.
 
 Container tests are appropriate for Linux setup, distro package behavior, and
 changes that depend on an installed system. They require Docker and may build
-large images. Do not run the full matrix when a render check or one distro
-covers the change.
+large images. A single distribution is usually enough for focused iteration.
+The full matrix is most useful before adopting cross-distribution setup
+changes.
 
 ## Test Environment Overrides
 
@@ -110,12 +102,12 @@ exposure.
 
 ## Verification by Change Type
 
-| Change | Narrow verification |
+| Change | Focused check |
 | --- | --- |
-| Markdown documentation | Inspect `git diff`; run `git diff --check`; verify changed local links |
+| Markdown documentation | Inspect `git diff`, run `git diff --check`, and verify changed local links |
 | Chezmoi template syntax | `scripts/chezmoi-execute-template <template>` |
 | Managed target rendering | `chezmoi cat --source-path <source-path>` |
-| Final rendered home-directory change | `chezmoi diff` |
+| Final rendered home-directory change | `chezmoi diff`, and optionally `chezmoi apply` followed by live target inspection |
 | Shell script | `sh -n <script>` and ShellCheck when available |
 | PowerShell script | Render the template and run PSScriptAnalyzer when available |
 | Python helper | `./script/test -p test/pytest/<test_file>.py` |
@@ -123,11 +115,11 @@ exposure.
 | Node helper | `./script/test -j test/node/<test_file>.mjs` |
 | Linux setup or package flow | `./test/run-container <distro>` |
 | GUI installation path | `./test/run-container -w <distro>` |
-| Cross-platform package change | Relevant renders plus the narrowest matching automated or container test |
+| Cross-platform package change | Relevant renders plus the matching automated or container test |
 
 `chezmoi apply`, setup scripts, Home Manager switching, and update scripts
-change live state. Run them only when applying that state is an explicit part
-of the task.
+change live state. They belong at the point where the live machine should be
+updated.
 
 ## Troubleshooting
 

@@ -1,7 +1,7 @@
 # Repository Architecture
 
 This repository manages one user environment across macOS, Linux, FreeBSD,
-and Windows. Chezmoi renders files into the home directory; setup scripts add
+and Windows. Chezmoi renders files into the home directory. Setup scripts add
 system packages and prerequisites that do not belong in a home-directory
 manager.
 
@@ -24,11 +24,10 @@ The entry points cover progressively narrower parts of setup:
 For established machines, `script/update` coordinates reviewed updates to the
 repository, external content, and Home Manager inputs.
 `script/home-manager-switch` builds, compares, commits, and switches Home
-Manager configuration; `script/update` calls it as part of the larger update
+Manager configuration. `script/update` calls it as part of the larger update
 flow.
 
-See the [README](../README.md#usage) for commands intended to be run by a
-person.
+See the [README](../README.md#usage) for setup and update command examples.
 
 ## Top-Level Responsibilities
 
@@ -79,16 +78,17 @@ A managed change passes through four layers:
 4. `chezmoi apply` writes the rendered result into `$HOME` and runs eligible
    scripts.
 
-Inspection should stop before step 4 unless changing the live home directory
-is intended. Resolve a target with `chezmoi source-path`, inspect rendered
-content with `chezmoi cat --source-path` or
+Steps 1 through 3 are enough to inspect source and rendered output without
+changing the current machine. Step 4 is the point where the change becomes
+active in the live home directory. Resolve a target with `chezmoi source-path`,
+inspect rendered content with `chezmoi cat --source-path` or
 `scripts/chezmoi-execute-template`, then review `chezmoi diff`.
 
 ## Platform Organization
 
 The repository supports macOS, Windows, FreeBSD, and several Linux families,
 including Arch, Debian, Ubuntu, Fedora, Chimera Linux, and SteamOS. Shared
-POSIX behavior belongs under `home/.chezmoiscripts/posix/`; platform-specific
+POSIX behavior belongs under `home/.chezmoiscripts/posix/`. Platform-specific
 behavior belongs in the matching script or template directory. Chezmoi uses
 its `darwin` OS identifier under `.chezmoiscripts/`, while repository-owned
 setup files generally use `macos` in their names.

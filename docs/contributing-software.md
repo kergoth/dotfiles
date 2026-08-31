@@ -40,7 +40,7 @@ When multiple installation methods are available, prefer them in this order:
 2. **Reviewed, repeatable sources over floating installers** - Prefer package managers, pinned release assets, or lock-file-driven installers over unpinned downloads
 3. **Nix over Homebrew for shared CLI tools** - Use Homebrew casks for GUI apps on macOS
 4. **Language package managers only for approved gaps** - Use `uv`, `cargo`, or `npm` when the project already uses that path for the tool class or platform gap
-5. **System packages when Nix is unavailable** - Chimera uses `apk`; FreeBSD uses pkg/ports
+5. **System packages when Nix is unavailable** - Chimera uses `apk`, and FreeBSD uses pkg/ports
 6. **eget for Chimera gaps** - Use GitHub release binaries only when the tool is unavailable through the preferred package sources
 
 ### Exception: Pinned or Freshness-Sensitive Tools
@@ -49,8 +49,8 @@ Some tools update often enough, or have packaging constraints specific enough, t
 
 Current examples:
 
-- **Claude Code**: pinned through `git-lock.yml`; POSIX and Windows install-tools use the official installer, and FreeBSD uses a pinned npm package.
-- **Codex**: pinned through `git-lock.yml` plus verified release assets in `fetch-lock.yml`; POSIX and Windows install-tools use the direct installer path when a locked asset exists.
+- **Claude Code**: pinned through `git-lock.yml`. POSIX and Windows install-tools use the official installer, and FreeBSD uses a pinned npm package.
+- **Codex**: pinned through `git-lock.yml` plus verified release assets in `fetch-lock.yml`. POSIX and Windows install-tools use the direct installer path when a locked asset exists.
 - **jujutsu (`jj`)**: installed through platform package managers. Homebrew is used on macOS because it tracks releases well enough for day-to-day use.
 
 When adding a new tool in this class, document why the ordinary hierarchy is insufficient, add or update lock data when direct downloads are involved, and include a verification path that proves the pinned version renders into the installer template.
@@ -109,8 +109,8 @@ top-level directory and the source-to-rendered flow.
 
 ## Conditional Flags
 
-Software templates combine machine-role, capability, and workload flags to
-select the narrowest applicable installation. See
+Software templates combine machine-role, capability, and software use case
+flags to select the installation path that matches the target machine. See
 [Data and Template Variables](chezmoi-authoring.md#data-and-template-variables)
 for the complete flag reference and the intent behind each value.
 
@@ -171,7 +171,7 @@ mas "MusicHarbor", id: 1440405750
 New additions use `find-tool` in the template header plus bare `scoop install` in the body. For apps unavailable on
 Scoop, download directly from a reviewed source and install silently in the body. Use `Test-Path` on the known install
 location for idempotency instead of `find-tool`. Add a `find-tool` check in the header only for Scoop-installed apps,
-because those land in PATH; skip it for direct-download apps.
+because those land in PATH. Skip it for direct-download apps.
 
 ```powershell
 {{/* HEADER: before the main {{ if and .user_setup (not .headless) }} guard */}}
@@ -186,7 +186,7 @@ scoop install appname
 {{-     end }}
 ```
 
-**Legacy pattern** (`Install-Scoop-IfNotPresent <scoop-name> <winget-id>`): a winget-compatibility shim present in existing code. It checks if the app is already installed via winget before installing via Scoop. Do not use it for new additions; use `find-tool` plus `scoop install` instead.
+**Legacy pattern** (`Install-Scoop-IfNotPresent <scoop-name> <winget-id>`): a winget-compatibility shim present in existing code. It checks if the app is already installed via winget before installing via Scoop. New additions should use `find-tool` plus `scoop install` instead.
 
 ### 4b. Windows winget (GUI Apps - Admin Level)
 
@@ -243,7 +243,7 @@ This script self-elevates to administrator. Use for:
 
 **File:** `home/.chezmoiscripts/linux/run_onchange_after_10_install-apps.tmpl`
 
-> **Critical: two-phase template.** The header computes `$need_install`; the script body only emits if `$need_install` is true. New app classes must affect the header so the script renders when something is missing. Flatpak apps use a map of app IDs plus `packagesForMissingTools`; direct installers such as Zed and kitty use their own detection variables.
+> The Linux Flatpak template has two phases. The header computes `$need_install`. The script body only emits if `$need_install` is true. New app classes must affect the header so the script renders when something is missing. Flatpak apps use a map of app IDs plus `packagesForMissingTools`. Direct installers such as Zed and kitty use their own detection variables.
 >
 > For flatpak-backed entries in this script, detection must use the exported flatpak app ID under `~/.local/share/flatpak/exports/bin` (for example `md.obsidian.Obsidian`), not a guessed short command such as `obsidian`.
 
@@ -437,9 +437,9 @@ Use the most specific heading whose platform list matches where the software
 is installed. When another platform gains the software, move the entry to a
 broader heading rather than duplicating it.
 
-Before editing, inspect the current headings in the destination file. Some
-headings repeat for historical reasons; place an entry beside related software
-or consolidate duplicate headings as a separate cleanup.
+Some headings repeat for historical reasons. New entries fit best beside
+related software under the most specific existing heading. Consolidating
+duplicate headings is a separate cleanup.
 
 For `docs/installed.md`:
 
@@ -486,18 +486,19 @@ Software summary lines must be source-backed, not inferred.
 
 ## Verification Checklist
 
-Use the general matrix in [Testing and Verification](testing.md) to select the
-narrowest check. Software changes also require these checks where applicable:
+Use the general matrix in [Testing and Verification](testing.md) to choose the
+right verification level. Software changes also have these checks where
+applicable:
 
 - [ ] **Software summary provenance**: verify README wording and capitalization
   against an official source.
 - [ ] **Template rendering**: render every changed installation template with
   `scripts/chezmoi-execute-template <template>`.
 - [ ] **Managed output**: inspect the affected target with
-  `chezmoi cat --source-path <source-path>` and review `chezmoi diff`.
-- [ ] **Linux package flow**: use the narrowest matching container test, such
-  as `./test/run-container <distro>` or `./test/run-container -w <distro>` for
-  a GUI installation path.
+  `chezmoi cat --source-path <source-path>`, then review `chezmoi diff`.
+- [ ] **Linux package flow**: run the matching container test, such as
+  `./test/run-container <distro>` or `./test/run-container -w <distro>` for a
+  GUI installation path.
 
 Manual or apply-time checks:
 

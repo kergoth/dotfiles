@@ -4,17 +4,14 @@ The repository pins Git repositories, fetched files, and container base images
 so an upstream change is reviewed before it becomes local configuration or
 executable code.
 
-## Authorization Boundary
+## Update Entry Points
 
-Update execution is human-owned. Agents may inspect lock state, explain a
-candidate, or suggest `script/update`, but must run an update only when the
-user explicitly requests that workflow. This boundary includes direct chezmoi
-update or external-refresh commands, not only repository wrappers.
+`script/update --dry-run` previews available Git, fetched-file, container, and
+Home Manager updates without writing lock files. `script/update` coordinates
+review, approval, lock writes, commits, and downstream updates.
 
-`script/update --dry-run` is the normal preview entry point. `script/update`
-coordinates review, approval, lock writes, commits, and downstream updates.
-Do not substitute chezmoi's raw update command; it bypasses
-repository-specific review and orchestration.
+Use the repository wrapper rather than chezmoi's raw update command. The raw
+command bypasses repository-specific review and orchestration.
 
 ## Source and Lock Files
 
@@ -72,7 +69,7 @@ scripts/update-container-pins.py --dry-run
 ```
 
 When adopting a change, update the source definition, lock, target mapping,
-and Dockerfile pin together. Verify the affected image with the narrowest
+and Dockerfile pin together. Verify the affected image with the matching
 container build or setup test described in
 [Testing and Verification](testing.md#container-setup-tests).
 
@@ -91,8 +88,8 @@ Git sources can tune review without changing update mechanics:
 - `review: false` disables review for sources where executable-change review
   is intentionally unnecessary, such as some data-only assets.
 
-Release notes provide narrative context; they do not replace inspection of the
-pinned revision range. For tagged GitHub sources, the review tool may include
+Release notes provide narrative context, but they do not replace inspection of
+the pinned revision range. For tagged GitHub sources, the review tool may include
 release notes alongside the log and diff.
 
 `scripts/show-git-changes.py` is the review surface. It fetches the old and new
@@ -102,7 +99,7 @@ does not prevent the textual review.
 
 ## Orchestrated Update Workflow
 
-The POSIX entry point is `script/update`; Windows uses `script/update.ps1`.
+The POSIX entry point is `script/update`. Windows uses `script/update.ps1`.
 The workflow:
 
 1. Resolves candidate Git, fetched-file, and container changes without writing
@@ -134,8 +131,8 @@ set:
 chezmoi managed --include=externals
 ```
 
-Refreshing externals changes local state and remains subject to the
-human-owned authorization boundary.
+Refreshing externals changes local state. Use the repository update workflow
+when the intent is to adopt new external content.
 
 ## Related Decision
 
