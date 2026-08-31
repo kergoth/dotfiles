@@ -1,11 +1,18 @@
 {{- /* chezmoi:modify-template */ -}}
+{{- /* Preserve live-only settings while keeping managed values authoritative. */ -}}
+{{- $persist := list -}}
+{{- $managed := dict
+      "aria2-warning-enabled" false
+      "cat_style" "grid" -}}
 
-{{- $data := fromJson .chezmoi.stdin -}}
-
-{{- /* Disable the warning when aria2 is used. */ -}}
-{{- $_ := set $data "aria2-warning-enabled" false -}}
-
-{{- /* Use bat for `scoop cat` */ -}}
-{{- $_ := set $data "cat_style" "grid" -}}
-
-{{- toPrettyJson $data -}}
+{{- if eq .chezmoi.stdin "" -}}
+{{-   $managed | toPrettyJson -}}
+{{- else -}}
+{{-   $existing := fromJson .chezmoi.stdin -}}
+{{-   $merged := includeTemplate "mergeWithPersistedPaths" (dict
+        "existing" $existing
+        "managed"  $managed
+        "persist"  $persist
+        ) | fromJson -}}
+{{-   $merged | toPrettyJson -}}
+{{- end -}}
