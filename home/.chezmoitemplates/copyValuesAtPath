@@ -20,8 +20,8 @@
 {{- $missing := "__copyValuesAtPath_missing__" -}}
 {{- range $args.paths -}}
 {{-   if $skip_missing -}}
-{{-     $value := includeTemplate "digPath" (dict "in" $args.src "path" . "default" $missing) | fromJson -}}
-{{-     if ne $value $missing -}}
+{{-     $valueJson := includeTemplate "digPath" (dict "in" $args.src "path" . "default" $missing) -}}
+{{-     if ne $valueJson ($missing | toJson) -}}
 {{-       $result = includeTemplate "copyValueAtPath" (dict "dest" $result "src" $args.src "path" .) | fromJson -}}
 {{-     end -}}
 {{-   else -}}

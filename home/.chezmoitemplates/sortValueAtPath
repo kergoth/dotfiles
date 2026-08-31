@@ -27,8 +27,9 @@
 {{- if $skip_missing -}}
 {{-   $_ := set $dig "default" $missing -}}
 {{- end -}}
-{{- $value := includeTemplate "digArray" $dig | fromJson -}}
-{{- if and $skip_missing (not (kindIs "slice" $value)) (eq $value $missing) -}}
+{{- $valueJson := includeTemplate "digArray" $dig -}}
+{{- $value := $valueJson | fromJson -}}
+{{- if and $skip_missing (eq $valueJson ($missing | toJson)) -}}
 {{-   $args.dest | toJson -}}
 {{- else if not (kindIs "slice" $value) -}}
 {{-   if $skip_missing -}}
