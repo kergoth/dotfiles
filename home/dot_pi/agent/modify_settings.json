@@ -1,28 +1,44 @@
 {{- /* chezmoi:modify-template */ -}}
-{{- /* Merge managed pi settings into the existing settings.json.
-       Managed keys (from settings/pi/settings.json.tmpl) override; any other
-       live-only keys (lastChangelogVersion, etc.) are preserved. mergeOverwrite
-       does recursive object merge.
+{{- /* Preserve live-only settings while keeping managed values authoritative. */ -}}
+{{- /* Merge package lists because `pi install` appends to packages live. */ -}}
+{{- $persist := list -}}
+{{- $mergePaths := list
+      "packages" -}}
+{{- $removePaths := list
+      "statusLine" -}}
+{{- $removedPackages := list
+      "git:github.com/kergoth/pi-statusline@f1805048422a046393b1ef1a4cc3aad2e9af097c" -}}
 
-       "packages" is concatenated rather than replaced: `pi install` appends
-       to this array live, so a flat overwrite would drop packages installed
-       outside chezmoi. Explicit removals handle managed package migrations. */ -}}
-{{- $managed := includeTemplate (joinPath .chezmoi.workingTree "settings/pi/settings.json.tmpl") . | fromJson -}}
+{{- $managedRaw := includeTemplate (joinPath .chezmoi.workingTree "settings/pi/settings.json.tmpl") . -}}
+{{- $managed := $managedRaw | fromJson -}}
 {{- if eq .chezmoi.stdin "" -}}
-{{-   $managed | toPrettyJson -}}
+{{-   $managedRaw -}}
 {{- else -}}
 {{-   $existing := fromJson .chezmoi.stdin -}}
-{{-   $existingPackages := dig "packages" (list) $existing -}}
-{{-   $managedPackages := dig "packages" (list) $managed -}}
-{{-   $removedPackages := list "git:github.com/kergoth/pi-statusline@f1805048422a046393b1ef1a4cc3aad2e9af097c" -}}
-{{-   $merged := mergeOverwrite $existing $managed -}}
-{{-   $mergedPackages := concat $existingPackages $managedPackages | uniq -}}
+{{-   $snapshot := $existing | toJson | fromJson -}}
+
+{{-   $managedMerged := includeTemplate "concatValuesAtPath" (dict
+        "dest"       ($managed | toJson | fromJson)
+        "src"        $snapshot
+        "paths"      $mergePaths
+        "omit_empty" true
+        ) | fromJson -}}
+
+{{-   $merged := includeTemplate "mergeWithPersistedPaths" (dict
+        "existing" $existing
+        "managed"  $managedMerged
+        "persist"  $persist
+        ) | fromJson -}}
+
+{{-   $mergedPackages := dig "packages" (list) $merged -}}
 {{-   range $removedPackages -}}
 {{-     $mergedPackages = without $mergedPackages . -}}
 {{-   end -}}
 {{-   if $mergedPackages -}}
 {{-     $_ := set $merged "packages" $mergedPackages -}}
 {{-   end -}}
-{{-   $_ := unset $merged "statusLine" -}}
+{{-   range $removePaths -}}
+{{-     $merged = $merged | deleteValueAtPath . -}}
+{{-   end -}}
 {{-   $merged | toPrettyJson -}}
 {{- end -}}

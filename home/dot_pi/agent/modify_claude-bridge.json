@@ -1,12 +1,17 @@
 {{- /* chezmoi:modify-template */ -}}
-{{- /* Merge managed pi-claude-bridge settings into the existing claude-bridge.json.
-       Managed keys (from settings/pi/claude-bridge.json.tmpl) override; live-only
-       keys (startupNoticeShown, etc.) are preserved. mergeOverwrite does
-       recursive object merge. */ -}}
-{{- $managed := includeTemplate (joinPath .chezmoi.workingTree "settings/pi/claude-bridge.json.tmpl") . | fromJson -}}
+{{- /* Preserve live-only settings while keeping managed values authoritative. */ -}}
+{{- $persist := list -}}
+
+{{- $managedRaw := includeTemplate (joinPath .chezmoi.workingTree "settings/pi/claude-bridge.json.tmpl") . -}}
+{{- $managed := $managedRaw | fromJson -}}
 {{- if eq .chezmoi.stdin "" -}}
-{{-   $managed | toPrettyJson -}}
+{{-   $managedRaw -}}
 {{- else -}}
 {{-   $existing := fromJson .chezmoi.stdin -}}
-{{-   mergeOverwrite $existing $managed | toPrettyJson -}}
+{{-   $merged := includeTemplate "mergeWithPersistedPaths" (dict
+        "existing" $existing
+        "managed"  $managed
+        "persist"  $persist
+        ) | fromJson -}}
+{{-   $merged | toPrettyJson -}}
 {{- end -}}
