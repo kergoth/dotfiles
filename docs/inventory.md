@@ -1,6 +1,54 @@
-## Installed Software
+# Inventory
 
-Installed software varies by platform based on package availability and platform-specific tools, but the general approach is consistent: use Nix and nixpkgs where possible, with Homebrew on macOS, Scoop on Windows, and native packages or language-specific package managers as fallbacks. For GUI apps on Linux, Flatpak is preferred. On Chimera Linux, where native packaging and flatpak is insufficient, this setup falls back to an Ubuntu distrobox for glibc-only GUI applications. On FreeBSD, for GUI apps without native support, Linuxulator is used to run Linux userspace applications.
+This inventory lists the managed or included pieces that make up the dotfiles environment: installed software, external projects, shell plugins, fonts, third-party scripts, and system or desktop components. Software installation varies by platform based on package availability and platform-specific tools, but the general approach is consistent: use Nix and nixpkgs where possible, with Homebrew on macOS, Scoop on Windows, and native packages or language-specific package managers as fallbacks. For GUI apps on Linux, Flatpak is preferred. On Chimera Linux, where native packaging and Flatpak are insufficient, this setup falls back to an Ubuntu distrobox for glibc-only GUI applications. On FreeBSD, for GUI apps without native support, Linuxulator is used to run Linux userspace applications.
+
+## Zsh Plugins
+
+- **[fzf-tab](https://github.com/Aloxaf/fzf-tab)**: Replace zsh's default completion selection menu with fzf.
+- **[nix-zsh-completions](https://github.com/nix-community/nix-zsh-completions)**: ZSH Completions for Nix.
+- **[powerlevel10k](https://github.com/romkatv/powerlevel10k/)**: A Zsh theme.
+- **[zbell](https://gist.githubusercontent.com/jpouellet/5278239)**: Make Zsh print a bell when long-running commands finish.
+- **[zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions)**: Fish-like autosuggestions for zsh.
+- **[zsh-bd](https://github.com/Tarrasch/zsh-bd)**: Jump back to a specific directory, without doing `cd ../../..`.
+- **[zsh-completions](https://github.com/zsh-users/zsh-completions)**: Additional completion definitions for Zsh.
+- **[zsh-git-escape-magic](https://github.com/knu/zsh-git-escape-magic)**: zle tweak for git command line arguments.
+- **[zsh-history-substring-search](https://github.com/zsh-users/zsh-history-substring-search)**: ZSH port of Fish history search (up arrow).
+- **[zsh-manydots-magic](https://github.com/knu/zsh-manydots-magic)**: zle tweak for emulating ...==../.. etc.
+- **[zsh-nix-shell](https://github.com/chisui/zsh-nix-shell)**: Zsh plugin that lets you use zsh in nix-shell shells.
+- **[zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting)**: Fish shell like syntax highlighting for Zsh.
+
+## Fonts
+
+- **[iA-Fonts](https://github.com/iaolo/iA-Fonts)**: iA Writer Mono, Duo, and Quattro.
+- **[MesloLGS NF](https://github.com/romkatv/powerlevel10k/blob/master/font.md)**: Meslo Nerd Font patched for Powerlevel10k.
+
+## Third-Party Scripts
+
+- **git-alias** ([source](https://github.com/tj/git-extras)): Manage git command aliases.
+- **[git-attic](https://chneukirchen.org/dotfiles/bin/git-attic)**: List deleted files from git history with their deletion details.
+- **git-j** ([source](https://github.com/beanbaginc/dev-goodies)): Jump between git branches with history tracking.
+- **git-rebase-chain** ([source](https://github.com/beanbaginc/dev-goodies)): Rebase a stack of branches from one base to another.
+- **ifne** ([source](https://github.com/fumiyas/home-commands)): Run a command only if standard input is not empty. This is a third-party script reimplementation of a tool from [moreutils by Joey Hess](https://joeyh.name/code/moreutils/).
+- **linux-bundle-clone** ([source](https://git.kernel.org/pub/scm/linux/kernel/git/mricon/korg-helpers.git)): Clone Linux kernel repositories using CDN-hosted bundles.
+- **vipe** ([source](https://github.com/madx/moreutils)): Edit pipe content in your text editor mid-pipeline. This is a third-party script reimplementation of a tool from [moreutils by Joey Hess](https://joeyh.name/code/moreutils/).
+- **[wsl-open](https://github.com/4U6U57/wsl-open)**: Open files and URLs from WSL in Windows default applications.
+
+## Included External Projects
+
+- **[session-env](https://github.com/kergoth/session-env)**: Synchronizes a small shared environment into GUI and shell entry points. This setup uses it mainly so desktop-launched tools can find user-installed command-line programs such as Nix-provided linters. Local overrides are documented in [Customization](customization.md#desktop-session-environment).
+
+## System and Desktop Components
+
+- **Desktop environment**: KDE Plasma on Linux and FreeBSD. _Conditional: non-headless._
+- **Display manager**: SDDM on Linux and FreeBSD. _Conditional: non-headless. init present to enable/start._
+- **Terminal emulator**: kitty on macOS, Linux, and FreeBSD; Windows Terminal on Windows. _Conditional: non-headless._
+- **PDF viewer**: Okular on Linux and FreeBSD. _Conditional: non-headless._
+- **App distribution (Flatpak)**: Flatpak + Flathub on all supported Linux distros. Primary mechanism for GUI app installs where native packages are absent or stale. _Conditional: non-headless._
+- **Core services**: mDNS/Avahi, SSH, Bluetooth, and audio stack. PipeWire where applicable. Varies by distro.
+- **Optional system services**: Tailscale, container runtime. _Conditional: personal, non-ephemeral for Tailscale. containers flag for container runtime._
+- **OS exceptions/notes**: Service enablement is skipped for WSL2/containers/ephemeral systems.
+
+## Installed Software
 
 ### Installed CLI Software
 
@@ -289,3 +337,9 @@ Installed software varies by platform based on package availability and platform
 - **[WiFi Analyzer](https://apps.microsoft.com/detail/9NBLGGH33N0N?hl=en-US&gl=US)**: Identify Wi-Fi problems or find the best channel.
 - **[Windows Firewall Control](https://www.binisoft.org/wfc)**: Managing Windows Firewall is now easier than ever.
 - [Windows Terminal](https://apps.microsoft.com/store/detail/9N0DX20HK701?hl=en-us&gl=US) ([Open-Source](https://github.com/microsoft/terminal))
+
+## Related Inventory
+
+- [As-Needed Software](as-needed.md): software kept as an installation reference but not installed by default.
+- [Formerly-Used Software](formerly-used.md): software previously used or included, with notes on why it was removed.
+- [Browser Extensions](browser-extensions.md): unmanaged browser extension snapshots.

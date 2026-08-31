@@ -427,8 +427,11 @@ Examples:
 
 ## Software Inventory Documentation
 
-Automatically installed software belongs in `docs/installed.md`. Software
-kept only as a future installation reference belongs in `docs/as-needed.md`.
+Automatically installed software belongs in `docs/inventory.md`. Other managed
+or included components that are not software packages, such as plugins, fonts,
+third-party scripts, and system or desktop components, also belong there.
+Software kept only as a future installation reference belongs in
+`docs/as-needed.md`.
 README links to those inventories rather than containing their entries.
 
 ### Section Selection
@@ -441,7 +444,7 @@ Some headings repeat for historical reasons. New entries fit best beside
 related software under the most specific existing heading. Consolidating
 duplicate headings is a separate cleanup.
 
-For `docs/installed.md`:
+For `docs/inventory.md`:
 
 - `### Installed CLI Software` and `### Installed GUI Software` cover all
   supported platforms.
@@ -455,7 +458,7 @@ installation guidance such as `Available via brew, nix, or scoop`.
 When removing installed software, move its entry to `docs/formerly-used.md`
 unless it was only an internal implementation detail.
 
-### For Installed Software
+### For Inventory
 
 ```markdown
 - [ToolName](https://example.com) ([Open-Source](https://github.com/owner/repo)): Brief description.
