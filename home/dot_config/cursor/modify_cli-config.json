@@ -1,13 +1,17 @@
 {{- /* chezmoi:modify-template */ -}}
-{{- /* Merge managed Cursor CLI settings into the existing cli-config.json.
-       Managed keys (from settings/cursor/cli-config.json) override; all other
-       keys (permissions, model, authInfo, serverConfigCache, privacyCache,
-       etc.) are preserved. mergeOverwrite does recursive object merge. */ -}}
-{{- $managed := joinPath .chezmoi.workingTree "settings/cursor/cli-config.json" | include | fromJson -}}
+{{- /* Preserve live-only settings while keeping managed values authoritative. */ -}}
+{{- $persist := list -}}
+
+{{- $managedRaw := joinPath .chezmoi.workingTree "settings/cursor/cli-config.json" | include -}}
+{{- $managed := $managedRaw | fromJson -}}
 {{- if eq .chezmoi.stdin "" -}}
-{{-   $managed | toPrettyJson -}}
+{{-   $managedRaw -}}
 {{- else -}}
 {{-   $existing := fromJson .chezmoi.stdin -}}
-{{-   $merged := mergeOverwrite $existing $managed -}}
+{{-   $merged := includeTemplate "mergeWithPersistedPaths" (dict
+        "existing" $existing
+        "managed"  $managed
+        "persist"  $persist
+        ) | fromJson -}}
 {{-   $merged | toPrettyJson -}}
 {{- end -}}
