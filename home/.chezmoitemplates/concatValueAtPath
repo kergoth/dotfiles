@@ -1,0 +1,48 @@
+{{- /* Template: concatValueAtPath
+     Description: Concatenate list values from dest and src at path, store result on dest.
+       Order is dest first, then src. Use before merge when lists must combine rather
+       than overwrite (typical modify_ pattern: dest=managed copy, src=live snapshot).
+
+     Arguments (dict):
+       - dest: dict (required) - Destination dictionary
+       - src: dict (required) - Source dictionary
+       - path: string or list (required) - Dot-separated string (e.g. "a.b.c") or key list
+       - default: any (optional, default: empty list) - Value when a path is missing
+       - uniq: bool (optional, default: true) - Deduplicate the concatenated list
+       - omit_empty: bool (optional, default: false) - deleteValueAtPath when result is empty
+
+     Returns: JSON-encoded destination with the concatenated list set at path
+
+     Example usage:
+       {{ includeTemplate "concatValueAtPath" (dict "dest" $managed "src" $snapshot "path" "permissions.allow") | fromJson }}
+*/ -}}
+{{- $args := . -}}
+{{- $path := $args.path -}}
+{{- if kindIs "string" $path -}}
+{{-   $path = splitList "." $path -}}
+{{- end -}}
+{{- $default := index $args "default" | default (list) -}}
+{{- $dig := dict "path" $path "default" $default -}}
+{{- $_ := set $dig "in" $args.dest -}}
+{{- $dest_val := includeTemplate "digArray" $dig | fromJson -}}
+{{- $_ := set $dig "in" $args.src -}}
+{{- $src_val := includeTemplate "digArray" $dig | fromJson -}}
+{{- if not (kindIs "slice" $dest_val) -}}
+{{-   $dest_val = $default -}}
+{{- end -}}
+{{- if not (kindIs "slice" $src_val) -}}
+{{-   $src_val = $default -}}
+{{- end -}}
+{{- $value := concat $dest_val $src_val -}}
+{{- if (index $args "uniq" | default true) -}}
+{{-   $value = uniq $value -}}
+{{- end -}}
+{{- if and (index $args "omit_empty" | default false) (empty $value) -}}
+{{-   $delete_path := $path -}}
+{{-   if kindIs "slice" $path -}}
+{{-     $delete_path = join "." $path -}}
+{{-   end -}}
+{{-   $args.dest | deleteValueAtPath $delete_path | toJson -}}
+{{- else -}}
+{{-   $args.dest | setValueAtPath $path $value | toJson -}}
+{{- end -}}

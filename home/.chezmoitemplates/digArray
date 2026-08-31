@@ -1,0 +1,28 @@
+{{- /* Template: digArray
+     Description: Navigate a nested dictionary using a list of keys (Sprig dig with a
+       list path instead of varargs). Stops early if an intermediate value is not a map.
+
+     Arguments (dict):
+       - in: dict (required) - Source dictionary
+       - path: list (required) - Keys to traverse
+       - default: any (optional) - Value when a key is missing or path is invalid
+
+     Returns: JSON-encoded value at path
+
+     Example usage:
+       {{ includeTemplate "digArray" (dict "in" . "path" (list "external" "clone" "args") "default" (list)) | fromJson }}
+*/ -}}
+{{- $args := . -}}
+{{/* merge prevents errors when passing special maps like .Values */}}
+{{- $_ := set $ "out" (merge (dict) $args.in) -}}
+{{- $default := index $args "default" | default nil -}}
+{{- $path_len := len $args.path -}}
+{{- range $i, $key := $args.path -}}
+{{-   $next := dig $key $default $.out -}}
+{{-   if and (lt (add $i 1) $path_len) (not (kindIs "map" $next)) -}}
+{{-     $_ := set $ "out" $default -}}
+{{-     break -}}
+{{-   end -}}
+{{-   $_ := set $ "out" $next -}}
+{{- end -}}
+{{- $.out | toJson -}}

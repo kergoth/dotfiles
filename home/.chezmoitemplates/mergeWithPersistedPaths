@@ -1,0 +1,47 @@
+{{- /* Template: mergeWithPersistedPaths
+     Description: Merge managed and live config for modify_ templates.
+
+     Terminology:
+       - persist: dot-separated paths copied from live ($existing) into the output so
+         they survive apply without being in the managed source. Empty persist is valid.
+       - overlay (default base): start from live, merge managed on top. Live-only keys
+         are kept automatically — partial-manage case (e.g. Claude settings).
+       - managed (base): start from managed only, then persist explicit paths from live.
+         Everything not managed and not persisted is dropped — full-manage case.
+
+     Arguments (dict):
+       - existing: dict (required) - Live destination state (modify stdin)
+       - managed: dict (required) - Chezmoi-managed configuration
+       - persist: list (required) - Dot-separated paths to copy from existing (e.g. "a.b.c")
+       - base: string (optional, default: "overlay") - "overlay" or "managed"
+
+     Returns: JSON-encoded merged dictionary
+
+     A snapshot of existing is taken before merge because mergeOverwrite mutates nested
+     maps in place. Persist paths are always copied from that snapshot.
+
+     Example (partial manage — overlay, empty persist):
+       {{- $merged := includeTemplate "mergeWithPersistedPaths" (dict
+             "existing" $existing "managed" $managed "persist" (list)
+           ) | fromJson -}}
+
+     Example (full manage — keep one live field):
+       {{- $merged := includeTemplate "mergeWithPersistedPaths" (dict
+             "existing" $existing "managed" $managed
+             "persist" (list "lastChangelogVersion") "base" "managed"
+           ) | fromJson -}}
+*/ -}}
+{{- $args := . -}}
+{{- $snapshot := $args.existing | toJson | fromJson -}}
+{{- $base := index $args "base" | default "overlay" -}}
+{{- if eq $base "overlay" -}}
+{{-   $result := mergeOverwrite (dict) ($snapshot | toJson | fromJson) $args.managed -}}
+{{-   $result = includeTemplate "copyValuesAtPath" (dict "dest" $result "src" $snapshot "paths" $args.persist "skip_missing" true) | fromJson -}}
+{{-   $result | toJson -}}
+{{- else if eq $base "managed" -}}
+{{-   $result := mergeOverwrite (dict) ($args.managed | toJson | fromJson) -}}
+{{-   $result = includeTemplate "copyValuesAtPath" (dict "dest" $result "src" $snapshot "paths" $args.persist "skip_missing" true) | fromJson -}}
+{{-   $result | toJson -}}
+{{- else -}}
+{{-   fail (printf "mergeWithPersistedPaths: unknown base %q (want overlay or managed)" $base) -}}
+{{- end -}}

@@ -1,0 +1,35 @@
+{{- /* Template: copyValuesAtPath
+     Description: Copy nested values from src into dest at multiple paths. Used by
+       mergeWithPersistedPaths to persist live values into modify_ output.
+
+     Arguments (dict):
+       - dest: dict (required) - Destination dictionary
+       - src: dict (required) - Source dictionary (typically a snapshot of live state)
+       - paths: list (required) - Dot-separated paths (e.g. "a.b.c")
+       - skip_missing: bool (optional, default: true) - Skip paths absent from src
+       - default: any (optional) - Value when a path is missing (only if skip_missing is false)
+
+     Returns: JSON-encoded destination with values copied
+
+     Example usage:
+       {{ includeTemplate "copyValuesAtPath" (dict "dest" $dest "src" $snapshot "paths" (list "a.b.c" "x")) | fromJson }}
+*/ -}}
+{{- $args := . -}}
+{{- $result := $args.dest -}}
+{{- $skip_missing := index $args "skip_missing" | default true -}}
+{{- $missing := "__copyValuesAtPath_missing__" -}}
+{{- range $args.paths -}}
+{{-   if $skip_missing -}}
+{{-     $value := includeTemplate "digPath" (dict "in" $args.src "path" . "default" $missing) | fromJson -}}
+{{-     if ne $value $missing -}}
+{{-       $result = includeTemplate "copyValueAtPath" (dict "dest" $result "src" $args.src "path" .) | fromJson -}}
+{{-     end -}}
+{{-   else -}}
+{{-     $copy_args := dict "dest" $result "src" $args.src "path" . -}}
+{{-     if hasKey $args "default" -}}
+{{-       $_ := set $copy_args "default" $args.default -}}
+{{-     end -}}
+{{-     $result = includeTemplate "copyValueAtPath" $copy_args | fromJson -}}
+{{-   end -}}
+{{- end -}}
+{{- $result | toJson -}}

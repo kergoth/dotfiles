@@ -1,0 +1,33 @@
+{{- /* Template: concatValuesAtPath
+     Description: Concatenate list values from dest and src at multiple paths. Batch
+       wrapper around concatValueAtPath for modify_ templates with several list fields.
+
+     Arguments (dict):
+       - dest: dict (required) - Destination dictionary
+       - src: dict (required) - Source dictionary
+       - paths: list (required) - Dot-separated paths (e.g. "permissions.allow")
+       - default: any (optional, default: empty list) - Value when a path is missing
+       - uniq: bool (optional, default: true) - Deduplicate concatenated lists
+       - omit_empty: bool (optional, default: false) - Remove path when result list is empty
+
+     Returns: JSON-encoded destination with concatenated lists set at paths
+
+     Example usage:
+       {{ includeTemplate "concatValuesAtPath" (dict "dest" $managed "src" $snapshot "paths" $list_paths "omit_empty" true) | fromJson }}
+*/ -}}
+{{- $args := . -}}
+{{- $result := $args.dest -}}
+{{- range $args.paths -}}
+{{-   $concat_args := dict "dest" $result "src" $args.src "path" . -}}
+{{-   if hasKey $args "default" -}}
+{{-     $_ := set $concat_args "default" $args.default -}}
+{{-   end -}}
+{{-   if hasKey $args "uniq" -}}
+{{-     $_ := set $concat_args "uniq" $args.uniq -}}
+{{-   end -}}
+{{-   if hasKey $args "omit_empty" -}}
+{{-     $_ := set $concat_args "omit_empty" $args.omit_empty -}}
+{{-   end -}}
+{{-   $result = includeTemplate "concatValueAtPath" $concat_args | fromJson -}}
+{{- end -}}
+{{- $result | toJson -}}

@@ -1,0 +1,21 @@
+{{- /* Template: pickAtPath
+     Description: Extract a nested value from a dictionary, re-wrapping it at the same
+       path structure. Equivalent to copyValueAtPath into an empty dict.
+
+     Arguments (dict):
+       - in: dict (required) - Source dictionary
+       - path: list (required) - Keys to the value to extract
+       - default: any (optional) - Value when a key is missing
+
+     Returns: JSON-encoded dictionary containing only the subtree at path
+
+     Example usage:
+       {{ $subset := includeTemplate "pickAtPath" (dict "in" . "path" (list "a" "b" "c")) | fromJson }}
+       Given {"a": {"b": {"c": 5}}} and path ["a", "b", "c"], returns {"a": {"b": {"c": 5}}}.
+*/ -}}
+{{- $args := . -}}
+{{- $copy_args := dict "dest" (dict) "src" $args.in "path" $args.path -}}
+{{- if hasKey $args "default" -}}
+{{-   $_ := set $copy_args "default" $args.default -}}
+{{- end -}}
+{{- includeTemplate "copyValueAtPath" $copy_args -}}

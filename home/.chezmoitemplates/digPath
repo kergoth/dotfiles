@@ -1,0 +1,20 @@
+{{- /* Template: digPath
+     Description: Navigate a nested dictionary using a dot-separated path string.
+       Delegates to digArray.
+
+     Arguments (dict):
+       - in: dict (required) - Source dictionary
+       - path: string (required) - Dot-separated keys (e.g. "a.b.c")
+       - default: any (optional) - Value when a key is missing
+
+     Returns: JSON-encoded value at path
+
+     Example usage:
+       {{ includeTemplate "digPath" (dict "in" . "path" "external.clone.args" "default" (list)) | fromJson }}
+*/ -}}
+{{- $args := . -}}
+{{- $dig_args := dict "in" $args.in "path" (splitList "." $args.path) -}}
+{{- if hasKey $args "default" -}}
+{{-   $_ := set $dig_args "default" $args.default -}}
+{{- end -}}
+{{- includeTemplate "digArray" $dig_args -}}

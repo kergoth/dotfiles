@@ -1,0 +1,27 @@
+{{- /* Template: copyValueAtPath
+     Description: Copy a nested value from src into dest at path. Building block for
+       persisting live values in modify_ templates (see mergeWithPersistedPaths).
+
+     Arguments (dict):
+       - dest: dict (required) - Destination dictionary
+       - src: dict (required) - Source dictionary
+       - path: string or list (required) - Dot-separated string (e.g. "a.b.c") or key list
+       - default: any (optional) - Value when the path is missing in src
+
+     Returns: JSON-encoded destination with the value copied (caller must fromJson and
+       reassign; templates cannot mutate caller variables in place)
+
+     Example usage:
+       {{ includeTemplate "copyValueAtPath" (dict "dest" $dest "src" $src "path" "a.b.c") | fromJson }}
+*/ -}}
+{{- $args := . -}}
+{{- $path := $args.path -}}
+{{- if kindIs "string" $path -}}
+{{-   $path = splitList "." $path -}}
+{{- end -}}
+{{- $dig_args := dict "in" $args.src "path" $path -}}
+{{- if hasKey $args "default" -}}
+{{-   $_ := set $dig_args "default" $args.default -}}
+{{- end -}}
+{{- $value := includeTemplate "digArray" $dig_args | fromJson -}}
+{{- $args.dest | setValueAtPath $path $value | toJson -}}
