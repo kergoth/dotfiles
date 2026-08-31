@@ -1,0 +1,49 @@
+{{- /* Template: sortValueAtPath
+     Description: Sort a list at path in dest for deterministic modify_ output. Use after
+       concat when set-like lists need stable ordering in chezmoi diff.
+
+     Arguments (dict):
+       - dest: dict (required) - Destination dictionary
+       - path: string or list (required) - Dot-separated string (e.g. "a.b.c") or key list
+       - order: string (optional, default: "alpha") - "alpha" or "alphaDesc"
+       - skip_missing: bool (optional, default: true) - No-op when path is absent or value
+         is not a list
+
+     Returns: JSON-encoded destination with the sorted list set at path
+
+     sortAlpha works on string lists; object elements may not sort predictably.
+
+     Example usage:
+       {{ includeTemplate "sortValueAtPath" (dict "dest" $dest "path" "permissions.allow") | fromJson }}
+*/ -}}
+{{- $args := . -}}
+{{- $path := $args.path -}}
+{{- if kindIs "string" $path -}}
+{{-   $path = splitList "." $path -}}
+{{- end -}}
+{{- $skip_missing := index $args "skip_missing" | default true -}}
+{{- $missing := "__sortValueAtPath_missing__" -}}
+{{- $dig := dict "in" $args.dest "path" $path -}}
+{{- if $skip_missing -}}
+{{-   $_ := set $dig "default" $missing -}}
+{{- end -}}
+{{- $value := includeTemplate "digArray" $dig | fromJson -}}
+{{- if and $skip_missing (not (kindIs "slice" $value)) (eq $value $missing) -}}
+{{-   $args.dest | toJson -}}
+{{- else if not (kindIs "slice" $value) -}}
+{{-   if $skip_missing -}}
+{{-     $args.dest | toJson -}}
+{{-   else -}}
+{{-     fail (printf "sortValueAtPath: value at path is not a list") -}}
+{{-   end -}}
+{{- else -}}
+{{-   $order := index $args "order" | default "alpha" -}}
+{{-   if eq $order "alpha" -}}
+{{-     $value = sortAlpha $value -}}
+{{-   else if eq $order "alphaDesc" -}}
+{{-     $value = reverse (sortAlpha $value) -}}
+{{-   else -}}
+{{-     fail (printf "sortValueAtPath: unknown order %q (want alpha or alphaDesc)" $order) -}}
+{{-   end -}}
+{{-   $args.dest | setValueAtPath $path $value | toJson -}}
+{{- end -}}

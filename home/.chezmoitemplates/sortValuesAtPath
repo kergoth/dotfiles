@@ -1,0 +1,29 @@
+{{- /* Template: sortValuesAtPath
+     Description: Sort lists at multiple paths in dest. Batch wrapper around
+       sortValueAtPath for modify_ templates with several set-like list fields.
+
+     Arguments (dict):
+       - dest: dict (required) - Destination dictionary
+       - paths: list (required) - Dot-separated paths (e.g. "permissions.allow")
+       - order: string (optional, default: "alpha") - "alpha" or "alphaDesc"
+       - skip_missing: bool (optional, default: true) - No-op per path when absent or
+         not a list
+
+     Returns: JSON-encoded destination with sorted lists set at paths
+
+     Example usage:
+       {{ includeTemplate "sortValuesAtPath" (dict "dest" $managed "paths" $list_paths) | fromJson }}
+*/ -}}
+{{- $args := . -}}
+{{- $result := $args.dest -}}
+{{- range $args.paths -}}
+{{-   $sort_args := dict "dest" $result "path" . -}}
+{{-   if hasKey $args "order" -}}
+{{-     $_ := set $sort_args "order" $args.order -}}
+{{-   end -}}
+{{-   if hasKey $args "skip_missing" -}}
+{{-     $_ := set $sort_args "skip_missing" $args.skip_missing -}}
+{{-   end -}}
+{{-   $result = includeTemplate "sortValueAtPath" $sort_args | fromJson -}}
+{{- end -}}
+{{- $result | toJson -}}
