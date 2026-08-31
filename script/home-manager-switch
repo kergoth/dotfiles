@@ -81,7 +81,7 @@ while [ $# -gt 0 ]; do
     esac
 done
 
-tmpdir=$(mktemp -d -p "${TMPDIR:-/tmp}" "${0##*/}.XXXXXX")
+tmpdir=$(mktemp -d "${TMPDIR:-/tmp}/${0##*/}.XXXXXX")
 tmpfile="$tmpdir/nvd-diff"
 
 on_exit() {

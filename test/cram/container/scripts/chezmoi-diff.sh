@@ -6,7 +6,7 @@ CHEZMOI_DIFF_EXCLUDE_REGEX="^$HOME/\\.claude/settings\\.json$"
 
 check_clean_chezmoi_diff() {
     diff_output_path=$1
-    managed_paths=$(mktemp)
+    managed_paths=$(mktemp "${TMPDIR:-/tmp}/chezmoi-diff.XXXXXX")
     trap 'rm -f "$managed_paths"' EXIT INT TERM
 
     chezmoi managed --include=files --path-style=absolute --nul-path-separator |

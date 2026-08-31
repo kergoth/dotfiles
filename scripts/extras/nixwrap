@@ -5,9 +5,9 @@ set -euo pipefail
 scriptdir="$(cd "$(dirname "$0")" && pwd -P)"
 PATH="$scriptdir:$PATH"
 
-bins="$(mktemp -t "${0##*/}.XXXXXX")"
+bins="$(mktemp "${TMPDIR:-/tmp}/${0##*/}.XXXXXX")"
 trap 'rm -f "$bins"' EXIT INT TERM
-shims="$(mktemp -t "${0##*/}.XXXXXX")"
+shims="$(mktemp "${TMPDIR:-/tmp}/${0##*/}.XXXXXX")"
 trap 'rm -f "$bins" "$shims"' EXIT INT TERM
 
 profile_dir="$HOME/.nix-profile"

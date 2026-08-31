@@ -117,7 +117,7 @@ sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y install vivaldi-stable
 if [ "${onepassword_install:-}" = "apt" ]; then
     sudorun env DEBIAN_FRONTEND=noninteractive apt-get -y install 1password
 elif [ "${onepassword_install:-}" = "tar" ]; then
-    tmpdir=$(mktemp -d)
+    tmpdir=$(mktemp -d "${TMPDIR:-/tmp}/setup-system-ubuntu.XXXXXX")
     trap 'rm -rf "$tmpdir"' EXIT INT TERM
     onepassword_install_tarball "$tmpdir"
 fi

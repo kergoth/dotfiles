@@ -87,7 +87,7 @@ fi
 # ---------------------------------------------------------------------------
 zed_desktop="$HOME/.local/share/applications/dev.zed.Zed.desktop"
 if ! command -v zed >/dev/null 2>&1 || [ ! -f "$zed_desktop" ]; then
-    tmpdir=$(mktemp -d)
+    tmpdir=$(mktemp -d "${TMPDIR:-/tmp}/setup-distrobox-chimera.XXXXXX")
     trap 'rm -rf "$tmpdir"' EXIT
     "$repo_root/scripts/fetch-verified" \
         -o "$tmpdir/zed-install.sh" \

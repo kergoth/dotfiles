@@ -131,9 +131,9 @@ main() {
         outdir=$(dirname -- "$outfile")
         [ -d "$outdir" ] || die_local "output directory does not exist: $outdir"
         validate_existing_output "$outfile" || true
-        tmpdir=$(mktemp -d -p "$outdir" ".fetch-verified.XXXXXX")
+        tmpdir=$(mktemp -d "$outdir/.fetch-verified.XXXXXX")
     else
-        tmpdir=$(mktemp -d)
+        tmpdir=$(mktemp -d "${TMPDIR:-/tmp}/fetch-verified.XXXXXX")
     fi
     cleanup_tmpdir=$tmpdir
     tmpfile="$tmpdir/download"

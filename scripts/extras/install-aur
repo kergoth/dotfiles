@@ -9,7 +9,7 @@ if [ $# -gt 0 ]; then
     pacman -Syua "$@"
 fi
 
-tempdir="$(mktemp -d -t "${0##*/}.XXXXXX")"
+tempdir="$(mktemp -d "${TMPDIR:-/tmp}/${0##*/}.XXXXXX")"
 trap 'rm -rf "$tempdir"' EXIT INT TERM
 
 cd "$tempdir"

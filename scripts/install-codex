@@ -99,7 +99,7 @@ process_arguments() {
     done
 }
 
-tmpdir=$(mktemp -d)
+tmpdir=$(mktemp -d "${TMPDIR:-/tmp}/install-codex.XXXXXX")
 trap 'rm -rf "$tmpdir"' EXIT
 
 main() {

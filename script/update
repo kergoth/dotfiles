@@ -186,7 +186,7 @@ if [ -f "$sourcedir/scripts/update-git-lock.py" ]; then
     echo >&2 "Checking for Git source updates"
     if command -v uv >/dev/null 2>&1; then
         # Step 1: Resolve (always, even in dry-run)
-        changes_file=$(mktemp)
+        changes_file=$(mktemp "${TMPDIR:-/tmp}/update.XXXXXX")
         cleanup_changes_file() { rm -f "$changes_file"; }
         trap cleanup_changes_file EXIT INT TERM
 

@@ -126,7 +126,7 @@ if [ "${onepassword_install:-}" = "aur" ]; then
     # Install 1Password from AUR
     "$scriptdir/extras/install-aur" 1password
 elif [ "${onepassword_install:-}" = "tar" ]; then
-    tmpdir=$(mktemp -d)
+    tmpdir=$(mktemp -d "${TMPDIR:-/tmp}/setup-system-arch.XXXXXX")
     trap 'rm -rf "$tmpdir"' EXIT INT TERM
     onepassword_install_tarball "$tmpdir"
 fi

@@ -17,7 +17,7 @@ if [ "$(id -u)" != "0" ]; then
     exit $?
 fi
 
-tmpdir=$(mktemp -d -t "${0##*/}.XXXXXXX")
+tmpdir=$(mktemp -d "${TMPDIR:-/tmp}/${0##*/}.XXXXXX")
 trap 'rm -rf "$tmpdir"' EXIT INT TERM
 
 username="$1"

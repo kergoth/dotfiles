@@ -122,7 +122,7 @@ main() {
     msg_verbose "State: %s, Limit: %s" "$state" "$limit"
     msg_verbose "Output: %s" "$output"
 
-    tmpdir=$(mktemp -d -p "${TMPDIR:-/tmp}")
+    tmpdir=$(mktemp -d "$output_dir/export-github-issues-json.XXXXXX")
     trap "rm -rf -- '$tmpdir'" EXIT
     tmpfile="$tmpdir/open-issues.json"
 

@@ -87,7 +87,7 @@ flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flath
 {{-   if and (not $zed) (not (eq .osid "linux-chimera")) }}
 msg "Installing Zed"
 (
-    tmpdir=$(mktemp -d)
+    tmpdir=$(mktemp -d "${TMPDIR:-/tmp}/zed-installer.XXXXXX")
     trap 'rm -rf "$tmpdir"' EXIT
     fetch-verified \
         -o "$tmpdir/zed-installer.sh" \
@@ -105,7 +105,7 @@ flatpak install -y --user flathub {{ . }}
 {{-   if and (or (eq .osid "linux-debian") (eq .osid "linux-ubuntu")) (not $kitty) }}
 msg "Installing kitty"
 (
-    tmpdir=$(mktemp -d)
+    tmpdir=$(mktemp -d "${TMPDIR:-/tmp}/kitty-installer.XXXXXX")
     trap 'rm -rf "$tmpdir"' EXIT
     fetch-verified \
         -o "$tmpdir/kitty-installer.sh" \
@@ -123,7 +123,7 @@ ln -sf ~/.local/kitty.app/bin/kitty ~/.local/kitty.app/bin/kitten ~/.local/bin/
 
 {{-   if and .coding .container_runtime (not $devpod) }}
 msg "Installing DevPod CLI"
-tmpdir=$(mktemp -d)
+tmpdir=$(mktemp -d "${TMPDIR:-/tmp}/devpod-installer.XXXXXX")
 trap 'rm -rf "$tmpdir"' EXIT
 
 devpod_arch="amd64"

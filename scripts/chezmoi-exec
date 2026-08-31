@@ -25,7 +25,7 @@ abspath() {
 
 script=$(abspath "$1")
 shift
-tmpdir=$(mktemp -d -t "${script##*/}.XXXXXX")
+tmpdir=$(mktemp -d "${TMPDIR:-/tmp}/${script##*/}.XXXXXX")
 trap 'rm -rf "$tmpdir"' EXIT INT TERM
 
 tail -n +2 "$script" >"$tmpdir/script.pre"

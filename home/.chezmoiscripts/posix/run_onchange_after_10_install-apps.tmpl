@@ -18,7 +18,7 @@ PATH="$scriptsdir:$PATH"
 # shellcheck source=../../../scripts/common.sh
 . "$scriptsdir/common.sh" || exit 1
 
-tmpdir=$(mktemp -d -t commandoutput.XXXXXXX)
+tmpdir=$(mktemp -d "${TMPDIR:-/tmp}/commandoutput.XXXXXX")
 trap 'rm -rf "$tmpdir"' EXIT
 
 kpackagetool="{{ $kpackagetool }}"

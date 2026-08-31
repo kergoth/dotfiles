@@ -105,7 +105,7 @@ scriptsdir="$CHEZMOI_WORKING_TREE/scripts"
 PATH="$scriptsdir:$PATH"
 
 {{ if or $install_distrobox $eget_to_install $install_claude -}}
-tmpdir=$(mktemp -d -p "${TMPDIR:-/tmp}")
+tmpdir=$(mktemp -d "${TMPDIR:-/tmp}/install-tools.XXXXXX")
 trap 'rm -rf "$tmpdir"' EXIT
 {{- end }}
 

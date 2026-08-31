@@ -64,7 +64,7 @@ if [ -n "${SSL_CERT_FILE:-}" ] && grep -q "Bitdefender" "$SSL_CERT_FILE" 2>/dev/
 else
     hm_certs="$CHEZMOI_HOME_DIR/.config/home-manager/certs"
     if [ -f "$hm_certs/bitdefender-ca-ssl.pem" ]; then
-        combined=$(mktemp)
+        combined=$(mktemp "${TMPDIR:-/tmp}/configure-home-manager.XXXXXX")
         cat "$CHEZMOI_HOME_DIR/.nix-profile/etc/ssl/certs/ca-bundle.crt" \
             "$hm_certs/bitdefender-ca-ssl.pem" > "$combined"
         export SSL_CERT_FILE="$combined"
