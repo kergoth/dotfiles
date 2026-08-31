@@ -20,6 +20,7 @@ CODEX_HOME = Path.home() / ".codex"
 CODEX_SESSIONS = CODEX_HOME / "sessions"
 CODEX_STATE_DB = CODEX_HOME / "state_5.sqlite"
 CURSOR_PROJECTS = Path.home() / ".cursor" / "projects"
+PI_SESSIONS = Path.home() / ".pi" / "agent" / "sessions"
 
 USER_QUERY_RE = re.compile(r"<user_query>\s*(.*?)\s*</user_query>", re.DOTALL)
 
@@ -1132,10 +1133,189 @@ class CursorProvider:
         ]
 
 
+class PiProvider:
+    name = "pi"
+
+    def __init__(self, sessions_root: Path = PI_SESSIONS):
+        self.sessions_root = sessions_root
+
+    def cwd_to_slug(self, cwd: str) -> str:
+        """Convert a cwd path to its Pi sessions directory slug.
+
+        Pi strips the leading slash then replaces remaining '/' with '-',
+        wrapping the result with '--' prefix and '--' suffix.
+        Example: '/Users/chris/foo' -> '--Users-chris-foo--'
+        """
+        return "--" + cwd.lstrip("/").replace("/", "-") + "--"
+
+    def session_id_from_path(self, path: Path) -> str:
+        """Extract the session UUID from a Pi session filename.
+
+        Filename format: <timestamp>_<uuid>.jsonl
+        """
+        stem = path.stem
+        idx = stem.find("_")
+        return stem[idx + 1:] if idx >= 0 else ""
+
+    def all_session_files(self) -> list[Path]:
+        if not self.sessions_root.exists():
+            return []
+        return sorted(self.sessions_root.glob("**/*.jsonl"))
+
+    def parse_messages(self, jsonl_path: Path) -> list[dict]:
+        messages = []
+        try:
+            f = open(jsonl_path, errors="replace")
+        except OSError:
+            return messages
+        with f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    obj = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                if obj.get("type") != "message":
+                    continue
+                message = obj.get("message", {})
+                role = message.get("role")
+                if role not in ("user", "assistant"):
+                    continue
+                text = extract_text(message.get("content", "")).strip()
+                if not text:
+                    continue
+                messages.append({
+                    "role": role,
+                    "text": text,
+                    "timestamp": obj.get("timestamp", ""),
+                })
+        return messages
+
+    def get_metadata(self, jsonl_path: Path) -> dict:
+        session_id = self.session_id_from_path(jsonl_path)
+        cwd = ""
+        first_timestamp = ""
+        session_name = ""
+        try:
+            with open(jsonl_path, errors="replace") as f:
+                for line in f:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        obj = json.loads(line)
+                    except json.JSONDecodeError:
+                        continue
+                    entry_type = obj.get("type")
+                    if entry_type == "session":
+                        session_id = obj.get("id", session_id)
+                        cwd = obj.get("cwd", "")
+                        first_timestamp = obj.get("timestamp", "")
+                    elif entry_type == "session_info":
+                        name = obj.get("name", "")
+                        if name:
+                            session_name = name
+        except OSError:
+            pass
+        return {
+            "session_id": session_id,
+            "cwd": cwd,
+            "first_timestamp": first_timestamp,
+            "custom_title": session_name,
+            "away_summary": "",
+        }
+
+    def search_files(self, scope: str, cwd: str, keywords: list[str]) -> list[Path]:
+        if not self.sessions_root.exists():
+            return []
+
+        if scope == "project":
+            slug = self.cwd_to_slug(cwd)
+            project_dir = self.sessions_root / slug
+            if project_dir.exists():
+                search_roots = [project_dir]
+            else:
+                print(
+                    f"Warning: no Pi project dir found for {cwd!r}, searching globally",
+                    file=sys.stderr,
+                )
+                search_roots = [self.sessions_root]
+        else:
+            search_roots = [self.sessions_root]
+
+        candidates = find_matching_jsonl_files(search_roots, keywords)
+
+        results = []
+        for path in candidates:
+            messages = self.parse_messages(path)
+            if not all_keywords_match(messages, keywords):
+                continue
+            results.append(path)
+        return sorted(results)
+
+    def session_id_matches(self, session_id: str) -> list[tuple[Path, str]]:
+        matches = []
+        for path in self.all_session_files():
+            sid = self.session_id_from_path(path)
+            if sid == session_id or sid.startswith(session_id):
+                matches.append((path, sid))
+        return matches
+
+    def files_by_session_ids(self, session_ids: list[str]) -> list[Path]:
+        return [
+            path
+            for _provider, path in find_files_by_session_ids_across_providers([self], session_ids)
+        ]
+
+    def extract_session_data(self, jsonl_path: Path, keywords: list[str], depth: str) -> dict | None:
+        metadata = self.get_metadata(jsonl_path)
+        messages = self.parse_messages(jsonl_path)
+
+        user_messages = [m for m in messages if m["role"] == "user"]
+        if not user_messages:
+            return None
+        if keywords and not all_keywords_match(messages, keywords):
+            return None
+
+        num_exchanges = 1 if depth == "quick" else 3
+        context_size = 2 if depth == "quick" else 5
+
+        first_exchanges = build_exchanges(messages, num_exchanges, from_end=False)
+        last_exchanges = build_exchanges(messages, num_exchanges, from_end=True)
+        match_contexts = get_match_contexts(messages, keywords, context_size)
+
+        last_timestamp = messages[-1]["timestamp"] if messages else ""
+        custom_title = (metadata["custom_title"] or "").strip()
+
+        data = {
+            "agent": self.name,
+            "session_id": metadata["session_id"],
+            "session_name": custom_title or None,
+            "has_custom_name": bool(custom_title),
+            "away_summary": None,
+            "project_dir": metadata["cwd"],
+            "first_timestamp": metadata["first_timestamp"],
+            "last_timestamp": last_timestamp,
+            "match_count": len(match_contexts),
+            "resume_command": "",
+            "first_exchanges": first_exchanges,
+            "last_exchanges": last_exchanges,
+            "match_contexts": match_contexts,
+        }
+        data["resume_command"] = build_resume_command(self.name, data)
+        return data
+
+    def enrich_results(self, results: list[dict]) -> None:
+        pass
+
+
 PROVIDERS = {
     "claude": ClaudeProvider(),
     "codex": CodexProvider(),
     "cursor": CursorProvider(),
+    "pi": PiProvider(),
 }
 
 
@@ -1167,7 +1347,7 @@ def rollup_session_results(results: list[dict]) -> list[dict]:
 
 def selected_providers(agent: str) -> list[object]:
     if agent == "all":
-        return [PROVIDERS["claude"], PROVIDERS["codex"], PROVIDERS["cursor"]]
+        return [PROVIDERS["claude"], PROVIDERS["codex"], PROVIDERS["cursor"], PROVIDERS["pi"]]
     return [PROVIDERS[agent]]
 
 
@@ -1181,6 +1361,8 @@ def build_resume_command(agent: str, data: dict) -> str:
         return f"cd {quoted_dir} && codex resume {session_id}"
     if agent == "cursor":
         return f"cd {quoted_dir} && agent --resume {session_id}"
+    if agent == "pi":
+        return f"cd {quoted_dir} && pi --session {session_id}"
     return f"cd {quoted_dir} && claude --resume {session_id}"
 
 
@@ -1225,7 +1407,7 @@ def parse_args():
     parser.add_argument("keywords", nargs="*", help="Keywords to search for")
     parser.add_argument(
         "--agent",
-        choices=["claude", "codex", "cursor", "all"],
+        choices=["claude", "codex", "cursor", "pi", "all"],
         default="all",
         help="Session provider to search: claude, codex, cursor, or all (default: all)",
     )
