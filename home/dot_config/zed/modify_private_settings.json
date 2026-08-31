@@ -1,0 +1,20 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- /* Allow the pi-acp current model selection to change, */ -}}
+{{- /* rather than including that in our managed config. */ -}}
+{{- $unmanaged := list
+      "agent_servers.pi-acp.default_config_options" -}}
+
+{{- $managedRaw := includeTemplate (joinPath .chezmoi.workingTree "settings/zed/settings.json.tmpl") . -}}
+{{- $managed := $managedRaw | fromJsonc -}}
+{{- if eq .chezmoi.stdin "" -}}
+{{-   $managedRaw -}}
+{{- else -}}
+{{-   $existing := fromJsonc .chezmoi.stdin -}}
+{{-   $merged := includeTemplate "mergeWithPersistedPaths" (dict
+        "existing" $existing
+        "managed"  $managed
+        "persist"  $unmanaged
+        "base"     "managed"
+        ) | fromJson -}}
+{{-   $merged | toPrettyJson -}}
+{{- end -}}
