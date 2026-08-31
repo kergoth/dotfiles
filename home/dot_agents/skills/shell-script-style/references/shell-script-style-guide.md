@@ -181,17 +181,17 @@ EOF
 - Don't create temporary files in functions. Dealing with cleanup and signal handlers in functions isn't particularly portable and is often error prone.
 - Instead, create a global `tmpdir` with an EXIT signal handler to clean up the entire folder unconditionally:
   ```bash
-  tmpdir=$(mktemp -d -p "${TMPDIR:-/tmp}")
+  tmpdir=$(mktemp -d "${TMPDIR:-/tmp}/myapp.XXXXXX")
   trap 'rm -rf "$tmpdir"' EXIT
   ```
-- **macOS mktemp quirk**: macOS `mktemp -d` ignores `$TMPDIR` and uses the system default (`/var/folders/.../T/`). Always pass `-p "${TMPDIR:-/tmp}"` explicitly for portability. This matters when scripts run in sandboxed environments (e.g., Claude Code) where only specific temp paths are writable.
+- **Temporary directory selection**: macOS ignores `$TMPDIR` for `mktemp -t` and when no template is given. Use an explicit template rooted at `${TMPDIR:-/tmp}`. Do not use `-t` or `-p` in new scripts. `-p` is valid on current BSD and GNU implementations, but an explicit template makes the selected directory visible and avoids option-specific behavior.
 - **Signal handling complexity**: Handling interrupts (INT/TERM) in shell scripts is complex. Anything checking child process exit codes needs to explicitly check for interruption/termination, as the child may catch the signal but the parent might not, or they may receive the handler at different times. While INT/TERM traps have been used before (e.g., `trap 'trap - INT; kill -INT $$ &>/dev/null' INT`), more investigation is necessary to consider best practices. If signal handling becomes a serious issue, that's an indicator it's time to switch to Python instead of shell.
 - **Exception for atomic operations**: When downloading or unpacking artifacts to a destination, it's appropriate to create the tmpdir relative to the destination (in the same parent directory) rather than using a global tmpdir. This ensures atomic renames work correctly, as renames across filesystems are not atomic. **Important**: Setting a trap in a function overrides any global trap for that signal. If your script already uses a global EXIT trap, you **must** use a subshell to avoid overriding it:
   ```bash
   # Preferred: If global EXIT trap already exists, use subshell:
   (
       parent="$(dirname -- "$dest_dir")"
-      tmpdir="$(mktemp -d -p "$parent" ".myapp.download.XXXXXX")"
+      tmpdir="$(mktemp -d "$parent/.myapp.download.XXXXXX")"
       trap 'rm -rf -- "$tmpdir"' EXIT
 
       # Download/unpack to tmpdir, then atomically rename to final location
@@ -203,12 +203,12 @@ EOF
 
   # In functions that need tmpdir:
   parent="$(dirname -- "$dest_dir")"
-  tmpdir="$(mktemp -d -p "$parent" ".myapp.download.XXXXXX")"
+  tmpdir="$(mktemp -d "$parent/.myapp.download.XXXXXX")"
   cleanup_dirs+=("$tmpdir")
 
   # If no global EXIT trap exists, function-scoped trap is acceptable:
   parent="$(dirname -- "$dest_dir")"
-  tmpdir="$(mktemp -d -p "$parent" ".myapp.download.XXXXXX")"
+  tmpdir="$(mktemp -d "$parent/.myapp.download.XXXXXX")"
   trap 'rm -rf -- "$tmpdir"' EXIT
   # ... (but be aware this pattern precludes adding a global trap later)
   ```
