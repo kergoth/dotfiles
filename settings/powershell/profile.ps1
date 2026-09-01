@@ -338,11 +338,22 @@ if (Get-Command bat -ErrorAction SilentlyContinue) {
   New-Alias bathelp Invoke-BatHelp -Force
 }
 
-if (Get-Command batgrep -ErrorAction SilentlyContinue) {
+if (Get-Command rg -CommandType Application -ErrorAction SilentlyContinue) {
+  function Invoke-Ripgrep {
+    $rg = Get-Command rg -CommandType Application -ErrorAction Stop | Select-Object -First 1
+
+    if ((-not [Console]::IsOutputRedirected) -and (Get-Command delta -ErrorAction SilentlyContinue)) {
+      & $rg.Source --json -C 2 @args | delta --grep-header-decoration-style=box
+    }
+    else {
+      & $rg.Source @args
+    }
+  }
+
   if (Test-Path alias:rg) {
     Remove-Alias rg
   }
-  New-Alias rg batgrep -Force
+  New-Alias rg Invoke-Ripgrep -Force
 }
 New-Alias g rg -Force
 

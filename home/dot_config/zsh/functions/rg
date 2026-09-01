@@ -1,5 +1,5 @@
-if [[ -o interactive ]] && [[ -t 1 ]] && (( $+commands[batgrep] )); then
-    batgrep "$@"
+if [[ -o interactive ]] && [[ -t 1 ]] && (( $+commands[delta] )); then
+    rg --json -C 2 "$@" | delta --grep-header-decoration-style=box
 else
     command rg "$@"
 fi
