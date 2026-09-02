@@ -1,5 +1,17 @@
 if [[ -o interactive ]] && [[ -t 1 ]] && (( $+commands[delta] )); then
-    rg --json -C 2 "$@" | delta --grep-header-decoration-style=box
+    (
+        unset CLITHEME
+        set_clitheme
+        case "$CLITHEME" in
+            dark)
+                export DELTA_THEME=Dracula
+                ;;
+            light)
+                export DELTA_THEME="Catppuccin Latte"
+                ;;
+        esac
+        rg --json -C 2 "$@" | delta --grep-header-decoration-style=box --syntax-theme="$DELTA_THEME"
+    )
 else
     command rg "$@"
 fi
