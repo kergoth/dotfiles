@@ -7,11 +7,6 @@
 {{-   $86box = includeTemplate "find-tool" (dict "root" . "tool" "86box") -}}
 {{- end -}}
 {{- if or .retro_computing $86box -}}
-{{-   $refreshPeriod := .external.refreshPeriod -}}
-{{-   $clone_args := dig "external" "clone" "args" (list) . -}}
-{{-   $clone_args = append $clone_args "--depth=1" -}}
-{{-   $pull_args := dig "external" "pull" "args" (list) . -}}
-
 {{-   $86box_data := "" -}}
 {{-   if eq .chezmoi.os "darwin" -}}
 {{-     $86box_data = joinPath "Library" "Application Support" "86Box" }}
@@ -21,21 +16,17 @@
 
 {{- $assetsDir := joinPath $86box_data "assets" -}}
 [{{ $assetsDir | quote }}]
-    type = "git-repo"
+    type = "archive"
     url = {{ printf "https://github.com/86Box/assets/archive/%s.zip" (index $lock "86box_assets") | toToml }}
-    ["{{ $assetsDir }}".clone]
-      args = {{ $clone_args | toToml }}
-    ["{{ $assetsDir }}".pull]
-      args = {{ $pull_args | toToml }}
+    exact = true
+    stripComponents = 1
 
 {{- $romsDir := joinPath $86box_data "roms" }}
 [{{ $romsDir | quote }}]
-    type = "git-repo"
+    type = "archive"
     url = {{ printf "https://github.com/86Box/roms/archive/%s.zip" (index $lock "86box_roms") | toToml }}
-    ["{{ $romsDir }}".clone]
-      args = {{ $clone_args | toToml }}
-    ["{{ $romsDir }}".pull]
-      args = {{ $pull_args | toToml }}
+    exact = true
+    stripComponents = 1
 
 {{- end }}
 
