@@ -37,6 +37,10 @@
 {{-   end -}}
 {{- end -}}
 
+{{- range ($root.paths.override_bins | default list) -}}
+{{-   $search_paths = append $search_paths . -}}
+{{- end -}}
+
 {{- if not (and (hasKey . "system_paths") (not .system_paths)) -}}
 {{-   if eq $root.chezmoi.os "darwin" -}}
 {{-     $search_paths = concat $search_paths ($root.paths.system_bins_darwin | default list) -}}
