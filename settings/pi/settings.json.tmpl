@@ -29,27 +29,63 @@
   "tuiMode": "fullscreen",
   "steeringMode": "all",
   "followUpMode": "all",
-  "enabledModels": [
-    "openai-codex/gpt-5.6-terra",
-    "claude-bridge/claude-sonnet-4-6",
-    "claude-bridge/claude-opus-4-6",
-    "cursor/composer-2-5",
-    "cursor/auto-smart",
-    "local-coder/**",
-    "local-reason/**",
-    "mtplx/**",
-    "claude-bridge/claude-sonnet-5",
-    "claude-bridge/claude-opus-5",
-    "openai-codex/gpt-5.6-sol",
-    "cursor/grok-4.5",
-    "local-assistant/**",
-    "openai-codex/gpt-5.6-luna",
-    "local-reason-long/**",
-    "local-quality/**",
-    "claude-bridge/claude-sonnet-*",
-    "claude-bridge/claude-opus-*",
+{{- $allModels := list
+    "openai-codex/gpt-5.6-terra"
+    "claude-bridge/claude-sonnet-4-6"
+    "claude-bridge/claude-opus-4-6"
+    "cursor/composer-2-5"
+    "cursor/auto-smart"
+    "local-coder/**"
+    "local-reason/**"
+    "mtplx/**"
+    "claude-bridge/claude-sonnet-5"
+    "claude-bridge/claude-opus-5"
+    "openai-codex/gpt-5.6-sol"
+    "cursor/grok-4.5"
+    "local-assistant/**"
+    "openai-codex/gpt-5.6-luna"
+    "local-reason-long/**"
+    "local-quality/**"
+    "claude-bridge/claude-sonnet-*"
+    "claude-bridge/claude-opus-*"
     "openai-codex/**"
-  ],
+-}}
+{{- $exclude := list -}}
+{{- if not .personal -}}
+{{-   $exclude = concat $exclude (list
+        "openai-codex/gpt-5.6-terra"
+        "openai-codex/gpt-5.6-sol"
+        "openai-codex/gpt-5.6-luna"
+        "openai-codex/**"
+        "mtplx/**"
+      )
+-}}
+{{- end -}}
+{{- if not .work -}}
+{{-   $exclude = concat $exclude (list
+        "cursor/composer-2-5"
+        "cursor/auto-smart"
+        "cursor/grok-4.5"
+      )
+-}}
+{{- end -}}
+{{- if not (stat (joinPath .chezmoi.homeDir ".pi" "agent" "models.json")) -}}
+{{-   $exclude = concat $exclude (list
+        "local-coder/**"
+        "local-reason/**"
+        "local-assistant/**"
+        "local-reason-long/**"
+        "local-quality/**"
+      )
+-}}
+{{- end -}}
+{{- $enabledModels := list -}}
+{{- range $allModels -}}
+{{-   if not (has . $exclude) -}}
+{{-     $enabledModels = append $enabledModels . -}}
+{{-   end -}}
+{{- end -}}
+  "enabledModels": {{ $enabledModels | toJson }},
   "skills": ["~/.agents/skills"],
   "terminal": {
     "showTerminalProgress": true
