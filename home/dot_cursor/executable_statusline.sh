@@ -192,6 +192,42 @@ format_context() {
     printf 'ctx %d%%\n' "${1:-0}"
 }
 
+# Match Pi default footer token compaction (statusline-format.js formatTokenCount).
+format_token_count() {
+    local count="${1:-0}"
+    if (( count < 1000 )); then
+        printf '%s' "$count"
+    elif (( count < 10000 )); then
+        printf '%.1fk' "$(echo "scale=1; $count / 1000" | bc)"
+    elif (( count < 1000000 )); then
+        printf '%dk' $(( count / 1000 ))
+    elif (( count < 10000000 )); then
+        printf '%.1fM' "$(echo "scale=1; $count / 1000000" | bc)"
+    else
+        printf '%dM' $(( count / 1000000 ))
+    fi
+}
+
+format_session_cost() {
+    local usd="${1:-0}"
+    printf '$%.3f' "$usd"
+}
+
+format_burn() {
+    local input="${1:-0}" output="${2:-0}" cost="${3:-0}"
+    printf '↑%s ↓%s %s' \
+        "$(format_token_count "$input")" \
+        "$(format_token_count "$output")" \
+        "$(format_session_cost "$cost")"
+}
+
+render_burn_segment() {
+    local input="${1:-0}" output="${2:-0}" cost="${3:-0}"
+    local text
+    text=$(format_burn "$input" "$output" "$cost")
+    printf '%s%s%s' "$COLOR_DIM_TEXT" "$text" "$COLOR_RESET"
+}
+
 render_context_segment() {
     local pct="${1:-0}"
     local text
@@ -216,11 +252,11 @@ visible_width() {
         | tr -d ' '
 }
 
-# Args: $1=cols $2=model $3=path $4=branch $5=context
-# Returns: tier number (0-3)
+# Args: $1=cols $2=model $3=path $4=branch $5=burn $6=context
+# Returns: tier number (0-4). Context always survives; burn drops before context.
 select_degradation_tier() {
     local cols="$1"
-    local model="$2" path="$3" branch="$4" context="$5"
+    local model="$2" path="$3" branch="$4" burn="$5" context="$6"
     local padding=6
 
     _seg_width() {
@@ -233,16 +269,19 @@ select_degradation_tier() {
     }
 
     local w
-    w=$(_seg_width "$model" "$path" "$branch" "$context")
+    w=$(_seg_width "$model" "$path" "$branch" "$burn" "$context")
     (( w <= cols )) && { echo 0; return; }
 
-    w=$(_seg_width "$model" "$branch" "$context")
+    w=$(_seg_width "$model" "$branch" "$burn" "$context")
     (( w <= cols )) && { echo 1; return; }
 
-    w=$(_seg_width "$model" "$context")
+    w=$(_seg_width "$model" "$burn" "$context")
     (( w <= cols )) && { echo 2; return; }
 
-    echo 3
+    w=$(_seg_width "$model" "$context")
+    (( w <= cols )) && { echo 3; return; }
+
+    echo 4
 }
 
 # ── Name line ───────────────────────────────────────────────
@@ -278,6 +317,9 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     eval "$(printf '%s' "$input" | jq -r '
         "model=" + (.model.display_name // "Cursor" | split(" ") | first | @sh),
         "context_pct=" + (.context_window.used_percentage // 0 | floor | tostring),
+        "input_tokens=" + (.context_window.total_input_tokens // 0 | floor | tostring),
+        "output_tokens=" + (.context_window.total_output_tokens // 0 | floor | tostring),
+        "session_cost=" + (.cost.total_cost_usd // 0 | tostring),
         "cwd=" + (.cwd // "" | @sh),
         "session_name=" + (.session_name // "" | @sh),
         "wt_name=" + (.worktree.name // "" | @sh)
@@ -306,7 +348,8 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     model_display="${AGENT_LABEL}·${model}"
 
     context_text=$(format_context "${context_pct:-0}")
-    tier=$(select_degradation_tier "$cols" "$model_display" "$location_text" "$branch" "$context_text")
+    burn_text=$(format_burn "${input_tokens:-0}" "${output_tokens:-0}" "${session_cost:-0}")
+    tier=$(select_degradation_tier "$cols" "$model_display" "$location_text" "$branch" "$burn_text" "$context_text")
 
     render_name_line "${session_name:-}"
 
@@ -328,6 +371,12 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     # Branch (tier <= 1)
     if (( tier <= 1 )) && [[ -n "$branch" ]]; then
         printf '%s%s%s%s' "$sep" "$COLOR_DIM_TEXT" "$branch" "$COLOR_RESET"
+    fi
+
+    # Session burn (tier <= 2; drop before context when narrow)
+    if (( tier <= 2 )); then
+        printf '%s' "$sep"
+        render_burn_segment "${input_tokens:-0}" "${output_tokens:-0}" "${session_cost:-0}"
     fi
 
     # Context (always)
