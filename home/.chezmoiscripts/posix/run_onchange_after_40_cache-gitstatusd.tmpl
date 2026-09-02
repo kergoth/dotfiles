@@ -1,0 +1,14 @@
+{{- $zsh := includeTemplate "find-tool" (dict "root" . "tool" "zsh") -}}
+{{- $cache_home := "$HOME/.cache" -}}
+{{- if eq .chezmoi.os "darwin" -}}
+{{-   $cache_home = "$HOME/Library/Caches" -}}
+{{- end -}}
+{{- if and $zsh (ne .chezmoi.os "freebsd") -}}
+#!/bin/sh
+# powerlevel10k: {{ index .git_lock "powerlevel10k" }}
+
+set -eu
+
+XDG_CACHE_HOME="${XDG_CACHE_HOME:-{{ $cache_home }}}" \
+    "$HOME/.config/zsh/themes/powerlevel10k/gitstatus/install"
+{{- end -}}
