@@ -36,3 +36,5 @@ paths:
 
   system_bins_windows:
     - C:/ProgramData/scoop/shims
+
+  override_bins:
