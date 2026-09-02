@@ -103,16 +103,79 @@ function modelLabel(data) {
   return tag ? `${tag}·${data.model}` : data.model;
 }
 
-export function formatStatusLine(data) {
+// Match Pi default footer token compaction (footer.ts formatTokens).
+export function formatTokenCount(count) {
+  if (count < 1000) return String(count);
+  if (count < 10000) return `${(count / 1000).toFixed(1)}k`;
+  if (count < 1000000) return `${Math.round(count / 1000)}k`;
+  if (count < 10000000) return `${(count / 1000000).toFixed(1)}M`;
+  return `${Math.round(count / 1000000)}M`;
+}
+
+export function formatSessionCost(usd) {
+  return `$${usd.toFixed(3)}`;
+}
+
+export function formatBurnText({ inputTokens = 0, outputTokens = 0, costUsd = 0 } = {}) {
+  return `↑${formatTokenCount(inputTokens)} ↓${formatTokenCount(outputTokens)} ${formatSessionCost(costUsd)}`;
+}
+
+export function formatBurnSegment(data) {
+  const palette = PALETTES[data.palette];
+  return `${palette.branch}${formatBurnText(data)}${RESET}`;
+}
+
+function plainSegmentTexts(data) {
+  return {
+    model: `PI·${modelLabel(data)}`,
+    path: shortenPath(data.cwd),
+    branch: data.branch ?? "",
+    burn: formatBurnText(data),
+    context: `ctx ${data.contextPercent}%`,
+  };
+}
+
+// Returns tier 0-4. Context always survives; burn drops before context.
+export function selectDegradationTier(cols, segments) {
+  const padding = 6;
+  const segWidth = (...texts) => {
+    let total = padding;
+    for (const text of texts) {
+      if (text) total += text.length + 2;
+    }
+    return total;
+  };
+
+  const { model, path, branch, burn, context } = segments;
+  if (segWidth(model, path, branch, burn, context) <= cols) return 0;
+  if (segWidth(model, branch, burn, context) <= cols) return 1;
+  if (segWidth(model, burn, context) <= cols) return 2;
+  if (segWidth(model, context) <= cols) return 3;
+  return 4;
+}
+
+export function formatStatusLine(data, tier = 0) {
   const palette = PALETTES[data.palette];
   const context = contextColor(data.palette, data.contextPercent);
   const segments = [
     `${palette.modelPill.background}${BOLD}${palette.modelPill.foreground} PI·${modelLabel(data)} ${RESET}`,
-    `${palette.path}${shortenPath(data.cwd)}${RESET}`,
   ];
 
-  if (data.branch) segments.push(`${palette.branch}${data.branch}${RESET}`);
+  if (tier <= 0) {
+    segments.push(`${palette.path}${shortenPath(data.cwd)}${RESET}`);
+  }
+  if (tier <= 1 && data.branch) {
+    segments.push(`${palette.branch}${data.branch}${RESET}`);
+  }
+  if (tier <= 2) {
+    segments.push(formatBurnSegment(data));
+  }
   segments.push(`${context.background}${context.foreground} ctx ${data.contextPercent}% ${RESET}`);
 
   return segments.join("  ");
+}
+
+export function formatStatusLineForWidth(data, width) {
+  const tier = selectDegradationTier(width, plainSegmentTexts(data));
+  return formatStatusLine(data, tier);
 }
