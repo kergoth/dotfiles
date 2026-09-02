@@ -2,6 +2,7 @@
 ## Documentation Lookup Priority
 - **MCP tools first**: Fast-changing APIs (LangChain, OpenAI, web frameworks) — verify current docs via MCP before implementation.
 - **Available MCPs**: context7 (library docs), deepwiki (GitHub repo docs).
+- **context7 resolver call signature**: `context7_resolve-library-id` requires both `libraryName` and `query`. Example: `{"libraryName": "Yocto Project", "query": "latest release documentation"}`.
 - **deepwiki call signature**: Parameter is `repoName` (not `repo`), in `owner/repo` format. Example: `{"repoName": "twpayne/chezmoi", "question": "..."}`. Accepts a list of up to 10 repos.
 - **Web search fallback**: When MCP tools don't cover library.
 - **Training knowledge last**: Only for stable APIs (Python stdlib, git basics).
