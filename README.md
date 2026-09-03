@@ -102,6 +102,23 @@ in Kitty, Vim, or Zed.
 <td><img src="docs/tour/tmux-statusline-light.png" alt="Tmux statusline in light mode" width="100%"></td>
 </tr></table>
 
+Modern Python tooling from [Astral](https://astral.sh/) is preinstalled across all systems: uv, ruff, and ty.
+
+[Pi](https://pi.dev/) is the preferred LLM agent harness, chosen for its minimal baseline and extensibility.
+
+<table><tr>
+<td><img src="docs/tour/pi-statusline-dark.png" alt="Pi statusline in dark mode" width="100%"></td>
+<td><img src="docs/tour/pi-statusline-light.png" alt="Pi statusline in light mode" width="100%"></td>
+</tr></table>
+
+### Keyboard Configuration
+
+On macOS systems, [Karabiner-Elements](https://karabiner-elements.pqrs.org) is used to configure the keyboard, with these as the most important complex modifications:
+
+- Caps Lock to Escape on single press, Control on press and hold.
+- Control to Caps Lock on single press, 'Hyper Key' on press and hold. (rev 2)
+- Toggle caps_lock by pressing left_shift + right_shift at the same time.
+
 ## Usage
 
 ### Setup Entry Points
