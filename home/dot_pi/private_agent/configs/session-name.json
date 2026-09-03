@@ -1,5 +1,4 @@
 {
     "autoName": "llm",
-    "llmModel": "cursor/gemini-3.5-flash",
     "notifyOnAutoName": true
 }
