@@ -26,9 +26,7 @@
         <img src="https://img.shields.io/badge/-FreeBSD-%23870000?logo=freebsd&logoColor=white" alt="FreeBSD" /></a>
 </p>
 
-Personal dotfiles and system setup, managed with [chezmoi] and [Nix Home Manager][home-manager]. This repository covers application configuration, shell customization, package installation, and system-level setup across macOS, Linux, FreeBSD, and Windows.
-
-[Chezmoi][chezmoi] renders managed source into `$HOME`, handles encrypted secrets via [age], and runs setup scripts as part of the apply process. Home Manager is the preferred user package layer where Nix and nixpkgs fit; [Homebrew], [Scoop], native packages, Flatpak, language package managers, and pinned external installers fill platform gaps. Machine roles and platform differences are handled through chezmoi templates. See [Repository Architecture](docs/repository-architecture.md), [Authoring Chezmoi Configuration](docs/chezmoi-authoring.md), and [Updating External Content](docs/updating-externals.md) for the details.
+Personal dotfiles and system setup, managed with [chezmoi](#how-it-works) and [Nix Home Manager][home-manager]. This repository covers application configuration, shell customization, package installation, and system-level setup across macOS, Linux, FreeBSD, and Windows.
 
 This is not intended as a starter template. Adopting it wholesale would likely be more complex than most people need.
 
@@ -130,6 +128,10 @@ On macOS systems, [Karabiner-Elements](https://karabiner-elements.pqrs.org) is u
 - Caps Lock to Escape on single press, Control on press and hold.
 - Control to Caps Lock on single press, 'Hyper Key' on press and hold.
 - Toggle caps_lock by pressing left_shift + right_shift at the same time.
+
+## How it works
+
+[Chezmoi][chezmoi] renders managed source into `$HOME`, handles encrypted secrets via [age], and runs setup scripts as part of the apply process. Home Manager is the preferred user package layer where Nix and nixpkgs fit; [Homebrew], [Scoop], native packages, Flatpak, language package managers, and pinned external installers fill platform gaps. Machine roles and platform differences are handled through chezmoi templates. See [Repository Architecture](docs/repository-architecture.md), [Authoring Chezmoi Configuration](docs/chezmoi-authoring.md), and [Updating External Content](docs/updating-externals.md) for the details.
 
 ## Usage
 
