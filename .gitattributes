@@ -13,3 +13,6 @@ docs/tour/vim-light.png filter=lfs diff=lfs merge=lfs -text
 docs/tour/git-usage-dark.png filter=lfs diff=lfs merge=lfs -text
 docs/tour/pi-statusline-dark.png filter=lfs diff=lfs merge=lfs -text
 docs/tour/terminal-workspace-dark.png filter=lfs diff=lfs merge=lfs -text
+docs/tour/karabiner-modifications.png filter=lfs diff=lfs merge=lfs -text
+docs/tour/zed-dark.png filter=lfs diff=lfs merge=lfs -text
+docs/tour/zed-light.png filter=lfs diff=lfs merge=lfs -text

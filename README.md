@@ -59,6 +59,11 @@ Near-daily utilities: zoxide, fd, ripgrep, fzf, eza, bat, duf, and dua.
 
 Zed is the primary graphical project editor.
 
+<table><tr>
+<td><img src="docs/tour/zed-dark.png" alt="Zed in dark mode with Dracula theme" width="100%"></td>
+<td><img src="docs/tour/zed-light.png" alt="Zed in light mode with Alabaster BG high contrast" width="100%"></td>
+</tr></table>
+
 Vim is the terminal-native editor and fallback.
 
 <table><tr>
