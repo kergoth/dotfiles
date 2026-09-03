@@ -16,6 +16,11 @@ wrapper is needed. bat's `--theme=auto` option pairs `--theme-light` and
 `--theme-dark` selections and switches between them based on the OSC 11
 response. Pi's `light/dracula` theme setting works the same way.
 
+tmux queries the attached client terminal through OSC 11 when it sources its
+configuration, unless `CLITHEME` already gives a dark or light mode. tmux 3.5
+and newer also source the matching theme file from the `client-dark-theme`
+and `client-light-theme` hooks when the client reports a mode change.
+
 A terminal child process cannot always query OSC 11 because its standard input
 and output may be redirected, or the embedding host may start it without access
 to the controlling terminal. Statusline subprocesses are one common example. Shell
@@ -37,6 +42,7 @@ general-purpose replacement for each tool's theme setting.
 | Zed | `settings/zed/settings.json.tmpl` | Zed system mode | Dracula Solid | Alabaster BG High Contrast |
 | | | | | |
 | bat | `home/dot_config/bat/config` | `--theme=auto` with OSC 11 | Dracula | OneHalfLight |
+| rg through delta | `home/dot_config/zsh/functions/rg` | `set_clitheme` before invoking delta | Dracula | Catppuccin Latte |
 | Pi statusline | `home/dot_pi/agent/extensions/statusline/{index.ts,statusline-format.js}` | Pi UI theme name | Dracula | Catppuccin Latte |
 | Pi UI | `settings/pi/settings.json.tmpl` | `light/dracula` appearance pair with OSC 11 | Dracula | Pi light theme |
 | | | | | |
@@ -46,7 +52,7 @@ general-purpose replacement for each tool's theme setting.
 | Glow and Glamour output | `home/dot_config/zsh/functions/set_glamourstyle` | `CLITHEME` sets `GLAMOUR_STYLE` | Dracula | Glamour `light` |
 | | | | | |
 | Git porcelain | `home/dot_config/git/config.main.tmpl` | Git palette-aware color names | Terminal-defined | Terminal-defined |
-| tmux | `home/dot_config/tmux/{config,tmuxline.conf}` | Fixed terminal color indices (committed tmuxline.conf) | Terminal-dependent fixed indices | None |
+| tmux | `home/dot_config/tmux/{config,theme-{dark,light}.conf,tmuxline-{dark,light}.conf}` | `CLITHEME`, OSC 11, and tmux 3.5 client mode hooks | tmuxline Dracula-style 256-color palette | Committed light tmuxline palette |
 | Windows Terminal | `home/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json` | Fixed profile default | Dracula | None |
 | Zsh and PowerShell fzf | `home/dot_config/zsh/dot_zshrc.d/fzf.zsh` and `settings/powershell/profile.ps1` | Fixed `FZF_DEFAULT_OPTS` colors | Dracula | None |
 
@@ -84,6 +90,8 @@ When changing a dark or light palette:
 4. Check dark and light rendering in the affected graphical application and
    terminal. For `CLITHEME` consumers, test an explicit `CLITHEME=dark` and
    `CLITHEME=light` invocation as well as automatic detection when applicable.
+   For tmux, check both initial server startup and a client mode change on tmux
+   3.5 or newer.
 
 A future chezmoi data model may share palette values across templates. It should
 not hide the fact that tools learn mode in different ways: graphical
