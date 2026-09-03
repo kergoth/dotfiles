@@ -36,70 +36,70 @@ Walk through the daily environment this repository builds. Not every tool is cov
 components.
 
 - **Font:** [MesloLGS NF](https://github.com/romkatv/powerlevel10k/blob/master/font.md), shared across terminals and editors.
-- **Color modes:** dark and light are first-class operating modes
-- **Dark palette:** [Dracula](https://draculatheme.com)
-- **Light palette:** Varies by tool baesd on theme availability
+- **Color modes:** Dark and light are first-class operating modes.
+- **Dark palette:** [Dracula](https://draculatheme.com).
+- **Light palette:** Varies by tool based on theme availability.
 
 See [Theming](docs/theming.md) for the palette and mode-detection details.
 
 ### Terminal workspace
 
 <table><tr>
-<td><img src="docs/tour/terminal-workspace-dark.png" alt="..." width="100%"></td>
-<td><img src="docs/tour/terminal-workspace-light.png" alt="..." width="100%"></td>
+<td><img src="docs/tour/terminal-workspace-dark.png" alt="Terminal workspace in dark mode: Zsh prompt with Git branch, status, and command duration visible" width="100%"></td>
+<td><img src="docs/tour/terminal-workspace-light.png" alt="Terminal workspace in light mode" width="100%"></td>
 </tr></table>
 
-Kitty is the daily terminal, paired with Zsh and a Powerlevel10k prompt. The prompt keeps the working directory,
-Git branch and status, active language environments, and the duration of slow commands in view. Atuin is used
-for shell command history.
+Kitty is the daily terminal, paired with Zsh and a Powerlevel10k prompt. The prompt shows the working
+directory, Git branch and status, active language environments, and the duration of slow commands. Atuin
+handles shell command history search.
 
-Daily utilities include, but are not limited to, zoxide, fd, ripgrep, fzf, eza, bat, duf, and dua.
+Near-daily utilities: zoxide, fd, ripgrep, fzf, eza, bat, duf, and dua.
 
 ### Editors
 
-PLACEHOLDER: Insert Zed screenshots here :PLACEHOLDER
+Zed is the primary graphical project editor.
 
-My primary project editor is a graphical one, Zed.
+Vim is the terminal-native editor and fallback.
 
 <table><tr>
-<td><img src="docs/tour/vim-dark.png" alt="..." width="100%"></td>
-<td><img src="docs/tour/vim-light.png" alt="..." width="100%"></td>
+<td><img src="docs/tour/vim-dark.png" alt="Vim in dark mode with Dracula theme" width="100%"></td>
+<td><img src="docs/tour/vim-light.png" alt="Vim in light mode" width="100%"></td>
 </tr></table>
-
-My primary terminal editor is Vim.
 
 ### Development
 
-<table><tr>
-<td><img src="docs/tour/git-show-dark.png" alt="..." width="100%"></td>
-<td><img src="docs/tour/git-show-light.png" alt="..." width="100%"></td>
-</tr></table>
+Git is the primary source control tool. The configured pager and diff driver add syntax highlighting
+and color to log and diff output.
 
 <table><tr>
-<td><img src="docs/tour/git-usage-dark.png" alt="..." width="100%"></td>
-<td><img src="docs/tour/git-usage-light.png" alt="..." width="100%"></td>
+<td><img src="docs/tour/git-show-dark.png" alt="git show output in dark mode: colored commit decoration, message, and diff" width="100%"></td>
+<td><img src="docs/tour/git-show-light.png" alt="git show output in light mode" width="100%"></td>
 </tr></table>
 
-Git is my primary source control tool, as it is for most. I have a number of regularly used aliases:
+A set of aliases extends daily use:
+
+<table><tr>
+<td><img src="docs/tour/git-usage-dark.png" alt="Git aliases in use in dark mode" width="100%"></td>
+<td><img src="docs/tour/git-usage-light.png" alt="Git aliases in use in light mode" width="100%"></td>
+</tr></table>
 
 - **st**: Short status
-- **lg**: Single line formatted log
-- **l**: Same as lg, but with a limit to the number of lines, which substantially speeds up the operations on larger repositories, such as the kernel
-- **last**: lg-formatted, but limited to a time range. Examples: `git last day`, `git last week`
-- **in**: Remote commits not yet in the local branch, lg formatted
-- **out**: Local commits not yet in the remote branch, lg formatted
-- **brstat**: Local vs remote branch status, shown as `git range-diff` formatted output, which shows both directions
-- **please**: Push with lease, a safer `push --force`
-- **sync**: Pull --rebase and then push. Only used in specific repositories, such as my dotfiles
-- **au**: `git add` only existing, already tracked files, to stage modifications only
-- **amend**: Shorthand for `git commit --amend`, to merge the staged changes into the top commit
-- **reword**: Modify the commit message of the top commit
+- **lg**: Single-line formatted log
+- **l**: Like `lg` with a line limit; substantially faster on large repositories such as the kernel
+- **last**: Time-bounded log. Examples: `git last day`, `git last week`
+- **in**: Remote commits not yet in the local branch
+- **out**: Local commits not yet in the remote branch
+- **brstat**: Branch status in both directions as `git range-diff` output
+- **please**: `push --force-with-lease`, a safer force push
+- **au**: Stage modifications to tracked files only
+- **amend**: Amend the top commit with staged changes
 
-Tmux is occasionally used to keep sessions running in the background, but most splitting is done either directly in Kitty, Vim, or Zed.
+Tmux maintains background sessions and multi-pane layouts, though most day-to-day splitting happens
+in Kitty, Vim, or Zed.
 
 <table><tr>
-<td><img src="docs/tour/tmux-statusline-dark.png" alt="..." width="100%"></td>
-<td><img src="docs/tour/tmux-statusline-light.png" alt="..." width="100%"></td>
+<td><img src="docs/tour/tmux-statusline-dark.png" alt="Tmux statusline in dark mode with Dracula theme" width="100%"></td>
+<td><img src="docs/tour/tmux-statusline-light.png" alt="Tmux statusline in light mode" width="100%"></td>
 </tr></table>
 
 ## Usage
