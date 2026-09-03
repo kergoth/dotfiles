@@ -55,6 +55,10 @@ handles shell command history search.
 
 Near-daily utilities: zoxide, fd, ripgrep, fzf, eza, bat, duf, and dua.
 
+At startup, zsh runs a daily dotfiles check. If updates are available, it pulls them and applies the changes.
+Vim configuration follows the same pattern weekly. Set `DOTFILES_NO_UPDATE` or `VIM_NO_UPDATE` to disable either
+check.
+
 ### Editors
 
 Zed is the primary graphical project editor.
