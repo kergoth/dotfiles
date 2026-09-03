@@ -1,0 +1,261 @@
+#!/usr/bin/env bash
+# Usage: setup-terminal-workspace -H HOME [options]
+#
+# Prepare a reproducible tour home for terminal screenshots and print the env
+# file path to stdout.
+#
+# Options:
+#     -H HOME     Destination home directory to prepare
+#     -r REF      Git ref to check out after cloning (default: origin/main)
+#     -R REMOTE   Git remote to clone (default: origin)
+#     -o FILE     Env file to write (default: HOME/.tour-env)
+#     -n          Dry run, don't actually do anything
+#     -v          Increase verbosity, can be specified multiple times
+#     -q          Decrease verbosity, can be specified multiple times
+#     -h          Show this help message
+
+set -euo pipefail
+
+scriptdir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
+scriptname=${BASH_SOURCE[0]##*/}
+home=
+host_home=${TOUR_HOST_HOME:-$HOME}
+host_path=
+override_data_file=
+ref=${TOUR_DOTFILES_REF:-origin/main}
+remote=${TOUR_DOTFILES_REMOTE:-}
+env_file=
+dry_run=0
+verbosity=0
+
+usage() {
+    sed -n '/^# Usage:/,/^#     -h /p' "${BASH_SOURCE[0]}" | sed 's/^# *//'
+}
+
+process_arguments() {
+    while getopts ':H:r:R:o:nvqh' opt; do
+        case $opt in
+        H)
+            home=$OPTARG
+            ;;
+        r)
+            ref=$OPTARG
+            ;;
+        R)
+            remote=$OPTARG
+            ;;
+        o)
+            env_file=$OPTARG
+            ;;
+        n)
+            dry_run=1
+            ;;
+        v)
+            verbosity=$((verbosity + 1))
+            ;;
+        q)
+            verbosity=$((verbosity - 1))
+            ;;
+        h)
+            usage
+            exit 0
+            ;;
+        \?)
+            printf 'Unknown option: -%s\n' "$OPTARG" >&2
+            usage >&2
+            exit 1
+            ;;
+        :)
+            printf 'Option requires an argument: -%s\n' "$OPTARG" >&2
+            usage >&2
+            exit 1
+            ;;
+        esac
+    done
+
+    shift $((OPTIND - 1))
+    if [ $# -ne 0 ]; then
+        printf '%s: unexpected argument: %s\n' "$scriptname" "$1" >&2
+        usage >&2
+        exit 1
+    fi
+
+    if [ -z "$home" ]; then
+        printf '%s: -H HOME is required\n' "$scriptname" >&2
+        usage >&2
+        exit 1
+    fi
+
+    if [ -z "$env_file" ]; then
+        env_file=$home/.tour-env
+    fi
+
+    if [ -z "$remote" ]; then
+        remote=$(git -C "$scriptdir/../../.." remote get-url origin)
+    fi
+}
+
+msg() {
+    local fmt=$1
+    if [ $# -gt 1 ]; then
+        shift
+    fi
+    # shellcheck disable=SC2059
+    printf -- "$fmt\n" "$@" >&2
+}
+
+msg_verbose() {
+    if [ "$verbosity" -gt 0 ]; then
+        msg "$@"
+    fi
+}
+
+quote_sh() {
+    printf "'%s'" "${1//\'/\'\\\'\'}"
+}
+
+build_host_path() {
+    local dir
+    local sep=
+
+    for dir in \
+        "$host_home/.local/bin" \
+        "$host_home/.nix-profile/bin" \
+        "$host_home/.brew/bin"
+    do
+        if [ -d "$dir" ]; then
+            host_path=$host_path$sep$dir
+            sep=:
+        fi
+    done
+}
+
+write_override_data_file() {
+    if [ -z "$host_path" ]; then
+        return
+    fi
+
+    if ! command -v jq >/dev/null 2>&1; then
+        msg '%s: jq is required to write tour override data' "$scriptname"
+        exit 1
+    fi
+
+    override_data_file=$home/.tour-override-data.json
+    if [ "$dry_run" -eq 1 ]; then
+        return
+    fi
+
+    printf '%s\n' "$host_path" |
+        jq -Rsc 'split(":") | {paths: {override_bins: .}}' >"$override_data_file"
+}
+
+run() {
+    if [ "$dry_run" -eq 1 ] || [ "$verbosity" -gt 0 ]; then
+        printf '❯' >&2
+        printf ' %q' "$@" >&2
+        printf '\n' >&2
+    fi
+    if [ "$dry_run" -ne 1 ]; then
+        "$@"
+    fi
+}
+
+write_env_file() {
+    local dotfiles_dir=$1
+    local zoxide_data_dir=$2
+    local env_dir
+
+    env_dir=$(dirname "$env_file")
+    run mkdir -p "$env_dir"
+
+    if [ "$dry_run" -eq 1 ]; then
+        return
+    fi
+
+    {
+        printf 'export HOME=%s\n' "$(quote_sh "$home")"
+        printf 'export TOUR_DOTFILES_DIR=%s\n' "$(quote_sh "$dotfiles_dir")"
+        printf 'export _ZO_DATA_DIR=%s\n' "$(quote_sh "$zoxide_data_dir")"
+        printf 'export ZDOTDIR=%s\n' "$(quote_sh "$home/.config/zsh")"
+        printf 'export XDG_CONFIG_HOME=%s\n' "$(quote_sh "$home/.config")"
+        printf 'export XDG_DATA_HOME=%s\n' "$(quote_sh "$home/.local/share")"
+        printf 'export XDG_STATE_HOME=%s\n' "$(quote_sh "$home/.local/state")"
+        printf 'export XDG_CACHE_HOME=%s\n' "$(quote_sh "$home/Library/Caches")"
+        printf 'export TOUR_HOST_PATH=%s\n' "$(quote_sh "$host_path")"
+        if [ -n "$host_path" ]; then
+            # shellcheck disable=SC2016
+            printf 'export PATH=%s:"$PATH"\n' "$(quote_sh "$host_path")"
+        fi
+        printf 'export DOTFILES_NO_UPDATE=1\n'
+        printf 'export VIM_NO_UPDATE=1\n'
+    } >"$env_file"
+}
+
+main() {
+    local dotfiles_dir
+    local zoxide_data_dir
+
+    process_arguments "$@"
+
+    dotfiles_dir=$home/.dotfiles
+    zoxide_data_dir=$home/.local/share/zoxide
+    build_host_path
+    run mkdir -p "$home" "$zoxide_data_dir"
+    write_override_data_file
+    if [ -n "$host_path" ]; then
+        PATH=$host_path:$PATH
+        export PATH
+    fi
+
+    if [ -e "$dotfiles_dir" ]; then
+        msg '%s: refusing to overwrite existing checkout: %s' "$scriptname" "$dotfiles_dir"
+        exit 1
+    fi
+
+    msg_verbose 'Cloning %s into %s' "$remote" "$dotfiles_dir"
+    if [[ $ref == */* ]] && run git ls-remote --exit-code --heads "$remote" "${ref#*/}" >/dev/null; then
+        run git clone --quiet --branch "${ref#*/}" "$remote" "$dotfiles_dir"
+    elif run git ls-remote --exit-code --heads "$remote" "$ref" >/dev/null; then
+        run git clone --quiet --branch "$ref" "$remote" "$dotfiles_dir"
+    else
+        run git clone --quiet --no-checkout "$remote" "$dotfiles_dir"
+        run git -C "$dotfiles_dir" checkout --quiet "$ref"
+    fi
+    (
+        cd "$dotfiles_dir"
+        git update-ref refs/remotes/origin/main 757e6e485
+        echo foo >>README.md
+        git commit -m 'Add foo' README.md
+        echo bar >>README.md
+        touch testfile
+    )
+    if [ -n "$override_data_file" ]; then
+        run chezmoi -S "$dotfiles_dir" -D "$home" --override-data-file "$override_data_file" --skip-secrets --refresh-externals=never --force apply --exclude scripts
+    else
+        run chezmoi -S "$dotfiles_dir" -D "$home" --skip-secrets --refresh-externals=never --force apply --exclude scripts
+    fi
+
+    if [ ! -x "$home/.config/vim/script/bootstrap" ]; then
+        msg_verbose 'Refreshing missing Vim external'
+        if [ -n "$override_data_file" ]; then
+            run chezmoi -S "$dotfiles_dir" -D "$home" --override-data-file "$override_data_file" --skip-secrets --refresh-externals=always --force apply --include externals "$home/.config/vim"
+        else
+            run chezmoi -S "$dotfiles_dir" -D "$home" --skip-secrets --refresh-externals=always --force apply --include externals "$home/.config/vim"
+        fi
+    fi
+
+    if [ -x "$home/.config/vim/script/bootstrap" ]; then
+        run env HOME="$home" "$home/.config/vim/script/bootstrap"
+    fi
+
+    if command -v zoxide >/dev/null 2>&1; then
+        run env _ZO_DATA_DIR="$zoxide_data_dir" zoxide add "$dotfiles_dir"
+    else
+        msg_verbose 'zoxide unavailable; skipping database seed'
+    fi
+
+    write_env_file "$dotfiles_dir" "$zoxide_data_dir"
+    printf '%s\n' "$env_file"
+}
+
+main "$@"

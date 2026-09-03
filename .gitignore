@@ -7,3 +7,4 @@ others
 .cache/
 *.t.err
 home/dot_agents/skills/*-workspace/
+docs/tour/isolated-home/

@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+# Usage: launch-vim [options] MODE [FILE]
+#
+# Launch Vim for reproducible tour captures.
+#
+# Options:
+#     -p          Print the command instead of executing it
+#     -h          Show this help message
+
+set -euo pipefail
+
+scriptname=${BASH_SOURCE[0]##*/}
+print_command=0
+
+usage() {
+    sed -n '/^# Usage:/,/^#     -h /p' "${BASH_SOURCE[0]}" | sed 's/^# *//'
+}
+
+process_arguments() {
+    while [ $# -gt 0 ]; do
+        case $1 in
+        -p|--print-command)
+            print_command=1
+            shift
+            ;;
+        -h|--help)
+            usage
+            exit 0
+            ;;
+        --)
+            shift
+            break
+            ;;
+        -*)
+            printf 'Unknown option: %s\n' "$1" >&2
+            usage >&2
+            exit 1
+            ;;
+        *)
+            break
+            ;;
+        esac
+    done
+
+    if [ $# -lt 1 ] || [ $# -gt 2 ]; then
+        printf '%s: expected MODE and optional FILE\n' "$scriptname" >&2
+        usage >&2
+        exit 1
+    fi
+
+    mode=$1
+    file=${2:-$HOME/.config/vim/vimrc}
+}
+
+print_cmd() {
+    local first=1
+    local arg
+
+    for arg in "$@"; do
+        if [ "$first" -eq 0 ]; then
+            printf ' '
+        fi
+        first=0
+        printf '%q' "$arg"
+    done
+    printf '\n'
+}
+
+main() {
+    local mode
+    local file
+    local colorscheme
+    local vimrc
+    local cmd
+
+    process_arguments "$@"
+
+    case $mode in
+    dark)
+        colorscheme=dracula
+        ;;
+    light)
+        colorscheme=alabaster-bg
+        ;;
+    *)
+        printf '%s: mode must be dark or light\n' "$scriptname" >&2
+        exit 1
+        ;;
+    esac
+
+    vimrc=$HOME/.config/vim/vimrc
+    cmd=(
+        vim
+        -Nu "$vimrc"
+        -n
+        -i NONE
+        --cmd 'set directory=NONE'
+        --cmd 'set backupdir=NONE'
+        --cmd 'set undodir=NONE'
+        --cmd 'set viewdir=NONE'
+        -c "colorscheme $colorscheme"
+        -c 'normal! gg'
+        "$file"
+    )
+
+    if [ "$print_command" -eq 1 ]; then
+        print_cmd "${cmd[@]}"
+    else
+        exec "${cmd[@]}"
+    fi
+}
+
+main "$@"

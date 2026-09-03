@@ -29,6 +29,79 @@ Personal dotfiles and system setup, managed with [chezmoi] and [Nix Home Manager
 
 This is not intended as a starter template. Adopting it wholesale would likely be more complex than most people need.
 
+## Tour
+
+Walk through the daily environment this repository builds. Not every tool is covered here. See the
+[Inventory](docs/inventory.md) for the complete list of installed software, plugins, fonts, and system
+components.
+
+- **Font:** [MesloLGS NF](https://github.com/romkatv/powerlevel10k/blob/master/font.md), shared across terminals and editors.
+- **Color modes:** dark and light are first-class operating modes
+- **Dark palette:** [Dracula](https://draculatheme.com)
+- **Light palette:** Varies by tool baesd on theme availability
+
+See [Theming](docs/theming.md) for the palette and mode-detection details.
+
+### Terminal workspace
+
+<table><tr>
+<td><img src="docs/tour/terminal-workspace-dark.png" alt="..." width="100%"></td>
+<td><img src="docs/tour/terminal-workspace-light.png" alt="..." width="100%"></td>
+</tr></table>
+
+Kitty is the daily terminal, paired with Zsh and a Powerlevel10k prompt. The prompt keeps the working directory,
+Git branch and status, active language environments, and the duration of slow commands in view. Atuin is used
+for shell command history.
+
+Daily utilities include, but are not limited to, zoxide, fd, ripgrep, fzf, eza, bat, duf, and dua.
+
+### Editors
+
+PLACEHOLDER: Insert Zed screenshots here :PLACEHOLDER
+
+My primary project editor is a graphical one, Zed.
+
+<table><tr>
+<td><img src="docs/tour/vim-dark.png" alt="..." width="100%"></td>
+<td><img src="docs/tour/vim-light.png" alt="..." width="100%"></td>
+</tr></table>
+
+My primary terminal editor is Vim.
+
+### Development
+
+<table><tr>
+<td><img src="docs/tour/git-show-dark.png" alt="..." width="100%"></td>
+<td><img src="docs/tour/git-show-light.png" alt="..." width="100%"></td>
+</tr></table>
+
+<table><tr>
+<td><img src="docs/tour/git-usage-dark.png" alt="..." width="100%"></td>
+<td><img src="docs/tour/git-usage-light.png" alt="..." width="100%"></td>
+</tr></table>
+
+Git is my primary source control tool, as it is for most. I have a number of regularly used aliases:
+
+- **st**: Short status
+- **lg**: Single line formatted log
+- **l**: Same as lg, but with a limit to the number of lines, which substantially speeds up the operations on larger repositories, such as the kernel
+- **last**: lg-formatted, but limited to a time range. Examples: `git last day`, `git last week`
+- **in**: Remote commits not yet in the local branch, lg formatted
+- **out**: Local commits not yet in the remote branch, lg formatted
+- **brstat**: Local vs remote branch status, shown as `git range-diff` formatted output, which shows both directions
+- **please**: Push with lease, a safer `push --force`
+- **sync**: Pull --rebase and then push. Only used in specific repositories, such as my dotfiles
+- **au**: `git add` only existing, already tracked files, to stage modifications only
+- **amend**: Shorthand for `git commit --amend`, to merge the staged changes into the top commit
+- **reword**: Modify the commit message of the top commit
+
+Tmux is occasionally used to keep sessions running in the background, but most splitting is done either directly in Kitty, Vim, or Zed.
+
+<table><tr>
+<td><img src="docs/tour/tmux-statusline-dark.png" alt="..." width="100%"></td>
+<td><img src="docs/tour/tmux-statusline-light.png" alt="..." width="100%"></td>
+</tr></table>
+
 ## Usage
 
 ### Setup Entry Points
