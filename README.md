@@ -116,7 +116,7 @@ Modern Python tooling from [Astral](https://astral.sh/) is preinstalled across a
 On macOS systems, [Karabiner-Elements](https://karabiner-elements.pqrs.org) is used to configure the keyboard, with these as the most important complex modifications:
 
 - Caps Lock to Escape on single press, Control on press and hold.
-- Control to Caps Lock on single press, 'Hyper Key' on press and hold. (rev 2)
+- Control to Caps Lock on single press, 'Hyper Key' on press and hold.
 - Toggle caps_lock by pressing left_shift + right_shift at the same time.
 
 ## Usage
