@@ -1,0 +1,214 @@
+#!/usr/bin/env bash
+# Usage: generate-screenshots [options] [tape...]
+#
+# Generate tour screenshots from VHS tape files.
+#
+# Arguments:
+#     tape    Tape to process: stem (terminal-workspace-dark), basename
+#             (.tape suffix), or full path (absolute or relative).
+#             Defaults to all tapes when none are given.
+#
+# Options:
+#     -k          Keep isolated home under docs/tour/isolated-home
+#     -n          Dry run, show commands without executing
+#     -v          Increase verbosity
+#     -q          Decrease verbosity
+#     -h          Show this help message
+
+set -euo pipefail
+
+scriptdir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
+repo_root=$(dirname "$scriptdir")
+
+keep_home=0
+dry_run=0
+verbosity=0
+tour_home=
+tour_env_file=
+tapes=()
+
+declare -A tape_crop=(
+    [tmux-statusline-dark]="crop=iw:25:0:567"
+    [tmux-statusline-light]="crop=iw:25:0:567"
+    [pi-statusline-dark]="crop=iw:25:0:567"
+    [pi-statusline-light]="crop=iw:25:0:567"
+)
+
+default_tapes=(
+    terminal-workspace-dark
+    terminal-workspace-light
+    git-show-dark
+    git-show-light
+    git-usage-dark
+    git-usage-light
+    tmux-statusline-dark
+    tmux-statusline-light
+    vim-dark
+    vim-light
+    pi-statusline-dark
+    pi-statusline-light
+)
+
+usage() {
+    sed -n '/^# Usage:/,/^#     -h /p' "${BASH_SOURCE[0]}" | sed 's/^# *//'
+}
+
+process_arguments() {
+    while getopts knvqh opt; do
+        case "$opt" in
+        k) keep_home=1 ;;
+        n) dry_run=1 ;;
+        v) verbosity=$((verbosity + 1)) ;;
+        q) verbosity=$((verbosity - 1)) ;;
+        h)
+            usage
+            exit 0
+            ;;
+        \?)
+            usage >&2
+            exit 1
+            ;;
+        esac
+    done
+    shift $((OPTIND - 1))
+
+    local arg tape_path stem
+    for arg in "$@"; do
+        case "$arg" in
+        /*)
+            tape_path=$arg
+            ;;
+        *)
+            stem=${arg##*/}
+            stem=${stem%.tape}
+            tape_path="$repo_root/docs/tour/tapes/${stem}.tape"
+            ;;
+        esac
+        tapes+=("$tape_path")
+    done
+
+    if [ ${#tapes[@]} -eq 0 ]; then
+        for stem in "${default_tapes[@]}"; do
+            tapes+=("$repo_root/docs/tour/tapes/${stem}.tape")
+        done
+    fi
+}
+
+cleanup() {
+    if [ "$keep_home" -eq 0 ] && [ -n "$tour_home" ]; then
+        rm -rf "$tour_home"
+    fi
+}
+
+trap cleanup EXIT
+
+msg() {
+    local fmt=$1
+    if [ $# -gt 1 ]; then
+        shift
+    fi
+    # shellcheck disable=SC2059
+    printf -- "$fmt\n" "$@" >&2
+}
+
+die() {
+    msg "$@"
+    exit 1
+}
+
+run() {
+    if [ "$dry_run" -eq 1 ] || [ "$verbosity" -gt 0 ]; then
+        printf '❯ %s\n' "$*" >&2
+    fi
+    if [ "$dry_run" -ne 1 ]; then
+        "$@"
+    fi
+}
+
+run_vhs() {
+    if command -v vhs &>/dev/null; then
+        run vhs --quiet "$@"
+    elif command -v nix &>/dev/null; then
+        run nix run nixpkgs#vhs -- --quiet "$@"
+    else
+        die 'vhs and nix are unavailable'
+    fi
+}
+
+crop_output() {
+    local stem=$1 filter=$2
+    local out="$repo_root/docs/tour/${stem}.png"
+    local tmp="${out%.png}.new.png"
+    run ffmpeg -hide_banner -loglevel error -y \
+        -i "$out" -vf "$filter" "$tmp"
+    run mv "$tmp" "$out"
+    msg 'Cropped %s' "${stem}.png"
+}
+
+run_tape() {
+    local tape_path=$1
+    local screenshot_path
+    local stem
+
+    stem=$(basename "$tape_path" .tape)
+    screenshot_path="$repo_root/docs/tour/${stem}.png"
+
+    msg 'Running tape: %s' "$stem"
+    run rm -f "$screenshot_path"
+    run_vhs "$tape_path"
+    if [ -n "${tape_crop[$stem]:-}" ]; then
+        crop_output "$stem" "${tape_crop[$stem]}"
+    fi
+}
+
+setup_tour_home() {
+    local tmp_root=${TMPDIR:-/tmp}
+
+    if [ "$keep_home" -eq 1 ]; then
+        tour_home=$repo_root/docs/tour/isolated-home
+    else
+        tmp_root=${tmp_root%/}
+        tour_home=$(mktemp -d "$tmp_root/dotfiles-tour.XXXXXX")
+    fi
+    tour_env_file=$tour_home/.tour-env
+
+    if [ "$keep_home" -eq 1 ] && [ -f "$tour_env_file" ] && [ -d "$tour_home/.dotfiles" ]; then
+        msg 'Reusing isolated tour home: %s' "$tour_home"
+    else
+        msg 'Preparing isolated tour home: %s' "$tour_home"
+        mkdir -p "$tour_home"
+        "$repo_root/docs/tour/scripts/setup-terminal-workspace" -v -H "$tour_home" -o "$tour_env_file" >/dev/null
+    fi
+
+    # shellcheck disable=SC1090
+    . "$tour_env_file"
+    msg 'Using isolated dotfiles checkout: %s' "$TOUR_DOTFILES_DIR"
+}
+
+warm_up_tour_shell() {
+    msg 'Warming up tour shell prompt'
+    (
+        cd "$TOUR_DOTFILES_DIR"
+        CLITHEME=dark tmux-capture \
+            --ready-pattern '❯' \
+            --ready-timeout 30 \
+            --shell 'zsh -i' \
+            --delay 1 \
+            -- true >/dev/null
+    )
+}
+
+main() {
+    process_arguments "$@"
+    mkdir -p "$repo_root/docs/tour"
+    if [ "$dry_run" -eq 0 ]; then
+        setup_tour_home
+        warm_up_tour_shell
+    fi
+    local tape
+    for tape in "${tapes[@]}"; do
+        run_tape "$tape"
+    done
+}
+
+main "$@"
