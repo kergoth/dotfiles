@@ -52,11 +52,11 @@ See [Theming](docs/theming.md) for the palette and mode-detection details.
 <td><img src="docs/tour/terminal-workspace-light.png" alt="Terminal workspace in light mode" width="100%"></td>
 </tr></table>
 
-Kitty is the daily terminal, paired with Zsh and a Powerlevel10k prompt. The prompt shows the working
-directory, Git branch and status, active language environments, and the duration of slow commands. Atuin
+[Kitty](https://sw.kovidgoyal.net/kitty/) is the daily terminal, paired with Zsh and a [Powerlevel10k](https://github.com/romkatv/powerlevel10k) prompt. The prompt shows the working
+directory, Git branch and status, active language environments, and the duration of slow commands. [Atuin](https://atuin.sh/)
 handles shell command history search.
 
-Near-daily utilities: zoxide, fd, ripgrep, fzf, eza, bat, duf, and dua.
+Near-daily utilities: [zoxide](https://github.com/ajeetdsouza/zoxide), [fd](https://github.com/sharkdp/fd), [ripgrep](https://github.com/BurntSushi/ripgrep), [fzf](https://github.com/junegunn/fzf), [eza](https://eza.rocks/), [bat](https://github.com/sharkdp/bat), [duf](https://github.com/muesli/duf), and [dua](https://github.com/Byron/dua-cli).
 
 At startup, zsh runs a daily dotfiles check. If updates are available, it pulls them and applies the changes.
 Vim configuration follows the same pattern weekly. Set `DOTFILES_NO_UPDATE` or `VIM_NO_UPDATE` to disable either
@@ -64,7 +64,7 @@ check.
 
 ### Editors
 
-Zed is the primary graphical project editor.
+[Zed](https://zed.dev/) is the primary graphical project editor.
 
 <table><tr>
 <td><img src="docs/tour/zed-dark.png" alt="Zed in dark mode with Dracula theme" width="100%"></td>
@@ -106,7 +106,7 @@ A set of aliases extends daily use:
 - **au**: Stage modifications to tracked files only
 - **amend**: Amend the top commit with staged changes
 
-Tmux maintains background sessions and multi-pane layouts, though most day-to-day splitting happens
+[Tmux](https://github.com/tmux/tmux) maintains background sessions and multi-pane layouts, though most day-to-day splitting happens
 in Kitty, Vim, or Zed.
 
 <table><tr>
@@ -114,7 +114,7 @@ in Kitty, Vim, or Zed.
 <td><img src="docs/tour/tmux-statusline-light.png" alt="Tmux statusline in light mode" width="100%"></td>
 </tr></table>
 
-Modern Python tooling from [Astral](https://astral.sh/) is preinstalled across all systems: uv, ruff, and ty.
+Modern Python tooling from [Astral](https://astral.sh/) is preinstalled across all systems: [uv](https://docs.astral.sh/uv/), [ruff](https://docs.astral.sh/ruff/), and [ty](https://github.com/astral-sh/ty).
 
 [Pi](https://pi.dev/) is the preferred LLM agent harness, chosen for its minimal baseline and extensibility.
 
