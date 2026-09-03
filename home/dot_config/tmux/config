@@ -248,9 +248,9 @@ if-shell "command -v htop" "bind '~' split-window 'exec htop'" "unbind '~'"
 %if "#{>=:#{version},3.5}"
 set-hook -g client-dark-theme "source-file ~/.config/tmux/theme-dark.conf"
 set-hook -g client-light-theme "source-file ~/.config/tmux/theme-light.conf"
-if-shell -F '[ "$(~/.config/tmux/detect-theme "#{client_tty}")" = light ]' "source-file ~/.config/tmux/theme-light.conf" "source-file ~/.config/tmux/theme-dark.conf"
+if-shell '[ "$(~/.config/tmux/detect-theme "#{client_tty}")" = light ]' "source-file ~/.config/tmux/theme-light.conf" "source-file ~/.config/tmux/theme-dark.conf"
 %else
-if-shell -F '[ "$(~/.config/tmux/detect-theme "#{client_tty}")" = light ]' "source-file ~/.config/tmux/theme-light.conf" "source-file ~/.config/tmux/theme-dark.conf"
+if-shell '[ "$(~/.config/tmux/detect-theme "#{client_tty}")" = light ]' "source-file ~/.config/tmux/theme-light.conf" "source-file ~/.config/tmux/theme-dark.conf"
 %endif
 
 # External {{{1
