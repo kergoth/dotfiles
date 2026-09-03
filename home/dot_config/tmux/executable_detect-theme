@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+tty=${1:-/dev/tty}
+mode=dark
+old_stty=
+response=
+
+case ${CLITHEME:-} in
+light|dark)
+    printf '%s\n' "$CLITHEME"
+    exit 0
+    ;;
+esac
+
+if [ -r "$tty" ] && [ -w "$tty" ]; then
+    old_stty=$(stty -g <"$tty" 2>/dev/null || true)
+    if [ -n "$old_stty" ]; then
+        stty -echo raw <"$tty" 2>/dev/null || true
+    fi
+
+    printf '\033]11;?\033\\' >"$tty"
+    if IFS= read -r -d '\' -t 1 response <"$tty" 2>/dev/null; then
+        if [[ $response =~ rgb:([0-9a-fA-F]{2,4})/([0-9a-fA-F]{2,4})/([0-9a-fA-F]{2,4}) ]]; then
+            r=${BASH_REMATCH[1]:0:2}
+            g=${BASH_REMATCH[2]:0:2}
+            b=${BASH_REMATCH[3]:0:2}
+            ri=$((16#$r))
+            gi=$((16#$g))
+            bi=$((16#$b))
+            lum=$(((ri * 299 + gi * 587 + bi * 114) / 1000))
+
+            if [ "$lum" -gt 128 ]; then
+                mode=light
+            fi
+        fi
+    fi
+
+    if [ -n "$old_stty" ]; then
+        stty "$old_stty" <"$tty" 2>/dev/null || true
+    fi
+fi
+
+printf '%s\n' "$mode"

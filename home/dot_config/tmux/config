@@ -18,8 +18,8 @@ set -g default-terminal "screen-256color"
 # Terminal overrides
 set -g -a terminal-overrides ',xterm-256color:Tc' # True color support.
 
-# Additional terminal variable
-set -g -a update-environment " TERM_PROGRAM"
+# Additional terminal variables
+set -g -a update-environment " TERM_PROGRAM CLITHEME"
 
 # Include vscode variables
 set -g -a update-environment " GIT_ASKPASS VSCODE_SERVER_DIR VSCODE_IPC_HOOK_CLI VSCODE_GIT_ASKPASS_MAIN VSCODE_GIT_ASKPASS_NODE VSCODE_GIT_ASKPASS_EXTRA_ARGS VSCODE_GIT_IPC_HANDLE"
@@ -245,15 +245,13 @@ if-shell "command -v htop" "bind '~' split-window 'exec htop'" "unbind '~'"
 
 # Style {{{1
 # tmuxline theme
-if-shell "test -f ~/.config/tmux/tmuxline.conf" "source ~/.config/tmux/tmuxline.conf"
-
-#set inactive/active window styles
-set -g window-style 'fg=colour247,bg=colour236'
-set -g window-active-style 'fg=colour250,bg=black'
-
-# set the pane border colors
-set -g pane-border-style fg=colour235,bg=colour238
-set -g pane-active-border-style fg=colour236,bg=colour250
+%if "#{>=:#{version},3.5}"
+set-hook -g client-dark-theme "source-file ~/.config/tmux/theme-dark.conf"
+set-hook -g client-light-theme "source-file ~/.config/tmux/theme-light.conf"
+if-shell -F '[ "$(~/.config/tmux/detect-theme "#{client_tty}")" = light ]' "source-file ~/.config/tmux/theme-light.conf" "source-file ~/.config/tmux/theme-dark.conf"
+%else
+if-shell -F '[ "$(~/.config/tmux/detect-theme "#{client_tty}")" = light ]' "source-file ~/.config/tmux/theme-light.conf" "source-file ~/.config/tmux/theme-dark.conf"
+%endif
 
 # External {{{1
 if-shell "test -f ~/.tmux.conf.local" "source ~/.tmux.conf.local"
