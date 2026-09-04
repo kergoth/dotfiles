@@ -26,7 +26,7 @@
         <img src="https://img.shields.io/badge/-FreeBSD-%23870000?logo=freebsd&logoColor=white" alt="FreeBSD" /></a>
 </p>
 
-Personal dotfiles and system setup, managed with [chezmoi](#how-it-works) and [Nix Home Manager][home-manager]. This repository covers application configuration, shell customization, package installation, and system-level setup across macOS, Linux, FreeBSD, and Windows.
+Personal dotfiles and system setup, managed with [chezmoi](https://www.chezmoi.io/) and [Nix Home Manager](https://nix-community.github.io/home-manager/). This repository covers application configuration, shell customization, package installation, and system-level setup across macOS, Linux, FreeBSD, and Windows.
 
 This is not intended as a starter template. Adopting it wholesale would likely be more complex than most people need.
 
@@ -43,11 +43,11 @@ components.
 
 See [Theming](docs/theming.md) for the palette and mode-detection details.
 
-### Terminal workspace
+### Terminal Workspace
 
 <table><tr>
 <td><img src="docs/tour/terminal-workspace-dark.png" alt="Terminal workspace in dark mode: Zsh prompt with Git branch, status, and command duration visible" width="100%"></td>
-<td><img src="docs/tour/terminal-workspace-light.png" alt="Terminal workspace in light mode" width="100%"></td>
+<td><img src="docs/tour/terminal-workspace-light.png" alt="Terminal workspace in light mode: Zsh prompt with Git branch, status, and command duration visible" width="100%"></td>
 </tr></table>
 
 [Kitty](https://sw.kovidgoyal.net/kitty/) is the daily terminal, paired with Zsh and a [Powerlevel10k](https://github.com/romkatv/powerlevel10k) prompt. The prompt shows the working
@@ -66,7 +66,7 @@ check.
 
 <table><tr>
 <td><img src="docs/tour/zed-dark.png" alt="Zed in dark mode with Dracula theme" width="100%"></td>
-<td><img src="docs/tour/zed-light.png" alt="Zed in light mode with Alabaster BG high contrast" width="100%"></td>
+<td><img src="docs/tour/zed-light.png" alt="Zed in light mode" width="100%"></td>
 </tr></table>
 
 Vim is the terminal-native editor and fallback.
@@ -83,7 +83,7 @@ and color to log and diff output.
 
 <table><tr>
 <td><img src="docs/tour/git-show-dark.png" alt="git show output in dark mode: colored commit decoration, message, and diff" width="100%"></td>
-<td><img src="docs/tour/git-show-light.png" alt="git show output in light mode" width="100%"></td>
+<td><img src="docs/tour/git-show-light.png" alt="git show output in light mode: commit decoration, message, and diff" width="100%"></td>
 </tr></table>
 
 A set of aliases extends daily use:
@@ -129,76 +129,39 @@ On macOS systems, [Karabiner-Elements](https://karabiner-elements.pqrs.org) is u
 - Control to Caps Lock on single press, 'Hyper Key' on press and hold.
 - Toggle caps_lock by pressing left_shift + right_shift at the same time.
 
-## How it works
+## How It Works
 
-[Chezmoi][chezmoi] renders managed source into `$HOME`, handles encrypted secrets via [age], and runs setup scripts as part of the apply process. Home Manager is the preferred user package layer where Nix and nixpkgs fit; [Homebrew], [Scoop], native packages, Flatpak, language package managers, and pinned external installers fill platform gaps. Machine roles and platform differences are handled through chezmoi templates. See [Repository Architecture](docs/repository-architecture.md), [Authoring Chezmoi Configuration](docs/chezmoi-authoring.md), and [Updating External Content](docs/updating-externals.md) for the details.
+[Chezmoi](https://www.chezmoi.io/) renders managed source into `$HOME`, handles encrypted secrets via [age](https://age-encryption.org/), and runs setup scripts as part of the apply process. Home Manager is the preferred user package layer where Nix and nixpkgs fit; [Homebrew](https://brew.sh/), [Scoop](https://scoop.sh/), native packages, Flatpak, language package managers, and pinned external installers fill platform gaps. Machine roles and platform differences are handled through chezmoi templates. See [Repository Architecture](docs/repository-architecture.md), [Authoring Chezmoi Configuration](docs/chezmoi-authoring.md), and [Updating External Content](docs/updating-externals.md) for the details.
 
-## Usage
+## Getting Started
 
-### Setup Entry Points
-
-The setup scripts form a progression from system preparation to day-to-day dotfiles application:
-
-- `script/bootstrap`: installs prerequisites, clones the repository, and initializes chezmoi. The setup scripts below run this automatically when needed.
-- `script/setup-system`: installs system-level packages, Nix, and host prerequisites. Run it as a non-root user with sudo or doas access.
-- `script/setup`: applies dotfiles and runs user-level setup.
-- `script/setup-full`: runs `setup-system` followed by `setup`.
-- `chezmoi apply`: manually applies rendered dotfiles after repository edits.
-- `script/update`: reviews available updates, updates pinned external and component versions, applies related dotfiles and Home Manager changes, and commits accepted changes.
-
-Lower-level `os-install` and `setup-root` entry points are for raw operating system or distro-specific preparation. See [Operating System Installation](docs/os-installation.md) for those flows.
-
-### Bootstrap (Optional)
-
-The setup scripts below handle bootstrapping automatically. If you prefer to initialize chezmoi separately, or need to run on a system where the repository is not yet cloned and git is not yet available, you can run `script/bootstrap` standalone:
-
-```console
-curl -fsLS https://raw.githubusercontent.com/kergoth/dotfiles/main/script/bootstrap | sh
-```
-
-This installs prerequisites such as git, bash, curl, and unzip, clones the repository if needed, and installs and initializes chezmoi.
-
-### Full Setup
-
-Clone the repository and run `setup-full` for both system-level setup and dotfiles on a fresh machine:
+On a machine where git is available, clone the repository and run setup:
 
 ```console
 git clone https://github.com/kergoth/dotfiles .dotfiles
 ~/.dotfiles/script/setup-full
 ```
 
-### System Setup
-
-Run this before dotfiles setup if you need system-level packages, Nix, or other prerequisites. This script is run by a non-root user with sudo or doas access. To complete this on macOS, your admin user must have signed into the Mac App Store.
+On a fresh machine without git, the bootstrap script installs prerequisites, clones the repository, and initializes chezmoi:
 
 ```console
-./script/setup-system
+curl -fsLS https://raw.githubusercontent.com/kergoth/dotfiles/main/script/bootstrap | sh
 ```
 
-On Windows, run PowerShell rather than WSL:
+## Setup
 
-```console
-./script/setup-system.ps1
-```
+The setup scripts form a progression from system preparation to user-level configuration:
 
-### Dotfiles Setup
+- `script/setup-system`: installs system-level packages, Nix, and host prerequisites. Requires a non-root user with sudo or doas access. On macOS, your admin user must have signed into the Mac App Store first. On Windows, run `script/setup-system.ps1` from PowerShell rather than WSL.
+- `script/setup`: applies dotfiles and runs user-level setup, including package installation via Home Manager and other configured package managers. Run after `setup-system` if system-level dependencies are needed.
+- `script/setup-full`: runs `setup-system` followed by `setup`.
+- `script/bootstrap`: installs prerequisites, clones the repository, and initializes chezmoi. The setup scripts above run this automatically when needed.
 
-Applies dotfiles and runs chezmoi scripts for user-level package installation and configuration. If system setup is needed, run `setup-system` first; dotfiles application may depend on tools it installs, such as Nix.
+Lower-level `os-install` and `setup-root` entry points handle raw operating system and distro-specific preparation. See [Operating System Installation](docs/os-installation.md) for those flows.
 
-If the repository has not yet been cloned:
+## Day-to-Day
 
-```console
-chezmoi init kergoth/dotfiles
-~/.dotfiles/script/setup
-```
-
-If the repository is already cloned:
-
-```console
-./script/setup
-```
-
-### Edit Dotfiles
+Edit a dotfile and watch for changes:
 
 ```console
 chezmoi edit --watch ~/.config/zsh/.zshrc
@@ -206,15 +169,19 @@ chezmoi edit --watch ~/.config/zsh/.zshrc
 
 See [Authoring Chezmoi Configuration](docs/chezmoi-authoring.md) for source resolution, template rendering, and safe inspection before applying changes.
 
-### Apply Dotfiles Changes to the Home Directory
-
-This step is implicit in the setup script. To run it manually after editing files inside the repository checkout, run:
+Apply changes to the home directory manually after editing files in the repository checkout:
 
 ```console
 chezmoi apply
 ```
 
-### Update Dotfiles, External Files, and Home Directory Packages
+Run a `git pull` in the dotfiles repository and then run `chezmoi apply` on it:
+
+```console
+chezmoi update
+```
+
+Review and apply available updates to dotfiles, external files, and software packages:
 
 ```console
 ./script/update
@@ -245,8 +212,3 @@ Please adhere to this project's [Code of Conduct](CODE_OF_CONDUCT.md) and follow
 Distributed under the terms of the [Blue Oak Model License 1.0.0](LICENSE.md) license.
 
 
-[chezmoi]: https://www.chezmoi.io/
-[home-manager]: https://nix-community.github.io/home-manager/
-[age]: https://age-encryption.org/
-[Homebrew]: https://brew.sh/
-[Scoop]: https://scoop.sh/
