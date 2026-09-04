@@ -1,5 +1,5 @@
 container_lock:
-  arch_amd64_latest: "sha256:91524e6de98b9f22fe86153dddda7cfee425e4f2e4479cad47315bedffe7673b"
+  arch_amd64_latest: "sha256:2bb17948dba8fb2c3cdae161ad5028a66d23d8385f9f9295fadda763a1bab4eb"
   arch_arm64_latest: "sha256:d52ad36df5441308d17a4064cfdfe259fdb85a0e28bb9230e8cf0ee2d877ff09"
   chimera_latest: "sha256:29102d7e12a1f464707d7aba19ce53e652d277861838ed4129178d0655444b1a"
   debian_latest: "sha256:f324c7ff54321e8d9c588493a20244965938ce0aa50bbd1022d38010e9ffc4b1"
