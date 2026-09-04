@@ -28,7 +28,7 @@
 
 Personal dotfiles and system setup, managed with [chezmoi](https://www.chezmoi.io/) and [Nix Home Manager](https://nix-community.github.io/home-manager/). This repository covers application configuration, shell customization, package installation, and system-level setup across macOS, Linux, FreeBSD, and Windows.
 
-This is not intended as a starter template. Adopting it wholesale would likely be more complex than most people need.
+This is not intended as a starter template. Adopting it wholesale would likely add complexity most people don't need.
 
 ## Tour
 
@@ -138,7 +138,7 @@ On macOS systems, [Karabiner-Elements](https://karabiner-elements.pqrs.org) is u
 On a machine where git is available, clone the repository and run setup:
 
 ```console
-git clone https://github.com/kergoth/dotfiles .dotfiles
+git clone https://github.com/kergoth/dotfiles ~/.dotfiles
 ~/.dotfiles/script/setup-full
 ```
 
@@ -157,11 +157,11 @@ The setup scripts form a progression from system preparation to user-level confi
 - `script/setup-full`: runs `setup-system` followed by `setup`.
 - `script/bootstrap`: installs prerequisites, clones the repository, and initializes chezmoi. The setup scripts above run this automatically when needed.
 
-Lower-level `os-install` and `setup-root` entry points handle raw operating system and distro-specific preparation. See [Operating System Installation](docs/os-installation.md) for those flows.
+Per-distribution `os-install` and `setup-root` entry points under `script/<distro>/` handle raw operating system and distro-specific preparation. See [Operating System Installation](docs/os-installation.md) for those flows.
 
 ## Day-to-Day Usage
 
-Edit a dotfile and watch for changes:
+Edit a dotfile and watch for changes (re-applies on save):
 
 ```console
 chezmoi edit --watch ~/.config/zsh/.zshrc
