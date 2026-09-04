@@ -37,7 +37,6 @@ general-purpose replacement for each tool's theme setting.
 
 | Area | Source | Selection mechanism | Dark palette | Light palette |
 | --- | --- | --- | --- | --- |
-| Ghostty | `home/dot_config/ghostty/config.tmpl` | Ghostty `light:`/`dark:` theme setting | Dracula | Builtin Tango Light |
 | Kitty | `home/dot_config/kitty/{dark,light}-theme.auto.conf` | Kitty automatic theme includes | Dracula | Alabaster |
 | Zed | `settings/zed/settings.json.tmpl` | Zed system mode | Dracula Solid | Alabaster BG High Contrast |
 | | | | | |
