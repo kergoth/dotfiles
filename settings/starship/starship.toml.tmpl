@@ -22,6 +22,7 @@ $battery\
 {{- end }}
 
 [aws]
+disabled = true
 style = "bold #ffb86c"
 
 [character]
@@ -39,6 +40,9 @@ truncate_to_repo = false
 [docker_context]
 disabled = true
 format = "[$symbol$context]($style) "
+
+[gcloud]
+disabled = true
 
 [git_branch]
 format = '[$symbol$branch(:$remote_branch)]($style) '
@@ -58,6 +62,9 @@ style = "bold #bd93f9"
 format = '[$symbol$state( \(nix $name\))]($style) '
 
 [os]
+disabled = true
+
+[openstack]
 disabled = true
 
 [os.symbols]
