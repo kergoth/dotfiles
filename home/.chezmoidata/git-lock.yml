@@ -20,7 +20,6 @@ git_lock:
   gh_pr_review: "v1.6.2"
   gh_pr_review_skill: "db2ffdf804f82124e172fcfe296a63a6d2324c69"
   gh_stack: "v0.1.1"
-  gist_zbell: "e0b06247f3ecd6ca3de341c54ba8d85de7ef6566"
   gist_zsh_timing: "2d88b477c29de14250ba03650745348781077ae8"
   git_assembler: "94af28bc65e6db58c21f245e7d5c38cafdfcc786"
   git_extras: "7.5.0"
