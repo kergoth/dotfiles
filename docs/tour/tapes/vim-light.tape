@@ -1,4 +1,4 @@
-Source docs/tour/tapes/templates/settings-tui-padded-light.tape
+Source docs/tour/tapes/templates/settings-vim-padded-light.tape
 
 Hide
 Type "docs/tour/scripts/launch-vim light"

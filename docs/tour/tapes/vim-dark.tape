@@ -1,4 +1,4 @@
-Source docs/tour/tapes/templates/settings-tui-padded-dark.tape
+Source docs/tour/tapes/templates/settings-vim-padded-dark.tape
 
 Hide
 Type "docs/tour/scripts/launch-vim dark"
