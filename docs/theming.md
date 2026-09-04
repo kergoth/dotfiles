@@ -1,6 +1,15 @@
 # Theming
 
-This repository uses a dark or light *mode* and a tool-specific *palette*.
+This repository uses a dark or light *mode* and a tool-specific *theme*.
+
+A *palette* is a named set of colors (Dracula, Catppuccin Latte, Alabaster).
+A *theme* is a palette applied to a specific tool: the palette plus decisions
+about how its colors map to the tool's visual elements (syntax scopes, UI
+chrome, decoration styles, background vs. foreground highlighting). The same
+palette can produce different themes for the same tool (Alabaster vs. Alabaster
+BG both use the Alabaster palette but map it differently). A theme that doesn't
+fit can be customized or replaced while keeping its underlying palette.
+
 Dark mode generally uses Dracula. Light mode varies when a tool's available
 themes or color handling call for a different choice. The table
 below is the current configuration reference. Consult it when changing themes.
@@ -35,7 +44,7 @@ general-purpose replacement for each tool's theme setting.
 
 ## Current Theme Map
 
-| Area | Source | Selection mechanism | Dark palette | Light palette |
+| Area | Source | Selection mechanism | Dark theme | Light theme |
 | --- | --- | --- | --- | --- |
 | Kitty | `home/dot_config/kitty/{dark,light}-theme.auto.conf` | Kitty automatic theme includes | Dracula | Alabaster |
 | Zed | `settings/zed/settings.json.tmpl` | Zed system mode | Dracula Solid | Alabaster BG High Contrast |
@@ -66,7 +75,7 @@ that standalone file.
 
 Claude Code and Cursor receive `CLITHEME` from the `claude` and `agent` Zsh
 wrappers. Their statusline scripts use it first, query OSC 11 only when needed,
-and otherwise fall back to dark mode. The dark and light palettes for these two
+and otherwise fall back to dark mode. The dark and light color values for these two
 tools are currently duplicated across their scripts. Keep them in sync when
 changing either.
 
@@ -78,12 +87,12 @@ comment marks the required alignment.
 
 ## Changing a Theme
 
-When changing a dark or light palette:
+When changing a dark or light theme:
 
-1. Decide whether the change affects a mode, one tool's palette, or both.
-2. Update each row in the theme map that intentionally uses the palette. Do not
-   assume similarly named themes have compatible colors or coverage.
-3. Change the Claude, Cursor, and Pi statusline palettes together when their
+1. Decide whether the change affects a mode, one tool's theme, or both.
+2. Update each row in the theme map that intentionally uses the same palette. Do
+   not assume similarly named themes have compatible colors or coverage.
+3. Change the Claude, Cursor, and Pi statusline themes together when their
    visual alignment remains intended. Run the focused statusline tests from
    [Testing and Verification](testing.md), including
    `./script/test -j test/node/pi-statusline.test.mjs` for Pi.
@@ -96,5 +105,5 @@ When changing a dark or light palette:
 A future chezmoi data model may share palette values across templates. It should
 not hide the fact that tools learn mode in different ways: graphical
 applications, terminal wrappers, and Pi extensions each use separate signals.
-Add shared variables only when repeated values are clear and the shared model
-keeps those boundaries visible.
+Add shared variables only when repeated palette values are clear and the shared
+model keeps those boundaries visible.
