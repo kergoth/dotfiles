@@ -31,16 +31,21 @@ autoload -Uz add-zsh-hook || return
 # initial run because it evaluates to an empty string, and splitting an
 # empty string just results in an empty array.
 zbell_timestamp=$EPOCHSECONDS
+zbell_ran=0
 
 # right before we begin to execute something, store the time it started at
 zbell_begin() {
 	zbell_timestamp=$EPOCHSECONDS
 	zbell_lastcmd=$1
+	zbell_ran=1
 }
 
 # when it finishes, if it's been running longer than $zbell_duration,
 # and we dont have an ignored command in the line, then print a bell.
 zbell_end() {
+	(( $zbell_ran )) || return
+	zbell_ran=0
+
 	ran_long=$(( $EPOCHSECONDS - $zbell_timestamp >= $zbell_duration ))
 
 	has_ignored_cmd=0
