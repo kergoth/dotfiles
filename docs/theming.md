@@ -107,3 +107,11 @@ not hide the fact that tools learn mode in different ways: graphical
 applications, terminal wrappers, and Pi extensions each use separate signals.
 Add shared variables only when repeated palette values are clear and the shared
 model keeps those boundaries visible.
+
+Shared palette hex values can reduce duplication for UI chrome colors (statusline
+backgrounds, border accents) where the mapping is straightforward. Per-tool
+theme mappings, which palette color maps to which tool element, are judgment
+calls that differ by tool and by taste. Upstream theme ports (Catppuccin's 200+
+ports, Dracula's ecosystem) already encode those decisions. Reimplementing them
+locally as templated data files is only worthwhile when you disagree with enough
+of an upstream theme's mapping choices to justify the ongoing maintenance.
