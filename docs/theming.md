@@ -40,6 +40,7 @@ general-purpose replacement for each tool's theme setting.
 | Kitty | `home/dot_config/kitty/{dark,light}-theme.auto.conf` | Kitty automatic theme includes | Dracula | Alabaster |
 | Zed | `settings/zed/settings.json.tmpl` | Zed system mode | Dracula Solid | Alabaster BG High Contrast |
 | | | | | |
+| vim / nvim | `~/.config/vim/vimrc` (kergoth/dotvim, out of band) | `CLITHEME` env var at startup; falls back to OSC 11 terminal query when absent (vim via `t_RB`; nvim via TUI detection before vimrc) | Dracula | Alabaster (`alabaster-bg`) |
 | bat | `home/dot_config/bat/config` | `--theme=auto` with OSC 11 | Dracula | OneHalfLight |
 | rg through delta | `home/dot_config/zsh/functions/rg` | `set_clitheme` before invoking delta | Dracula | Catppuccin Latte |
 | Pi statusline | `home/dot_pi/agent/extensions/statusline/{index.ts,statusline-format.js}` | Pi UI theme name | Dracula | Catppuccin Latte |
