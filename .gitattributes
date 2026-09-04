@@ -15,3 +15,5 @@ docs/tour/pi-statusline-dark.png filter=lfs diff=lfs merge=lfs -text
 docs/tour/terminal-workspace-dark.png filter=lfs diff=lfs merge=lfs -text
 docs/tour/zed-dark.png filter=lfs diff=lfs merge=lfs -text
 docs/tour/zed-light.png filter=lfs diff=lfs merge=lfs -text
+docs/tour/git-brstat-dark.png filter=lfs diff=lfs merge=lfs -text
+docs/tour/git-brstat-light.png filter=lfs diff=lfs merge=lfs -text

@@ -15,10 +15,6 @@ Type "git st"
 Enter
 Wait+Screen /\\?\\??/
 Sleep 500ms
-Type "git brstat"
-Enter
-Wait+Screen /origin\/main/
-Sleep 500ms
 Type "git l -5 origin/main"
 Enter
 Wait /❯/

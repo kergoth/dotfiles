@@ -222,12 +222,15 @@ main() {
         run git -C "$dotfiles_dir" checkout --quiet "$ref"
     fi
     (
-        cd "$dotfiles_dir"
+        cd "$dotfiles_dir" || exit 1
         git update-ref refs/remotes/origin/main 757e6e485
-        echo foo >>README.md
-        git commit -m 'Add foo' README.md
-        echo bar >>README.md
-        touch testfile
+        git reset --hard 757e6e485~1
+        echo "Modified/Amended Commit" >>README.md
+        git commit --amend -C HEAD --allow-empty-message README.md
+        echo "New local commit" >>README.md
+        git commit -m 'New local commit' README.md
+        echo "Uncommitted modification" >>README.md
+        touch "Untracked file"
     )
     if [ -n "$override_data_file" ]; then
         run chezmoi -S "$dotfiles_dir" -D "$home" --override-data-file "$override_data_file" --skip-secrets --refresh-externals=never --force apply --exclude scripts
