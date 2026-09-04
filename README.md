@@ -28,7 +28,7 @@
 
 Personal dotfiles and system setup, managed with [chezmoi](https://www.chezmoi.io/) and [Nix Home Manager](https://nix-community.github.io/home-manager/). This repository covers application configuration, shell customization, package installation, and system-level setup across macOS, Linux, FreeBSD, and Windows.
 
-This is not intended as a starter template. Adopting it wholesale would likely add complexity most people don't need.
+This project is not intended for wholesale adoption, as it adds complexity most people don't need.
 
 ## Tour
 
