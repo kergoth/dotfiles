@@ -34,21 +34,6 @@ declare -A tape_crop=(
     [pi-statusline-light]="crop=iw:25:0:567"
 )
 
-default_tapes=(
-    terminal-workspace-dark
-    terminal-workspace-light
-    git-show-dark
-    git-show-light
-    git-usage-dark
-    git-usage-light
-    tmux-statusline-dark
-    tmux-statusline-light
-    vim-dark
-    vim-light
-    pi-statusline-dark
-    pi-statusline-light
-)
-
 usage() {
     sed -n '/^# Usage:/,/^#     -h /p' "${BASH_SOURCE[0]}" | sed 's/^# *//'
 }
@@ -88,8 +73,8 @@ process_arguments() {
     done
 
     if [ ${#tapes[@]} -eq 0 ]; then
-        for stem in "${default_tapes[@]}"; do
-            tapes+=("$repo_root/docs/tour/tapes/${stem}.tape")
+        for tape_path in "$repo_root/docs/tour/tapes/"*.tape; do
+            tapes+=("$tape_path")
         done
     fi
 }
