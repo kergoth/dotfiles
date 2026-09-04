@@ -1,10 +1,10 @@
 {
     "$help": "https://aka.ms/terminal-documentation",
     "$schema": "https://aka.ms/terminal-profiles-schema",
-    "actions": 
+    "actions":
     [
         {
-            "command": 
+            "command":
             {
                 "action": "switchToTab",
                 "index": 6
@@ -13,7 +13,7 @@
             "keys": "alt+7"
         },
         {
-            "command": 
+            "command":
             {
                 "action": "switchToTab",
                 "index": 5
@@ -22,7 +22,7 @@
             "keys": "alt+6"
         },
         {
-            "command": 
+            "command":
             {
                 "action": "closeTab"
             },
@@ -30,7 +30,7 @@
             "keys": "ctrl+shift+w"
         },
         {
-            "command": 
+            "command":
             {
                 "action": "switchToTab",
                 "index": 4
@@ -39,7 +39,7 @@
             "keys": "alt+5"
         },
         {
-            "command": 
+            "command":
             {
                 "action": "switchToTab",
                 "index": 7
@@ -48,7 +48,7 @@
             "keys": "alt+8"
         },
         {
-            "command": 
+            "command":
             {
                 "action": "switchToTab",
                 "index": 0
@@ -57,7 +57,7 @@
             "keys": "alt+1"
         },
         {
-            "command": 
+            "command":
             {
                 "action": "switchToTab",
                 "index": 1
@@ -66,7 +66,7 @@
             "keys": "alt+2"
         },
         {
-            "command": 
+            "command":
             {
                 "action": "switchToTab",
                 "index": 2
@@ -75,7 +75,7 @@
             "keys": "alt+3"
         },
         {
-            "command": 
+            "command":
             {
                 "action": "switchToTab",
                 "index": 3
@@ -84,7 +84,7 @@
             "keys": "alt+4"
         },
         {
-            "command": 
+            "command":
             {
                 "action": "switchToTab",
                 "index": 8
@@ -95,18 +95,18 @@
     ],
     "defaultProfile": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
     "launchMode": "maximized",
-    "newTabMenu": 
+    "newTabMenu":
     [
         {
             "type": "remainingProfiles"
         }
     ],
-    "profiles": 
+    "profiles":
     {
-        "defaults": 
+        "defaults":
         {
             "adjustIndistinguishableColors": "indexed",
-            "bellStyle": 
+            "bellStyle":
             [
                 "window",
                 "taskbar"
@@ -114,7 +114,7 @@
             "closeOnExit": "automatic",
             "colorScheme": "Dracula",
             "experimental.retroTerminalEffect": false,
-            "font": 
+            "font":
             {
                 "face": "MesloLGS NF",
                 "size": 10,
@@ -122,7 +122,7 @@
             },
             "historySize": 15000
         },
-        "list": 
+        "list":
         [
             {
                 "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
@@ -230,7 +230,7 @@
             }
         ]
     },
-    "schemes": 
+    "schemes":
     [
         {
             "background": "#282A36",
@@ -254,52 +254,6 @@
             "selectionBackground": "#FFFFFF",
             "white": "#F8F8F2",
             "yellow": "#F1FA8C"
-        },
-        {
-            "background": "#272822",
-            "black": "#272822",
-            "blue": "#66D9EF",
-            "brightBlack": "#75715E",
-            "brightBlue": "#A59F85",
-            "brightCyan": "#CC6633",
-            "brightGreen": "#383830",
-            "brightPurple": "#F5F4F1",
-            "brightRed": "#FD971F",
-            "brightWhite": "#F9F8F5",
-            "brightYellow": "#49483E",
-            "cursorColor": "#FFFFFF",
-            "cyan": "#A1EFE4",
-            "foreground": "#F8F8F2",
-            "green": "#A6E22E",
-            "name": "Monokai",
-            "purple": "#AE81FF",
-            "red": "#F92672",
-            "selectionBackground": "#FFFFFF",
-            "white": "#F8F8F2",
-            "yellow": "#F4BF75"
-        },
-        {
-            "background": "#1D1F21",
-            "black": "#1D1F21",
-            "blue": "#81A2BE",
-            "brightBlack": "#969896",
-            "brightBlue": "#B4B7B4",
-            "brightCyan": "#A3685A",
-            "brightGreen": "#282A2E",
-            "brightPurple": "#E0E0E0",
-            "brightRed": "#DE935F",
-            "brightWhite": "#FFFFFF",
-            "brightYellow": "#373B41",
-            "cursorColor": "#FFFFFF",
-            "cyan": "#8ABEB7",
-            "foreground": "#C5C8C6",
-            "green": "#B5BD68",
-            "name": "Tomorrow Night",
-            "purple": "#B294BB",
-            "red": "#CC6666",
-            "selectionBackground": "#FFFFFF",
-            "white": "#C5C8C6",
-            "yellow": "#F0C674"
         }
     ],
     "themes": [],
