@@ -33,3 +33,36 @@ Same rule as commit subjects: goal/behavior over mechanism, unless the mechanism
 ## After updating an existing PR
 
 After a force-push, additive commits, or rebase, re-read the PR description with `gh pr view` and compare it against the new branch contents. If the description no longer matches the diff (added or removed scope, changed approach, stale file lists), update it via `gh pr edit`. Description-versus-diff drift is a review hazard.
+
+## Retrieving review feedback
+
+Load the `gh-pr-review` skill before working with inline threads or performing any thread mutations (reply, resolve, unresolve). It carries the safety model, output format details, and ID conventions for that workflow.
+
+GitHub PR feedback comes in three distinct forms, each needing a different retrieval path:
+
+| Type | What it is | How to retrieve |
+|---|---|---|
+| Inline threads | Line-anchored comments; the only type that can block merge | `gh pr-review review view` / `gh pr-review threads list` |
+| Review body summaries | Top-level review notes (e.g., Copilot's "Changes recommended") | `gh pr view --json reviews` |
+| Conversation comments | Issue-style discussion not anchored to code | `gh pr view --json comments` |
+
+Review bodies and conversation comments can be fetched together: `gh pr view --json reviews,comments`. No raw `gh api` calls needed.
+
+## Clearing threads before merge
+
+Only inline threads have a resolved/unresolved state that blocks merge. To check what remains open:
+
+```sh
+gh pr-review threads list -R owner/repo <pr> --unresolved
+```
+
+**Outdated does not mean resolved.** When surrounding code changes, GitHub marks threads as outdated — but they remain unresolved and still block merge. `--not_outdated` is useful when doing a code review pass (outdated threads reference lines that no longer exist), but it's the wrong filter when clearing threads for merge. Use `--unresolved` alone; never add `--not_outdated` to a merge-readiness check or you will silently miss blocking threads.
+
+To reply and resolve a thread:
+
+```sh
+gh pr-review comments reply <pr> -R owner/repo --thread-id <PRRT_...> --body "Fixed — ..."
+gh pr-review threads resolve <pr> -R owner/repo --thread-id <PRRT_...>
+```
+
+Always reply before resolving. A bare resolve with no explanation leaves reviewers without context about what changed or why the comment was dismissed.
