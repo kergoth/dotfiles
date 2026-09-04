@@ -159,7 +159,7 @@ The setup scripts form a progression from system preparation to user-level confi
 
 Lower-level `os-install` and `setup-root` entry points handle raw operating system and distro-specific preparation. See [Operating System Installation](docs/os-installation.md) for those flows.
 
-## Day-to-Day
+## Day-to-Day Usage
 
 Edit a dotfile and watch for changes:
 
@@ -210,5 +210,3 @@ Please adhere to this project's [Code of Conduct](CODE_OF_CONDUCT.md) and follow
 ## License
 
 Distributed under the terms of the [Blue Oak Model License 1.0.0](LICENSE.md) license.
-
-
