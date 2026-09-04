@@ -1,3 +1,4 @@
+Set Height 520
 Source docs/tour/tapes/templates/settings-dark.tape
 
 Hide
