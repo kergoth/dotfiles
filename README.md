@@ -93,6 +93,8 @@ A set of aliases extends daily use:
 <td><img src="docs/tour/git-usage-light.png" alt="Git aliases in use in light mode" width="100%"></td>
 </tr></table>
 
+Including the full branch status relative to its upstream:
+
 <table><tr>
 <td><img src="docs/tour/git-brstat-dark.png" alt="git brstat output in dark mode: range-diff showing local commits versus origin" width="100%"></td>
 <td><img src="docs/tour/git-brstat-light.png" alt="git brstat output in light mode: range-diff showing local commits versus origin" width="100%"></td>
@@ -101,7 +103,7 @@ A set of aliases extends daily use:
 - **st**: Short status
 - **lg**: Single-line formatted log
 - **l**: Like `lg` with a line limit; substantially faster on large repositories such as the kernel
-- **brstat**: Branch status in both directions, including modified commits
+- **brstat**: Branch status in both directions, including modified commits (via `git range-diff`)
 - **last**: Time-bounded log. Examples: `git last day`, `git last week`
 - **in**: Remote commits not yet in the local branch
 - **out**: Local commits not yet in the remote branch
