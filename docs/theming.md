@@ -49,7 +49,7 @@ general-purpose replacement for each tool's theme setting.
 | Claude Code statusline | `home/dot_claude/statusline-command.sh` | `CLITHEME`, then OSC 11 fallback | Dracula | Catppuccin Latte |
 | Cursor statusline | `home/dot_cursor/executable_statusline.sh` | `CLITHEME`, then OSC 11 fallback | Dracula | Catppuccin Latte |
 | gh-dash | `home/dot_config/zsh/functions/gh.tmpl` and `home/dot_config/gh-dash/config-*.yml.tmpl` | `CLITHEME` selects one generated config | Dracula | Catppuccin Latte |
-| Glow and Glamour output | `home/dot_config/zsh/functions/set_glamourstyle` | `CLITHEME` sets `GLAMOUR_STYLE` | Dracula | Glamour `light` |
+| Glow and Glamour output | `home/dot_config/zsh/functions/set_glamourstyle` | `CLITHEME` sets `GLAMOUR_STYLE` | Dracula | Catppuccin Latte |
 | | | | | |
 | Git porcelain | `home/dot_config/git/config.main.tmpl` | Git palette-aware color names | Terminal-defined | Terminal-defined |
 | tmux | `home/dot_config/tmux/{config,theme-{dark,light}.conf,tmuxline-{dark,light}.conf}` | `CLITHEME`, OSC 11, and tmux 3.5 client mode hooks | tmuxline Dracula-style 256-color palette | Committed light tmuxline palette |

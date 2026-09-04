@@ -2,6 +2,6 @@
 # Only "light" is light-appropriate; dracula covers dark (ADR-0005 CLITHEME).
 set_clitheme
 case "$CLITHEME" in
-  light) export GLAMOUR_STYLE=light ;;
+  light) export GLAMOUR_STYLE=$HOME/.config/glamour/themes/catppuccin-latte.json ;;
   dark|*) export GLAMOUR_STYLE=dracula ;;
 esac

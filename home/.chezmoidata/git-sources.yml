@@ -60,6 +60,8 @@ git_sources:
     repo: https://github.com/casparfriedrich/bitbake-syntax
     ref: master
     review: false
+  catppuccin_glamour:
+    repo: https://github.com/catppuccin/glamour
   devpod:
     repo: https://github.com/loft-sh/devpod
     tagged: true

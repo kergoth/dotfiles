@@ -25,3 +25,10 @@ path = "Dracula.bbColorScheme"
 exact = true
 stripComponents = 1
 {{- end }}
+
+[".config/glamour/themes/catppuccin-latte.json"]
+type = "archive-file"
+url = {{ printf "https://github.com/catppuccin/glamour/archive/%s.tar.gz" (index $lock "catppuccin_glamour") | toToml }}
+path = "themes/catppuccin-latte.json"
+exact = true
+stripComponents = 1
