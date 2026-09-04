@@ -96,4 +96,5 @@ if [[ -n $SSH_CLIENT ]]; then
 fi
 
 # Additional zbell exclusions
-zbell_ignore=($EDITOR $PAGER vim vi less more most ssh bat tail)
+zbell_ignore=($EDITOR $PAGER vim vi less more most ssh bat tail
+              claude codex pi agent rg)
