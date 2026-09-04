@@ -90,7 +90,7 @@ main() {
 
     vimrc=$HOME/.config/vim/vimrc
     cmd=(
-        vim
+        nvim
         -Nu "$vimrc"
         -n
         -i NONE
