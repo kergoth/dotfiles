@@ -121,6 +121,7 @@ Software I install occasionally as needed rather than on every machine. See the 
 - **[UTM](https://mac.getutm.app/)** ([Open-Source](https://github.com/utmapp/UTM)): Virtual machine manager for macOS. Available via brew as `utm` and Mac App Store.
 - **[WhatCable](https://github.com/darrylmorley/whatcable)**: Identify USB-C and Thunderbolt cables, report charging wattage, cable certification, and power delivery profiles from the menu bar. Includes a CLI and terminal dashboard. Available via direct download from GitHub releases; signed and notarized.
 - **[XLD](https://tmkk.undo.jp/xld/index_e.html)**: Lossless audio decoder.
+  Install via: `brew install kergoth/misc/xld`.
 
 ### As Needed GUI Software for Windows
 
