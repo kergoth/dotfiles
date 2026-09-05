@@ -1,0 +1,32 @@
+{{- $fzf := includeTemplate "find-tool" (dict "root" . "tool" "fzf") -}}
+{{- if $fzf -}}
+# Avoid leaking the exported version into the parent shell
+_CLITHEME=$(set_clitheme && echo "$CLITHEME")
+case "$_CLITHEME" in
+    dark)
+        # Dracula colors via https://gist.github.com/umayr/8875b44740702b340430b610b52cd182
+        export FZF_DEFAULT_OPTS='
+        --color=fg:#f8f8f2,bg:#282a36,hl:#bd93f9
+        --color=fg+:#f8f8f2,bg+:#44475a,hl+:#bd93f9
+        --color=info:#ffb86c,prompt:#50fa7b,pointer:#ff79c6
+        --color=marker:#ff79c6,spinner:#ffb86c,header:#6272a4
+        --height 40% --multi --reverse
+        '
+        ;;
+    light)
+        # Catppuccin Latte
+        export FZF_DEFAULT_OPTS=" \
+        --color=bg+:#CCD0DA,bg:#EFF1F5,spinner:#DC8A78,hl:#D20F39 \
+        --color=fg:#4C4F69,header:#D20F39,info:#8839EF,pointer:#DC8A78 \
+        --color=marker:#7287FD,fg+:#4C4F69,prompt:#8839EF,hl+:#D20F39 \
+        --color=selected-bg:#BCC0CC \
+        --color=border:#9CA0B0,label:#4C4F69"
+        ;;
+esac
+# For Zoxide
+export _ZO_FZF_OPTS=$FZF_DEFAULT_OPTS
+
+if (( $+commands[fd] )); then
+    export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS --ansi"
+fi
+{{- end }}

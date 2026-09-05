@@ -63,7 +63,8 @@ general-purpose replacement for each tool's theme setting.
 | Git porcelain | `home/dot_config/git/config.main.tmpl` | Git palette-aware color names | Terminal-defined | Terminal-defined |
 | tmux | `home/dot_config/tmux/{config,theme-{dark,light}.conf,tmuxline-{dark,light}.conf}` | `CLITHEME`, OSC 11, and tmux 3.5 client mode hooks | tmuxline Dracula-style 256-color palette | Committed light tmuxline palette |
 | Windows Terminal | `home/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json` | Fixed profile default | Dracula | None |
-| Zsh and PowerShell fzf | `home/dot_config/zsh/dot_zshrc.d/fzf.zsh` and `settings/powershell/profile.ps1` | Fixed `FZF_DEFAULT_OPTS` colors | Dracula | None |
+| Zsh fzf | `home/dot_config/zsh/dot_zshrc.d/fzf.zsh`, `home/dot_config/zsh/functions/fzf`, `home/dot_config/zsh/functions/set_fzf_opts` | Dynamic `FZF_DEFAULT_OPTS` colors | Dracula | Catppuccin Latte |
+| PowerShell fzf | `settings/powershell/profile.ps1` | Fixed `FZF_DEFAULT_OPTS` colors | Dracula | None |
 
 The repository also has a fixed Dracula default for Kitty when no appearance
 preference is available (`home/dot_config/kitty/no-preference.auto.conf`) and
