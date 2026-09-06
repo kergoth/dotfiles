@@ -1,0 +1,24 @@
+{
+  "skill_name": "github-export",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm in my project repo. github-data/repo.yml shows synced_at: 2026-09-05T08:00:00Z (a few hours ago). Find all open issues labeled 'bug' and list their titles and numbers.",
+      "expected_output": "Agent greps github-data/issues/ locally rather than calling gh issue list. Uses something like: grep -l 'state: open' github-data/issues/*.md | xargs grep -l '  - bug'",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I need to know if PR #47 was merged yet — it was opened yesterday. github-data/repo.yml shows synced_at: 2026-09-03T10:00:00Z (two days ago).",
+      "expected_output": "Agent uses gh pr view 47 rather than reading the stale local file, because the data is too old to reliably answer a real-time state question.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "There are some files sitting in github-data/events/ from the last few days. Can you tell me what's happened recently with my repo and what if anything needs attention?",
+      "expected_output": "Agent reads event files from github-data/events/, filters or sorts by date, reads linked issue files for context, and summarizes what has changed without making gh API calls for the read phase.",
+      "files": []
+    }
+  ],
+  "trigger_evals": []
+}
