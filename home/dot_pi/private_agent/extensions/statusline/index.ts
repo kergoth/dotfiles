@@ -7,8 +7,10 @@ function contextPercent(ctx: any): number {
   return typeof percent === "number" && Number.isFinite(percent) ? Math.max(0, Math.min(100, Math.round(percent))) : 0;
 }
 
+const LIGHT_THEMES = new Set(["light", "catppuccin-latte"]);
+
 function paletteName(ctx: any): "dark" | "light" {
-  return ctx.ui.theme?.name === "light" ? "light" : "dark";
+  return LIGHT_THEMES.has(ctx.ui.theme?.name ?? "") ? "light" : "dark";
 }
 
 function sessionUsage(ctx: any): { inputTokens: number; outputTokens: number; costUsd: number } {

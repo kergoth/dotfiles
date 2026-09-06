@@ -53,7 +53,7 @@ general-purpose replacement for each tool's theme setting.
 | bat | `home/dot_config/bat/config` | `--theme=auto` with OSC 11 | Dracula | Catppuccin Latte |
 | rg through delta | `home/dot_config/zsh/functions/rg` | `set_clitheme` before invoking delta | Dracula | Catppuccin Latte |
 | Pi statusline | `home/dot_pi/agent/extensions/statusline/{index.ts,statusline-format.js}` | Pi UI theme name | Dracula | Catppuccin Latte |
-| Pi UI | `settings/pi/settings.json.tmpl` | `light/dracula` appearance pair with OSC 11 | Dracula | Pi light theme |
+| Pi UI | `settings/pi/settings.json.tmpl` | `catppuccin-latte/dracula` appearance pair with OSC 11 | Dracula | Catppuccin Latte |
 | | | | | |
 | Claude Code statusline | `home/dot_claude/statusline-command.sh` | `CLITHEME`, then OSC 11 fallback | Dracula | Catppuccin Latte |
 | Cursor statusline | `home/dot_cursor/executable_statusline.sh` | `CLITHEME`, then OSC 11 fallback | Dracula | Catppuccin Latte |
