@@ -23,7 +23,7 @@ host detects mode and passes it down to whatever it embeds.
 bat and Pi query the terminal background directly via OSC 11 at startup. No
 wrapper is needed. bat's `--theme=auto` option pairs `--theme-light` and
 `--theme-dark` selections and switches between them based on the OSC 11
-response. Pi's `light/dracula` theme setting works the same way.
+response. Pi's `catppuccin-latte/dracula` theme setting works the same way.
 
 tmux queries the attached client terminal through OSC 11 when it sources its
 configuration, unless `CLITHEME` already gives a dark or light mode. tmux 3.5
@@ -57,7 +57,7 @@ general-purpose replacement for each tool's theme setting.
 | | | | | |
 | Claude Code statusline | `home/dot_claude/statusline-command.sh` | `CLITHEME`, then OSC 11 fallback | Dracula | Catppuccin Latte |
 | Cursor statusline | `home/dot_cursor/executable_statusline.sh` | `CLITHEME`, then OSC 11 fallback | Dracula | Catppuccin Latte |
-| gh-dash | `home/dot_config/zsh/functions/gh.tmpl` and `home/dot_config/gh-dash/config-*.yml.tmpl` | `CLITHEME` selects one generated config | Dracula | Catppuccin Latte |
+| gh extensions | `home/dot_config/zsh/functions/gh.tmpl`, `home/dot_config/gh-dash/config-*.yml.tmpl` | `CLITHEME` sets `GLAMOUR_STYLE` for all glamour-based extensions; selects gh-dash config | Dracula | Catppuccin Latte |
 | Glow and Glamour output | `home/dot_config/zsh/functions/set_glamourstyle` | `CLITHEME` sets `GLAMOUR_STYLE` | Dracula | Catppuccin Latte |
 | | | | | |
 | Git porcelain | `home/dot_config/git/config.main.tmpl` | Git palette-aware color names | Terminal-defined | Terminal-defined |
@@ -71,6 +71,35 @@ preference is available (`home/dot_config/kitty/no-preference.auto.conf`) and
 for Glow's standalone configuration (`home/dot_config/private_glow/glow.yml`).
 For commands the shell wrapper launches, `GLAMOUR_STYLE` takes precedence over
 that standalone file.
+
+## PowerShell Gaps
+
+The `CLITHEME`-aware Zsh wrappers have no PowerShell equivalents. The
+following areas are unthemed or incomplete when running under PowerShell on
+Windows or Linux:
+
+- **fzf**: dark uses Dracula via a fixed `FZF_DEFAULT_OPTS` in
+  `settings/powershell/profile.ps1`; light mode is unset.
+- **rg through delta**: no wrapper sets `CLITHEME` or a delta theme before
+  invoking delta. Syntax output uses whatever delta's default produces against
+  the active terminal palette.
+- **gh extensions**: no CLITHEME-aware wrapper sets `GLAMOUR_STYLE` or
+  selects the gh-dash config. The `gh` Zsh function covers all glamour-based
+  gh extensions (not just gh-dash); both it and the gh-dash config templates
+  are Zsh-only.
+- **Glow and Glamour output**: `set_glamourstyle` is a Zsh function;
+  `GLAMOUR_STYLE` is never set in PowerShell, so Glow falls back to its
+  standalone config, which is fixed to Dracula.
+- **eza**: both shells set `LS_COLORS`, but they use different encodings.
+  `home/dot_config/zsh/dot_zshrc.d/ls.zsh` uses basic 16-color ANSI codes
+  (`di=01;34`) that are palette-relative and adapt automatically to the
+  terminal's active color scheme. `home/dot_config/powershell/ls_colors`
+  uses hardcoded 256-color codes (`di=0;38;5;141`) tuned for dark
+  backgrounds. On a light terminal those absolute colors look wrong
+  regardless of the active theme.
+- **PSReadLine**: no color theme configured. PSReadLine ships with its own
+  theming API (`Set-PSReadLineOption -Colors`) and has community Dracula and
+  Catppuccin Latte ports, but neither is wired up.
 
 ## Agent Statuslines
 
