@@ -2,6 +2,10 @@
 
 Software I've used in the past but no longer use. Kept for historical reference. See the main [README](../README.md) for what's currently installed.
 
+## Formerly-Used Safari Extensions
+
+- **[Save to Reader](https://apps.apple.com/us/app/save-to-reader/id1640236961)**: Save pages to Readwise Reader.
+
 ## Formerly-Used Services
 
 - **[Instapaper](https://www.instapaper.com)**: A service for saving web pages for later reading.
@@ -20,6 +24,10 @@ Software I've used in the past but no longer use. Kept for historical reference.
 - [Leonine Sans Mono](https://www.leonerd.org.uk/hacks/hints/leoninesansmono.html)
 - [Bitstream Vera](https://web.archive.org/web/20210314185159/https://www.gnome.org/fonts/) Sans Mono: See [download](https://download.gnome.org/sources/ttf-bitstream-vera/1.10/)
 - [Envy Code R](https://damieng.com/blog/2008/05/26/envy-code-r-preview-7-coding-font-released) (Occasional Use)
+
+## Formerly-As-Needed CLI Software
+
+- **[readwise cli](https://github.com/readwiseio/readwise-cli)**: Command-line interface for Readwise. Available via npm as `@readwise/cli`.
 
 ## Formerly-Used CLI Software
 
@@ -69,6 +77,11 @@ Software I've used in the past but no longer use. Kept for historical reference.
 - **[EverNote](https://evernote.com)**: A note-taking app.
 - **[LibreWolf](https://librewolf.net)**: A privacy-focused web browser.
 - **[Zen Browser](https://www.zenbrowser.com)**: Beautifully designed, privacy-focused web browser.
+
+## Formerly-Used GUI Software on Windows and macOS
+
+- **[Readwise Reader](https://readwise.io/read)**: Save everything to one place, highlight like a pro, and replace several apps with Reader.
+
 
 ## Formerly-Used macOS Software
 

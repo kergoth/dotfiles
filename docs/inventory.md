@@ -235,10 +235,6 @@ This inventory lists the managed or included pieces that make up the dotfiles en
 - **[TrguiNG](https://github.com/openscopeproject/TrguiNG)** ([Open-Source](https://github.com/openscopeproject/TrguiNG)): A modern Transmission remote GUI. _Conditional: not work._
 - **[Vesktop](https://github.com/Vencord/Vesktop)** ([Open-Source](https://github.com/Vencord/Vesktop)): A Vencord-based desktop client for Discord. _Conditional: arm64._
 
-#### GUI Software on Windows and macOS
-
-- **[Readwise Reader](https://readwise.io/read)**: Save everything to one place, highlight like a pro, and replace several apps with Reader. _Conditional: not work, not ephemeral._
-
 #### GUI Software on FreeBSD
 
 - **[LibreWolf](https://librewolf.net/)** ([Open-Source](https://codeberg.org/librewolf)): A custom version of Firefox, focused on privacy, security, and freedom. Available via FreeBSD ports (`www/librewolf`).
@@ -308,7 +304,6 @@ This inventory lists the managed or included pieces that make up the dotfiles en
 - **[Noir](https://apps.apple.com/us/app/noir/id1592917505)**: Dark mode for every website.
 - **[Obsidian Web Clipper](https://apps.apple.com/us/app/obsidian-web-clipper/id6720708363)**: Clip web pages to Obsidian.
 - [SessionRestore](https://apps.apple.com/us/app/sessionrestore-for-safari/id1463334954?mt=12&uo=4&at=10l4tL)
-- **[Save to Reader](https://apps.apple.com/us/app/save-to-reader/id1640236961)**: Save pages to Readwise Reader.
 - **[SponsorBlock](https://apps.apple.com/us/app/sponsorblock/id1573461917)**: Skip sponsorships in YouTube videos.
 - **[StopTheMadness Pro](https://apps.apple.com/us/app/stopthemadness-pro/id6471380298)**: A Safari extension that stops web site annoyances and privacy violations.
 - **[Tampermonkey Classic](https://apps.apple.com/us/app/tampermonkey-classic/id1482490089?mt=12&uo=4&at=10l4tL)**: Temporary replacement for Userscripts while it's being updated.
