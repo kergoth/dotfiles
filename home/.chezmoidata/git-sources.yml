@@ -93,6 +93,8 @@ git_sources:
   git_extras:
     repo: https://github.com/tj/git-extras
     tagged: true
+  goodlinksctl:
+    repo: https://github.com/viticci/GoodLinksCTL
   korg_helpers:
     repo: https://git.kernel.org/pub/scm/linux/kernel/git/mricon/korg-helpers
     ref: master

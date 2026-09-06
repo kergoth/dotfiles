@@ -143,9 +143,10 @@ This inventory lists the managed or included pieces that make up the dotfiles en
 
 #### CLI Software on macOS
 
-- **[lima](https://github.com/lima-vm/lima)**: Linux virtual machines, typically on macOS, for running containerd.
 - **[colima](https://github.com/abiosoft/colima)**: Container runtimes on macOS (and Linux) with minimal setup. _Conditional: This is installed when a container runtime is enabled._
 - **[duti](https://github.com/moretension/duti)**: A command-line tool to select default applications for document types and URL schemes on Mac OS X.
+- **[GoodlinksCTL](https://github.com/viticci/GoodLinksCTL)**: A human- and agent-friendly macOS CLI for the GoodLinks local API.
+- **[lima](https://github.com/lima-vm/lima)**: Linux virtual machines, typically on macOS, for running containerd.
 - **[mas](https://github.com/mas-cli/mas)**: Mac App Store command line interface.
 - **[reattach-to-user-namespace](https://github.com/ChrisJohnsen/tmux-MacOSX-pasteboard)**: Reattach to the per-user bootstrap namespace. This is needed for tools like tmux, though tmux 2.6+ apparently incorporates this functionality already.
 - **[trash](https://hasseg.org/trash/)**: A small command-line program for OS X that moves files or folders to the trash.
@@ -263,6 +264,7 @@ This inventory lists the managed or included pieces that make up the dotfiles en
 - **[Deliveries](https://apps.apple.com/us/app/deliveries-a-package-tracker/id290986013)**: Track your packages with support for dozens of services. Syncs via iCloud.
 - **[Driveaway](https://apps.apple.com/us/app/driveaway/id6758246708)**: Menu bar utility that removes macOS metadata clutter from external drives and ejects mounted volumes.
 - **[ForkLift](https://binarynights.com)**: Advanced dual pane file manager and file transfer client for macOS. Available via brew as `forklift`.
+- **[GoodLinks](https://apps.apple.com/us/app/goodlinks/id1474335294?uo=4&at=10l4tL)**: Save links, read later.
 - **[Juicy](https://getjuicy.app)**: Battery Alerts & Health. Available via [Mac App Store](https://apps.apple.com/us/app/juicy-battery-alerts-health/id6752221257?mt=12)
 - **[Karabiner-Elements](https://karabiner-elements.pqrs.org)** ([Open-Source](https://github.com/pqrs-org/Karabiner-Elements)): A powerful and stable keyboard customizer for macOS.
 - **[Kagi News](https://apps.apple.com/us/app/kagi-news/id6748314243)**: Daily AI-distilled press review with global news from community-curated sources.

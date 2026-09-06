@@ -1,4 +1,5 @@
 {{- if .user_setup -}}
+{{-     $lock := .git_lock -}}
 {{-     $chezmoiGithubTokenPath := "" -}}
 {{-     if .secrets -}}
 {{-       $chezmoiGithubTokenPath = joinPath (printf "%s" .chezmoi.destDir) ".config" "chezmoi_github_token" -}}
@@ -47,6 +48,11 @@
 {{-     $install_cargo_tools := and $cargo $cargo_to_install -}}
 
 {{-     $uv_tools := dict "git-imerge" "git-imerge" "git-revise" "git-revise" -}}
+{{-     if eq .chezmoi.os "darwin" -}}
+{{-       $goodlinks_sha := index $lock "goodlinksctl" -}}
+{{-       $goodlinks_url := printf "git+https://github.com/viticci/GoodLinksCTL.git@%s" $goodlinks_sha -}}
+{{-       $uv_tools = set $uv_tools "goodlinksctl" $goodlinks_url -}}
+{{-     end -}}
 {{-     $uv_to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $uv_tools) | fromJson -}}
 {{-     $unar := includeTemplate "find-tool" (dict "root" . "tool" "unar") -}}
 {{-     $dtrx := includeTemplate "find-tool" (dict "root" . "tool" "dtrx") -}}
@@ -59,7 +65,6 @@
 {{-     end -}}
 {{-     $install_uv_tools := and $uv $uv_to_install -}}
 
-{{-     $lock := .git_lock -}}
 {{-     $rg := includeTemplate "find-tool" (dict "root" . "tool" "rg") -}}
 {{-     $codex := includeTemplate "find-tool" (dict "root" . "tool" "codex") -}}
 {{-     $codex_tag := "" -}}

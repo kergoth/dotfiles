@@ -94,7 +94,6 @@ Software I've used in the past but no longer use. Kept for historical reference.
   Deprecated in homebrew due to gatekeeper.
 - **[f.lux](https://justgetflux.com)**: Software to make your life better. Replaced by macOS Night Shift.
 - **[FlyCut](https://apps.apple.com/us/app/flycut-clipboard-manager/id442160987?mt=12&uo=4&at=10l4tL)**: Clipboard manager.
-- **[GoodLinks](https://apps.apple.com/us/app/goodlinks/id1474335294?uo=4&at=10l4tL)**: Save links, read later. Replaced by **Readwise Reader**.
 - **[Hidden Bar](https://apps.apple.com/us/app/hidden-bar/id1452453066?mt=12&uo=4&at=10l4tL)** ([Open-Source](https://github.com/dwarvesf/hidden)): Hide menubar items. Replaced by **Ice**.
 - **[Itsycal for Mac](https://www.mowglii.com/itsycal/)**: A tiny menu bar calendar. I mostly just click on the date/time and see the calendar widget in the notification panel now.
 - **[Jumpcut](https://jumpcut.sourceforge.io)**: Clipboard manager.

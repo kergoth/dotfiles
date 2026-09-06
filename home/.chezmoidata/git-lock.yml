@@ -24,6 +24,7 @@ git_lock:
   gist_zsh_timing: "2d88b477c29de14250ba03650745348781077ae8"
   git_assembler: "94af28bc65e6db58c21f245e7d5c38cafdfcc786"
   git_extras: "7.5.0"
+  goodlinksctl: "f9433adc1da8a252de5d6f400c76b75f2ed0eab7"
   ia_fonts: "f32c04c3058a75d7ce28919ce70fe8800817491b"
   kitty: "v0.48.2"
   knu_zsh_git_escape_magic: "62af4f6a66601a517e168039614e5b528741a844"
