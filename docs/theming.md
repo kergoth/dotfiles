@@ -10,9 +10,16 @@ palette can produce different themes for the same tool (Alabaster vs. Alabaster
 BG both use the Alabaster palette but map it differently). A theme that doesn't
 fit can be customized or replaced while keeping its underlying palette.
 
-Dark mode generally uses Dracula. Light mode varies when a tool's available
-themes or color handling call for a different choice. The table
-below is the current configuration reference. Consult it when changing themes.
+The established palette conventions are:
+
+- **Dark**: Dracula throughout.
+- **Light (editors)**: Alabaster BG where available — background highlighting
+  is most valuable for syntax-heavy work and Alabaster BG is designed for it.
+- **Light (everything else)**: Catppuccin Latte — broad upstream support
+  across terminal tools and solid legibility on light backgrounds.
+
+The table below is the current configuration reference. Consult it when
+changing themes.
 
 ## Mode Detection
 
