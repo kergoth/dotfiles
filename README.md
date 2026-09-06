@@ -39,7 +39,8 @@ components.
 - **Font:** [MesloLGS NF](https://github.com/romkatv/powerlevel10k/blob/master/font.md), shared across terminals and editors.
 - **Color modes:** Dark and light are first-class operating modes.
 - **Dark palette:** [Dracula](https://draculatheme.com).
-- **Light palette:** Varies by tool based on theme availability.
+- **Light palette (editors):** [Alabaster BG](https://github.com/tonsky/vscode-theme-alabaster).
+- **Light palette (everything else):** [Catppuccin Latte](https://github.com/catppuccin/catppuccin).
 
 See [Theming](docs/theming.md) for the palette and mode-detection details.
 
