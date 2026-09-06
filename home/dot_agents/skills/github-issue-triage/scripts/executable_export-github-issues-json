@@ -7,6 +7,7 @@ set -euo pipefail
 #
 # Options:
 #     -r REPO     GitHub repo in owner/name form (default: current gh repo)
+#     -d DIR      Read from local github-data/ directory instead of GitHub API
 #     -o FILE     Output JSON path (default: .agent/tasks/YYYY-MM-DD-issue-triage/open-issues.json)
 #     -s STATE    Issue state: open|closed|all (default: open)
 #     -l LIMIT    Maximum issues to fetch (default: 200)
@@ -18,18 +19,51 @@ set -euo pipefail
 dry_run=0
 verbosity=0
 repo=
+local_dir=
 output=
 state=open
 limit=200
+
+resolve_script_path() {
+    local source=$1
+    local dir=
+    local next=
+
+    if command -v greadlink >/dev/null 2>&1; then
+        greadlink -f "$source"
+        return 0
+    fi
+
+    if readlink -f "$source" >/dev/null 2>&1; then
+        readlink -f "$source"
+        return 0
+    fi
+
+    while [ -L "$source" ]; do
+        dir=$(cd -P "$(dirname "$source")" && pwd -P)
+        next=$(readlink "$source")
+        case "$next" in
+            /*) source=$next ;;
+            *) source="$dir/$next" ;;
+        esac
+    done
+
+    dir=$(cd -P "$(dirname "$source")" && pwd -P)
+    printf '%s/%s\n' "$dir" "$(basename "$source")"
+}
+
+scriptdir=$(dirname "$(resolve_script_path "${BASH_SOURCE[0]}")")
+
 
 usage() {
     sed -n '/^# Usage:/,/^#     -h /p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
 }
 
 process_arguments() {
-    while getopts ":r:o:s:l:nvqh" opt; do
+    while getopts ":r:d:o:s:l:nvqh" opt; do
         case "$opt" in
             r) repo=$OPTARG ;;
+            d) local_dir=$OPTARG ;;
             o) output=$OPTARG ;;
             s) state=$OPTARG ;;
             l) limit=$OPTARG ;;
@@ -103,10 +137,10 @@ main() {
         die "limit must be a positive integer"
     fi
 
-    if [ -z "$repo" ]; then
+    if [ -z "$local_dir" ] && [ -z "$repo" ]; then
         repo=$(detect_repo)
         if [ -z "$repo" ]; then
-            die "unable to detect repository; pass -r owner/name"
+            die "unable to detect repository; pass -r owner/name or -d github-data-dir"
         fi
     fi
 
@@ -118,7 +152,6 @@ main() {
     output_dir=$(dirname -- "$output")
     mkdir -p "$output_dir"
 
-    msg_verbose "Repo: %s" "$repo"
     msg_verbose "State: %s, Limit: %s" "$state" "$limit"
     msg_verbose "Output: %s" "$output"
 
@@ -126,15 +159,27 @@ main() {
     trap "rm -rf -- '$tmpdir'" EXIT
     tmpfile="$tmpdir/open-issues.json"
 
-    gh issue list \
-        -R "$repo" \
-        --state "$state" \
-        --limit "$limit" \
-        --json number,title,body,labels,assignees,author,createdAt,updatedAt,comments,url \
-        >"$tmpfile"
-
-    issue_count=$(jq 'length' "$tmpfile")
-    msg "Fetched %s issue(s) from %s" "$issue_count" "$repo"
+    if [ -n "$local_dir" ]; then
+        msg_verbose "Source: local %s" "$local_dir"
+        local_script="$scriptdir/local-issues-to-json"
+        limit_args=()
+        if [ "$limit" -gt 0 ]; then
+            limit_args=(--limit "$limit")
+        fi
+        "$local_script" "$local_dir" --state "$state" "${limit_args[@]}" >"$tmpfile"
+        issue_count=$(jq 'length' "$tmpfile")
+        msg "Read %s issue(s) from local %s" "$issue_count" "$local_dir"
+    else
+        msg_verbose "Repo: %s" "$repo"
+        gh issue list \
+            -R "$repo" \
+            --state "$state" \
+            --limit "$limit" \
+            --json number,title,body,labels,assignees,author,createdAt,updatedAt,comments,url \
+            >"$tmpfile"
+        issue_count=$(jq 'length' "$tmpfile")
+        msg "Fetched %s issue(s) from %s" "$issue_count" "$repo"
+    fi
 
     if [ "$dry_run" -eq 1 ]; then
         msg "Dry run; not writing %s" "$output"

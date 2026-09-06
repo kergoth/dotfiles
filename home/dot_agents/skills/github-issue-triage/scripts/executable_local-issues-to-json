@@ -1,0 +1,146 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#   "pyyaml",
+# ]
+# ///
+"""Convert github-data/issues/*.md to the JSON format used by export-github-issues-json."""
+
+import argparse
+import json
+import re
+import sys
+from pathlib import Path
+
+import yaml
+
+
+def parse_multi_doc_file(content):
+    """Return list of (frontmatter_dict, body_str) pairs from a multi-document file."""
+    parts = re.split(r"^---\s*$", content, flags=re.MULTILINE)
+    # parts[0] is empty (before opening ---), then odd indices are YAML,
+    # even non-zero indices are markdown bodies.
+    docs = []
+    i = 1
+    while i < len(parts):
+        yaml_str = parts[i].strip()
+        body_str = parts[i + 1].strip() if (i + 1) < len(parts) else ""
+        if yaml_str:
+            try:
+                fm = yaml.safe_load(yaml_str) or {}
+            except yaml.YAMLError:
+                fm = {}
+            docs.append((fm, body_str))
+        i += 2
+    return docs
+
+
+def load_repo_info(data_dir):
+    """Read owner and repo name from github-data/repo.yml."""
+    repo_yml = data_dir / "repo.yml"
+    if not repo_yml.exists():
+        return None, None
+    try:
+        info = yaml.safe_load(repo_yml.read_text(encoding="utf-8")) or {}
+        return info.get("owner"), info.get("repo")
+    except yaml.YAMLError:
+        return None, None
+
+
+def build_url(owner, repo, number, is_pr):
+    if not owner or not repo:
+        return ""
+    kind = "pull" if is_pr else "issues"
+    return f"https://github.com/{owner}/{repo}/{kind}/{number}"
+
+
+def convert_issue(file_path, state_filter, owner, repo):
+    content = file_path.read_text(encoding="utf-8")
+    docs = parse_multi_doc_file(content)
+    if not docs:
+        return None
+
+    fm, body = docs[0]
+
+    if fm.get("type") == "discussion":
+        return None
+
+    state = fm.get("state", "open")
+    if state_filter != "all" and state != state_filter:
+        return None
+
+    is_pr = fm.get("type") == "pull_request"
+    number = fm.get("number")
+    url = fm.get("url") or build_url(owner, repo, number, is_pr)
+
+    comments = []
+    for sub_fm, sub_body in docs[1:]:
+        if sub_fm.get("document") == "comment" and sub_body:
+            comments.append(
+                {
+                    "author": {"login": sub_fm.get("author", "")},
+                    "body": sub_body,
+                    "createdAt": str(sub_fm.get("created_at", "")),
+                }
+            )
+
+    labels_raw = fm.get("labels") or []
+    assignees_raw = fm.get("assignees") or []
+
+    return {
+        "number": number,
+        "title": fm.get("title", ""),
+        "body": body,
+        "state": state,
+        "labels": [{"name": l} for l in labels_raw],
+        "assignees": [{"login": a} for a in assignees_raw],
+        "author": {"login": fm.get("author", "")},
+        "createdAt": str(fm.get("created_at", "")),
+        "updatedAt": str(fm.get("updated_at", "")),
+        "url": url,
+        "comments": comments,
+    }
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Convert github-data/issues/ to JSON for triage."
+    )
+    parser.add_argument("data_dir", help="Path to github-data/ directory")
+    parser.add_argument(
+        "--state",
+        default="open",
+        choices=["open", "closed", "all"],
+        help="Filter by issue state (default: open)",
+    )
+    parser.add_argument(
+        "--limit",
+        type=int,
+        default=0,
+        help="Maximum number of issues to output (0 = no limit)",
+    )
+    args = parser.parse_args()
+
+    data_dir = Path(args.data_dir)
+    issues_dir = data_dir / "issues"
+    if not issues_dir.is_dir():
+        print(f"error: {issues_dir} does not exist", file=sys.stderr)
+        sys.exit(1)
+
+    owner, repo = load_repo_info(data_dir)
+
+    results = []
+    for md_file in sorted(issues_dir.glob("*.md")):
+        issue = convert_issue(md_file, args.state, owner, repo)
+        if issue is not None:
+            results.append(issue)
+        if args.limit and len(results) >= args.limit:
+            break
+
+    json.dump(results, sys.stdout, indent=2, default=str)
+    print()
+
+
+if __name__ == "__main__":
+    main()

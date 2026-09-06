@@ -16,6 +16,19 @@ Use this skill to run a full triage pass from scratch: fetch issues, chunk work,
 - `output_doc`: markdown target (default: `docs/github-issue-triage.md`)
 - `chunk_count`: number of scoring chunks (default: `5`)
 
+## Pre-step: Check for Local Export
+
+If `github-data/` exists in the current directory, the prepare script uses it
+automatically instead of calling the GitHub API. To set this up:
+
+```bash
+github-export owner/repo   # sync issue data locally; re-run to refresh
+```
+
+For incremental re-triage, check `github-data/events/` for issues updated
+since the last triage run — filenames sort chronologically, so you can filter
+by date prefix to identify which issues need re-scoring.
+
 ## Workflow
 
 Set a script path first (the script resolves symlinks to find sibling bundled scripts):

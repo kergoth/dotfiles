@@ -160,7 +160,12 @@ prepare_snapshot() {
 
     snapshot="${task_dir}/open-issues.json"
     args=("$scriptdir/export-github-issues-json" -o "$snapshot" -s "$state" -l "$limit")
-    if [ -n "$repo" ]; then
+    if [ -d "github-data/issues" ] && [ -f "github-data/repo.yml" ]; then
+        local synced_at
+        synced_at=$(grep '^synced_at:' github-data/repo.yml | awk '{print $2}')
+        msg "Using local github-data/ export (synced %s)" "$synced_at"
+        args+=(-d "github-data")
+    elif [ -n "$repo" ]; then
         args+=(-r "$repo")
     fi
 
