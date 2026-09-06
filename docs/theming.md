@@ -46,11 +46,11 @@ general-purpose replacement for each tool's theme setting.
 
 | Area | Source | Selection mechanism | Dark theme | Light theme |
 | --- | --- | --- | --- | --- |
-| Kitty | `home/dot_config/kitty/{dark,light}-theme.auto.conf` | Kitty automatic theme includes | Dracula | Alabaster |
+| Kitty | `home/dot_config/kitty/{dark,light}-theme.auto.conf` | Kitty automatic theme includes | Dracula | Catppuccin Latte |
 | Zed | `settings/zed/settings.json.tmpl` | Zed system mode | Dracula Solid | Alabaster BG High Contrast |
 | | | | | |
 | vim / nvim | `~/.config/vim/vimrc` (kergoth/dotvim, out of band) | `CLITHEME` env var at startup; falls back to OSC 11 terminal query when absent (vim via `t_RB`; nvim via TUI detection before vimrc) | Dracula | Alabaster (`alabaster-bg`) |
-| bat | `home/dot_config/bat/config` | `--theme=auto` with OSC 11 | Dracula | OneHalfLight |
+| bat | `home/dot_config/bat/config` | `--theme=auto` with OSC 11 | Dracula | Catppuccin Latte |
 | rg through delta | `home/dot_config/zsh/functions/rg` | `set_clitheme` before invoking delta | Dracula | Catppuccin Latte |
 | Pi statusline | `home/dot_pi/agent/extensions/statusline/{index.ts,statusline-format.js}` | Pi UI theme name | Dracula | Catppuccin Latte |
 | Pi UI | `settings/pi/settings.json.tmpl` | `light/dracula` appearance pair with OSC 11 | Dracula | Pi light theme |
@@ -61,8 +61,8 @@ general-purpose replacement for each tool's theme setting.
 | Glow and Glamour output | `home/dot_config/zsh/functions/set_glamourstyle` | `CLITHEME` sets `GLAMOUR_STYLE` | Dracula | Catppuccin Latte |
 | | | | | |
 | Git porcelain | `home/dot_config/git/config.main.tmpl` | Git palette-aware color names | Terminal-defined | Terminal-defined |
-| tmux | `home/dot_config/tmux/{config,theme-{dark,light}.conf,tmuxline-{dark,light}.conf}` | `CLITHEME`, OSC 11, and tmux 3.5 client mode hooks | tmuxline Dracula-style 256-color palette | Committed light tmuxline palette |
-| Windows Terminal | `home/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json` | Fixed profile default | Dracula | None |
+| tmux | `home/dot_config/tmux/{config,theme-{dark,light}.conf,tmuxline-{dark,light}.conf}` | `CLITHEME`, OSC 11, and tmux 3.5 client mode hooks | tmuxline Dracula-style 256-color palette | Catppuccin Latte |
+| Windows Terminal | `home/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json` | Windows system appearance | Dracula | Catppuccin Latte |
 | Zsh fzf | `home/dot_config/zsh/dot_zshrc.d/fzf.zsh`, `home/dot_config/zsh/functions/fzf`, `home/dot_config/zsh/functions/set_fzf_opts` | Dynamic `FZF_DEFAULT_OPTS` colors | Dracula | Catppuccin Latte |
 | PowerShell fzf | `settings/powershell/profile.ps1` | Fixed `FZF_DEFAULT_OPTS` colors | Dracula | None |
 
