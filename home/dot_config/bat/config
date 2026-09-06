@@ -1,4 +1,4 @@
 --theme=auto
---theme-light=OneHalfLight
+--theme-light="Catppuccin Latte"
 --theme-dark=Dracula
 --style=grid,header

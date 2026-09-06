@@ -26,6 +26,13 @@ exact = true
 stripComponents = 1
 {{- end }}
 
+[".config/bat/themes/Catppuccin Latte.tmTheme"]
+type = "archive-file"
+url = {{ printf "https://github.com/catppuccin/bat/archive/%s.tar.gz" (index $lock "catppuccin_bat") | toToml }}
+path = "themes/Catppuccin Latte.tmTheme"
+exact = true
+stripComponents = 1
+
 [".config/glamour/themes/catppuccin-latte.json"]
 type = "archive-file"
 url = {{ printf "https://github.com/catppuccin/glamour/archive/%s.tar.gz" (index $lock "catppuccin_glamour") | toToml }}
