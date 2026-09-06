@@ -282,6 +282,7 @@ This inventory lists the managed or included pieces that make up the dotfiles en
 - **[SwiftBar](https://swiftbar.app/)**]: Powerful macOS menu bar customization tool. _Conditional: This is installed when a container runtime is enabled, as I use this to start/stop colima._
 - **[SyncThing](https://syncthing.net/)** ([Open-Source](https://github.com/syncthing/)): A continuous file synchronization program. _Conditional: user_setup, not ephemeral, not headless._
 - **[Under My Roof](https://apps.apple.com/us/app/under-my-roof-home-inventory/id1524335878)**: Home inventory app for organizing and tracking your home and belongings.
+- [Unread](https://apps.apple.com/us/app/unread-an-rss-reader/id1363637349): An RSS Reader.
 - **[WiFi Explorer](https://apps.apple.com/us/app/wifi-explorer/id494803304?mt=12&uo=4&at=10l4tL)**: Best Wi-Fi Analyzer & Monitor.
 - **[WiFi Signal](https://apps.apple.com/us/app/wifi-signal-status-monitor/id525912054?mt=12&uo=4&at=10l4tL)**: WiFi Connection Status Monitor.
 
