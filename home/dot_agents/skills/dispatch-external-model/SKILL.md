@@ -1,6 +1,6 @@
 ---
 name: dispatch-external-model
-description: CLI syntax for dispatching prompts to external model agents (claude, cursor, codex, gemini). Use when spawning a second-opinion review, running prompts through alternate models, or scripting multi-model workflows.
+description: CLI command syntax for running prompts through external model agents (claude, cursor, codex, gemini) as subprocesses. Use for cross-model review, second-opinion queries, or multi-model workflows via CLI dispatch, or when the task specifically requires the external CLI's own harness environment — its tools, hooks, config files, and permission model.
 ---
 
 # Dispatch to External Model
