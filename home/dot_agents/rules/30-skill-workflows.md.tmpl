@@ -4,7 +4,7 @@
 - Use skills system over improvising when matching skill exists.
 - Prefer workflow, guardrails, supporting refs from matching skill over ad hoc execution.
 - Creating/editing user-facing Bash or POSIX shell script: MUST read/apply `shell-script-style` skill (including `references/shell-script-style-guide.md`) before writing code. State skill applied in one line, or state skipped with Scope Boundary reason. Skip only for temp test scripts, disposable artifacts, or agent-only scripts.
-- After 3+ consecutive failed fix attempts on the same bug without progress, stop patching and invoke the `systematic-debugging` skill before continuing.
+- If a bug fix wasn't approached via `systematic-debugging` from the start, or 3+ consecutive fix attempts on the same bug make no progress, stop patching and invoke `systematic-debugging` before continuing.
 
 {{ $agent := dig "agent" "" . -}}
 {{ if eq $agent "pi" }}
