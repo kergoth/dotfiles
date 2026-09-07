@@ -202,7 +202,7 @@ Write-Host "Installing cargo tool: {{ . }}"
 {{-     end }}
 {{-   end }}
 
-{{-   $uv_tools := dict "git-imerge" "git-imerge" "git-revise" "git-revise" -}}
+{{-     $uv_tools := dict "git-imerge" "git-imerge" "git-revise" "git-revise" "ruff" "ruff" "ty" "ty" "prek" "prek" -}}
 {{-   $uv_to_install := includeTemplate "packagesForMissingTools" (dict "root" . "packages" $uv_tools) | fromJson -}}
 {{-   $unar := includeTemplate "find-tool" (dict "root" . "tool" "unar") -}}
 {{-   $dtrx := includeTemplate "find-tool" (dict "root" . "tool" "dtrx") -}}

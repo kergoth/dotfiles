@@ -99,13 +99,16 @@ This inventory lists the managed or included pieces that make up the dotfiles en
 - **[jujutsu](https://github.com/jj-vcs/jj)** ([Open-Source](https://github.com/jj-vcs/jj)): Git-compatible VCS that is both simple and powerful.
 - **[jq](https://github.com/stedolan/jq)**: A lightweight and flexible command-line JSON processor.
 - **[pi](https://pi.dev)** ([Open-Source](https://github.com/earendil-works/pi)): Minimal terminal coding agent harness.
+- **[prek](https://prek.j178.dev/)**: A fast, pre-commit-compatible Git hook runner. Installed as a fallback for repositories that do not manage it as a project dependency.
 - **[ripgrep](https://github.com/BurntSushi/ripgrep)**: A line-oriented search tool that recursively searches the current directory for a regex pattern.
+- **[ruff](https://docs.astral.sh/ruff/)**: A fast Python linter and formatter. Installed as a fallback for projects that do not manage it as a project dependency.
 - **[rusage.com](https://justine.lol/rusage/)**: Provides the best possible way to report resource usage statistics when launching command line programs.
 - **[sad](https://github.com/ms-jpq/sad)**: CLI search and replace | Space Age seD.
 - **[sd](https://github.com/chmln/sd)**: Intuitive find & replace CLI (sed alternative).
 - **[shellcheck](https://github.com/koalaman/shellcheck)**: A static analysis tool for shell scripts.
 - **[shfmt](https://github.com/mvdan/sh#shfmt)**: Format shell programs.
 - **[tealdeer](https://github.com/dbrgn/tealdeer)**: Simplified, example based and community-driven man pages.
+- **[ty](https://docs.astral.sh/ty/)**: A fast Python type checker. Installed as a fallback for projects that do not manage it as a project dependency.
 - **[uv](https://docs.astral.sh/uv/)** ([Open-Source](https://github.com/astral-sh/uv)): An extremely fast Python package and project manager, written in Rust.
 - **[zoxide](https://github.com/ajeetdsouza/zoxide)**: A smarter cd command, inspired by z and autojump.
 - **[zstd](http://www.zstd.net/)**: Zstandard - Fast real-time compression algorithm.
