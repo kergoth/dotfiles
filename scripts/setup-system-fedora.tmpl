@@ -41,8 +41,8 @@ if pgrep systemd &>/dev/null; then
 fi
 {{- end }}
 
-# Install neovim
-sudorun dnf -y --setopt=install_weak_deps=False install neovim
+# Install vim
+sudorun dnf -y --setopt=install_weak_deps=False install vim
 
 {{ if not .headless -}}
 # Install KDE Plasma and display manager

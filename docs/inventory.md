@@ -60,7 +60,7 @@ This inventory lists the managed or included pieces that make up the dotfiles en
   - **[gh-stack](https://github.com/github/gh-stack)**: GitHub's official CLI extension for managing stacked branches and pull requests.
 - **[git](https://git-scm.com)**: A free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency.
 - **[git-lfs](https://git-lfs.github.com)**: An open source Git extension for versioning large files.
-- **[neovim](https://neovim.io)**: Hyperextensible Vim-based text editor.
+- **[vim](https://www.vim.org)**: The ubiquitous text editor
 - **[gnupg](https://www.gnupg.org)**: A complete and free implementation of the OpenPGP standard.
 
 - **[nodejs](https://nodejs.org)** ([Open-Source](https://github.com/nodejs/node)): A JavaScript runtime built on Chrome's V8 JavaScript engine.

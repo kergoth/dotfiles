@@ -220,7 +220,7 @@ This script self-elevates to administrator. Use for:
   home.packages = with pkgs; [
     # Unconditional packages
     git
-    neovim
+    vim
 
     # Conditional on feature flag
 {{- if .container_runtime }}
