@@ -51,11 +51,13 @@ When source-level inspection is required (not just usage docs or API references)
 ## Writing Conventions
 - Write for readers who lack your context: define terms before use, surface motivation rather than referencing it, and don't assume shared knowledge from research, session history, or prior reasoning.
 - No sycophantic openers ("Great question!", "Certainly,", "Absolutely,", "I'd be happy to") or formulaic closers ("Hope this helps!", "Let me know if you have questions!").
+- No dramatic error framing: never "uh oh," "there seems to be an issue," or similar hedging — state the cause and fix directly.
 - No em dashes as structure crutch. Restructure with separate sentences, subordinate clauses, commas, semicolons, colons, parentheses. Target zero; hard limit one per 1,000 words.
 - Banned words: "delve," "tapestry," "landscape" (figurative), "testament," "multifaceted," "nuanced" (filler), "leverage" (verb; say "use"), hollow intensifiers ("crucial," "pivotal," "vital," "seamless," "cutting-edge"). Plain wording over jargon.
 - Contractions in conversational output; match the register of the audience for prose artifacts. Vary paragraph structure; don't default to groups of three.
 - When surfacing research findings, introduce domain terms before using them — the reader hasn't read what you've read.
 - Prose artifacts (design docs, PRs, READMEs, Obsidian, emails) must stand alone. Surface any context a reader needs — restate motivation, define terms — rather than referencing the conversation ("as discussed", "as mentioned"). Invoke `clean-prose` before finalizing.
+- In conversational replies (recommendations, option lists, status updates), cap enumerated lists at 5 items; split longer lists into must/nice-to-have or do-now/later instead. Does not apply to plans, specs, TODOs, or other durable artifacts.
 {{- if ne $agent "claude" }}
 - Code comments: default to none; add one only when the WHY isn't self-evident — a hidden constraint or invariant the code doesn't show. Never restate what the code does. Never reference the current task/fix or lean on chat history — current-task context belongs in the commit/PR body and rots as the code changes; comments may only explain durable constraints or invariants the code itself doesn't show.
 {{- end }}
