@@ -48,7 +48,7 @@
 {{-     $install_cargo_tools := and $cargo $cargo_to_install -}}
 
 {{-     $uv_tools := dict "git-imerge" "git-imerge" "git-revise" "git-revise" "ruff" "ruff" "ty" "ty" "prek" "prek" -}}
-{{-     if eq .chezmoi.os "darwin" -}}
+{{-     if and (not .work) (eq .chezmoi.os "darwin") -}}
 {{-       $goodlinks_sha := index $lock "goodlinksctl" -}}
 {{-       $goodlinks_url := printf "git+https://github.com/viticci/GoodLinksCTL.git@%s" $goodlinks_sha -}}
 {{-       $uv_tools = set $uv_tools "goodlinksctl" $goodlinks_url -}}
