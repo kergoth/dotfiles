@@ -14,4 +14,14 @@ try {
 } finally {
     Pop-Location
 }
+
+if ( Test-Path "$env:CHEZMOI_DEST_DIR/bin/prek.toml" ) {
+    Write-Host "Installing prek hooks in $env:CHEZMOI_DEST_DIR/bin"
+    Push-Location $env:CHEZMOI_DEST_DIR/bin
+    try {
+        & "{{ $prek }}" install
+    } finally {
+        Pop-Location
+    }
+}
 {{- end -}}

@@ -11,4 +11,12 @@ set -euo pipefail
 echo >&2 "Installing prek hooks"
 cd "$CHEZMOI_WORKING_TREE"
 "{{ $prek }}" install
+
+if [ -s "$CHEZMOI_DEST_DIR/bin/prek.toml" ]; then
+    echo >&2 "Installing prek hooks in $CHEZMOI_DEST_DIR/bin"
+    (
+        cd "$CHEZMOI_DEST_DIR/bin" || exit 1
+        "{{ $prek }}" install
+    )
+fi
 {{- end -}}
