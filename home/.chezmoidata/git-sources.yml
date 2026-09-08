@@ -13,27 +13,47 @@ git_sources:
   gh_pr_review_skill:
     repo: https://github.com/kergoth/gh-pr-review
     ref: tighten-security-guardrails
+    usage:
+      - artifact: gh-pr-review agent skill
     review_note: "Focus primarily on SKILL.md and any documentation or code changes that affect the advertised skill workflow or command interface. The released gh extension binary remains pinned separately via the tagged gh_pr_review entry; this source exists only to pin skill content."
   gh_stack:
     repo: https://github.com/github/gh-stack
     tagged: true
+    usage:
+      - artifact: GitHub CLI extension
+      - artifact: gh-stack agent skill
     review_note: "Official GitHub CLI extension for stacked PRs; the same tag pins both the released binary and the bundled skills/gh-stack skill content."
   86box_assets:
     repo: https://github.com/86Box/assets
     ref: main
     review: false
+    usage:
+      - artifact: 86Box assets
+        scope: retro_computing hosts with 86Box
   86box_roms:
     repo: https://github.com/86Box/roms
     ref: master
     review: false
+    usage:
+      - artifact: 86Box ROMs
+        scope: retro_computing hosts with 86Box
   anthropic_official_plugins:
     repo: https://github.com/anthropics/claude-plugins-official
+    usage:
+      - artifact: claude-md-management and skill-creator plugins
+        scope: managed agent configuration
     review_note: "The only plugins I install from this marketplace are claude-md-management and skill-creator. State explicitly at the start whether either has code changes. Also review in full: shared infrastructure changes (marketplace.json format/schema, plugin-loading code) and supply-chain risks in marketplace.json (unpinned entries, source changes). For code changes inside other plugins' own files (e.g. telegram/, discord/, math-olympiad/), skip detailed analysis — note the plugin name and one-line summary only if it adds systemic risk."
   avoid_ai_writing:
     repo: https://github.com/conorbronsdon/avoid-ai-writing
+    usage:
+      - artifact: AI writing analysis skill
+        scope: managed agent configuration
     review_note: "I use this as the base layer for AI writing pattern detection. Focus on changes to SKILL.md: vocabulary tier changes (additions, removals, tier reassignments), context profile changes, structural pattern rules, and scoring thresholds. Flag any changes that might conflict with the clean-prose wrapper skill's overrides (em dash rules, technical vocabulary carve-outs)."
   astral:
     repo: https://github.com/astral-sh/claude-code-plugins
+    usage:
+      - artifact: ruff, ty, and uv agent skills
+        scope: managed agent configuration
     review_note: "This package provides the ruff, ty, and uv agent skills that I actively use. Focus on changes to those three skills and any shared infrastructure. Flag changes that alter how linting, type checking, or package management is recommended or executed, or that add unexpected network calls or file system access."
   bat_extras:
     repo: https://github.com/eth-p/bat-extras
@@ -105,6 +125,9 @@ git_sources:
   zed:
     repo: https://github.com/zed-industries/zed
     tagged: true
+    usage:
+      - artifact: Zed editor and installer script
+        scope: Linux
     review_note: "This lock now governs both the installed Zed application version and the versioned installer script fetched from the official repository. Review the release as a product update first: summarize user-visible features, fixes, Linux-specific changes, and any breaking changes or notices that could affect existing configuration or workflows. Then review installer and release-integrity concerns: changes to script/install.sh, downloaded asset URLs, platform/arch mapping, user-scope install paths, update behavior, and anything that changes the trust or packaging model."
   ia_fonts:
     repo: https://github.com/iaolo/iA-Fonts
@@ -144,11 +167,17 @@ git_sources:
     repo: https://github.com/libretro/RetroArch
     ref: master
     review: false
+    usage:
+      - artifact: RetroArch video filters
+        scope: Steam Deck with RetroDECK
   steamtinkerlaunch:
     repo: https://github.com/sonic2kk/steamtinkerlaunch
     ref: master
   superpowers:
     repo: https://github.com/obra/superpowers
+    usage:
+      - artifact: agent skill library
+        scope: managed agent configuration
     review_note: "I use the full skill library from this package. Focus on: changes to existing skill content (especially using-superpowers, brainstorming, systematic-debugging, test-driven-development, writing-plans, and other core workflow skills), new skills added, and any skill instructions that could encourage unsafe or unauthorized actions or alter established tool-use patterns."
   wsl_open:
     repo: https://github.com/4U6U57/wsl-open

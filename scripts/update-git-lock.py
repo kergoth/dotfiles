@@ -10,6 +10,7 @@ import re
 import subprocess
 import sys
 from pathlib import Path
+from subprocess import CalledProcessError
 from typing import Any
 from urllib.parse import urlparse
 
@@ -26,7 +27,10 @@ def load_chezmoi_data(repo_root: Path) -> dict:
         str(repo_root),
     ]
     result = subprocess.run(cmd, check=True, capture_output=True, text=True)
-    return json.loads(result.stdout)
+    try:
+        return json.loads(result.stdout)
+    except json.JSONDecodeError as exc:
+        raise ValueError("chezmoi data is not valid JSON") from exc
 
 
 def resolve_ref(repo: str, ref: str) -> str:
@@ -59,7 +63,10 @@ def _gh_api(path: str) -> Any:
         capture_output=True,
         text=True,
     )
-    return json.loads(result.stdout)
+    try:
+        return json.loads(result.stdout)
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"gh API returned invalid JSON for {path}") from exc
 
 
 def resolve_latest_tag(
@@ -117,7 +124,7 @@ def _resolve_github_tag(
                 if pattern.fullmatch(release["tag_name"]):
                     return release["tag_name"]
             page += 1
-    except subprocess.CalledProcessError as exc:
+    except CalledProcessError as exc:
         stderr = (exc.stderr or "").strip()
         if "404" in stderr or exc.returncode == 1:
             raise SystemExit(
@@ -128,10 +135,10 @@ def _resolve_github_tag(
                 "error: gh CLI not authenticated — run 'gh auth login'"
             ) from exc
         raise SystemExit(f"error: gh API failed for {name}: {stderr}") from exc
-    except FileNotFoundError:
+    except FileNotFoundError as exc:
         raise SystemExit(
             "error: gh CLI not found — required for tagged GitHub externals"
-        )
+        ) from exc
 
 
 def _semver_key(tag: str, name: str) -> tuple[int, int, int]:
@@ -143,7 +150,12 @@ def _semver_key(tag: str, name: str) -> tuple[int, int, int]:
             f"error: tag {tag!r} for {name!r} is not semver-parseable — "
             "non-GitHub repos require semver-orderable tags"
         )
-    return int(m.group(1)), int(m.group(2)), int(m.group(3))
+    try:
+        return int(m.group(1)), int(m.group(2)), int(m.group(3))
+    except ValueError as exc:
+        raise SystemExit(
+            f"error: tag {tag!r} for {name!r} is not semver-parseable"
+        ) from exc
 
 
 def _resolve_generic_tag(repo: str, name: str, tag_pattern: str | None) -> str:
@@ -208,10 +220,33 @@ def find_stale_lock_entries(locks: dict, sources: dict) -> list[str]:
     return sorted(set(locks) - set(sources))
 
 
+def validate_usage(sources: dict) -> None:
+    """Reject malformed source usage metadata before resolving refs."""
+    for source_id, source in sources.items():
+        usage = source.get("usage")
+        if usage is None:
+            continue
+        if not isinstance(usage, list):
+            raise SystemExit(f"error: usage for {source_id!r} must be a list")
+        for index, entry in enumerate(usage):
+            if not isinstance(entry, dict):
+                raise SystemExit(
+                    f"error: usage entry {index} for {source_id!r} must be a mapping"
+                )
+            artifact = entry.get("artifact")
+            if not isinstance(artifact, str) or not artifact.strip():
+                raise SystemExit(
+                    f"error: usage entry {index} for {source_id!r} needs a non-empty artifact"
+                )
+            scope = entry.get("scope")
+            if scope is not None and (not isinstance(scope, str) or not scope.strip()):
+                raise SystemExit(
+                    f"error: usage entry {index} for {source_id!r} has an invalid scope"
+                )
+
+
 def main() -> int:
-    parser = argparse.ArgumentParser(
-        description="Update pinned refs for Git sources."
-    )
+    parser = argparse.ArgumentParser(description="Update pinned refs for Git sources.")
     parser.add_argument("ids", nargs="*", help="Optional Git source IDs to update")
     parser.add_argument(
         "--dry-run",
@@ -237,6 +272,10 @@ def main() -> int:
     data = load_chezmoi_data(repo_root)
     sources = data.get("git_sources", {})
     old_locks = dict(data.get("git_lock", {}))
+
+    if not sources:
+        raise SystemExit("no git sources data found")
+    validate_usage(sources)
 
     if args.apply_resolved:
         try:
@@ -303,9 +342,6 @@ def main() -> int:
             print(line)
         return 0
 
-    if not sources:
-        raise SystemExit("no git sources data found")
-
     selected = args.ids or list(sources.keys())
     unknown = [eid for eid in selected if eid not in sources]
     if unknown:
@@ -333,20 +369,17 @@ def main() -> int:
             try:
                 re.compile(pattern)
             except re.error as exc:
-                raise SystemExit(f"error: invalid tag_pattern for {eid!r}: {exc}")
+                raise SystemExit(
+                    f"error: invalid tag_pattern for {eid!r}: {exc}"
+                ) from exc
         tag_source = entry.get("tag_source")
         if tag_source and tag_source not in {"github_releases", "git_tags"}:
-            raise SystemExit(
-                f"error: invalid tag_source for {eid!r}: {tag_source!r}"
-            )
-        if entry.get("prefer_latest_marker") is True and not _is_github_repo(entry["repo"]):
+            raise SystemExit(f"error: invalid tag_source for {eid!r}: {tag_source!r}")
+        if entry.get("prefer_latest_marker") and not _is_github_repo(entry["repo"]):
             raise SystemExit(
                 f"error: prefer_latest_marker is only valid for GitHub repos ({eid!r})"
             )
-        if (
-            tag_source == "github_releases"
-            and not _is_github_repo(entry["repo"])
-        ):
+        if tag_source == "github_releases" and not _is_github_repo(entry["repo"]):
             raise SystemExit(
                 f"error: tag_source 'github_releases' is only valid for GitHub repos ({eid!r})"
             )
@@ -388,6 +421,7 @@ def main() -> int:
                         "review": entry.get("review", True),
                         "review_note": entry.get("review_note"),
                         "review_paths": entry.get("review_paths"),
+                        "usage": entry.get("usage"),
                         "ai_agent": entry.get("ai_agent"),
                         "ai_model": entry.get("ai_model"),
                         "ai_timeout": entry.get("ai_timeout"),
@@ -419,6 +453,7 @@ def main() -> int:
 if __name__ == "__main__":
     try:
         raise SystemExit(main())
-    except subprocess.CalledProcessError as exc:
-        print(exc.stderr or str(exc), file=sys.stderr, end="")
+    except CalledProcessError as exc:
+        error_message = exc.stderr if exc.stderr else str(exc)
+        print(error_message, file=sys.stderr, end="")
         raise

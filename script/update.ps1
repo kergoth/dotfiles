@@ -292,6 +292,11 @@ if (Test-Path $gitLockUpdater) {
                             if ($c.kind) { $reviewArgs += @('--kind', $c.kind) }
                             if ($c.tag_pattern) { $reviewArgs += @('--tag-pattern', $c.tag_pattern) }
                             if ($c.review_note) { $reviewArgs += @('--review-note', $c.review_note) }
+                            foreach ($usage in @($c.usage)) {
+                                if ($usage) {
+                                    $reviewArgs += @('--usage', ($usage | ConvertTo-Json -Compress))
+                                }
+                            }
                             if ($c.ai_agent) { $reviewArgs += @('--ai-agent', $c.ai_agent) }
                             if ($c.ai_model) { $reviewArgs += @('--ai-model', $c.ai_model) }
                             if ($c.ai_timeout) { $reviewArgs += @('--ai-timeout', [string]$c.ai_timeout) }
@@ -326,6 +331,11 @@ if (Test-Path $gitLockUpdater) {
                                             if ($c.kind) { $reviewArgs += @('--kind', $c.kind) }
                                             if ($c.tag_pattern) { $reviewArgs += @('--tag-pattern', $c.tag_pattern) }
                                             if ($c.review_note) { $reviewArgs += @('--review-note', $c.review_note) }
+                                            foreach ($usage in @($c.usage)) {
+                                                if ($usage) {
+                                                    $reviewArgs += @('--usage', ($usage | ConvertTo-Json -Compress))
+                                                }
+                                            }
                                             if ($c.ai_agent) { $reviewArgs += @('--ai-agent', $c.ai_agent) }
                                             if ($c.ai_model) { $reviewArgs += @('--ai-model', $c.ai_model) }
                                             if ($c.ai_timeout) { $reviewArgs += @('--ai-timeout', [string]$c.ai_timeout) }

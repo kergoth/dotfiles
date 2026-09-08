@@ -3,7 +3,6 @@ import pathlib
 import shutil
 import subprocess
 
-
 REPO = pathlib.Path(__file__).resolve().parents[2]
 
 
@@ -224,6 +223,17 @@ if ($args[0] -eq "generations") {
     assert "nix-env --delete-generations old" not in calls
 
 
+def test_powershell_update_forwards_usage_to_both_review_paths():
+    """PowerShell preserves source usage in normal and diff-only reviews."""
+    script = (REPO / "script" / "update.ps1").read_text()
+    usage_forwarding = (
+        "$reviewArgs += @('--usage', ($usage | ConvertTo-Json -Compress))"
+    )
+
+    assert script.count("foreach ($usage in @($c.usage))") == 2
+    assert script.count(usage_forwarding) == 2
+
+
 def test_powershell_home_manager_update_inputs_match_dry_run():
     script = (REPO / "script" / "update.ps1").read_text()
 
@@ -321,5 +331,8 @@ if ($argsText -like "*path-info*$HOME/.config/home-manager#homeConfigurations.*"
     calls = log.read_text() if log.exists() else ""
 
     assert result.returncode != 0
-    assert "nix --experimental-features nix-command flakes flake update nixpkgs nixpkgs-unstable" in calls
+    assert (
+        "nix --experimental-features nix-command flakes flake update nixpkgs nixpkgs-unstable"
+        in calls
+    )
     assert "nvd diff" not in calls

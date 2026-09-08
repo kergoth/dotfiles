@@ -42,9 +42,7 @@ def test_format_diff_lines_tagged_new():
 def test_format_diff_lines_tagged_update():
     """Tagged update shows both tag names, no truncation."""
     sources = {"bar": {"repo": "https://github.com/x/y", "tagged": True}}
-    result = format_diff_lines(
-        {"bar": "v0.34.0"}, {"bar": "v0.35.0"}, sources, ["bar"]
-    )
+    result = format_diff_lines({"bar": "v0.34.0"}, {"bar": "v0.35.0"}, sources, ["bar"])
     assert result == ["bar: v0.34.0 → v0.35.0"]
 
 
@@ -59,7 +57,9 @@ def test_format_diff_lines_tagged_missing_externals_key():
     assert result == ["stale: aaa0000 → bbb0000 (main)"]
 
 
-def _run_main_dry_run_json(sources: dict, ids: list[str], ai_review: dict | None = None) -> dict:
+def _run_main_dry_run_json(
+    sources: dict, ids: list[str], ai_review: dict | None = None
+) -> dict:
     """Call main() directly with mocked data, return parsed JSON output object."""
     fake_data = {"git_sources": sources, "git_lock": {}}
     if ai_review is not None:
@@ -124,6 +124,49 @@ def test_dry_run_json_preserves_review_note_for_tagged_entry():
     assert changes[0]["tag_source"] is None
     assert changes[0]["review_note"] == "Review CHANGELOG.md only."
     assert changes[0]["ai_agent"] is None
+
+
+def test_dry_run_json_preserves_usage():
+    """Usage entries are passed to the review pipeline JSON."""
+    usage = [
+        {"artifact": "agent skill content", "scope": "all managed hosts"},
+        {"artifact": "GitHub CLI extension"},
+    ]
+    sources = {
+        "_test_usage": {
+            "repo": "https://github.com/x/y",
+            "ref": "main",
+            "usage": usage,
+        },
+    }
+    result = _run_main_dry_run_json(sources, ["_test_usage"])
+    assert result["changes"][0]["usage"] == usage
+
+
+def test_dry_run_json_rejects_usage_without_artifact():
+    """Malformed usage metadata fails before source resolution."""
+    sources = {
+        "_test_usage": {
+            "repo": "https://github.com/x/y",
+            "ref": "main",
+            "usage": [{"scope": "Linux"}],
+        },
+    }
+    fake_data = {"git_sources": sources, "git_lock": {}}
+
+    with (
+        patch.object(mod, "load_chezmoi_data", return_value=fake_data),
+        patch.object(mod, "resolve_ref") as mock_resolve_ref,
+        patch("sys.argv", ["update-git-lock.py", "--dry-run", "_test_usage"]),
+    ):
+        try:
+            mod.main()
+        except SystemExit as exc:
+            assert "artifact" in str(exc)
+        else:
+            raise AssertionError("malformed usage should fail")
+
+    mock_resolve_ref.assert_not_called()
 
 
 def test_dry_run_json_preserves_ai_agent():
@@ -219,8 +262,10 @@ def test_resolve_latest_tag_github_no_releases():
     err.stderr = "404"
     with patch("subprocess.run", side_effect=err):
         try:
-            resolve_latest_tag("https://github.com/owner/repo", "owner/repo", None, None)
-            assert False, "should have raised"
+            resolve_latest_tag(
+                "https://github.com/owner/repo", "owner/repo", None, None
+            )
+            raise AssertionError("should have raised")
         except SystemExit:
             pass
 
@@ -237,6 +282,7 @@ def test_resolve_latest_tag_github_with_pattern_matches():
             "owner/repo",
             r"v\d+\.\d+\.\d+-rc\d+",
             None,
+            prefer_latest_marker=False,
         )
     assert tag == "v2.0.0-rc1"
 
@@ -249,7 +295,11 @@ def test_resolve_latest_tag_github_with_pattern_skips_drafts():
     ]
     with patch("subprocess.run", return_value=_gh_result(releases)):
         tag = resolve_latest_tag(
-            "https://github.com/owner/repo", "owner/repo", r"v\d+.*", None
+            "https://github.com/owner/repo",
+            "owner/repo",
+            r"v\d+.*",
+            None,
+            prefer_latest_marker=False,
         )
     assert tag == "v1.9.0"
 
@@ -265,8 +315,9 @@ def test_resolve_latest_tag_github_pattern_no_match():
                 "owner/repo",
                 r"v2\.\d+\.\d+",
                 None,
+                prefer_latest_marker=False,
             )
-            assert False, "should have raised"
+            raise AssertionError("should have raised")
         except SystemExit:
             pass
 
@@ -312,7 +363,7 @@ def test_resolve_latest_tag_non_github_non_semver_hard_fails():
             resolve_latest_tag(
                 "https://gitlab.com/owner/repo", "repo", r"nightly-\d+", None
             )
-            assert False, "should have raised"
+            raise AssertionError("should have raised")
         except SystemExit:
             pass
 
@@ -323,7 +374,7 @@ def test_resolve_latest_tag_non_github_no_match_hard_fails():
     with patch("subprocess.run", return_value=fake):
         try:
             resolve_latest_tag("https://gitlab.com/owner/repo", "repo", None, None)
-            assert False, "should have raised"
+            raise AssertionError("should have raised")
         except SystemExit:
             pass
 
@@ -349,7 +400,7 @@ def test_resolve_latest_tag_non_github_rejects_github_releases_source():
         resolve_latest_tag(
             "https://gitlab.com/owner/repo", "repo", None, "github_releases"
         )
-        assert False, "should have raised"
+        raise AssertionError("should have raised")
     except SystemExit:
         pass
 
@@ -375,7 +426,13 @@ def test_tagged_entry_routes_to_resolve_latest_tag():
         rc = mod.main()
 
     assert rc == 0
-    mock_tag.assert_called_once_with("https://github.com/x/y", "_test_tagged", None, None)
+    mock_tag.assert_called_once_with(
+        "https://github.com/x/y",
+        "_test_tagged",
+        None,
+        None,
+        prefer_latest_marker=True,
+    )
     mock_ref.assert_not_called()
 
 
@@ -463,9 +520,9 @@ def _make_rich_stubs():
         def __init__(self, *a, **kw):
             pass
 
-    console_mod.Console = _FakeConsole
-    panel_mod.Panel = _FakePanel
-    syntax_mod.Syntax = _FakeSyntax
+    console_mod.__dict__["Console"] = _FakeConsole
+    panel_mod.__dict__["Panel"] = _FakePanel
+    syntax_mod.__dict__["Syntax"] = _FakeSyntax
     return rich, console_mod, panel_mod, syntax_mod
 
 
@@ -507,19 +564,29 @@ def test_display_ref_preserves_tag():
 
 def test_review_paths_arg_none_when_absent():
     """--review-paths absent → args.review_paths is None."""
-    with patch("sys.argv", ["show-git-changes.py",
-                            "https://github.com/x/y", "aaa" * 14, "bbb" * 14]):
+    with patch(
+        "sys.argv",
+        ["show-git-changes.py", "https://github.com/x/y", "aaa" * 14, "bbb" * 14],
+    ):
         args = _sgc_mod.parse_args()
     assert args.review_paths is None
 
 
 def test_review_paths_arg_accumulates():
     """Multiple --review-paths accumulate as a list."""
-    with patch("sys.argv", [
-        "show-git-changes.py", "https://github.com/x/y", "aaa" * 14, "bbb" * 14,
-        "--review-paths", "CHANGELOG.md",
-        "--review-paths", "src/*.py",
-    ]):
+    with patch(
+        "sys.argv",
+        [
+            "show-git-changes.py",
+            "https://github.com/x/y",
+            "aaa" * 14,
+            "bbb" * 14,
+            "--review-paths",
+            "CHANGELOG.md",
+            "--review-paths",
+            "src/*.py",
+        ],
+    ):
         args = _sgc_mod.parse_args()
     assert args.review_paths == ["CHANGELOG.md", "src/*.py"]
 
@@ -548,7 +615,7 @@ def test_paths_match_any_of_multiple():
     assert _sgc_mod._paths_match("README.md", ["CHANGELOG.md", "README.md"]) is True
 
 
-def test_fetch_changes_github_api_filters_files():
+def test_fetch_changes_github_api_filters_files(tmp_path):
     """With review_paths, only matching files are included in the diff."""
     fake_api_data = {
         "commits": [
@@ -569,8 +636,12 @@ def test_fetch_changes_github_api_filters_files():
         patch.object(_sgc_mod, "fetch_via_github_api", return_value=fake_api_data),
     ):
         result = _sgc_mod.fetch_changes(
-            "https://github.com/x/y", "a" * 40, "b" * 40,
-            name="test", ref="main", cache_dir=pathlib.Path("/tmp"),
+            "https://github.com/x/y",
+            "a" * 40,
+            "b" * 40,
+            name="test",
+            ref="main",
+            cache_dir=tmp_path,
             review_paths=["CHANGELOG.md"],
         )
     assert result is not None
@@ -578,7 +649,7 @@ def test_fetch_changes_github_api_filters_files():
     assert "src/main.py" not in result["diff"]
 
 
-def test_fetch_changes_github_api_no_match_returns_sentinel():
+def test_fetch_changes_github_api_no_match_returns_sentinel(tmp_path):
     """When no files match review_paths, diff is a sentinel string."""
     fake_api_data = {
         "commits": [],
@@ -586,15 +657,19 @@ def test_fetch_changes_github_api_no_match_returns_sentinel():
     }
     with patch.object(_sgc_mod, "fetch_via_github_api", return_value=fake_api_data):
         result = _sgc_mod.fetch_changes(
-            "https://github.com/x/y", "a" * 40, "b" * 40,
-            name="test", ref="main", cache_dir=pathlib.Path("/tmp"),
+            "https://github.com/x/y",
+            "a" * 40,
+            "b" * 40,
+            name="test",
+            ref="main",
+            cache_dir=tmp_path,
             review_paths=["CHANGELOG.md"],
         )
     assert result is not None
     assert result["diff"] == _sgc_mod.NO_CHANGES_IN_SCOPE
 
 
-def test_fetch_changes_github_api_no_review_paths_unchanged():
+def test_fetch_changes_github_api_no_review_paths_unchanged(tmp_path):
     """Without review_paths, existing raw-diff logic is still used."""
     fake_api_data = {"commits": [], "files": []}
     fake_diff = subprocess.CompletedProcess([], 0, stdout="raw diff here", stderr="")
@@ -603,8 +678,12 @@ def test_fetch_changes_github_api_no_review_paths_unchanged():
         patch("subprocess.run", return_value=fake_diff),
     ):
         result = _sgc_mod.fetch_changes(
-            "https://github.com/x/y", "a" * 40, "b" * 40,
-            name="test", ref="main", cache_dir=pathlib.Path("/tmp"),
+            "https://github.com/x/y",
+            "a" * 40,
+            "b" * 40,
+            name="test",
+            ref="main",
+            cache_dir=tmp_path,
             review_paths=None,
         )
     assert result is not None
@@ -626,8 +705,12 @@ def test_bare_clone_passes_pathspecs_to_log_and_diff(tmp_path):
 
     with patch("subprocess.run", side_effect=fake_run):
         _sgc_mod.fetch_via_bare_clone(
-            "https://github.com/x/y", "a" * 40, "b" * 40,
-            name="myrepo", ref="main", cache_dir=tmp_path,
+            "https://github.com/x/y",
+            "a" * 40,
+            "b" * 40,
+            name="myrepo",
+            ref="main",
+            cache_dir=tmp_path,
             review_paths=["CHANGELOG.md"],
         )
 
@@ -654,8 +737,12 @@ def test_bare_clone_empty_log_returns_sentinel(tmp_path):
 
     with patch("subprocess.run", side_effect=fake_run):
         result = _sgc_mod.fetch_via_bare_clone(
-            "https://github.com/x/y", "a" * 40, "b" * 40,
-            name="myrepo", ref="main", cache_dir=tmp_path,
+            "https://github.com/x/y",
+            "a" * 40,
+            "b" * 40,
+            name="myrepo",
+            ref="main",
+            cache_dir=tmp_path,
             review_paths=["CHANGELOG.md"],
         )
 
@@ -679,13 +766,53 @@ def test_bare_clone_no_review_paths_no_pathspecs(tmp_path):
 
     with patch("subprocess.run", side_effect=fake_run):
         _sgc_mod.fetch_via_bare_clone(
-            "https://github.com/x/y", "a" * 40, "b" * 40,
-            name="myrepo", ref="main", cache_dir=tmp_path,
+            "https://github.com/x/y",
+            "a" * 40,
+            "b" * 40,
+            name="myrepo",
+            ref="main",
+            cache_dir=tmp_path,
             review_paths=None,
         )
 
     for cmd in captured_cmds:
         assert "--" not in cmd, f"Unexpected -- in {cmd}"
+
+
+def test_format_usage_lines():
+    """Usage lines include an optional scope qualifier."""
+    usage = [
+        {"artifact": "agent skill content", "scope": "all managed hosts"},
+        {"artifact": "GitHub CLI extension"},
+    ]
+    assert _sgc_mod.format_usage_lines(usage) == [
+        "Usage: agent skill content (all managed hosts)",
+        "Usage: GitHub CLI extension",
+    ]
+
+
+def test_run_ai_review_usage_in_prompt():
+    """AI review prompts receive the source usage text."""
+    captured_prompt = []
+
+    def fake_run(cmd, **kw):
+        captured_prompt.append(cmd[-1])
+        m = MagicMock()
+        m.returncode = 0
+        m.stdout = "looks safe"
+        return m
+
+    with patch("subprocess.run", side_effect=fake_run):
+        result = _sgc_mod.run_ai_review(
+            "claude",
+            "log text",
+            "diff text",
+            "test-repo",
+            usage=[{"artifact": "agent skill content", "scope": "all managed hosts"}],
+        )
+
+    assert result == "looks safe"
+    assert "Usage: agent skill content (all managed hosts)" in captured_prompt[0]
 
 
 def test_run_ai_review_scope_restriction_in_prompt():
@@ -701,8 +828,12 @@ def test_run_ai_review_scope_restriction_in_prompt():
 
     with patch("subprocess.run", side_effect=fake_run):
         result = _sgc_mod.run_ai_review(
-            "claude", "log text", "diff text", "test-repo",
-            review_note=None, review_paths=["CHANGELOG.md"],
+            "claude",
+            "log text",
+            "diff text",
+            "test-repo",
+            review_note=None,
+            review_paths=["CHANGELOG.md"],
         )
 
     assert result == "looks safe"
@@ -713,10 +844,17 @@ def test_run_ai_review_scope_restriction_in_prompt():
 
 def test_main_rejects_ai_model_without_ai_cmd():
     """--ai-model requires --ai-agent."""
-    with patch("sys.argv", [
-        "show-git-changes.py", "https://github.com/x/y", "a" * 40, "b" * 40,
-        "--ai-model", "sonnet",
-    ]):
+    with patch(
+        "sys.argv",
+        [
+            "show-git-changes.py",
+            "https://github.com/x/y",
+            "a" * 40,
+            "b" * 40,
+            "--ai-model",
+            "sonnet",
+        ],
+    ):
         rc = _sgc_mod.main()
     assert rc == 2
 
@@ -724,13 +862,27 @@ def test_main_rejects_ai_model_without_ai_cmd():
 def test_main_maps_cursor_ai_agent_to_agent_cli():
     """--ai-agent cursor maps to underlying agent CLI."""
     with (
-        patch("sys.argv", [
-            "show-git-changes.py", "https://github.com/x/y", "a" * 40, "b" * 40,
-            "--ai-agent", "cursor",
-            "--no-ai",
-        ]),
-        patch("shutil.which", side_effect=lambda x: "/usr/bin/agent" if x == "agent" else None),
-        patch.object(_sgc_mod, "fetch_changes", return_value={"log": "", "shortlog": "", "diff": ""}),
+        patch(
+            "sys.argv",
+            [
+                "show-git-changes.py",
+                "https://github.com/x/y",
+                "a" * 40,
+                "b" * 40,
+                "--ai-agent",
+                "cursor",
+                "--no-ai",
+            ],
+        ),
+        patch(
+            "shutil.which",
+            side_effect=lambda x: "/usr/bin/agent" if x == "agent" else None,
+        ),
+        patch.object(
+            _sgc_mod,
+            "fetch_changes",
+            return_value={"log": "", "shortlog": "", "diff": ""},
+        ),
     ):
         rc = _sgc_mod.main()
     assert rc == 0
@@ -739,12 +891,23 @@ def test_main_maps_cursor_ai_agent_to_agent_cli():
 def test_main_missing_ai_agent_falls_back():
     """Missing --ai-agent binary triggers fallback, not hard fail."""
     with (
-        patch("sys.argv", [
-            "show-git-changes.py", "https://github.com/x/y", "a" * 40, "b" * 40,
-            "--ai-agent", "agent",
-        ]),
+        patch(
+            "sys.argv",
+            [
+                "show-git-changes.py",
+                "https://github.com/x/y",
+                "a" * 40,
+                "b" * 40,
+                "--ai-agent",
+                "agent",
+            ],
+        ),
         patch("shutil.which", return_value=None),
-        patch.object(_sgc_mod, "fetch_changes", return_value={"log": "", "shortlog": "", "diff": ""}),
+        patch.object(
+            _sgc_mod,
+            "fetch_changes",
+            return_value={"log": "", "shortlog": "", "diff": ""},
+        ),
     ):
         rc = _sgc_mod.main()
     assert rc == 0
@@ -763,8 +926,12 @@ def test_run_ai_review_scope_restriction_before_review_note():
 
     with patch("subprocess.run", side_effect=fake_run):
         _sgc_mod.run_ai_review(
-            "claude", "log", "diff", "repo",
-            review_note="Custom instructions.", review_paths=["src/*.py"],
+            "claude",
+            "log",
+            "diff",
+            "repo",
+            review_note="Custom instructions.",
+            review_paths=["src/*.py"],
         )
 
     prompt = captured_prompt[0]
@@ -775,6 +942,7 @@ def test_run_ai_review_scope_restriction_before_review_note():
 
 def test_run_ai_review_no_scope_restriction_without_paths():
     """No SCOPE RESTRICTION header when review_paths is absent."""
+
     def fake_run(cmd, **kw):
         m = MagicMock()
         m.returncode = 0
@@ -798,10 +966,18 @@ def test_render_changes_passes_review_paths_to_ai():
     """render_changes forwards review_paths to run_ai_review."""
     captured_paths = []
 
-    def capturing_run_ai_review(agent_cmd, log, diff, name,
-                                review_note=None, review_paths=None,
-                                release_notes=None, ai_model=None,
-                                ai_timeout=None):
+    def capturing_run_ai_review(
+        agent_cmd,
+        log,
+        diff,
+        name,
+        review_note=None,
+        review_paths=None,
+        usage=None,
+        release_notes=None,
+        ai_model=None,
+        ai_timeout=None,
+    ):
         captured_paths.append(review_paths)
         return "safe"
 
@@ -811,10 +987,16 @@ def test_render_changes_passes_review_paths_to_ai():
         patch("shutil.which", return_value="/usr/bin/claude"),
     ):
         _sgc_mod.render_changes(
-            name="test", old_sha="a" * 40, new_sha="b" * 40,
-            data=data, show_diff=False, ai_cmd="claude",
-            skip_ai=False, skip_log=True,
-            review_note=None, review_paths=["CHANGELOG.md"],
+            name="test",
+            old_sha="a" * 40,
+            new_sha="b" * 40,
+            data=data,
+            show_diff=False,
+            ai_cmd="claude",
+            skip_ai=False,
+            skip_log=True,
+            review_note=None,
+            review_paths=["CHANGELOG.md"],
             ai_config={},
         )
 

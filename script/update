@@ -218,6 +218,8 @@ for c in changes:
             cmd += ['--tag-pattern', c['tag_pattern']]
         if c.get('review_note'):
             cmd += ['--review-note', c['review_note']]
+        for usage in (c.get('usage') or []):
+            cmd += ['--usage', json.dumps(usage)]
         if c.get('ai_agent'):
             cmd += ['--ai-agent', c['ai_agent']]
         if c.get('ai_model'):
@@ -262,6 +264,8 @@ for c in changes:
             cmd += ['--tag-pattern', c['tag_pattern']]
         if c.get('review_note'):
             cmd += ['--review-note', c['review_note']]
+        for usage in (c.get('usage') or []):
+            cmd += ['--usage', json.dumps(usage)]
         if c.get('ai_agent'):
             cmd += ['--ai-agent', c['ai_agent']]
         if c.get('ai_model'):

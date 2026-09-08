@@ -3,6 +3,7 @@
 # requires-python = ">=3.10"
 # dependencies = ["rich"]
 # ///
+# pyright: reportMissingImports=false
 
 """Show changes between two commits in a git repository."""
 
@@ -12,7 +13,9 @@ import json
 import re
 import shutil
 import subprocess
+from contextlib import suppress
 from pathlib import Path
+from subprocess import CalledProcessError, TimeoutExpired
 from urllib.parse import urlparse
 
 from rich.console import Console
@@ -77,6 +80,13 @@ def parse_args():
         action="append",
         metavar="PATTERN",
         help="Glob pattern to limit diff scope (repeatable). For large monorepos.",
+    )
+    parser.add_argument(
+        "--usage",
+        action="append",
+        type=json.loads,
+        metavar="JSON",
+        help="JSON source-usage entry added to the review context (repeatable).",
     )
     parser.add_argument(
         "--kind",
@@ -163,12 +173,7 @@ def fetch_release_notes(
                 check=True,
             )
             return json.loads(r.stdout)
-        except (
-            subprocess.CalledProcessError,
-            subprocess.TimeoutExpired,
-            json.JSONDecodeError,
-            OSError,
-        ):
+        except (CalledProcessError, TimeoutExpired, json.JSONDecodeError, OSError):
             return None
 
     # Resolve anchors directly — avoids false "missing tag" on high-volume repos
@@ -232,8 +237,8 @@ def fetch_release_notes(
             if done:
                 break
     except (
-        subprocess.CalledProcessError,
-        subprocess.TimeoutExpired,
+        CalledProcessError,
+        TimeoutExpired,
         json.JSONDecodeError,
         OSError,
         FileNotFoundError,
@@ -242,9 +247,8 @@ def fetch_release_notes(
 
     # If the paginated walk found nothing (new_tag absent from list on a high-volume
     # repo), fall back to the directly-fetched new release so we show at least that.
-    if not releases:
-        if not tag_pattern or re.fullmatch(tag_pattern, new_tag):
-            releases = [new_release]
+    if not releases and (not tag_pattern or re.fullmatch(tag_pattern, new_tag)):
+        releases = [new_release]
 
     capped = len(releases) > 20
     if capped:
@@ -348,7 +352,9 @@ def fetch_via_bare_clone(
             "shortlog": shortlog_result.stdout.strip(),
             "diff": diff_text or (NO_CHANGES_IN_SCOPE if review_paths else ""),
         }
-    except (subprocess.CalledProcessError, subprocess.TimeoutExpired, OSError) as exc:
+    except Exception as exc:
+        if not isinstance(exc, (CalledProcessError, TimeoutExpired, OSError)):
+            raise
         console.print(
             f"Warning: bare clone failed for {name or clone_id}: {exc}", style="yellow"
         )
@@ -472,7 +478,7 @@ def fetch_changes(
     return data
 
 
-AGENT_CLIS = ["codex", "agent", "qwen", "pi", "claude" ]
+AGENT_CLIS = ["codex", "agent", "qwen", "pi", "claude"]
 AI_AGENT_ALIASES = {"cursor": "agent"}
 AGENT_DEFAULT_TIMEOUTS = {
     "claude": 120,
@@ -500,7 +506,7 @@ def load_ai_config(json_str: str | None) -> dict:
         config = json.loads(json_str)
     except json.JSONDecodeError as exc:
         console.print(f"Error: malformed --config-json: {exc}", style="red")
-        raise SystemExit(2)
+        raise SystemExit(2) from exc
 
     if not isinstance(config, dict):
         console.print("Error: --config-json must be a JSON object", style="red")
@@ -511,7 +517,7 @@ def load_ai_config(json_str: str | None) -> dict:
     if chain is not None and not isinstance(chain, list):
         console.print("Error: fallback_chain must be a list", style="red")
         raise SystemExit(2)
-    for agent in (chain or []):
+    for agent in chain or []:
         if not isinstance(agent, str) or agent not in KNOWN_AGENTS:
             console.print(
                 f"Error: unknown agent {agent!r} in fallback_chain "
@@ -559,9 +565,7 @@ def load_ai_config(json_str: str | None) -> dict:
 
     # Validate fallback_timeout
     ft = config.get("fallback_timeout")
-    if ft is not None and (
-        isinstance(ft, bool) or not isinstance(ft, int) or ft <= 0
-    ):
+    if ft is not None and (isinstance(ft, bool) or not isinstance(ft, int) or ft <= 0):
         console.print(
             f"Error: fallback_timeout must be a positive integer, got {ft!r}",
             style="red",
@@ -667,7 +671,13 @@ def get_candidates(
 
 def build_agent_cmd(agent_cmd: str, ai_model: str | None = None) -> list[str]:
     if agent_cmd == "claude":
-        return ["claude", "--model", ai_model or "sonnet", "--print", "--no-session-persistence"]
+        return [
+            "claude",
+            "--model",
+            ai_model or "sonnet",
+            "--print",
+            "--no-session-persistence",
+        ]
     if agent_cmd == "codex":
         cmd = ["codex"]
         if ai_model:
@@ -686,6 +696,7 @@ def build_agent_cmd(agent_cmd: str, ai_model: str | None = None) -> list[str]:
             cmd += ["--model", ai_model]
         return cmd + ["-p", "--no-session"]
     return [agent_cmd]
+
 
 SUPPLY_CHAIN_PROMPT = """\
 This is a non-interactive, automated security review. Do not invoke any skills, tools, or interactive workflows — respond directly with your analysis.
@@ -752,6 +763,17 @@ End with a one-sentence verdict on whether this update appears safe to apply. If
 """
 
 
+def format_usage_lines(usage: list[dict] | None) -> list[str]:
+    """Return reviewer-facing descriptions of local source consumers."""
+    lines = []
+    for entry in usage or []:
+        line = f"Usage: {entry['artifact']}"
+        if entry.get("scope"):
+            line += f" ({entry['scope']})"
+        lines.append(line)
+    return lines
+
+
 def run_ai_review(
     agent_cmd: str,
     log: str,
@@ -759,6 +781,7 @@ def run_ai_review(
     name: str | None,
     review_note: str | None = None,
     review_paths: list[str] | None = None,
+    usage: list[dict] | None = None,
     release_notes: str | None = None,
     ai_model: str | None = None,
     ai_timeout: int | None = None,
@@ -772,6 +795,9 @@ def run_ai_review(
             f"{paths_display}\n"
             f"Changes to other paths are not shown. Do not speculate about unshown paths."
         )
+    usage_lines = format_usage_lines(usage)
+    if usage_lines:
+        context_parts.append("Source usage:\n" + "\n".join(usage_lines))
     if review_note:
         context_parts.append(f"Additional reviewer instructions:\n{review_note}")
     if release_notes:
@@ -795,25 +821,24 @@ def run_ai_review(
 
     full_cmd = build_agent_cmd(agent_cmd, ai_model)
 
-    try:
-        timeout = ai_timeout or AGENT_DEFAULT_TIMEOUTS.get(
-            agent_cmd, FALLBACK_AGENT_TIMEOUT
-        )
+    timeout = ai_timeout or AGENT_DEFAULT_TIMEOUTS.get(
+        agent_cmd, FALLBACK_AGENT_TIMEOUT
+    )
+    with suppress(TimeoutExpired, OSError):
         result = subprocess.run(
             full_cmd + [prompt],
             capture_output=True,
             text=True,
             timeout=timeout,
         )
-
         if result.returncode == 0 and result.stdout.strip():
             return result.stdout.strip()
         return None
-    except (subprocess.TimeoutExpired, OSError):
-        console.print(
-            f"Warning: AI review timed out for {name or 'unknown'}", style="yellow"
-        )
-        return None
+
+    console.print(
+        f"Warning: AI review timed out for {name or 'unknown'}", style="yellow"
+    )
+    return None
 
 
 _SHA_RE = re.compile(r"^[0-9a-f]{40}$")
@@ -837,6 +862,7 @@ def render_changes(
     skip_ai: bool = False,
     review_note: str | None = None,
     review_paths: list[str] | None = None,
+    usage: list[dict] | None = None,
     release_notes: str | None = None,
     ai_config: dict | None = None,
 ):
@@ -844,12 +870,14 @@ def render_changes(
     config = ai_config or {}
     label = name or "unknown"
     header = f"{label}: {_display_ref(old_sha)} → {_display_ref(new_sha)}"
+    usage_lines = format_usage_lines(usage)
 
     # Tier 1: Shortlog (always)
     if not skip_log:
         shortlog = data.get("shortlog") or data.get("log", "(no commits found)")
+        panel_content = "\n".join(usage_lines + [shortlog])
         stdout_console.print(
-            Panel(shortlog, title=f"[bold]{header}[/bold]", subtitle="shortlog")
+            Panel(panel_content, title=f"[bold]{header}[/bold]", subtitle="shortlog")
         )
 
     # Tier 2: AI-generated review (if available)
@@ -861,10 +889,11 @@ def render_changes(
         review = None
         used_agent = None
         for agent in candidates:
-            is_preferred = (agent == normalized_preferred)
+            is_preferred = agent == normalized_preferred
             agent_model = resolve_model(agent, ai_model, config, is_preferred)
             agent_timeout = resolve_timeout(
-                agent, agent_model,
+                agent,
+                agent_model,
                 ai_timeout if is_preferred else None,
                 config,
             )
@@ -875,9 +904,10 @@ def render_changes(
                 data.get("log", ""),
                 data.get("diff", ""),
                 name,
-                review_note,
-                review_paths,
-                notes,
+                review_note=review_note,
+                review_paths=review_paths,
+                usage=usage,
+                release_notes=notes,
                 ai_model=agent_model,
                 ai_timeout=agent_timeout,
             )
@@ -974,6 +1004,7 @@ def main():
         skip_log=args.diff_only,
         review_note=args.review_note,
         review_paths=args.review_paths,
+        usage=args.usage,
         release_notes=data.get("release_notes"),
         ai_config=ai_config,
     )
