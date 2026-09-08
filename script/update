@@ -131,7 +131,7 @@ else
             (cd "$sourcedir" && jj commit -m "$commit_msg" \
                 home/.chezmoidata/versions.yml)
         else
-            (cd "$sourcedir" && git commit -F .git/COMMIT_EDITMSG \
+            (cd "$sourcedir" && git commit --no-verify -F .git/COMMIT_EDITMSG \
                 home/.chezmoidata/versions.yml)
         fi
     fi
@@ -175,7 +175,7 @@ else
                 home/.chezmoidata/container-lock.yml \
                 test/containers)
         else
-            (cd "$sourcedir" && git commit -F .git/COMMIT_EDITMSG \
+            (cd "$sourcedir" && git commit --no-verify -F .git/COMMIT_EDITMSG \
                 home/.chezmoidata/container-lock.yml \
                 test/containers)
         fi
@@ -370,7 +370,7 @@ EOF
                             home/.chezmoidata/git-lock.yml \
                             home/.chezmoidata/fetch-lock.yml)
                     else
-                        (cd "$sourcedir" && git commit -F .git/COMMIT_EDITMSG \
+                        (cd "$sourcedir" && git commit --no-verify -F .git/COMMIT_EDITMSG \
                             home/.chezmoidata/git-lock.yml \
                             home/.chezmoidata/fetch-lock.yml)
                     fi

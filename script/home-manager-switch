@@ -195,7 +195,7 @@ if [ "$use_jj" -eq 1 ]; then
     commit_msg=$(cat "$sourcedir/.git/COMMIT_EDITMSG")
     (cd "$sourcedir" && jj commit -m "$commit_msg" home/dot_config/home-manager/)
 else
-    (cd "$sourcedir" && git commit -F .git/COMMIT_EDITMSG home/dot_config/home-manager/)
+    (cd "$sourcedir" && git commit --no-verify -F .git/COMMIT_EDITMSG home/dot_config/home-manager/)
 fi
 
 hm switch

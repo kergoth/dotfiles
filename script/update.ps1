@@ -197,7 +197,7 @@ if ($DryRun) {
             jj commit -m $commitMsg home/.chezmoidata/versions.yml
         } else {
             Set-Location $repodir
-            git commit -F .git/COMMIT_EDITMSG home/.chezmoidata/versions.yml
+            git commit --no-verify -F .git/COMMIT_EDITMSG home/.chezmoidata/versions.yml
         }
     }
 }
@@ -249,7 +249,7 @@ if ($DryRun) {
             jj commit -m $commitMsg home/.chezmoidata/container-lock.yml test/containers
         } else {
             Set-Location $repodir
-            git commit -F .git/COMMIT_EDITMSG home/.chezmoidata/container-lock.yml test/containers
+            git commit --no-verify -F .git/COMMIT_EDITMSG home/.chezmoidata/container-lock.yml test/containers
         }
     }
 }
@@ -440,7 +440,7 @@ for key in sorted(set(old_map) | set(new_map)):
                             jj commit -m $commitMsg home/.chezmoidata/git-lock.yml home/.chezmoidata/fetch-lock.yml
                         } else {
                             Set-Location $repodir
-                            git commit -F .git/COMMIT_EDITMSG home/.chezmoidata/git-lock.yml home/.chezmoidata/fetch-lock.yml
+                            git commit --no-verify -F .git/COMMIT_EDITMSG home/.chezmoidata/git-lock.yml home/.chezmoidata/fetch-lock.yml
                         }
                     } else {
                         Write-Host "Skipping Git source update"
@@ -609,7 +609,7 @@ try {
         $commitMsg = Get-Content "$repodir/.git/COMMIT_EDITMSG" -Raw
         jj commit -m $commitMsg home/dot_config/home-manager/private_flake.lock
     } else {
-        git commit -F .git/COMMIT_EDITMSG home/dot_config/home-manager/private_flake.lock
+        git commit --no-verify -F .git/COMMIT_EDITMSG home/dot_config/home-manager/private_flake.lock
     }
 
     Invoke-HM @("switch")
