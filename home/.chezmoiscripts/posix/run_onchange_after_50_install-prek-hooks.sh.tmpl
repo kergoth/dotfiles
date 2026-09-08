@@ -1,0 +1,14 @@
+{{- $prek := includeTemplate "find-tool" (dict "root" . "tool" "prek") -}}
+{{- if $prek -}}
+#!/usr/bin/env bash
+# Re-run when the hook configuration changes:
+# prek.toml hash: {{ joinPath .chezmoi.workingTree "prek.toml" | include | sha256sum }}
+# Re-run after prek is installed or its location changes:
+# prek binary path: {{ $prek }}
+
+set -euo pipefail
+
+echo >&2 "Installing prek hooks"
+cd "$CHEZMOI_WORKING_TREE"
+"{{ $prek }}" install
+{{- end -}}
