@@ -38,7 +38,13 @@ def report_length(
 
 
 def check_message(message_path: pathlib.Path) -> bool:
-    lines = message_path.read_text(encoding="utf-8").splitlines()
+    lines = []
+    for line in message_path.read_text(encoding="utf-8").splitlines():
+        if line == SCISSORS_LINE:
+            break
+        if line.startswith("#"):
+            continue
+        lines.append(line)
     if not lines:
         return False
 
@@ -50,8 +56,6 @@ def check_message(message_path: pathlib.Path) -> bool:
         error_limit=SUMMARY_ERROR,
     )
     for line_number, line in enumerate(lines[1:], start=2):
-        if line == SCISSORS_LINE:
-            break
         if URL_PATTERN.search(line):
             continue
         has_errors |= report_length(
