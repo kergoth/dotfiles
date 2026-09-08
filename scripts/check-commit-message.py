@@ -11,6 +11,7 @@ SUMMARY_ERROR = 72
 BODY_WARNING = 72
 BODY_ERROR = 80
 URL_PATTERN = re.compile(r"https?://\S+")
+SCISSORS_LINE = "# ------------------------ >8 ------------------------"
 
 
 def report_length(
@@ -49,6 +50,8 @@ def check_message(message_path: pathlib.Path) -> bool:
         error_limit=SUMMARY_ERROR,
     )
     for line_number, line in enumerate(lines[1:], start=2):
+        if line == SCISSORS_LINE:
+            break
         if URL_PATTERN.search(line):
             continue
         has_errors |= report_length(
