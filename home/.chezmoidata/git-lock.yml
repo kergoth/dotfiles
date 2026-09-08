@@ -36,7 +36,7 @@ git_lock:
   plasma_applet_commandoutput: "b2b5a3f05a5613fd4f57f448c34814f65e18a21f"
   powerlevel10k: "v1.20.0"
   powerlevel10k_media: "145eb9fbc2f42ee408dacd9b22d8e6e0e553f83d"
-  retroarch: "2d0341ce9ce4eace4e2e3f250e9ca7ab4bfd54e5"
+  retroarch: "7fd1314a0a15b3690806bff7fc69305ed35ba7da"
   steamtinkerlaunch: "8550ab26a712b7f5f6d0947070181446b9de61fd"
   superpowers: "b36e0829c6d0140e93cfef2ca599b1b07d4a7797"
   vim_profiler: "d4fda79830528ffb6cce895448ac10b502f9f756"
