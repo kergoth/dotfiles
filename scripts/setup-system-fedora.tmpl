@@ -60,8 +60,8 @@ sudorun dnf -y --setopt=install_weak_deps=False install kitty
 
 {{ if not .ephemeral -}}
 # Vivaldi browser ($basearch covers both x86_64 and aarch64)
-sudo rpm --import https://repo.vivaldi.com/archive/linux_signing_key.pub
-sudo sh -c 'echo -e "[vivaldi-stable]\nname=vivaldi-stable\nbaseurl=https://repo.vivaldi.com/archive/rpm/\$basearch\nenabled=1\ngpgcheck=1\ngpgkey=https://repo.vivaldi.com/archive/linux_signing_key.pub" > /etc/yum.repos.d/vivaldi.repo'
+sudorun rpm --import https://repo.vivaldi.com/archive/linux_signing_key.pub
+sudorun sh -c 'echo -e "[vivaldi-stable]\nname=vivaldi-stable\nbaseurl=https://repo.vivaldi.com/archive/rpm/\$basearch\nenabled=1\ngpgcheck=1\ngpgkey=https://repo.vivaldi.com/archive/linux_signing_key.pub" > /etc/yum.repos.d/vivaldi.repo'
 sudorun dnf -y --setopt=install_weak_deps=False install vivaldi-stable
 {{- end }}
 
@@ -107,8 +107,8 @@ esac
 
 if [ "${onepassword_install:-}" = "rpm" ]; then
     # Install 1Password
-    sudo rpm --import https://downloads.1password.com/linux/keys/1password.asc
-    sudo sh -c 'echo -e "[1password]\nname=1Password Stable Channel\nbaseurl=https://downloads.1password.com/linux/rpm/stable/\$basearch\nenabled=1\ngpgcheck=1\nrepo_gpgcheck=1\ngpgkey=\"https://downloads.1password.com/linux/keys/1password.asc\"" > /etc/yum.repos.d/1password.repo'
+    sudorun rpm --import https://downloads.1password.com/linux/keys/1password.asc
+    sudorun sh -c 'echo -e "[1password]\nname=1Password Stable Channel\nbaseurl=https://downloads.1password.com/linux/rpm/stable/\$basearch\nenabled=1\ngpgcheck=1\nrepo_gpgcheck=1\ngpgkey=\"https://downloads.1password.com/linux/keys/1password.asc\"" > /etc/yum.repos.d/1password.repo'
     sudorun dnf -y --setopt=install_weak_deps=False install 1password
 elif [ "${onepassword_install:-}" = "tar" ]; then
     tmpdir=$(mktemp -d "${TMPDIR:-/tmp}/setup-system-fedora.XXXXXX")
