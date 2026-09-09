@@ -6,9 +6,6 @@
 {{-   if not $font.repo_path -}}
 {{-     fail (printf "missing repo_path for font: %s" $id) -}}
 {{-   end -}}
-{{-   if not $font.filename -}}
-{{-     fail (printf "missing filename for font: %s" $id) -}}
-{{-   end -}}
 {{-   $source := index $.git_sources $font.source -}}
 {{-   if not $source -}}
 {{-     fail (printf "unknown font source: %s" $font.source) -}}
@@ -20,7 +17,11 @@
 {{-   if not $sha -}}
 {{-     fail (printf "missing lock entry for font source: %s" $font.source) -}}
 {{-   end -}}
+{{-   $filename := index $font "filename" -}}
+{{-   if not $filename -}}
+{{-     $filename = base $font.repo_path}}
+{{-   end -}}
 {{-   $url := printf "%s/%s/%s" $source.raw_base $sha ($font.repo_path | replace " " "%20") -}}
-{{-   $records = append $records (dict "id" $id "filename" $font.filename "url" $url) -}}
+{{-   $records = append $records (dict "id" $id "filename" $filename "url" $url) -}}
 {{- end -}}
 {{- $records | toJson -}}
