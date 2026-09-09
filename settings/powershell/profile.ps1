@@ -12,6 +12,7 @@ if (-not $env:USERPROFILE) {
 
 Import-Module PSReadline
 Import-Module PSFzf
+Import-Module TerminalBackground
 
 # Dracula colors via https://gist.github.com/umayr/8875b44740702b340430b610b52cd182
 $env:FZF_DEFAULT_OPTS = '
