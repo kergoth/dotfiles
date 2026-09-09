@@ -65,26 +65,26 @@ sudorun flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flat
 
 {{ if or $add_tailscale $add_onepassword $add_vivaldi -}}
 # Add external repositories
-sudo mkdir -p --mode=0755 /usr/share/keyrings
+sudorun mkdir -p --mode=0755 /usr/share/keyrings
 
 {{ if $add_tailscale -}}
-curl -fsSL "https://pkgs.tailscale.com/stable/debian/{{ $codename }}.noarmor.gpg" | sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
-curl -fsSL "https://pkgs.tailscale.com/stable/debian/{{ $codename }}.tailscale-keyring.list" | sudo tee /etc/apt/sources.list.d/tailscale.list
+curl -fsSL "https://pkgs.tailscale.com/stable/debian/{{ $codename }}.noarmor.gpg" | sudorun tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
+curl -fsSL "https://pkgs.tailscale.com/stable/debian/{{ $codename }}.tailscale-keyring.list" | sudorun tee /etc/apt/sources.list.d/tailscale.list
 {{ end -}}
 {{ if $add_vivaldi -}}
 curl -fsSL https://repo.vivaldi.com/archive/linux_signing_key.pub \
-    | sudo gpg --dearmor --output /usr/share/keyrings/vivaldi-browser.gpg
+    | sudorun gpg --dearmor --output /usr/share/keyrings/vivaldi-browser.gpg
 echo "deb [arch={{ .chezmoi.arch }} signed-by=/usr/share/keyrings/vivaldi-browser.gpg] https://repo.vivaldi.com/archive/deb/ stable main" \
-    | sudo tee /etc/apt/sources.list.d/vivaldi-archive.list >/dev/null
+    | sudorun tee /etc/apt/sources.list.d/vivaldi-archive.list >/dev/null
 {{ end -}}
 {{ if $add_onepassword -}}
 op_arch="$(dpkg --print-architecture)"
 case "$op_arch" in
     amd64)
         curl -sS https://downloads.1password.com/linux/keys/1password.asc | \
-            sudo gpg --dearmor --output /usr/share/keyrings/1password-archive-keyring.gpg
+            sudorun gpg --dearmor --output /usr/share/keyrings/1password-archive-keyring.gpg
         echo "deb [arch=amd64 signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/amd64 stable main" | \
-            sudo tee /etc/apt/sources.list.d/1password.list
+            sudorun tee /etc/apt/sources.list.d/1password.list
         onepassword_install="apt"
         msg "1Password install mode: apt (amd64 repo)"
         ;;
