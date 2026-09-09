@@ -344,7 +344,12 @@ if (Get-Command rg -CommandType Application -ErrorAction SilentlyContinue) {
     $rg = Get-Command rg -CommandType Application -ErrorAction Stop | Select-Object -First 1
 
     if ((-not [Console]::IsOutputRedirected) -and (Get-Command delta -ErrorAction SilentlyContinue)) {
-      & $rg.Source --json -C 2 @args | delta --grep-header-decoration-style=box
+      $deltaArguments = @('--grep-header-decoration-style=box')
+      switch (Get-CliTheme) {
+        'dark' { $deltaArguments += '--syntax-theme=Dracula' }
+        'light' { $deltaArguments += '--syntax-theme=Catppuccin Latte' }
+      }
+      & $rg.Source --json -C 2 @args | & delta @deltaArguments
     }
     else {
       & $rg.Source @args
