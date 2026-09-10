@@ -128,7 +128,7 @@ git_sources:
     usage:
       - artifact: Zed editor and installer script
         scope: Linux
-    review_note: "This lock now governs both the installed Zed application version and the versioned installer script fetched from the official repository. Review the release as a product update first: summarize user-visible features, fixes, Linux-specific changes, and any breaking changes or notices that could affect existing configuration or workflows. Then review installer and release-integrity concerns: changes to script/install.sh, downloaded asset URLs, platform/arch mapping, user-scope install paths, update behavior, and anything that changes the trust or packaging model."
+    review_note: "This lock now governs both the installed Zed application version and the versioned installer script ofetched from the official repository on Linux systems. Review the release as a product update first: summarize user-visible features, fixes, Linux-specific changes, and any breaking changes or notices that could affect existing configuration or workflows. Then review installer and release-integrity concerns: changes to script/install.sh, downloaded asset URLs, platform/arch mapping, user-scope install paths, update behavior, and anything that changes the trust or packaging model."
   ia_fonts:
     repo: https://github.com/iaolo/iA-Fonts
     ref: master
