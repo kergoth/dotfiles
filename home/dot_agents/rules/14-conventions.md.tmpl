@@ -23,11 +23,27 @@ When source-level inspection is required (not just usage docs or API references)
    - **Large or unfamiliar, not GitHub-indexed** (GitLab, self-hosted, etc.) — skip straight to step 3.
 3. **deepwiki insufficient, or exact current source needed** — use the existing ghq clone at `~/Repos/{host}/{owner}/{repo}` if present (`git -C <path> pull` for freshness). If no clone exists, create one (`ghq get <host>/<owner>/<repo>`) rather than ad hoc `curl`/temp clones.
 
-## Bash Command Discipline{{- if eq $agent "claude" }} (Claude Code){{- end }}
-- **Prefer built-in tools**: Read over `cat`, Grep over `grep`, Glob over `find`. Tool calls reviewable, skip Bash permission checks.
-- **`>` or `>>` re-prompt despite allowlist** ([claude-code#20449](https://github.com/anthropics/claude-code/issues/20449)); use Write/Edit for file output.
-- **Double-quote paths with spaces**. Never backslash-escape spaces. Backslash-escaped whitespace triggers permission prompts even for allowed paths; quoting doesn't.
-- **Shell state doesn't persist between Bash calls**: variables and `cd` reset per call. Pass absolute paths, re-export env per call.
+## File and Shell Tool Discipline
+
+- **Prefer dedicated file tools over shell commands for file operations** when the harness provides them. Use native read, search, edit, and write operations instead of `cat`, `grep`, `find`, or shell redirection where practical.
+- **Use the shell for shell-shaped work**: builds, tests, version-control operations, pipelines, process execution, and tasks without an equivalent dedicated tool.
+- **Do not assume shell state persists between tool calls**. Use explicit working directories and re-establish required environment state.
+
+{{- if eq $agent "claude" }}
+
+### Claude Code
+
+- Avoid `>` and `>>` for file output when `Write` or `Edit` can perform the operation; redirection may trigger permission prompts despite matching Bash allow rules ([claude-code#20449](https://github.com/anthropics/claude-code/issues/20449)).
+- Avoid backslash escapes in Bash commands where quoting will work. Claude Code's permission parser may re-prompt on commands containing backslashes, including backslash-escaped spaces; prefer `"path with spaces"`.
+
+{{- else if eq $agent "codex" }}
+
+### Codex
+
+- Prefer `rg` for text search and `rg --files` for file discovery when available.
+- Prefer structured patch/edit facilities over shell-based file rewriting.
+
+{{- end }}
 
 ## Security & Privilege Boundaries
 - **Never escalate privileges**, directly or indirectly: `sudo`, `su`, `doas`, `pkexec`, SUID/SGID binaries, Linux capabilities, `newgrp`, Docker/Podman group membership (grants root-equivalent host filesystem access via bind mounts).
