@@ -1,92 +1,144 @@
 # Get editor completions based on the config schema
-"$schema" = 'https://starship.rs/config-schema.json'
+"$schema" = "https://starship.rs/config-schema.json"
 
-# Inserts a blank line between shell prompts
+# Insert a blank line between shell prompts.
 add_newline = true
 
-# Increase timeout
+# Increase timeout.
 command_timeout = 1000
 
-format = """$all"""
-{{- if .right_prompt }}
-right_format = """\
-$status\
+format = """\
+$directory\
+$git_branch\
+$git_commit\
+$git_state\
+$git_status\
+{{- if not .right_prompt }}
 $cmd_duration\
 $jobs\
 $direnv\
 $python\
 $username$hostname\
+${env_var.VIMRUNTIME}\
 $nix_shell\
+${custom.wsl_admin}\
+$container\
+$battery\
+{{- end }}
+$line_break\
+$character\
+"""
+{{- if .right_prompt }}
+right_format = """\
+$cmd_duration\
+$jobs\
+$direnv\
+$python\
+$username$hostname\
+${env_var.VIMRUNTIME}\
+$nix_shell\
+${custom.wsl_admin}\
+$container\
+$line_break\
 $battery\
 """
 {{- end }}
 
-[aws]
-disabled = true
-style = "bold #ffb86c"
-
 [character]
-error_symbol = "[✘](bold #ff5555)"
-success_symbol = "[❯](bold #50fa7b)"
+error_symbol = "[✘](bold red)"
+success_symbol = "[❯](bold green)"
+vimcmd_symbol = "[❮](bold green)"
+vimcmd_visual_symbol = "[V](bold green)"
+vimcmd_replace_symbol = "[▶](bold green)"
+vimcmd_replace_one_symbol = "[▶](bold green)"
 
 [cmd_duration]
-# Align threshold with POWERLEVEL9K_COMMAND_EXECUTION_TIME_THRESHOLD=3
 min_time = 3_000
-format = '[$duration]($style) '
-style = "bold #f1fa8c"
+format = "[$duration]($style) "
+style = "bold yellow"
 
 [directory]
+format = "[$path]($style)[$read_only]($read_only_style) "
 style = "blue"
 truncate_to_repo = false
 
-[docker_context]
-disabled = true
-format = "[$symbol$context]($style) "
-
-[gcloud]
-disabled = true
-
 [git_branch]
-format = '[$symbol$branch(:$remote_branch)]($style) '
+format = "[$branch(:$remote_branch)]($style) "
 style = "bold green"
 symbol = ""
 
+[git_commit]
+format = "[@$hash$tag]($style) "
+only_detached = true
+style = "bold green"
+tag_symbol = "#"
+
+[git_state]
+format = "[$state( $progress_current/$progress_total)]($style) "
+style = "bold red"
+
 [git_status]
-format = '([$all_status$ahead_behind]($style) )'
-untracked = ""
+format = "([$all_status$ahead_behind]($style) )"
 stashed = ""
 style = "bold yellow"
+untracked = ""
 
-[hostname]
-style = "bold #bd93f9"
+[jobs]
+format = "[$symbol]($style) "
+style = "bold red"
+symbol = " "
 
-[nix_shell]
-symbol = ""
-format = '[$symbol$state( \(nix $name\))]($style) '
-pure_msg = ""
-
-[os]
-disabled = true
-
-[openstack]
-disabled = true
-
-[os.symbols]
-Windows = " "
+[direnv]
+disabled = false
+format = "[$symbol]($style) "
+style = "bold yellow"
+symbol = "▼"
 
 [python]
-format = '[${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
-
-[shell]
-powershell_indicator = ""
-zsh_indicator = ""
-nu_indicator = "nu "
-elvish_indicator = "esh "
-fish_indicator = "fish "
-format = '$indicator$style'
-style = 'cyan bold'
-disabled = false
+detect_extensions = []
+detect_files = []
+format = "[$virtualenv]($style) "
+style = "bold cyan"
 
 [username]
 format = "[$user]($style)@"
-style_user = "bold #8be9fd"
+show_always = false
+style_root = "bold red"
+style_user = "white"
+
+[hostname]
+format = "[$hostname]($style) "
+ssh_only = true
+ssh_symbol = ""
+style = "white"
+
+[env_var.VIMRUNTIME]
+format = "[$symbol]($style) "
+symbol = ""
+style = "bold green"
+variable = "VIMRUNTIME"
+
+[nix_shell]
+format = '[$state( \($name\))]($style) '
+pure_msg = "pure"
+symbol = ""
+style = "blue"
+
+[custom.wsl_admin]
+command = "printf '󰒘'"
+format = "[$output]($style) "
+os = "linux"
+style = "bold red"
+when = "test \"${WSL_IS_ADMIN:-}\" = 1"
+
+[container]
+format = "[$name]($style) "
+style = "bold yellow"
+symbol = ""
+
+[battery]
+format = "[$symbol$percentage]($style) "
+
+[[battery.display]]
+threshold = 10
+style = "bold red"

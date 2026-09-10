@@ -73,6 +73,7 @@ if (Get-Command starship -ErrorAction SilentlyContinue) {
     $host.UI.RawUI.WindowTitle = "$titleloc `a"
   }
 
+  $env:STARSHIP_CONFIG = Join-Path $HOME ".config/starship.toml"
   Invoke-Expression (& starship init powershell)
 
   if ($IsWindows -and (Get-Item Env:\WT_SESSION -ErrorAction SilentlyContinue) -and (-not (Test-Path env:VSCODE_INJECTION))) {
