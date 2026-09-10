@@ -1,4 +1,5 @@
 ## Skills Workflow
+- Agent Skills is a cross-tool standard with a defined directory layout and SKILL.md frontmatter format, not an informal concept. Treat skills as structured components, not prompt snippets.
 - Superpowers through shared skills in `~/.agents/skills`.
 - `using-superpowers` skill available → treat as intro, follow before first substantive response.
 - Use skills system over improvising when matching skill exists.
@@ -11,10 +12,6 @@
 ## Cross-Model Routing
 When native cross-model routing is available via registered Pi providers (e.g., pi-claude-bridge, pi-cursor-sdk), prefer `subagent` with a `model:` override over the `dispatch-external-model` skill for cross-model review and multi-model delegation. Use `dispatch-external-model` when no native provider covers the target model, or when the task requires the external CLI's own harness environment.
 {{ end }}
-## Agent Tooling Design
-- Reserve agents for judgment/orchestration. Push mechanical computation (API sequences, ID mapping, pagination) into scripts/tools.
-- Script interfaces: high-level intent flags + precise targeting so agents avoid assembling complex args.
-
 ## CLI Tool Discovery
 Escalate in order — each step only when the prior one is missing, thin, or ambiguous:
 1. **`<tool> -h`**, then `--help`, then `man <tool>` — but skip straight to `--help`/`man` for tools where `-h` is known to mean something other than help (e.g. `du`, `df`, `ls`, `sort`, `grep`, `tar`, `rsync`). When unsure, `--help` is always safe to try; `-h` is only a shortcut when known safe. getopts scripts often accept `-h` not `--help`; argparse accepts both.

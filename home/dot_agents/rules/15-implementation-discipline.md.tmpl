@@ -5,12 +5,8 @@
 - **Removal is deliverable**: "Remove" or "replace" means delete old code, not wrap.
 - **Fix tests, don't preserve them**: Broken tests after removal = expected cost, not signal for compatibility.
 - **No unwanted backward compatibility**: Compatibility layers only for external consumers or explicit request.
-- **Tests pass ≠ issue complete**: Verify behavior changed, not only tests passing.
-
-## Design Conformance Verification
-- **Tests prove consistency, not correctness**: In LLM-generated codebases, passing tests prove internal consistency only.
-- **Real outputs over test fixtures**: Compare against design docs and real pipeline outputs, not only test expectations.
-- **"It runs" ≠ evidence**: Verify output matches spec and downstream consumers use it.
+- **Tests pass ≠ issue complete**: Verify behavior matches the spec and downstream consumers actually use it, not only that tests pass.
+- When building agent skills, extract mechanical operations into bundled scripts so the agent focuses on judgment, not procedure.
 
 ## Review Quality
 - **Model diversity required**: All reviews (code, spec, plan) include at least one reviewer from different model than orchestrating session, plus any current-model reviewers.
