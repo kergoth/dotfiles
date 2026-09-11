@@ -104,10 +104,48 @@ The workflow:
 
 1. Resolves candidate Git, fetched-file, and container changes without writing
    locks.
-2. Displays the relevant change and review context.
-3. Requests approval when operating interactively.
-4. Writes the already-reviewed resolution.
-5. Applies the broader repository and Home Manager update sequence.
+2. Reviews each Git source individually, requesting a decision before moving
+   to the next.
+3. Applies approved Git lock changes, then continues the broader repository
+   and Home Manager update sequence.
+
+### Per-source Git review
+
+Each Git candidate is shown with its change context and an optional AI summary.
+The reviewer then chooses from:
+
+| Key | Action |
+| --- | --- |
+| `a` | Apply — select this source and continue to the next |
+| `s` | Skip — defer this source and continue to the next |
+| `d` | Diff — re-display the diff without re-running AI review |
+| `f` | Finish — apply all prior selections and exit before later update steps |
+| `c` | Cancel — discard all selections and exit before any lock writes |
+| `?` | Help — show action descriptions, then re-prompt |
+
+Cancel exits before Home Manager and other later categories. Finish applies
+only the Git selections already made, skipping sources not yet reached, then
+also exits before later categories. Work completed in earlier categories is
+not rolled back by either action.
+
+Sources with `review: false` are accepted automatically without interaction.
+If no source requires review, all are accepted and the session ends without
+prompting.
+
+### Non-interactive and dry-run modes
+
+`script/update --dry-run` renders each enabled Git review without prompting,
+writing locks, or making commits.
+
+`script/update --no-review` accepts all Git candidates without displaying
+review evidence or prompting for decisions. This preserves the previous
+behavior for automated or trusted contexts.
+
+Running `script/update` without `--no-review` in a non-interactive environment
+(no TTY) fails before any lock write. Use `--no-review` to accept all
+candidates non-interactively.
+
+Fetch source review is not yet implemented; it remains separate work.
 
 `script/update --dry-run` reports candidates without writing files. The update
 scripts also handle other maintenance, so consult their `-h` output rather
