@@ -81,7 +81,10 @@ def _print_summary(console: Console, resolved: list[tuple[Provider, Any]], state
     rows = []
     for provider, candidate in resolved:
         state = states.get((provider.name, candidate.id), "unprocessed")
-        if outcome == "cancel" and state in {"accepted", "auto-accepted", "accepted without review"}: state = "discarded"
+        if outcome == "cancel" and state in {"accepted", "auto-accepted", "accepted without review"}:
+            state = "discarded"
+        elif outcome == "dry-run" and state == "unprocessed":
+            state = "previewed"
         rows.append(f"{candidate.id} ({state})")
     console.print("Review summary: " + ", ".join(rows))
 
