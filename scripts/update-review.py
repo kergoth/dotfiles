@@ -11,7 +11,6 @@ from pathlib import Path
 
 import typer
 from rich.console import Console
-
 from update_review.providers.git import GitProvider
 from update_review.runner import run_review_session
 
@@ -41,7 +40,9 @@ def run(
         no_review=no_review,
         interactive=__import__("sys").stdin.isatty(),
     )
-    result_file.write_text(json.dumps({"outcome": result.outcome, "providers": result.summaries}))
+    result_file.write_text(
+        json.dumps({"outcome": result.outcome, "providers": result.summaries})
+    )
 
 
 if __name__ == "__main__":
