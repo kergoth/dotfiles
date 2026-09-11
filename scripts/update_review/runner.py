@@ -29,7 +29,7 @@ def run_review_session(providers: Iterable[Provider], *, input_fn: Callable[[str
         raise RuntimeError("interactive review requires a terminal; use --no-review to accept all candidates")
     selected: dict[str, list[Any]] = defaultdict(list)
     states: dict[tuple[str, str], str] = {}
-    _print_legend(console)
+    legend_shown = False
     for provider, candidate in resolved:
         key = (provider.name, candidate.id)
         if no_review:
@@ -49,6 +49,9 @@ def run_review_session(providers: Iterable[Provider], *, input_fn: Callable[[str
                 console.print(output)
         if dry_run:
             states[key] = "unprocessed"; continue
+        if not legend_shown:
+            _print_legend(console)
+            legend_shown = True
         while True:
             action = input_fn("[a]pply [s]kip [d]iff [f]inish [c]ancel [?] help: ").lower()
             if action == "a": selected[provider.name].append(candidate); states[key] = "accepted"; break
@@ -67,7 +70,7 @@ def run_review_session(providers: Iterable[Provider], *, input_fn: Callable[[str
 
 
 def _print_legend(console: Console) -> None:
-    console.print("Review controls: [a]pply [s]kip [d]iff [f]inish [c]ancel [?] help")
+    console.print("Review controls: [a]pply [s]kip [d]iff [f]inish [c]ancel [?] help", markup=False)
 
 
 def _print_help(console: Console) -> None:
