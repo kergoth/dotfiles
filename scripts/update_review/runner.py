@@ -52,7 +52,6 @@ def run_review_session(
         )
     selected: dict[str, list[Any]] = defaultdict(list)
     states: dict[tuple[str, str], str] = {}
-    legend_shown = False
     for provider, candidate in resolved:
         key = (provider.name, candidate.id)
         if no_review:
@@ -80,9 +79,6 @@ def run_review_session(
         if dry_run:
             states[key] = "unprocessed"
             continue
-        if not legend_shown:
-            _print_legend(console)
-            legend_shown = True
         while True:
             action = input_fn(
                 "[a]pply [s]kip [d]iff [f]inish [c]ancel [?] help: "
@@ -114,11 +110,6 @@ def run_review_session(
     return _apply_selected(providers, selected, "complete")
 
 
-def _print_legend(console: Console) -> None:
-    console.print(
-        "Review controls: [a]pply [s]kip [d]iff [f]inish [c]ancel [?] help",
-        markup=False,
-    )
 
 
 def _print_help(console: Console) -> None:
