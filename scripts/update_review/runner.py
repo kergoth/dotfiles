@@ -114,9 +114,20 @@ def run_review_session(
 
 
 def _print_help(console: Console) -> None:
-    console.print(
-        "Apply selects current update. Skip defers it. Diff re-shows evidence. Finish applies prior selections and exits. Cancel discards selections and exits."
-    )
+    from rich.panel import Panel
+    from rich.table import Table
+
+    table = Table(show_header=False, box=None, padding=(0, 1))
+    table.add_column(style="bold cyan", no_wrap=True)
+    table.add_column(style="bold", no_wrap=True)
+    table.add_column()
+    table.add_row("a", "Apply", "Select this update and continue")
+    table.add_row("s", "Skip", "Defer this update and continue")
+    table.add_row("d", "Diff", "Re-show the diff without re-running AI review")
+    table.add_row("f", "Finish", "Apply prior selections and exit before later steps")
+    table.add_row("c", "Cancel", "Discard all selections and exit before any writes")
+    table.add_row("?", "Help", "Show this help")
+    console.print(Panel(table, title="Controls", expand=False))
 
 
 def _print_summary(
