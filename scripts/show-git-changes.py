@@ -102,6 +102,11 @@ def parse_args():
         "--config-json",
         help="AI review config as inline JSON (from ai-review.yml via pipeline)",
     )
+    parser.add_argument(
+        "--output-json",
+        metavar="PATH",
+        help="Write fetched evidence and AI prompt as JSON to PATH; skip rendering",
+    )
     return parser.parse_args()
 
 
@@ -774,19 +779,15 @@ def format_usage_lines(usage: list[dict] | None) -> list[str]:
     return lines
 
 
-def run_ai_review(
-    agent_cmd: str,
+def build_ai_prompt(
     log: str,
     diff: str,
-    name: str | None,
     review_note: str | None = None,
     review_paths: list[str] | None = None,
     usage: list[dict] | None = None,
     release_notes: str | None = None,
-    ai_model: str | None = None,
-    ai_timeout: int | None = None,
-) -> str | None:
-    """Run AI agent to produce a supply chain review summary."""
+) -> str:
+    """Construct the supply-chain review prompt from pre-fetched evidence."""
     context_parts = []
     if review_paths:
         paths_display = ", ".join(review_paths)
@@ -812,11 +813,34 @@ def run_ai_review(
     prompt_template = (
         SUPPLY_CHAIN_PROMPT_WITH_NOTES if release_notes else SUPPLY_CHAIN_PROMPT
     )
-    prompt = prompt_template.format(
+    return prompt_template.format(
         log=log,
         diff=diff,
         review_context=review_context,
         release_notes=release_notes or "",
+    )
+
+
+def run_ai_review(
+    agent_cmd: str,
+    log: str,
+    diff: str,
+    name: str | None,
+    review_note: str | None = None,
+    review_paths: list[str] | None = None,
+    usage: list[dict] | None = None,
+    release_notes: str | None = None,
+    ai_model: str | None = None,
+    ai_timeout: int | None = None,
+) -> str | None:
+    """Run AI agent to produce a supply chain review summary."""
+    prompt = build_ai_prompt(
+        log=log,
+        diff=diff,
+        review_note=review_note,
+        review_paths=review_paths,
+        usage=usage,
+        release_notes=release_notes,
     )
 
     full_cmd = build_agent_cmd(agent_cmd, ai_model)
@@ -990,6 +1014,28 @@ def main():
             style="red",
         )
         return 1
+
+    if args.output_json:
+        notes = data.get("release_notes") or ""
+        prompt = build_ai_prompt(
+            log=data.get("log", ""),
+            diff=data.get("diff", ""),
+            review_note=args.review_note,
+            review_paths=args.review_paths,
+            usage=args.usage,
+            release_notes=notes or None,
+        )
+        Path(args.output_json).write_text(
+            json.dumps({
+                "log": data.get("log", ""),
+                "shortlog": data.get("shortlog", ""),
+                "diff": data.get("diff", ""),
+                "release_notes": notes,
+                "prompt": prompt,
+            }),
+            encoding="utf-8",
+        )
+        return 0
 
     render_changes(
         name=args.name,

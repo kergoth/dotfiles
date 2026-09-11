@@ -1,30 +1,66 @@
 from __future__ import annotations
 
 import json
-import subprocess
 import os
+import subprocess
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from update_review.models import AIReviewRequest
+
 
 @dataclass
 class PreparedGitReview:
-    provider: "GitProvider"
-    candidate: "GitCandidate"
+    provider: GitProvider
+    candidate: GitCandidate
     _summary: str | None = None
     _diff: str | None = None
+    _data: dict[str, Any] | None = None
+
+    def _base_command(self) -> list[str]:
+        change = self.candidate.state
+        ref = (
+            change["new_sha"]
+            if change.get("kind") == "tag"
+            else change.get("ref") or "main"
+        )
+        cmd = [
+            "uv", "run",
+            str(self.provider.repo_root / "scripts" / "show-git-changes.py"),
+            change["repo"], change["old_sha"], change["new_sha"],
+            "--name", change["id"], "--ref", ref,
+        ]
+        if change.get("kind"):
+            cmd += ["--kind", change["kind"]]
+        if change.get("tag_pattern"):
+            cmd += ["--tag-pattern", change["tag_pattern"]]
+        if change.get("review_note"):
+            cmd += ["--review-note", change["review_note"]]
+        for path in change.get("review_paths") or []:
+            cmd += ["--review-paths", path]
+        for entry in change.get("usage") or []:
+            cmd += ["--usage", json.dumps(entry)]
+        return cmd
 
     def _run_show(self, *extra: str) -> str:
-        change = self.candidate.state
-        ref = change["new_sha"] if change.get("kind") == "tag" else change.get("ref") or "main"
-        command = [
-            "uv", "run", str(self.provider.repo_root / "scripts" / "show-git-changes.py"),
-            change["repo"], change["old_sha"], change["new_sha"],
-            "--name", change["id"], "--ref", ref, "--no-ai", *extra,
-        ]
-        return subprocess.run(command, check=True, capture_output=True, text=True).stdout
+        command = self._base_command() + ["--no-ai", *extra]
+        return subprocess.run(
+            command, check=True, capture_output=True, text=True
+        ).stdout
+
+    def _fetch_data(self) -> dict[str, Any]:
+        if self._data is None:
+            descriptor, path = tempfile.mkstemp(suffix=".json")
+            os.close(descriptor)
+            try:
+                command = self._base_command() + ["--output-json", path]
+                subprocess.run(command, check=True, capture_output=True, text=True)
+                self._data = json.loads(Path(path).read_text(encoding="utf-8"))
+            finally:
+                Path(path).unlink(missing_ok=True)
+        return self._data
 
     def show(self, console: Any, *, diff_only: bool = False) -> None:
         if diff_only:
@@ -36,8 +72,21 @@ class PreparedGitReview:
                 self._summary = self._run_show()
             console.print(self._summary)
 
-    def ai_request(self) -> None:
-        return None
+    def ai_request(self) -> AIReviewRequest | None:
+        try:
+            data = self._fetch_data()
+        except (subprocess.CalledProcessError, OSError):
+            return None
+        prompt = data.get("prompt", "")
+        if not prompt:
+            return None
+        change = self.candidate.state
+        return AIReviewRequest(
+            prompt=prompt,
+            preferred_agent=change.get("ai_agent"),
+            model=change.get("ai_model"),
+            timeout=change.get("ai_timeout"),
+        )
 
 
 @dataclass(frozen=True)
@@ -69,7 +118,13 @@ class GitProvider:
 
     def resolve(self) -> list[GitCandidate]:
         result = subprocess.run(
-            ["uv", "run", str(self.repo_root / "scripts" / "update-git-lock.py"), "--dry-run", "--json"],
+            [
+                "uv",
+                "run",
+                str(self.repo_root / "scripts" / "update-git-lock.py"),
+                "--dry-run",
+                "--json",
+            ],
             capture_output=True,
             text=True,
             check=False,
