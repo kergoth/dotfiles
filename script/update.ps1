@@ -254,211 +254,41 @@ if ($DryRun) {
     }
 }
 
-$gitLockUpdater = Join-Path $repodir "scripts/update-git-lock.py"
-if (Test-Path $gitLockUpdater) {
-    Write-Host "Checking for Git source updates"
-    if (Get-Command uv -ErrorAction SilentlyContinue) {
-        $changesFile = [System.IO.Path]::GetTempFileName()
-        try {
-            # Step 1: Resolve (always, even in dry-run)
-            $resolveOutput = uv run $gitLockUpdater --dry-run --json
-            $resolveExit = $LASTEXITCODE
-
-            if ($resolveExit -eq 2) {
-                Write-Host "No Git source updates available"
-            } elseif ($resolveExit -ne 0) {
-                Write-Warning "Warning: Git source resolution failed (exit $resolveExit); skipping"
-            } else {
-                # Write JSON to temp file
-                $resolveOutput | Out-File -FilePath $changesFile -Encoding utf8
-                $rawData = Get-Content $changesFile -Raw | ConvertFrom-Json
-                if ($rawData -is [System.Object[]] -or $rawData -is [array]) {
-                    $changes = $rawData
-                    $aiConfigJson = '{}'
-                } else {
-                    $changes = $rawData.changes
-                    $aiConfig = $rawData.ai_review
-                    $aiConfigJson = if ($aiConfig -and ($aiConfig | Get-Member -MemberType NoteProperty).Count -gt 0) {
-                        $aiConfig | ConvertTo-Json -Depth 4 -Compress
-                    } else { '{}' }
-                }
-
-                # Step 2: Review (unless --no-review)
-                if (-not $NoReview) {
-                    foreach ($c in $changes) {
-                        if ($c.review -ne $false) {
-                            $ref = if ($c.kind -eq 'tag') { $c.new_sha } elseif ($c.ref) { $c.ref } else { "main" }
-                            $reviewArgs = @($c.repo, $c.old_sha, $c.new_sha, '--name', $c.id, '--ref', $ref)
-                            if ($c.kind) { $reviewArgs += @('--kind', $c.kind) }
-                            if ($c.tag_pattern) { $reviewArgs += @('--tag-pattern', $c.tag_pattern) }
-                            if ($c.review_note) { $reviewArgs += @('--review-note', $c.review_note) }
-                            foreach ($usage in @($c.usage)) {
-                                if ($usage) {
-                                    $reviewArgs += @('--usage', ($usage | ConvertTo-Json -Compress))
-                                }
-                            }
-                            if ($c.ai_agent) { $reviewArgs += @('--ai-agent', $c.ai_agent) }
-                            if ($c.ai_model) { $reviewArgs += @('--ai-model', $c.ai_model) }
-                            if ($c.ai_timeout) { $reviewArgs += @('--ai-timeout', [string]$c.ai_timeout) }
-                            foreach ($reviewPath in @($c.review_paths)) {
-                                if ($reviewPath) {
-                                    $reviewArgs += @('--review-paths', $reviewPath)
-                                }
-                            }
-                            $reviewArgs += @('--config-json', $aiConfigJson)
-                            uv run (Join-Path $repodir "scripts/show-git-changes.py") @reviewArgs
-                        }
-                    }
-                }
-
-                # Step 3: Decision point
-                if ($DryRun) {
-                    Write-Host "Dry run: Git source review complete, not applying"
-                } else {
-                    $apply = $true
-                    if (-not $NoReview -and -not [Console]::IsInputRedirected) {
-                        $decided = $false
-                        while (-not $decided) {
-                            $answer = Read-Host "Apply Git source updates? [Y/n/d]"
-                            switch -Regex ($answer) {
-                                '^$|^[Yy]' { $decided = $true }
-                                '^[Nn]' { $apply = $false; $decided = $true }
-                                '^[Dd]' {
-                                    foreach ($c in $changes) {
-                                        if ($c.review -ne $false) {
-                                            $ref = if ($c.kind -eq 'tag') { $c.new_sha } elseif ($c.ref) { $c.ref } else { "main" }
-                                            $reviewArgs = @($c.repo, $c.old_sha, $c.new_sha, '--name', $c.id, '--ref', $ref, '--diff-only')
-                                            if ($c.kind) { $reviewArgs += @('--kind', $c.kind) }
-                                            if ($c.tag_pattern) { $reviewArgs += @('--tag-pattern', $c.tag_pattern) }
-                                            if ($c.review_note) { $reviewArgs += @('--review-note', $c.review_note) }
-                                            foreach ($usage in @($c.usage)) {
-                                                if ($usage) {
-                                                    $reviewArgs += @('--usage', ($usage | ConvertTo-Json -Compress))
-                                                }
-                                            }
-                                            if ($c.ai_agent) { $reviewArgs += @('--ai-agent', $c.ai_agent) }
-                                            if ($c.ai_model) { $reviewArgs += @('--ai-model', $c.ai_model) }
-                                            if ($c.ai_timeout) { $reviewArgs += @('--ai-timeout', [string]$c.ai_timeout) }
-                                            foreach ($reviewPath in @($c.review_paths)) {
-                                                if ($reviewPath) {
-                                                    $reviewArgs += @('--review-paths', $reviewPath)
-                                                }
-                                            }
-                                            $reviewArgs += @('--config-json', $aiConfigJson)
-                                            uv run (Join-Path $repodir "scripts/show-git-changes.py") @reviewArgs
-                                        }
-                                    }
-                                }
-                                default { Write-Host "Please answer Y, n, or d" }
-                            }
-                        }
-                    }
-
-                    if ($apply) {
-                        uv run $gitLockUpdater --apply-resolved $changesFile
-                        $fetchLockUpdater = Join-Path $repodir "scripts/update-fetch-lock.py"
-                        if (Test-Path $fetchLockUpdater) {
-                            uv run $fetchLockUpdater
-                        }
-                        try {
-                            chezmoi apply -R
-                        } catch {
-                            # Match the shell script behavior and keep going.
-                        }
-
-                        Set-Location $repodir
-                        git diff --quiet -- home/.chezmoidata/fetch-lock.yml 2> $null
-                        $title = if ($LASTEXITCODE -eq 0) { "Update Git lock" } else { "Update source locks" }
-                        $commitLines = @($title, "", "Git lock updates:")
-                        foreach ($c in $changes) {
-                            $suffix = if ($c.tag_pattern) { " [$($c.tag_pattern)]" } else { "" }
-                            if ($c.kind -eq 'tag') {
-                                $old = if ($c.old_sha) { $c.old_sha } else { '(new)' }
-                                $new = $c.new_sha
-                                $commitLines += "  $($c.id): $old -> $new$suffix"
-                            } else {
-                                $old = $c.old_sha.Substring(0, 7)
-                                $new = $c.new_sha.Substring(0, 7)
-                                $ref = if ($c.ref) { $c.ref } else { "main" }
-                                $commitLines += "  $($c.id): $old -> $new ($ref)$suffix"
-                            }
-                        }
-                        $fetchUpdates = @'
-import re
-import subprocess
-import sys
-
-repo = sys.argv[1]
-path = "home/.chezmoidata/fetch-lock.yml"
-line_re = re.compile(r"^[+-]  ([^:]+): \"([^\"]*)\"$")
-
-result = subprocess.run(
-    ["git", "-C", repo, "diff", "--no-color", "--unified=0", "--", path],
-    capture_output=True,
-    text=True,
-    check=False,
-)
-
-old_map = {}
-new_map = {}
-for line in result.stdout.splitlines():
-    if line.startswith("--- ") or line.startswith("+++ "):
-        continue
-    match = line_re.match(line)
-    if not match:
-        continue
-    key, value = match.groups()
-    if line[0] == "-":
-        old_map[key] = value
-    elif line[0] == "+":
-        new_map[key] = value
-
-for key in sorted(set(old_map) | set(new_map)):
-    old_v = old_map.get(key)
-    new_v = new_map.get(key)
-    if old_v != new_v:
-        old_s = (old_v or "(new)")[:12]
-        new_s = (new_v or "(removed)")[:12]
-        print(f"{key}: {old_s} -> {new_s}")
-'@ | uv run python3 - $repodir
-                        if ($LASTEXITCODE -eq 0 -and $fetchUpdates) {
-                            $commitLines += ""
-                            $commitLines += "Fetch lock updates:"
-                            foreach ($line in ($fetchUpdates -split "`r?`n")) {
-                                if ($line) {
-                                    $commitLines += "  $line"
-                                }
-                            }
-                        }
-                        $commitMessage = $commitLines -join "`n"
-                        $commitMessage | Out-File -FilePath "$repodir\.git\COMMIT_EDITMSG" -Encoding utf8
-
-                        Write-Host "Committing Git lock update"
-                        if ($use_jj -eq 1) {
-                            $commitMsg = Get-Content "$repodir\.git\COMMIT_EDITMSG" -Raw
-                            Set-Location $repodir
-                            jj commit -m $commitMsg home/.chezmoidata/git-lock.yml home/.chezmoidata/fetch-lock.yml
-                        } else {
-                            Set-Location $repodir
-                            git commit --no-verify -F .git/COMMIT_EDITMSG home/.chezmoidata/git-lock.yml home/.chezmoidata/fetch-lock.yml
-                        }
-                    } else {
-                        Write-Host "Skipping Git source update"
-                        try {
-                            chezmoi apply -R
-                        } catch {
-                            # Match the shell script behavior and keep going.
-                        }
-                    }
-                }
-            }
-        } finally {
-            if (Test-Path $changesFile) {
-                Remove-Item $changesFile -Force
-            }
-        }
-    } else {
+$reviewRunner = Join-Path $repodir "scripts/update-review.py"
+if (Test-Path $reviewRunner) {
+    if (-not (Get-Command uv -ErrorAction SilentlyContinue)) {
         Write-Warning "Warning: uv not available; skipping Git source update"
+    } else {
+        $resultFile = [System.IO.Path]::GetTempFileName()
+        try {
+            $reviewArgs = @("--script", $reviewRunner, "git", "--result-file", $resultFile)
+            if ($DryRun) { $reviewArgs += "--dry-run" }
+            if ($NoReview) { $reviewArgs += "--no-review" }
+            uv run @reviewArgs
+            if ($LASTEXITCODE -ne 0) { throw "Git review failed (exit $LASTEXITCODE)" }
+            $reviewResult = Get-Content $resultFile -Raw | ConvertFrom-Json
+            if ($reviewResult.outcome -eq "cancel") { exit 0 }
+            if (-not $DryRun -and @($reviewResult.providers.git).Count -gt 0) {
+                try { chezmoi apply -R } catch {}
+                $lines = @("Update Git lock", "", "Git lock updates:")
+                foreach ($change in @($reviewResult.providers.git)) {
+                    $lines += "  $($change.id): $($change.old_sha) -> $($change.new_sha)"
+                }
+                $lines -join "`n" | Out-File -FilePath "$repodir\.git\COMMIT_EDITMSG" -Encoding utf8
+                Set-Location $repodir
+                git diff --quiet -- home/.chezmoidata/git-lock.yml
+                if ($LASTEXITCODE -ne 0) {
+                    if ($use_jj -eq 1) {
+                        jj commit -m (Get-Content "$repodir\.git\COMMIT_EDITMSG" -Raw) home/.chezmoidata/git-lock.yml
+                    } else {
+                        git commit --no-verify -F .git/COMMIT_EDITMSG home/.chezmoidata/git-lock.yml
+                    }
+                }
+            }
+            if ($reviewResult.outcome -eq "finish") { exit 0 }
+        } finally {
+            Remove-Item $resultFile -Force -ErrorAction SilentlyContinue
+        }
     }
 }
 

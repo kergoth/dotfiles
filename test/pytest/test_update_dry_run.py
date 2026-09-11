@@ -223,15 +223,13 @@ if ($args[0] -eq "generations") {
     assert "nix-env --delete-generations old" not in calls
 
 
-def test_powershell_update_forwards_usage_to_both_review_paths():
-    """PowerShell preserves source usage in normal and diff-only reviews."""
+def test_powershell_update_uses_shared_review_runner():
     script = (REPO / "script" / "update.ps1").read_text()
-    usage_forwarding = (
-        "$reviewArgs += @('--usage', ($usage | ConvertTo-Json -Compress))"
-    )
 
-    assert script.count("foreach ($usage in @($c.usage))") == 2
-    assert script.count(usage_forwarding) == 2
+    assert 'scripts/update-review.py' in script
+    assert 'uv run @reviewArgs' in script
+    assert '--result-file' in script
+    assert 'Apply Git source updates? [Y/n/d]' not in script
 
 
 def test_powershell_home_manager_update_inputs_match_dry_run():

@@ -182,207 +182,35 @@ else
     fi
 fi
 
-if [ -f "$sourcedir/scripts/update-git-lock.py" ]; then
-    echo >&2 "Checking for Git source updates"
-    if command -v uv >/dev/null 2>&1; then
-        # Step 1: Resolve (always, even in dry-run)
-        changes_file=$(mktemp "${TMPDIR:-/tmp}/update.XXXXXX")
-        cleanup_changes_file() { rm -f "$changes_file"; }
-        trap cleanup_changes_file EXIT INT TERM
-
-        resolve_exit=0
-        uv run "$sourcedir/scripts/update-git-lock.py" --dry-run --json > "$changes_file" || resolve_exit=$?
-
-        if [ "$resolve_exit" -eq 2 ]; then
-            echo >&2 "No Git source updates available"
-        elif [ "$resolve_exit" -ne 0 ]; then
-            echo >&2 "Warning: Git source resolution failed (exit $resolve_exit); skipping"
-        else
-            # Step 2: Review (unless --no-review)
-            if [ "$no_review" -eq 0 ]; then
-                cat <<'EOF' | uv run python3 - "$changes_file" "$sourcedir/scripts/show-git-changes.py"
-import json, subprocess, sys
-raw = json.load(open(sys.argv[1]))
-changes = raw["changes"] if isinstance(raw, dict) else raw
-ai_config = raw.get("ai_review", {}) if isinstance(raw, dict) else {}
-ai_config_json = json.dumps(ai_config)
-script = sys.argv[2]
-for c in changes:
-    if c.get('review', True):
-        ref = c['new_sha'] if c.get('kind') == 'tag' else (c.get('ref') or 'main')
-        cmd = ['uv', 'run', script, c['repo'], c['old_sha'], c['new_sha'],
-               '--name', c['id'], '--ref', ref]
-        if c.get('kind'):
-            cmd += ['--kind', c['kind']]
-        if c.get('tag_pattern'):
-            cmd += ['--tag-pattern', c['tag_pattern']]
-        if c.get('review_note'):
-            cmd += ['--review-note', c['review_note']]
-        for usage in (c.get('usage') or []):
-            cmd += ['--usage', json.dumps(usage)]
-        if c.get('ai_agent'):
-            cmd += ['--ai-agent', c['ai_agent']]
-        if c.get('ai_model'):
-            cmd += ['--ai-model', c['ai_model']]
-        if c.get('ai_timeout'):
-            cmd += ['--ai-timeout', str(c['ai_timeout'])]
-        for pat in (c.get('review_paths') or []):
-            cmd += ['--review-paths', pat]
-        cmd += ['--config-json', ai_config_json]
-        subprocess.run(cmd)
-EOF
-            fi
-
-            # Step 3: Decision point
-            if [ "$dry_run" -eq 1 ]; then
-                echo >&2 "Dry run: Git source review complete, not applying"
-            else
-                apply=1
-                if [ "$no_review" -eq 0 ] && [ -t 0 ]; then
-                    while true; do
-                        printf >&2 "Apply Git source updates? [Y/n/d] "
-                        read -r answer
-                        case "$answer" in
-                            ""|[Yy]|[Yy]es) break ;;
-                            [Nn]|[Nn]o) apply=0; break ;;
-                            [Dd]|[Dd]iff)
-                                cat <<'EOF' | uv run python3 - "$changes_file" "$sourcedir/scripts/show-git-changes.py"
-import json, subprocess, sys
-raw = json.load(open(sys.argv[1]))
-changes = raw["changes"] if isinstance(raw, dict) else raw
-ai_config = raw.get("ai_review", {}) if isinstance(raw, dict) else {}
-ai_config_json = json.dumps(ai_config)
-script = sys.argv[2]
-for c in changes:
-    if c.get('review', True):
-        ref = c['new_sha'] if c.get('kind') == 'tag' else (c.get('ref') or 'main')
-        cmd = ['uv', 'run', script, c['repo'], c['old_sha'], c['new_sha'],
-               '--name', c['id'], '--ref', ref, '--diff-only']
-        if c.get('kind'):
-            cmd += ['--kind', c['kind']]
-        if c.get('tag_pattern'):
-            cmd += ['--tag-pattern', c['tag_pattern']]
-        if c.get('review_note'):
-            cmd += ['--review-note', c['review_note']]
-        for usage in (c.get('usage') or []):
-            cmd += ['--usage', json.dumps(usage)]
-        if c.get('ai_agent'):
-            cmd += ['--ai-agent', c['ai_agent']]
-        if c.get('ai_model'):
-            cmd += ['--ai-model', c['ai_model']]
-        if c.get('ai_timeout'):
-            cmd += ['--ai-timeout', str(c['ai_timeout'])]
-        for pat in (c.get('review_paths') or []):
-            cmd += ['--review-paths', pat]
-        cmd += ['--config-json', ai_config_json]
-        subprocess.run(cmd)
-EOF
-                                ;;
-                            *) echo >&2 "Please answer Y, n, or d" ;;
-                        esac
-                    done
-                fi
-
-                if [ "$apply" -eq 1 ]; then
-                    # Step 4: Write lock from pre-resolved data
-                    uv run "$sourcedir/scripts/update-git-lock.py" \
-                        --apply-resolved "$changes_file"
-                    if [ -f "$sourcedir/scripts/update-fetch-lock.py" ]; then
-                        uv run "$sourcedir/scripts/update-fetch-lock.py"
-                    fi
-                    chezmoi apply -R || :
-
-                    # Step 5: Build commit message and commit
-                    {
-                        title="Update Git lock"
-                        if ! (cd "$sourcedir" && git diff --quiet -- home/.chezmoidata/fetch-lock.yml 2>/dev/null); then
-                            title="Update source locks"
-                        fi
-                        echo "$title"
-                        echo
-                        echo "Git lock updates:"
-                        cat <<'EOF' | uv run python3 - "$changes_file"
-import json, sys
-raw = json.load(open(sys.argv[1]))
-changes = raw["changes"] if isinstance(raw, dict) else raw
-for c in changes:
-    if c.get('kind') == 'tag':
-        old = c['old_sha'] if c['old_sha'] else '(new)'
-        new = c['new_sha']
-        suffix = f" [{c['tag_pattern']}]" if c.get('tag_pattern') else ""
-        print(f"  {c['id']}: {old} → {new}{suffix}")
-    else:
-        old = c['old_sha'][:7]
-        new = c['new_sha'][:7]
-        ref = c.get('ref') or 'main'
-        suffix = f" [{c['tag_pattern']}]" if c.get('tag_pattern') else ""
-        print(f"  {c['id']}: {old} → {new} ({ref}){suffix}")
-EOF
-                        fetch_updates=$(cat <<'EOF' | uv run python3 - "$sourcedir"
-import re
-import subprocess
-import sys
-
-repo = sys.argv[1]
-path = "home/.chezmoidata/fetch-lock.yml"
-line_re = re.compile(r"^[+-]  ([^:]+): \"([^\"]*)\"$")
-
-result = subprocess.run(
-    ["git", "-C", repo, "diff", "--no-color", "--unified=0", "--", path],
-    capture_output=True,
-    text=True,
-    check=False,
-)
-
-old_map = {}
-new_map = {}
-for line in result.stdout.splitlines():
-    if line.startswith("--- ") or line.startswith("+++ "):
-        continue
-    match = line_re.match(line)
-    if not match:
-        continue
-    key, value = match.groups()
-    if line[0] == "-":
-        old_map[key] = value
-    elif line[0] == "+":
-        new_map[key] = value
-
-for key in sorted(set(old_map) | set(new_map)):
-    old_v = old_map.get(key)
-    new_v = new_map.get(key)
-    if old_v != new_v:
-        old_s = (old_v or "(new)")[:12]
-        new_s = (new_v or "(removed)")[:12]
-        print(f"{key}: {old_s} -> {new_s}")
-EOF
-)
-                        if [ -n "$fetch_updates" ]; then
-                            echo
-                            echo "Fetch lock updates:"
-                            printf '%s\n' "$fetch_updates" | sed 's/^/  /'
-                        fi
-                    } > "$sourcedir/.git/COMMIT_EDITMSG"
-                    echo >&2 "Committing Git lock update"
-                    if [ "$use_jj" -eq 1 ]; then
-                        commit_msg=$(cat "$sourcedir/.git/COMMIT_EDITMSG")
-                        (cd "$sourcedir" && jj commit -m "$commit_msg" \
-                            home/.chezmoidata/git-lock.yml \
-                            home/.chezmoidata/fetch-lock.yml)
-                    else
-                        (cd "$sourcedir" && git commit --no-verify -F .git/COMMIT_EDITMSG \
-                            home/.chezmoidata/git-lock.yml \
-                            home/.chezmoidata/fetch-lock.yml)
-                    fi
+if [ -f "$sourcedir/scripts/update-review.py" ] && command -v uv >/dev/null 2>&1; then
+    result_file=$(mktemp "${TMPDIR:-/tmp}/update-review.XXXXXX")
+    trap 'rm -f "$result_file"' EXIT INT TERM
+    review_args=(git --result-file "$result_file")
+    [ "$dry_run" -eq 1 ] && review_args+=(--dry-run)
+    [ "$no_review" -eq 1 ] && review_args+=(--no-review)
+    uv run --script "$sourcedir/scripts/update-review.py" "${review_args[@]}"
+    outcome=$(jq -r '.outcome' "$result_file")
+    case "$outcome" in
+        cancel) exit 0 ;;
+        dry-run) ;;
+        complete|finish)
+            chezmoi apply -R || :
+            if ! (cd "$sourcedir" && git diff --quiet -- home/.chezmoidata/git-lock.yml); then
+                {
+                    echo 'Update Git lock'
+                    echo
+                    echo 'Git lock updates:'
+                    jq -r '.providers.git[] | "  \(.id): \(.old_sha) → \(.new_sha)"' "$result_file"
+                } > "$sourcedir/.git/COMMIT_EDITMSG"
+                if [ "$use_jj" -eq 1 ]; then
+                    commit_msg=$(cat "$sourcedir/.git/COMMIT_EDITMSG")
+                    (cd "$sourcedir" && jj commit -m "$commit_msg" home/.chezmoidata/git-lock.yml)
                 else
-                    echo >&2 "Skipping Git source update"
-                    chezmoi apply -R || :
+                    (cd "$sourcedir" && git commit --no-verify -F .git/COMMIT_EDITMSG home/.chezmoidata/git-lock.yml)
                 fi
             fi
-        fi
-    else
-        echo >&2 "Warning: uv not available; skipping Git source update"
-    fi
+            [ "$outcome" = finish ] && exit 0 ;;
+    esac
 fi
 
 if [ "$dry_run" -eq 1 ]; then
