@@ -1,0 +1,31 @@
+{
+  "context7": {
+    "args": [
+      "-y",
+      "@upstash/context7-mcp"
+    ],
+    "command": "npx",
+    "type": "stdio"
+  },
+  "deepwiki": {
+    "type": "http",
+    "url": "https://mcp.deepwiki.com/mcp"
+  },
+  "duckduckgo": {
+    "args": [
+      "duckduckgo-mcp-server"
+    ],
+    "command": "uvx",
+    "type": "stdio"
+  },
+  "playwright": {
+    "args": [
+      "-y",
+      "@playwright/mcp@latest",
+      "--browser",
+      "firefox"
+    ],
+    "command": "npx",
+    "type": "stdio"
+  }
+}
