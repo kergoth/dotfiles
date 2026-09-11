@@ -199,6 +199,8 @@ if [ -f "$sourcedir/scripts/update-review.py" ] && command -v uv >/dev/null 2>&1
                 {
                     echo 'Update Git lock'
                     echo
+                    echo 'Record approved Git source revisions.'
+                    echo
                     echo 'Git lock updates:'
                     jq -r '.providers.git[] | "  \(.id): \(.old_sha) → \(.new_sha)"' "$result_file"
                 } > "$sourcedir/.git/COMMIT_EDITMSG"
@@ -211,6 +213,63 @@ if [ -f "$sourcedir/scripts/update-review.py" ] && command -v uv >/dev/null 2>&1
             fi
             [ "$outcome" = finish ] && exit 0 ;;
     esac
+fi
+
+if [ "$dry_run" -eq 0 ] && [ -f "$sourcedir/scripts/update-fetch-lock.py" ] && command -v uv >/dev/null 2>&1; then
+    uv run "$sourcedir/scripts/update-fetch-lock.py"
+    chezmoi apply -R || :
+    if ! (cd "$sourcedir" && git diff --quiet -- home/.chezmoidata/fetch-lock.yml); then
+        {
+            echo 'Update fetch lock'
+            echo
+            echo 'Refresh fetched source checksums after resolving configured source URLs.'
+            fetch_updates=$(cat <<'PYEOF' | uv run python3 - "$sourcedir"
+import re
+import subprocess
+import sys
+
+repo = sys.argv[1]
+path = "home/.chezmoidata/fetch-lock.yml"
+line_re = re.compile(r'^[+-]  ([^:]+): "([^"]*)"$')
+result = subprocess.run(
+    ["git", "-C", repo, "diff", "--no-color", "--unified=0", "--", path],
+    capture_output=True,
+    text=True,
+    check=False,
+)
+old_map = {}
+new_map = {}
+for line in result.stdout.splitlines():
+    if line.startswith("--- ") or line.startswith("+++ "):
+        continue
+    match = line_re.match(line)
+    if not match:
+        continue
+    key, value = match.groups()
+    if line[0] == "-":
+        old_map[key] = value
+    elif line[0] == "+":
+        new_map[key] = value
+for key in sorted(set(old_map) | set(new_map)):
+    old_value = old_map.get(key)
+    new_value = new_map.get(key)
+    if old_value != new_value:
+        print(f"{key}: {(old_value or '(new)')[:12]} -> {(new_value or '(removed)')[:12]}")
+PYEOF
+)
+            if [ -n "$fetch_updates" ]; then
+                echo
+                echo 'Fetch lock updates:'
+                printf '%s\n' "$fetch_updates" | sed 's/^/  /'
+            fi
+        } > "$sourcedir/.git/COMMIT_EDITMSG"
+        if [ "$use_jj" -eq 1 ]; then
+            commit_msg=$(cat "$sourcedir/.git/COMMIT_EDITMSG")
+            (cd "$sourcedir" && jj commit -m "$commit_msg" home/.chezmoidata/fetch-lock.yml)
+        else
+            (cd "$sourcedir" && git commit --no-verify -F .git/COMMIT_EDITMSG home/.chezmoidata/fetch-lock.yml)
+        fi
+    fi
 fi
 
 if [ "$dry_run" -eq 1 ]; then

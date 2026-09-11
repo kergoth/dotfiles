@@ -270,12 +270,18 @@ if (Test-Path $reviewRunner) {
             if ($reviewResult.outcome -eq "cancel") { exit 0 }
             if (-not $DryRun -and @($reviewResult.providers.git).Count -gt 0) {
                 try { chezmoi apply -R } catch {}
-                $lines = @("Update Git lock", "", "Git lock updates:")
+                Set-Location $repodir
+                $lines = @(
+                    "Update Git lock"
+                    ""
+                    "Record approved Git source revisions."
+                    ""
+                    "Git lock updates:"
+                )
                 foreach ($change in @($reviewResult.providers.git)) {
                     $lines += "  $($change.id): $($change.old_sha) -> $($change.new_sha)"
                 }
                 $lines -join "`n" | Out-File -FilePath "$repodir\.git\COMMIT_EDITMSG" -Encoding utf8
-                Set-Location $repodir
                 git diff --quiet -- home/.chezmoidata/git-lock.yml
                 if ($LASTEXITCODE -ne 0) {
                     if ($use_jj -eq 1) {
@@ -288,6 +294,73 @@ if (Test-Path $reviewRunner) {
             if ($reviewResult.outcome -eq "finish") { exit 0 }
         } finally {
             Remove-Item $resultFile -Force -ErrorAction SilentlyContinue
+        }
+    }
+}
+
+$fetchLockUpdater = Join-Path $repodir "scripts/update-fetch-lock.py"
+if (-not $DryRun -and (Test-Path $fetchLockUpdater) -and (Get-Command uv -ErrorAction SilentlyContinue)) {
+    uv run $fetchLockUpdater
+    if ($LASTEXITCODE -ne 0) {
+        throw "update-fetch-lock.py failed with exit code $LASTEXITCODE"
+    }
+    try { chezmoi apply -R } catch {}
+    Set-Location $repodir
+    git diff --quiet -- home/.chezmoidata/fetch-lock.yml
+    if ($LASTEXITCODE -ne 0) {
+        $lines = @(
+            "Update fetch lock"
+            ""
+            "Refresh fetched source checksums after resolving configured source URLs."
+        )
+        $fetchUpdates = @'
+import re
+import subprocess
+import sys
+
+repo = sys.argv[1]
+path = "home/.chezmoidata/fetch-lock.yml"
+line_re = re.compile(r'^[+-]  ([^:]+): "([^"]*)"$')
+result = subprocess.run(
+    ["git", "-C", repo, "diff", "--no-color", "--unified=0", "--", path],
+    capture_output=True,
+    text=True,
+    check=False,
+)
+old_map = {}
+new_map = {}
+for line in result.stdout.splitlines():
+    if line.startswith("--- ") or line.startswith("+++ "):
+        continue
+    match = line_re.match(line)
+    if not match:
+        continue
+    key, value = match.groups()
+    if line[0] == "-":
+        old_map[key] = value
+    elif line[0] == "+":
+        new_map[key] = value
+for key in sorted(set(old_map) | set(new_map)):
+    old_value = old_map.get(key)
+    new_value = new_map.get(key)
+    if old_value != new_value:
+        print(f"{key}: {(old_value or '(new)')[:12]} -> {(new_value or '(removed)')[:12]}")
+'@ | uv run python3 - $repodir
+        if ($LASTEXITCODE -eq 0 -and $fetchUpdates) {
+            $lines += ""
+            $lines += "Fetch lock updates:"
+            foreach ($line in ($fetchUpdates -split "`r?`n")) {
+                if ($line) {
+                    $lines += "  $line"
+                }
+            }
+        }
+        $commitMessage = $lines -join "`n"
+        $commitMessage | Out-File -FilePath "$repodir\.git\COMMIT_EDITMSG" -Encoding utf8
+        if ($use_jj -eq 1) {
+            jj commit -m $commitMessage home/.chezmoidata/fetch-lock.yml
+        } else {
+            git commit --no-verify -F .git/COMMIT_EDITMSG home/.chezmoidata/fetch-lock.yml
         }
     }
 }

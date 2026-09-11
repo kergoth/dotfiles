@@ -106,8 +106,10 @@ The workflow:
    locks.
 2. Reviews each Git source individually, requesting a decision before moving
    to the next.
-3. Applies approved Git lock changes, then continues the broader repository
-   and Home Manager update sequence.
+3. Applies approved Git lock changes in an `Update Git lock` commit.
+4. Resolves fetched-file checksums and writes changed values in a separate
+   `Update fetch lock` commit, even when no Git lock changed.
+5. Continues the broader repository and Home Manager update sequence.
 
 ### Per-source Git review
 
@@ -145,7 +147,9 @@ Running `script/update` without `--no-review` in a non-interactive environment
 (no TTY) fails before any lock write. Use `--no-review` to accept all
 candidates non-interactively.
 
-Fetch source review is not yet implemented; it remains separate work.
+Fetch source review is not yet implemented. The fetch-lock update runs after
+Git review and commits independently, so it does not change which Git sources
+were approved.
 
 `script/update --dry-run` reports candidates without writing files. The update
 scripts also handle other maintenance, so consult their `-h` output rather

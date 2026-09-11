@@ -4,6 +4,7 @@ import shutil
 import subprocess
 
 REPO = pathlib.Path(__file__).resolve().parents[2]
+PYTHON = shutil.which("python3")
 
 
 def write_executable(path: pathlib.Path, content: str) -> None:
@@ -221,6 +222,107 @@ if ($args[0] -eq "generations") {
     assert "jj commit" not in calls
     assert "home-manager switch" not in calls
     assert "nix-env --delete-generations old" not in calls
+
+
+def test_update_commits_independent_fetch_lock_after_git_review(tmp_path):
+    test_repo = tmp_path / "repo"
+    fake_bin = tmp_path / "bin"
+    log = tmp_path / "calls.log"
+
+    (test_repo / "script").mkdir(parents=True)
+    (test_repo / "scripts").mkdir()
+    (test_repo / "home" / ".chezmoidata").mkdir(parents=True)
+    (test_repo / ".git").mkdir()
+    fake_bin.mkdir()
+    shutil.copy2(REPO / "script" / "update", test_repo / "script" / "update")
+    (test_repo / "scripts" / "update-review.py").touch()
+    (test_repo / "scripts" / "update-fetch-lock.py").touch()
+    (test_repo / "home" / ".chezmoidata" / "fetch-lock.yml").write_text(
+        'fetch_lock:\n  example: "old"\n'
+    )
+
+    write_executable(
+        fake_bin / "chezmoi",
+        f'''#!/usr/bin/env bash
+set -euo pipefail
+printf 'chezmoi %s\\n' "$*" >>{log}
+''',
+    )
+    write_executable(
+        fake_bin / "git",
+        f'''#!/usr/bin/env bash
+set -euo pipefail
+printf 'git %s\\n' "$*" >>{log}
+if [[ "$1" == -C ]]; then
+    shift 2
+fi
+case "$1" in
+symbolic-ref)
+    exit 0
+    ;;
+diff)
+    if [[ "$*" == *--no-color* ]]; then
+        printf '%s\n' '--- a/home/.chezmoidata/fetch-lock.yml' '+++ b/home/.chezmoidata/fetch-lock.yml' '-  example: "old"' '+  example: "new"'
+        exit 0
+    fi
+    if [[ "$*" == *fetch-lock.yml* ]] && grep -q 'new' home/.chezmoidata/fetch-lock.yml; then
+        exit 1
+    fi
+    exit 0
+    ;;
+commit)
+    printf 'commit message:\n' >>{log}
+    cat .git/COMMIT_EDITMSG >>{log}
+    exit 0
+    ;;
+esac
+''',
+    )
+    write_executable(
+        fake_bin / "uv",
+        f'''#!/usr/bin/env bash
+set -euo pipefail
+printf 'uv %s\\n' "$*" >>{log}
+if [[ "$*" == *update-review.py* ]]; then
+    result_file="${{@: -1}}"
+    printf '{{"outcome":"complete","providers":{{"git":[]}}}}' >"$result_file"
+elif [[ "$*" == *update-fetch-lock.py* ]]; then
+    printf 'fetch_lock:\\n  example: "new"\\n' >home/.chezmoidata/fetch-lock.yml
+elif [[ "$1" == run && "$2" == python3 ]]; then
+    {PYTHON} "${{@:3}}"
+fi
+''',
+    )
+    write_executable(
+        fake_bin / "jq",
+        "#!/usr/bin/env bash\nprintf 'complete\\n'\n",
+    )
+    write_executable(
+        fake_bin / "python3",
+        "#!/usr/bin/env bash\nexit 0\n",
+    )
+    write_executable(
+        test_repo / "script" / "home-manager-switch",
+        "#!/usr/bin/env bash\nexit 0\n",
+    )
+
+    env = os.environ.copy()
+    env["PATH"] = f"{fake_bin}{os.pathsep}{env['PATH']}"
+
+    result = subprocess.run(
+        [str(test_repo / "script" / "update"), "--no-review"],
+        cwd=test_repo,
+        env=env,
+        capture_output=True,
+        text=True,
+    )
+
+    calls = log.read_text()
+    assert result.returncode == 0, result.stderr
+    assert "update-fetch-lock.py" in calls
+    assert "git commit --no-verify -F .git/COMMIT_EDITMSG home/.chezmoidata/fetch-lock.yml" in calls
+    assert "example: old -> new" in calls
+    assert "git commit --no-verify -F .git/COMMIT_EDITMSG home/.chezmoidata/git-lock.yml" not in calls
 
 
 def test_powershell_update_uses_shared_review_runner():
