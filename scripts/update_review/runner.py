@@ -63,6 +63,7 @@ def run_review_session(
             states[key] = "auto-accepted"
             continue
         try:
+            console.print()
             prepared = provider.review(candidate)
             prepared.show(console)
         except (CalledProcessError, OSError) as error:
