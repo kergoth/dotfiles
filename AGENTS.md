@@ -4,15 +4,17 @@ This file provides guidance to AI coding agents when working with code in this r
 
 ## Repository Safety and Source Discipline
 
-Edit source files in `home/`, `scripts/`, `script/`, `settings/`, or other repository paths. Do not edit rendered files in `$HOME`; chezmoi will overwrite them on the next apply.
+Edit chezmoi source, never rendered files in `$HOME`; chezmoi overwrites rendered targets on apply.
 
-Resolve the source before editing:
+Before editing any home-directory target, run:
 
 ```bash
-chezmoi source-path ~/.config/zsh/.zshrc
+chezmoi source-path <target>
 ```
 
-Render and inspect with `chezmoi cat --source-path`, `scripts/chezmoi-execute-template`, and `chezmoi diff` before apply. Run `chezmoi apply` only when applying to the live home directory is part of the requested task.
+Edit returned repository path. Do not infer source path from target name.
+
+Use `chezmoi cat --source-path <source>`, `scripts/chezmoi-execute-template`, and `chezmoi diff` to render and inspect changes. Run `chezmoi apply` only when applying to the live home directory is part of the requested task.
 
 State-changing commands (`chezmoi apply`, `./script/setup`, `./script/setup-system`, `./script/home-manager-switch`, `./script/update`, direct chezmoi updates, external refresh) require explicit user authorization. Agents may mention these when relevant, but should not run them unless explicitly asked.
 
