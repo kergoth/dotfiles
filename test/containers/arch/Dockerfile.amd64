@@ -1,5 +1,5 @@
 # check=skip=InvalidBaseImagePlatform
-FROM archlinux/archlinux:latest@sha256:e19a235e9c4801515d679a5fb77344e1b55622f6bd27629991be490166cb53fa
+FROM archlinux/archlinux:latest@sha256:76149bbd2424be7c89ad57bcc1d8d9f9fb62cb55b163a1e0e08f2eade7e6f2a7
 
 RUN sed -i 's/^#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen && locale-gen
 
