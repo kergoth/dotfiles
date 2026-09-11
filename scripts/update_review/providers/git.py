@@ -13,18 +13,28 @@ from typing import Any
 class PreparedGitReview:
     provider: "GitProvider"
     candidate: "GitCandidate"
-    output: str | None = None
+    _summary: str | None = None
+    _diff: str | None = None
+
+    def _run_show(self, *extra: str) -> str:
+        change = self.candidate.state
+        ref = change["new_sha"] if change.get("kind") == "tag" else change.get("ref") or "main"
+        command = [
+            "uv", "run", str(self.provider.repo_root / "scripts" / "show-git-changes.py"),
+            change["repo"], change["old_sha"], change["new_sha"],
+            "--name", change["id"], "--ref", ref, "--no-ai", *extra,
+        ]
+        return subprocess.run(command, check=True, capture_output=True, text=True).stdout
 
     def show(self, console: Any, *, diff_only: bool = False) -> None:
-        if self.output is None:
-            change = self.candidate.state
-            ref = change["new_sha"] if change.get("kind") == "tag" else change.get("ref") or "main"
-            command = [
-                "uv", "run", str(self.provider.repo_root / "scripts" / "show-git-changes.py"),
-                change["repo"], change["old_sha"], change["new_sha"], "--name", change["id"], "--ref", ref, "--diff", "--no-ai",
-            ]
-            self.output = subprocess.run(command, check=True, capture_output=True, text=True).stdout
-        console.print(self.output)
+        if diff_only:
+            if self._diff is None:
+                self._diff = self._run_show("--diff-only")
+            console.print(self._diff)
+        else:
+            if self._summary is None:
+                self._summary = self._run_show()
+            console.print(self._summary)
 
     def ai_request(self) -> None:
         return None
