@@ -129,10 +129,16 @@ def main() -> int:
     if route.startswith("repos/") and "/releases/tags/" in route:
         tag = route.rsplit("/releases/tags/", 1)[1]
         by_tag = fixtures.get("releases_by_tag", {})
-        if tag not in by_tag:
-            return 1
-        print(json.dumps(by_tag[tag]))
-        return 0
+        if tag in by_tag:
+            print(json.dumps(by_tag[tag]))
+            return 0
+        # Fall back to scanning releases_pages for the tag
+        for page_releases in fixtures.get("releases_pages", {}).values():
+            for release in page_releases:
+                if release.get("tag_name") == tag:
+                    print(json.dumps(release))
+                    return 0
+        return 1
 
     return 2
 
@@ -165,5 +171,5 @@ PYEOF
 run_show_git_changes() {
     PYTHONPATH="$FAKE_UV_RICH_STUB${PYTHONPATH:+:$PYTHONPATH}" \
         "$PYTHON_BIN" "$REPO_ROOT/scripts/show-git-changes.py" \
-        --ai-cmd agent "$@"
+        --ai-agent agent "$@"
 }

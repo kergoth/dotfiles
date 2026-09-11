@@ -135,7 +135,7 @@ More than 20 releases are capped:
   >     releases.append({
   >         "tag_name": f"rust-v0.{version}.0",
   >         "draft": False,
-  >         "published_at": f"2026-04-{(126 - version):02d}T00:00:00Z",
+  >         "published_at": f"2026-04-{(version - 99):02d}T00:00:00Z",
   >         "body": f"Release {version}\\n",
   >     })
   > print(json.dumps({
