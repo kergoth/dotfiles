@@ -99,6 +99,7 @@
 	brstat-upstream = range-diff @{u}...HEAD
 	brstat-push = range-diff @{push}...HEAD
 	brstat = !git brstat-push
+	brst = !git brstat-push
 
 	# Range-diff against this branch's own pre-rewrite state
 	seriesdiff-rewrite = range-diff HEAD@{1}...HEAD
