@@ -48,6 +48,10 @@ def check_message(message_path: pathlib.Path) -> bool:
     if not lines:
         return False
 
+    autosquash_prefixes = ("fixup! ", "squash! ", "amend! ")
+    if lines[0].startswith(autosquash_prefixes):
+        return False
+
     has_errors = report_length(
         kind="summary",
         line_number=None,
