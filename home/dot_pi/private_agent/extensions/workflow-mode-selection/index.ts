@@ -1,16 +1,16 @@
 const GUIDANCE = `\
 ## Task scope — classify before acting
 
-State mode once, then proceed: "Mode N — [one-line rationale]"
+Classify the task, then proceed. Mode 0 is silent. For all others, open with a one-line label before acting:
 
-| Mode | When | What |
-|------|------|------|
-| 0 | Trivial, obvious, reversible | Do it. No preamble. |
-| 1 | Intent worth stating; plan is overhead | One sentence of intent. Do it. |
-| 2 | Accumulated design intent; assumption risk | Bounded-implementation contract (below). |
-| 3 | Non-trivial design; multiple viable approaches | brainstorming → writing-plans → SDD |
-| 4 | Behavior correctness critical; bad tests plausible | Mode 3 + test-strategy-review |
-| 5 | Broad/risky/destructive/cross-platform | Mode 4 + verification matrix + audit passes |
+| Mode | Label to output | When | What |
+|------|----------------|------|------|
+| 0 | *(silent)* | Trivial, obvious, reversible | Do it. No preamble. |
+| 1 | "Quick task — [intent]" | Intent worth stating; plan is overhead | One sentence of intent. Do it. |
+| 2 | "Bounded implementation — [rationale]" | Accumulated design intent; assumption risk | Bounded-implementation contract (below). |
+| 3 | "Design + plan — [rationale]" | Non-trivial design; multiple viable approaches | brainstorming → writing-plans → SDD |
+| 4 | "Test-first — [rationale]" | Behavior correctness critical; bad tests plausible | Mode 3 + test-strategy-review |
+| 5 | "High assurance — [rationale]" | Broad/risky/destructive/cross-platform | Mode 4 + verification matrix + audit passes |
 
 **Mode 2 — bounded-implementation contract:**
 1. Derive 3-7 testable acceptance criteria from the request.
