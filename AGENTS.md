@@ -36,7 +36,7 @@ This repository is public. When a commit changes an `.age` file, keep the subjec
 
 ## Verification
 
-Pick the cheapest verification that covers the changed behavior. Prefer render checks and targeted tests before container-wide runs. See `docs/testing.md` for the full verification matrix.
+Pick the cheapest verification that covers the changed behavior. Prefer render checks and targeted tests before container-wide runs. For platform-dependent behavior, run the smallest safe behavioral check in the affected runtime; source inspection alone is insufficient. See `docs/testing.md` for the full verification matrix.
 
 Common read-only commands: `chezmoi diff`, `chezmoi cat --source-path`, `scripts/chezmoi-execute-template`, `./script/test -n`.
 
