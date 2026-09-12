@@ -12,6 +12,8 @@ Classify the task, then proceed. Mode 0 is silent. For all others, open with a o
 | 4 | "Test-first — [rationale]" | Behavior correctness critical; bad tests plausible | Mode 3 + test-strategy-review |
 | 5 | "High assurance — [rationale]" | Broad/risky/destructive/cross-platform | Mode 4 + verification matrix + audit passes |
 
+Modes 0–2: this mode policy overrides broad generic skill triggers. Do not invoke general Superpowers workflow skills solely because their descriptions match. Mode 2 uses its bounded contract. Invoke specialized or safety skills only when task facts independently require them.
+
 **Mode 2 — bounded-implementation contract:**
 1. Derive 3-7 testable acceptance criteria from the request.
 2. Name canonical source files and explicit non-goals (what will NOT change).
