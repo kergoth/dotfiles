@@ -96,7 +96,10 @@ codex_add_mcp_server kagi --env KAGI_API_KEY="{{ joinPath .chezmoi.workingTree "
 
 
 {{ $set_toml := joinPath .chezmoi.sourceDir ".." "scripts" "set-toml-value" -}}
-# Enable my preferred codex status line
+# Configure direct Codex sessions for concise, action-oriented output.
+uvx --from tomlkit python3 {{ $set_toml }} ~/.codex/config.toml personality '"pragmatic"'
+uvx --from tomlkit python3 {{ $set_toml }} ~/.codex/config.toml hide_agent_reasoning true
+uvx --from tomlkit python3 {{ $set_toml }} ~/.codex/config.toml model_verbosity '"low"'
 uvx --from tomlkit python3 {{ $set_toml }} ~/.codex/config.toml tui.status_line '["model-with-reasoning", "current-dir", "git-branch", "context-used", "five-hour-limit", "weekly-limit"]'
 {{- end }}
 

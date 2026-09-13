@@ -16,7 +16,8 @@ Current topic ownership is:
 
 | Source | Responsibility |
 | --- | --- |
-| `10-personal.md.tmpl` | Identity, interaction preferences, personal tooling, and planning |
+| `10-personal.md.tmpl` | Identity, personal tooling, and planning |
+| `11-response-contract.md.tmpl` | Portable response format and tone |
 | `14-conventions.md.tmpl` | Documentation lookup, source lookup, shell, security, Git, and writing conventions |
 | `15-implementation-discipline.md.tmpl` | Removal discipline, design conformance, and review quality |
 | `20-work.md.tmpl` | Work-only encrypted rules when `.work` and `.secrets` are enabled |
@@ -56,7 +57,7 @@ agent directory.
 | Claude Code | `home/dot_claude/CLAUDE.md.tmpl` | `~/.claude/CLAUDE.md` |
 | Codex | `home/dot_codex/AGENTS.md.tmpl` | `~/.codex/AGENTS.md` |
 | Cursor | `home/dot_cursor/rules/agent-rules.mdc.tmpl` | `~/.cursor/rules/agent-rules.mdc` |
-| Pi | `home/dot_pi/agent/AGENTS.md.tmpl` | `~/.pi/agent/AGENTS.md` |
+| Pi | `home/dot_pi/private_agent/AGENTS.md.tmpl` | `~/.pi/agent/AGENTS.md` |
 
 Edit the source templates and topics. Direct changes to rendered destinations
 will be overwritten.
@@ -83,7 +84,7 @@ registration mechanism:
 | Claude Code | Idempotent `claude mcp add` or `add-json` calls in `run_onchange_after_50_configure-agents.sh.tmpl`, writing `~/.claude.json` |
 | Codex | Idempotent `codex mcp add` calls in the same run script, writing `~/.codex/config.toml` |
 | Cursor | `home/dot_cursor/private_mcp.json.tmpl` rendered to `~/.cursor/mcp.json` |
-| Pi | `home/dot_pi/agent/mcp.json.tmpl` rendered to `~/.pi/agent/mcp.json` for `pi-mcp-adapter` |
+| Pi | `home/dot_pi/private_agent/mcp.json.tmpl` rendered to `~/.pi/agent/mcp.json` for `pi-mcp-adapter` |
 
 Adding one server to several tools requires editing each applicable mechanism.
 The run script handles CLI-owned configuration because chezmoi cannot safely
@@ -105,7 +106,7 @@ scripts/chezmoi-execute-template home/dot_agents/AGENTS.md.tmpl
 scripts/chezmoi-execute-template home/dot_claude/CLAUDE.md.tmpl
 scripts/chezmoi-execute-template home/dot_codex/AGENTS.md.tmpl
 scripts/chezmoi-execute-template home/dot_cursor/rules/agent-rules.mdc.tmpl
-scripts/chezmoi-execute-template home/dot_pi/agent/AGENTS.md.tmpl
+scripts/chezmoi-execute-template home/dot_pi/private_agent/AGENTS.md.tmpl
 ```
 
 When an MCP template changes, render that tool's source template as well. Use

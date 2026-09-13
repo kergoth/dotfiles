@@ -1,5 +1,8 @@
 {
   "version": 1,
+  "hints": false,
+  "suggestNextPrompt": false,
+  "display": { "showThinkingBlocks": false },
   "editor": { "vimMode": false },
   "statusLine": {
     "type": "command",
