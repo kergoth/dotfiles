@@ -162,12 +162,32 @@ Use individual `find-tool` calls for one to three commands. Use
 ## Secrets
 
 The README describes age encryption and identity bootstrap. Non-managed
-encrypted fragments can be included and decrypted inside a template. Work-only
-external definitions use this pattern so private source locations are not
-exposed in the public repository.
+encrypted fragments can be included and decrypted inside a template.
 
 Use the repository's encrypted-file editor rather than decrypting secrets into
 an untracked plaintext file.
+
+### Private file externals
+
+Include an encrypted TOML fragment in `.chezmoiexternal.toml.tmpl` to add private files. This keeps destination paths out of the public source tree.
+
+```
+{{- if and .secrets (not .ephemeral) -}}
+{{-   joinPath .chezmoi.sourceDir ".chezmoitemplates/external/private-files.toml.age" | include | decrypt -}}
+{{- end -}}
+```
+
+Store the encrypted fragment under `home/.chezmoitemplates/external/`. The fragment is standard chezmoi externals TOML:
+
+```toml
+[".cursor/cli-config.json"]
+    type = "file"
+    url = "file:///Users/kergoth/.dotfiles.local/.cursor/cli-config.json"
+```
+
+chezmoi copies each listed file to its destination.
+
+`agent-content-work.toml.age` uses this pattern for work-only external content. Add the gate shown above to keep `chezmoi diff` clean on machines where the private files do not apply.
 
 ## Runtime Directories
 
