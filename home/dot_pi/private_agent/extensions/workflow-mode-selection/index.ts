@@ -49,9 +49,11 @@ export default function (pi: any) {
     if (prompt.length < 10) return;
     if (isConversational(prompt)) return;
     return {
-      systemPrompt: event.systemPrompt
-        ? `${event.systemPrompt}\n\n${GUIDANCE}`
-        : GUIDANCE,
+      message: {
+        customType: "workflow-mode-selection",
+        content: GUIDANCE,
+        display: false,
+      },
     };
   });
 }
