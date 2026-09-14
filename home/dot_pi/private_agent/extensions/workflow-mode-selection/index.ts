@@ -1,30 +1,25 @@
 const GUIDANCE = `\
-## Task scope — classify before acting
+Classify the task and proceed. For modes 1+, open with the label:
 
-Classify the task, then proceed. Mode 0 is silent. For all others, open with a one-line label before acting:
-
-| Mode | Label to output | When | What |
-|------|----------------|------|------|
-| 0 | *(silent)* | Trivial, obvious, reversible | Do it. No preamble. |
-| 1 | "Quick task — [intent]" | Intent worth stating; plan is overhead | One sentence of intent. Do it. |
-| 2 | "Bounded implementation — [rationale]" | Accumulated design intent; assumption risk | Bounded-implementation contract (below). |
+| Mode | Label | When | What |
+|------|-------|------|------|
+| 0 | *(silent)* | Trivial, obvious, reversible | Do it. |
+| 1 | "Quick task — [intent]" | Intent worth stating | One sentence of intent. Do it. |
+| 2 | "Bounded implementation — [rationale]" | Accumulated design intent; assumption risk | Bounded contract (below). |
 | 3 | "Design + plan — [rationale]" | Non-trivial design; multiple viable approaches | brainstorming → writing-plans → SDD |
-| 4 | "Test-first — [rationale]" | Behavior correctness critical; bad tests plausible | Mode 3 + test-strategy-review |
-| 5 | "High assurance — [rationale]" | Broad/risky/destructive/cross-platform | Mode 4 + verification matrix + audit passes |
+| 4 | "Test-first — [rationale]" | Correctness critical; bad tests plausible | Mode 3 + test-strategy-review |
+| 5 | "High assurance — [rationale]" | Broad/risky/destructive/cross-platform | Mode 4 + verification matrix + audits |
 
-Modes 0–2: this mode policy overrides broad generic skill triggers. Do not invoke general Superpowers workflow skills solely because their descriptions match. Mode 2 uses its bounded contract. Invoke specialized or safety skills only when task facts independently require them.
+Modes 0–2: this policy overrides broad skill triggers. Don't invoke workflow skills unless task facts independently require them. Mode 2 uses its bounded contract; Mode 3+ invokes the appropriate skills.
 
-**Mode 2 — bounded-implementation contract:**
-1. Derive 3-7 testable acceptance criteria from the request.
-2. Name canonical source files and explicit non-goals (what will NOT change).
+**Mode 2 contract:**
+1. Derive 3-7 testable acceptance criteria.
+2. Name canonical source files and explicit non-goals.
 3. Implement the smallest change that satisfies the criteria.
-4. Verify adversarially: check diff against each criterion; reject wrong-source edits,
-   scope creep, unsupported assumptions; fix before presenting.
-5. Report evidence per criterion and any human-only checks remaining.
+4. Verify adversarially against each criterion; reject wrong-source edits, scope creep, unsupported assumptions; fix before presenting.
+5. Report evidence per criterion and remaining human-only checks.
 
-No worktrees. No durable tests unless explicitly requested.
-Stop and ask if criteria cannot be grounded in available evidence.
-For Mode 3+, invoke the appropriate superpowers skills instead.`;
+No worktrees or durable tests unless requested. Ask if criteria can't be grounded in evidence.`;
 
 const IMPL_VERBS =
   /\b(add|fix|update|create|implement|refactor|change|delete|remove|build|write|modify|move|rename|replace|migrate|configure|set[\s-]?up|install|enable|disable|convert|generate|extract|deploy|integrate|extend|improve|optimize|debug|resolve|rewrite|restructure|clean[\s-]?up|format|lint)\b/i;
