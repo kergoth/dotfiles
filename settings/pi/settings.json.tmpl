@@ -85,6 +85,12 @@
 {{-   end -}}
 {{- end -}}
   "enabledModels": {{ $enabledModels | toJson }},
+  "contextPrune": {
+    "enabled": true,
+    "quietOversizedSkips": true,
+    "showPruneStatusLine": false,
+    "summarizerModel": "{{ if .work }}cursor/haiku{{ else }}openai-codex/gpt-5.6-luna{{ end }}"
+  },
   "skills": ["~/.agents/skills"],
   "terminal": {
     "showTerminalProgress": true
