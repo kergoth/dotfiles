@@ -74,7 +74,7 @@ add_marketplace() {
 }
 
 
-{{ if or $claude (and $codex (not .work)) -}}
+{{ if or $claude $codex -}}
 # Playwright MCP needs a real browser binary; install is a no-op if already present.
 # firefox, not chrome: the chrome channel install requires root on macOS.
 # @playwright/mcp bundles its own playwright-core version, which can pin a
@@ -83,17 +83,16 @@ add_marketplace() {
 npx --yes @playwright/mcp install-browser firefox
 {{- end }}
 
-{{ if and $codex ( not .work ) -}}
+{{ if $codex -}}
 codex_add_mcp_server deepwiki --url https://mcp.deepwiki.com/mcp
 codex_add_mcp_server context7 -- npx -y @upstash/context7-mcp
 codex_add_mcp_server duckduckgo -- uvx duckduckgo-mcp-server
 codex_add_mcp_server playwright -- npx -y @playwright/mcp@latest --browser firefox
 
-{{ if .secrets -}}
+{{ if and .personal .secrets -}}
 codex_add_mcp_server firecrawl --env FIRECRAWL_API_KEY="{{ joinPath .chezmoi.workingTree "settings/agents/firecrawl-api-key.age" | include | decrypt | trim }}" -- npx -y firecrawl-mcp
 codex_add_mcp_server kagi --env KAGI_API_KEY="{{ joinPath .chezmoi.workingTree "settings/agents/kagi-api-key.age" | include | decrypt | trim }}" -- uvx kagimcp
 {{- end }}
-
 
 {{ $set_toml := joinPath .chezmoi.sourceDir ".." "scripts" "set-toml-value" -}}
 # Configure direct Codex sessions for concise, action-oriented output.
@@ -103,27 +102,26 @@ uvx --from tomlkit python3 {{ $set_toml }} ~/.codex/config.toml model_verbosity 
 uvx --from tomlkit python3 {{ $set_toml }} ~/.codex/config.toml tui.status_line '["model-with-reasoning", "current-dir", "git-branch", "context-used", "five-hour-limit", "weekly-limit"]'
 {{- end }}
 
-{{   if $claude -}}
+{{ if $claude -}}
 claude_add_mcp_server deepwiki --scope user --transport http https://mcp.deepwiki.com/mcp
 add_mcp_json context7 '{"type":"stdio","command":"npx","args":["-y","@upstash/context7-mcp"]}' --scope user
 add_mcp_json duckduckgo '{"type":"stdio","command":"uvx","args":["duckduckgo-mcp-server"]}' --scope user
 add_mcp_json playwright '{"type":"stdio","command":"npx","args":["-y","@playwright/mcp@latest","--browser","firefox"]}' --scope user
 
-{{   if and .personal .secrets -}}
+{{ if and .personal .secrets -}}
 claude_add_mcp_server firecrawl --scope user -e FIRECRAWL_API_KEY="{{ joinPath .chezmoi.workingTree "settings/agents/firecrawl-api-key.age" | include | decrypt | trim }}" -- npx -y firecrawl-mcp
 claude_add_mcp_server kagi --scope user -e KAGI_API_KEY="{{ joinPath .chezmoi.workingTree "settings/agents/kagi-api-key.age" | include | decrypt | trim }}" -- uvx kagimcp
-{{-   end }}
-
-
-{{   if .work -}}
-{{ joinPath .chezmoi.workingTree "settings/agents/work-mcp-claude.sh.age" | include | decrypt }}
-{{-   end }}
+{{- end }}
 
 add_marketplace astral-sh/claude-code-plugins
 install_plugin astral@astral-sh --scope user
 
 add_marketplace anthropics/claude-plugins-official
 install_plugin superpowers@claude-plugins-official --scope user
+{{- end }}
 
-{{-   end }}
+{{ if .work -}}
+{{ joinPath .chezmoi.workingTree "settings/agents/work-mcp-cli.sh.age" | include | decrypt }}
+{{- end }}
+
 {{- end }}

@@ -5,6 +5,7 @@
     "npm:@sherif-fanous/pi-dracula",
     "npm:pi-json-tools",
     "npm:pi-claude-bridge",
+    "npm:pi-claude-cli",
     "npm:@cmcconomy/pi-qwen-tool-parser",
     "npm:pi-web-access",
     {
@@ -52,10 +53,6 @@
 {{- $exclude := list -}}
 {{- if not .personal -}}
 {{-   $exclude = concat $exclude (list
-        "openai-codex/gpt-5.6-terra"
-        "openai-codex/gpt-5.6-sol"
-        "openai-codex/gpt-5.6-luna"
-        "openai-codex/**"
         "mtplx/**"
       )
 -}}
@@ -89,7 +86,7 @@
     "enabled": true,
     "quietOversizedSkips": true,
     "showPruneStatusLine": false,
-    "summarizerModel": "{{ if .work }}cursor/haiku{{ else }}openai-codex/gpt-5.6-luna{{ end }}"
+    "summarizerModel": "openai-codex/gpt-5.6-luna"
   },
   "skills": ["~/.agents/skills"],
   "terminal": {

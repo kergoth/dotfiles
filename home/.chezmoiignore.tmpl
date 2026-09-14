@@ -316,12 +316,4 @@ Library/LaunchAgents/org.nix-community.home.*
 Library/LaunchAgents/com.kergoth.backup-conductor-resume.plist
 Library/LaunchAgents/com.kergoth.backup-conductor.plist
 
-# Agents, based on usage
-{{ if .work -}}
-{{/* Don't use codex at work */}}
-.codex
-{{ else -}}
-{{/* Don't use cursor at home */}}
-.cursor
-.config/cursor
-{{- end }}
+# Agents — Cursor and Codex both available; role-based MCP/rules differ by .work/.personal
