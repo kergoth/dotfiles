@@ -80,6 +80,7 @@ function contextColor(palette, percentage) {
 const ROUTE_TAGS = {
   cursor: "CU",
   "claude-bridge": "CC",
+  "claude-cli": "CC",
   "openai-codex": "CX",
 };
 
