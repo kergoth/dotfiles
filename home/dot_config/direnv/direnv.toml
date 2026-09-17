@@ -1,0 +1,6 @@
+[global]
+log_format = "\u001B[2mdirenv: %s\u001B[0m"
+# Hide just the env var list
+hide_env_diff = true
+# Only show loading messages
+log_filter="^loading"
