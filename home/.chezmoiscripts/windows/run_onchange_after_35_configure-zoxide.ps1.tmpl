@@ -1,0 +1,35 @@
+{{- if .user_setup -}}
+{{-   $zoxide_score_addition := 5 -}}
+{{-   $zoxide := includeTemplate "find-tool" (dict "root" . "tool" "zoxide") -}}
+{{-   if $zoxide -}}
+{{-     $zoxide_folders := list
+        .chezmoi.workingTree
+        "bin"
+        ".config/vim"
+        "Workspace"
+        "Downloads"
+        "Documents"
+        "Obsidian Vault"
+        -}}
+#requires -Version 7.0
+# Seed folders into zoxide ({{ $zoxide }})
+
+Set-StrictMode -Version Latest
+$ErrorActionPreference = 'Stop'
+
+$env:XDG_STATE_HOME = Join-Path $env:CHEZMOI_DEST_DIR '.local' 'state'
+$env:_ZO_DATA_DIR = Join-Path $env:XDG_STATE_HOME 'zoxide'
+
+{{      if $zoxide_folders -}}
+Write-Host "Seeding folders into zoxide" -ForegroundColor Cyan
+{{-      end }}
+{{-      $data := . }}
+{{-      range $folder := $zoxide_folders }}
+{{-      if not (isAbs $folder) }}
+{{-        $folder = joinPath $data.chezmoi.destDir $folder }}
+{{-      end }}
+& "{{ $zoxide }}" add -s {{ $zoxide_score_addition }} "{{ $folder }}"
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+{{-      end }}
+{{-   end -}}
+{{- end }}

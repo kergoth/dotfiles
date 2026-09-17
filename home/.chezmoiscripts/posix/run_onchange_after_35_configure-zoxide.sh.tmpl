@@ -1,0 +1,38 @@
+{{- if .user_setup -}}
+{{-   $zoxide_score_addition := 5 -}}
+{{-   $zoxide := includeTemplate "find-tool" (dict "root" . "tool" "zoxide") -}}
+{{-   if $zoxide -}}
+{{-     $zoxide_folders := list
+        .chezmoi.workingTree
+        "bin"
+        ".config/vim"
+        "Workspace"
+        "Downloads"
+        "Documents"
+        "Obsidian Vault"
+        -}}
+{{-     if and .secrets .personal (not .ephemeral) -}}
+{{-       $zoxide_folders = append $zoxide_folders ".config/backup" }}
+{{-     end -}}
+#!/usr/bin/env bash
+# Seed folders into zoxide ({{ $zoxide }})
+
+set -euo pipefail
+
+export XDG_STATE_HOME=$CHEZMOI_DEST_DIR/.local/state
+if [[ "$OSTYPE" != darwin* ]]; then
+   export _ZO_DATA_DIR=$XDG_STATE_HOME/zoxide
+fi
+
+{{      if $zoxide_folders -}}
+echo >&2 "Seeding folders into zoxide"
+{{-      end }}
+{{-      $data := . }}
+{{-      range $folder := $zoxide_folders }}
+{{-      if not (isAbs $folder) }}
+{{-        $folder = joinPath $data.chezmoi.destDir $folder }}
+{{-      end }}
+"{{ $zoxide }}" add -s {{ $zoxide_score_addition }} "{{ $folder }}"
+{{-      end }}
+{{-   end -}}
+{{- end }}
