@@ -17,9 +17,6 @@
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-$env:XDG_STATE_HOME = Join-Path $env:CHEZMOI_DEST_DIR '.local' 'state'
-$env:_ZO_DATA_DIR = Join-Path $env:XDG_STATE_HOME 'zoxide'
-
 {{      if $zoxide_folders -}}
 Write-Host "Seeding folders into zoxide" -ForegroundColor Cyan
 {{-      end }}
