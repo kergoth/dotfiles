@@ -225,6 +225,27 @@ Render a failing template directly to expose syntax or missing-data errors:
 scripts/chezmoi-execute-template home/.chezmoiscripts/linux/run_onchange_after_10_install-apps.tmpl
 ```
 
+Linux-specific data such as `osRelease.versionCodename` and
+`osRelease.versionID` is only populated on Linux hosts; on macOS the
+`osRelease` map is empty, so rendering a Linux setup template fails with
+`map has no entry for key ...`. Supply the fields a target host would provide
+with `--override-data-file`, which deep-merges over the resolved data:
+
+```console
+cat > os-release.yaml <<'EOF'
+chezmoi:
+  osRelease:
+    versionCodename: bookworm
+EOF
+tail -n +2 scripts/setup-system-debian.tmpl \
+    | chezmoi execute-template --override-data-file os-release.yaml
+```
+
+Only the specified keys are overridden; the host's own values (for example
+`.chezmoi.arch`) remain in effect. The `tail -n +2` mirrors
+`scripts/chezmoi-exec`, which strips the `chezmoi-exec` shebang before
+rendering.
+
 For managed targets, prefer chezmoi's renderer:
 
 ```console

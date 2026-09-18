@@ -117,6 +117,11 @@ exposure.
 | GUI installation path | `./test/run-container -w <distro>` |
 | Cross-platform package change | Relevant renders plus the matching automated or container test |
 
+On macOS, Linux `osRelease` fields (such as `versionCodename`) are absent from
+template data, so rendering a Linux setup template fails with
+`map has no entry for key ...`; supply them with `--override-data-file` (see
+[chezmoi-authoring.md](chezmoi-authoring.md#troubleshooting)).
+
 `chezmoi apply`, setup scripts, Home Manager switching, and update scripts
 change live state. They belong at the point where the live machine should be
 updated.
