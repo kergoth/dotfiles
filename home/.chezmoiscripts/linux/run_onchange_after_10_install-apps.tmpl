@@ -130,7 +130,7 @@ devpod_arch="amd64"
 case "$(uname -m)" in
     aarch64|arm64) devpod_arch="arm64" ;;
 esac
-curl -L -o "$tmpdir/devpod" "https://github.com/loft-sh/devpod/releases/{{ index .git_lock "distrobox" }}/download/devpod-linux-$devpod_arch"
+curl -L -o "$tmpdir/devpod" "https://github.com/loft-sh/devpod/releases/{{ index .git_lock "devpod" }}/download/devpod-linux-$devpod_arch"
 install -c -m 0755 "$tmpdir/devpod" "$HOME/.local/bin/devpod"
 {{-   end }}
 {{- end }}
