@@ -20,12 +20,12 @@
 {{- if .work }}
   "coding": [
     "claude-bridge/claude-sonnet-4-6",
-    "openai-codex/gpt-5.6-sol",
+    "openai-codex/gpt-5.6-terra",
     "cursor/auto-smart"
   ],
   "coding-max": [
     "claude-bridge/claude-opus-5",
-    "openai-codex/gpt-5.6-terra"
+    "openai-codex/gpt-5.6-sol"
   ],
 {{-   $chat := list "openai-codex/gpt-5.6-luna" "cursor/grok-4.5" }}
 {{-   if $hasLocal }}
@@ -44,7 +44,6 @@
 {{- else }}
   "coding": [
     "claude-bridge/claude-sonnet-4-6",
-    "openai-codex/gpt-5.6-sol",
     "opencode-go/kimi-k2.7-code",
     "opencode-go/deepseek-v4.1-flash"
   ],
@@ -52,11 +51,11 @@
     "opencode-go/kimi-k2.7-code",
     "opencode-go/deepseek-v4.1-flash",
     "claude-bridge/claude-sonnet-4-6",
-    "openai-codex/gpt-5.6-sol"
+    "openai-codex/gpt-5.6-terra",
   ],
   "coding-max": [
     "claude-bridge/claude-opus-5",
-    "openai-codex/gpt-5.6-terra",
+    "openai-codex/gpt-5.6-sol",
     "opencode-go/kimi-k3",
     "opencode-go/deepseek-v4-pro"
   ],
