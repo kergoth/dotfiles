@@ -45,9 +45,16 @@
     "pi-claude-cli/claude-sonnet-5"
     "pi-claude-cli/claude-opus-5"
     "openai-codex/gpt-5.6-sol"
+    "opencode-go/kimi-k3"
+    "opencode-go/glm-5.3"
+    "opencode-go/deepseek-v4-pro"
     "cursor/grok-4.5"
+    "opencode-go/kimi-k2.7-code"
+    "opencode-go/deepseek-v4.1-flash"
     "local-assistant/**"
     "openai-codex/gpt-5.6-luna"
+    "opencode-go/gpt-5.6-luna"
+    "opencode-go/qwen3.8-flash"
     "local-reason-long/**"
     "local-quality/**"
     "claude-bridge/claude-sonnet-*"
@@ -60,6 +67,18 @@
 {{- if not .personal -}}
 {{-   $exclude = concat $exclude (list
         "mtplx/**"
+      )
+-}}
+{{- end -}}
+{{- if .work -}}
+{{-   $exclude = concat $exclude (list
+        "opencode-go/kimi-k3"
+        "opencode-go/glm-5.3"
+        "opencode-go/deepseek-v4-pro"
+        "opencode-go/kimi-k2.7-code"
+        "opencode-go/deepseek-v4.1-flash"
+        "opencode-go/gpt-5.6-luna"
+        "opencode-go/qwen3.8-flash"
       )
 -}}
 {{- end -}}
@@ -92,7 +111,7 @@
     "enabled": true,
     "quietOversizedSkips": true,
     "showPruneStatusLine": false,
-    "summarizerModel": "openai-codex/gpt-5.6-luna"
+    "summarizerModel": "{{ ternary "openai-codex/gpt-5.6-luna" "opencode-go/mimo-v2.5" .work }}"
   },
   "skills": ["~/.agents/skills"],
   "terminal": {
