@@ -62,7 +62,7 @@
 {{-   $chatBudget := list "opencode-go/glm-5.3-flash" "openai-codex/gpt-5.6-luna" }}
 {{-   $chatQuality := list "opencode-go/glm-5.3-flash" "openai-codex/gpt-5.6-luna" }}
 {{-   if $hasLocal }}
-{{-     $chatBudget = concat (list $localAssistant) $chatBudget }}
+{{-     $chatBudget = concat $chatBudget (list $localAssistant) }}
 {{-     $chatQuality = concat $chatQuality (list $localAssistant) }}
 {{-   end }}
   "chat": {{ $chatBudget | toJson }},
