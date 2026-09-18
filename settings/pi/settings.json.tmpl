@@ -20,7 +20,8 @@
       ],
       "source": "npm:pi-subagents"
     },
-    "npm:@nicknisi/pi-session-name"
+    "npm:@nicknisi/pi-session-name",
+    "git:github.com/kergoth/pi-model-fallback-alias@opencode"
   ],
   "hideThinkingBlock": true,
   "quietStartup": true,
@@ -31,6 +32,7 @@
   "followUpMode": "all",
 {{- $allModels := list
     "openai-codex/gpt-5.6-terra"
+    "alias/**"
     "claude-bridge/claude-sonnet-4-6"
     "claude-bridge/claude-opus-4-6"
     "pi-claude-cli/claude-sonnet-4-6"

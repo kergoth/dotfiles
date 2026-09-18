@@ -1,0 +1,83 @@
+{
+  "$comment": "Rendered by chezmoi; consumed by the pi-model-fallback-alias extension. Reload with /reload after changes. Chain rationale: docs/pi-model-tiering.md.",
+  "$settings": {
+    "statusRefreshMs": 2000
+  },
+  "$defaults": {
+    "timeouts": {
+      "firstEventMs": 30000,
+      "stallMs": 60000,
+      "commitMs": 90000
+    },
+    "cooldown": {
+      "baseMs": 300000,
+      "capMs": 3600000,
+      "resetSuccesses": 3
+    }
+  },
+{{- $hasLocal := stat (joinPath .chezmoi.homeDir ".pi" "agent" "models.json") }}
+{{- $localAssistant := "local-assistant/mlx-community/gemma-4-26B-A4B-it-qat-4bit" }}
+{{- if .work }}
+  "coding": [
+    "claude-bridge/claude-sonnet-4-6",
+    "openai-codex/gpt-5.6-sol",
+    "cursor/auto-smart"
+  ],
+  "coding-max": [
+    "claude-bridge/claude-opus-5",
+    "openai-codex/gpt-5.6-terra"
+  ],
+{{-   $chat := list "openai-codex/gpt-5.6-luna" "cursor/grok-4.5" }}
+{{-   if $hasLocal }}
+{{-     $chat = concat $chat (list $localAssistant) }}
+{{-   end }}
+  "chat": {{ $chat | toJson }},
+  "research": [
+    "claude-bridge/claude-fable-5",
+    "claude-bridge/claude-opus-5",
+    "openai-codex/gpt-5.6-terra"
+  ],
+  "light": [
+    "openai-codex/gpt-5.6-luna",
+    "claude-bridge/claude-sonnet-4-6"
+  ]
+{{- else }}
+  "coding": [
+    "claude-bridge/claude-sonnet-4-6",
+    "openai-codex/gpt-5.6-sol",
+    "opencode-go/kimi-k2.7-code",
+    "opencode-go/deepseek-v4.1-flash"
+  ],
+  "coding-budget": [
+    "opencode-go/kimi-k2.7-code",
+    "opencode-go/deepseek-v4.1-flash",
+    "claude-bridge/claude-sonnet-4-6",
+    "openai-codex/gpt-5.6-sol"
+  ],
+  "coding-max": [
+    "claude-bridge/claude-opus-5",
+    "openai-codex/gpt-5.6-terra",
+    "opencode-go/kimi-k3",
+    "opencode-go/deepseek-v4-pro"
+  ],
+{{-   $chatBudget := list "opencode-go/glm-5.3-flash" "openai-codex/gpt-5.6-luna" }}
+{{-   $chatQuality := list "opencode-go/glm-5.3-flash" "openai-codex/gpt-5.6-luna" }}
+{{-   if $hasLocal }}
+{{-     $chatBudget = concat (list $localAssistant) $chatBudget }}
+{{-     $chatQuality = concat $chatQuality (list $localAssistant) }}
+{{-   end }}
+  "chat": {{ $chatBudget | toJson }},
+  "chat-quality": {{ $chatQuality | toJson }},
+  "research": [
+    "claude-bridge/claude-fable-5",
+    "claude-bridge/claude-opus-5",
+    "openai-codex/gpt-5.6-terra",
+    "opencode-go/kimi-k3",
+    "opencode-go/deepseek-v4-pro"
+  ],
+  "light": [
+    "opencode-go/mimo-v2.5",
+    "openai-codex/gpt-5.6-luna"
+  ]
+{{- end }}
+}
