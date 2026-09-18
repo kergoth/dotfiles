@@ -129,6 +129,11 @@ test("generates uppercase route tags for other provider ids", () => {
   assert.match(lineFor("Sonar", "mtplx"), /PI·MT·Sonar/);
 });
 
+test("drops the route tag for alias provider", () => {
+  assert.match(lineFor("coding-budget", "alias"), /PI·coding-budget/);
+  assert.doesNotMatch(lineFor("coding-budget", "alias"), /PI·[A-Z]+·coding-budget/);
+});
+
 test("documents the Dracula and Catppuccin Latte palette sources", () => {
   assert.equal(PALETTES.dark.name, "Dracula");
   assert.equal(PALETTES.light.name, "Catppuccin Latte");

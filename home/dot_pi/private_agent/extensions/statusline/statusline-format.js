@@ -76,13 +76,17 @@ function contextColor(palette, percentage) {
 
 // Route tags identify the execution backend when model display names collide.
 // Recognizable applications have explicit tags, local variants share LO, and
-// other providers fall back to generated initials.
+// providers in TAG_DROP_PROVIDERS suppress the tag entirely (e.g. alias,
+// where the model name already carries full identity). Other providers fall
+// back to generated initials.
 const ROUTE_TAGS = {
   cursor: "CU",
   "claude-bridge": "CC",
   "claude-cli": "CC",
   "openai-codex": "CX",
 };
+
+const TAG_DROP_PROVIDERS = new Set(["alias"]);
 
 function generatedRouteTag(provider) {
   const parts = provider.split("-").filter(Boolean);
@@ -95,6 +99,7 @@ function generatedRouteTag(provider) {
 function routeTag(provider) {
   const id = provider?.trim();
   if (!id) return "";
+  if (TAG_DROP_PROVIDERS.has(id)) return "";
   if (id.startsWith("local-")) return "LO";
   return ROUTE_TAGS[id] ?? generatedRouteTag(id);
 }
