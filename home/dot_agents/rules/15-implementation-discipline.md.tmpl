@@ -8,6 +8,15 @@
 - **Tests pass ≠ issue complete**: Verify behavior matches the spec and downstream consumers actually use it, not only that tests pass.
 - When building agent skills, extract mechanical operations into bundled scripts so the agent focuses on judgment, not procedure.
 
+## Offering Options
+
+- When presenting meaningful alternatives, include the option you consider the strongest **long-term choice**, even if it requires more upfront time, effort, or cost.
+- Optimize the long-term choice for maintainability, simplicity, durability, and total lifecycle cost, not maximum abstraction, flexibility, or architectural sophistication.
+- Prefer the simplest solution that cleanly satisfies current requirements and reasonably foreseeable needs. Avoid speculative generalization, unnecessary indirection, and infrastructure added only for hypothetical future use.
+- Consider future engineers: added complexity, cognitive load, operational burden, and maintenance cost count against an option's long-term value.
+- Label the **long-term choice** clearly and briefly explain the trade-off versus quicker or cheaper alternatives.
+- Do not invent a distinct long-term option when the alternatives do not materially differ over time.
+
 ## Review Quality
 - **Model diversity required**: All reviews (code, spec, plan) include at least one reviewer from different model than orchestrating session, plus any current-model reviewers.
 {{- if ne $agent "pi" }}
