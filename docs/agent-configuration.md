@@ -56,6 +56,7 @@ agent directory.
 | Shared/default | `home/dot_agents/AGENTS.md.tmpl` | `~/.agents/AGENTS.md` |
 | Claude Code | `home/dot_claude/CLAUDE.md.tmpl` | `~/.claude/CLAUDE.md` |
 | Codex | `home/dot_codex/AGENTS.md.tmpl` | `~/.codex/AGENTS.md` |
+| Delta | `home/dot_config/delta/AGENTS.md.tmpl` | `~/.config/delta/AGENTS.md` |
 | Cursor | `home/dot_cursor/rules/agent-rules.mdc.tmpl` | `~/.cursor/rules/agent-rules.mdc` |
 | Pi | `home/dot_pi/private_agent/AGENTS.md.tmpl` | `~/.pi/agent/AGENTS.md` |
 
@@ -64,8 +65,8 @@ will be overwritten.
 
 ## Agent-Specific Conditionals
 
-The renderer supplies one of `default`, `claude`, `codex`, `cursor`, or `pi`
-as the `agent` parameter. Keep shared guidance unconditional. Add a branch
+The renderer supplies one of `default`, `claude`, `codex`, `cursor`, `delta`,
+or `pi` as the `agent` parameter. Keep shared guidance unconditional. Add a branch
 only for a genuine tool capability or workflow difference, and keep the branch
 in the topic that owns the rule.
 
@@ -105,6 +106,7 @@ Render every affected destination without applying it:
 scripts/chezmoi-execute-template home/dot_agents/AGENTS.md.tmpl
 scripts/chezmoi-execute-template home/dot_claude/CLAUDE.md.tmpl
 scripts/chezmoi-execute-template home/dot_codex/AGENTS.md.tmpl
+scripts/chezmoi-execute-template home/dot_config/delta/AGENTS.md.tmpl
 scripts/chezmoi-execute-template home/dot_cursor/rules/agent-rules.mdc.tmpl
 scripts/chezmoi-execute-template home/dot_pi/private_agent/AGENTS.md.tmpl
 ```
