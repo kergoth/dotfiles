@@ -1,0 +1,4 @@
+{{- $bat := includeTemplate "find-tool" (dict "root" . "tool" "bat") -}}
+{{- if $bat -}}
+jq "$@" | bat -l json
+{{- end }}
