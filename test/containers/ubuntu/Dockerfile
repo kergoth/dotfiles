@@ -1,4 +1,4 @@
-FROM ubuntu:latest@sha256:513c074113a871b51a8d16ab445c88779d6452d937a164fb5cc479f32668a41d
+FROM ubuntu:latest@sha256:da6fc2be547864451aa253836dd926da33623312df4a9a243e35dc877c378a78
 
 # setup-root installs ca-certificates, curl, git, sudo; the Dockerfile
 # is only responsible for locale setup (which setup-root does not handle).
