@@ -6,8 +6,14 @@
       "packages" -}}
 {{- $removePaths := list
       "statusLine" -}}
+{{- /* pi-session-name has a bug where agent in-session response leaks
+       into the session name */ -}}
 {{- $removedPackages := list
-      "git:github.com/kergoth/pi-statusline@f1805048422a046393b1ef1a4cc3aad2e9af097c" -}}
+      "git:github.com/kergoth/pi-statusline@f1805048422a046393b1ef1a4cc3aad2e9af097c"
+      "npm:pi-claude-bridge"
+      "npm:pi-model-fallback-alias"
+      "npm:@nicknisi/pi-session-name"
+      -}}
 
 {{- $managedRaw := includeTemplate (joinPath .chezmoi.workingTree "settings/pi/settings.json.tmpl") . -}}
 {{- $managed := $managedRaw | fromJson -}}
