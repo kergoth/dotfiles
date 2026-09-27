@@ -1,5 +1,3 @@
-{{- $qwen := includeTemplate "find-tool" (dict "root" . "tool" "qwen") -}}
-{{- if $qwen -}}
 #!/usr/bin/env bash
 # <xbar.title>LLM Server Status</xbar.title>
 # <xbar.version>1.0</xbar.version>
@@ -124,4 +122,3 @@ main() {
 }
 
 main "$@"
-{{- end -}}
