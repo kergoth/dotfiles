@@ -5,6 +5,24 @@ behind the priority order in `settings/pi/settings.json.tmpl` (`$allModels`).
 The enabled-models list encodes priority; this doc records why that order is
 what it is, so future additions land in the right slot.
 
+## When to use which alias
+
+- **`alias/coding`** — default for coding and agentic work. Start here.
+- **`alias/coding-budget`** (personal only) — same tier, spends the
+  `opencode-go` window before `claude-bridge`/`openai-codex`.
+- **`alias/coding-max`** — opus-tier escalation. Manual jump after two
+  strikes (a stall or unsatisfied retry) at `coding`, not a default.
+- **`alias/chat`** — casual chat and assistant use, budget-ordered.
+- **`alias/research`** — default research/synthesis tier.
+  `claude-bridge/claude-fable-5`, invoked directly rather than through an
+  alias, is the manual escalation for multi-hour-plus autonomous research.
+- **`alias/light`** — background automation only (`contextPrune`
+  summarization, session auto-naming), not for interactive use.
+
+See [Alias roles](#alias-roles) and [Tiers and fallback
+chains](#tiers-and-fallback-chains) below for the fallback order within each
+chain and why it's ordered that way.
+
 ## Model pools
 
 | Pool | Provider entries | Billing |
@@ -12,7 +30,7 @@ what it is, so future additions land in the right slot.
 | Claude subscription | `claude-bridge/*`, `pi-claude-cli/*` | flat until usage limit |
 | Codex subscription | `openai-codex/*` | flat until usage limit |
 | Cursor subscription | `cursor/*` (work machines only) | flat until usage limit |
-| opencode subscription | `opencode-go/*` | flat until usage limit |
+| opencode subscription | `opencode-go/*` | per-model monthly dollar limit, not a shared pool |
 | Local | `local-coder`, `local-reason`, `local-reason-long`, `local-assistant`, `local-quality`, `mtplx` | free, on-device or pre-paid flat |
 
 Every interactive pool here is subscription or free. A true per-token pool
