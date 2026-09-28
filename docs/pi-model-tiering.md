@@ -110,7 +110,7 @@ so work and personal machines get different chains; `/reload` picks up edits,
 | `alias/coding-budget` | budget | same tier, `opencode-go` window first, conserving the Claude and Codex windows |
 | `alias/coding-max` | quality | opus-tier escalation for hard or novel work |
 | `alias/chat` | budget | casual chat and assistant use |
-| `alias/research` | quality | long-horizon research and synthesis, fable at the top |
+| `alias/research` | quality | research and synthesis; fable is a manual escalation, not in the chain |
 | `alias/light` | budget | background text tasks: contextPrune summarization, session auto-naming |
 
 `coding-budget` exists only on personal machines; work has no `opencode-go`
@@ -188,21 +188,27 @@ where the flash tier gets most of the way there.
 
 ### Research and long-horizon escalation
 
-Never start low on this axis. Both cost factors point up: long horizons
-maximize the quadratic loop term, and synthesis output is expensive to
-verify.
+`alias/research` is the default tier, reached automatically; escalation to
+fable is manual, mirroring the `coding`/`coding-max` split (October 2026 —
+fable was previously the chain's automatic top pick, but the alias always
+selects the first entry regardless of task duration, so leading with fable
+meant every automatic call paid its cost even for ordinary work where it
+loses head to head with `claude-bridge/claude-opus-5`; dropped in favor of
+manual invocation for now, with a `research-max` alias as a future option if
+that manual step proves too easy to forget).
 
-- **Top**: `claude-bridge/claude-fable-5`, for multi-hour-plus autonomous
-  research and synthesis. This is its design center; on ordinary workloads
-  it loses head to head with `claude-bridge/claude-opus-5` despite costing
-  twice as much, so do not reach for it for interactive depth or routine
-  work.
-- **Mid**: `opencode-go/kimi-k3` or `opencode-go/deepseek-v4-pro` for
-  interactive research sessions (an evening of source reading, then a
-  synthesis). Both carry 1M context at sonnet-plus pricing.
-- **Work fallback**: `cursor/grok-4.7` behind the Claude/Codex targets,
-  cursor-native rather than a third-party pick routed through cursor, for
-  the same provider-diversity reason as the opus coding tier.
+- **Default (`alias/research`)**: `claude-bridge/claude-opus-5`, then
+  `openai-codex/gpt-5.6-terra`, then (personal only)
+  `opencode-go/kimi-k3` or `opencode-go/deepseek-v4-pro` for interactive
+  research sessions (an evening of source reading, then a synthesis; both
+  carry 1M context at sonnet-plus pricing), then (work only)
+  `cursor/grok-4.7` — cursor-native rather than a third-party pick routed
+  through cursor, for the same provider-diversity reason as the opus coding
+  tier.
+- **Manual escalation**: `claude-bridge/claude-fable-5`, for
+  multi-hour-plus autonomous research and synthesis. This is its design
+  center; reach for it deliberately on genuinely long-horizon work, not as
+  a default for interactive depth or routine work.
 
 ### Background text tasks
 

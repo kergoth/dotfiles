@@ -20,13 +20,11 @@
 {{- if .work }}
   "coding": [
     "claude-bridge/claude-sonnet-5",
-    "claude-bridge/claude-sonnet-4-6",
     "openai-codex/gpt-5.6-terra",
     "cursor/auto-smart"
   ],
   "coding-max": [
     "claude-bridge/claude-opus-5-5",
-    "claude-bridge/claude-opus-5",
     "openai-codex/gpt-5.6-sol",
     "cursor/grok-4.7"
   ],
@@ -36,7 +34,6 @@
 {{-   end }}
   "chat": {{ $chat | toJson }},
   "research": [
-    "claude-bridge/claude-fable-5",
     "claude-bridge/claude-opus-5",
     "openai-codex/gpt-5.6-terra",
     "cursor/grok-4.7"
@@ -49,7 +46,6 @@
 {{- else }}
   "coding": [
     "claude-bridge/claude-sonnet-5",
-    "claude-bridge/claude-sonnet-4-6",
     "openai-codex/gpt-5.6-terra",
     "opencode-go/kimi-k2.7-code",
     "opencode-go/deepseek-v4.1-flash"
@@ -58,12 +54,10 @@
     "opencode-go/kimi-k2.7-code",
     "opencode-go/deepseek-v4.1-flash",
     "claude-bridge/claude-sonnet-5",
-    "claude-bridge/claude-sonnet-4-6",
     "openai-codex/gpt-5.6-terra"
   ],
   "coding-max": [
     "claude-bridge/claude-opus-5-5",
-    "claude-bridge/claude-opus-5",
     "openai-codex/gpt-5.6-sol",
     "opencode-go/kimi-k3",
     "opencode-go/deepseek-v4-pro"
@@ -74,7 +68,6 @@
 {{-   end }}
   "chat": {{ $chat | toJson }},
   "research": [
-    "claude-bridge/claude-fable-5",
     "claude-bridge/claude-opus-5",
     "openai-codex/gpt-5.6-terra",
     "opencode-go/kimi-k3",
