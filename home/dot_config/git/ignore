@@ -43,10 +43,11 @@ Temporary Items
 # Synology NAS clutter
 @eaDir
 
-# Python
+# Tooling
 __pycache__
 .mypy_cache
 .pytest_cache
+.rumdl_cache
 
 # Vim
 Session.vim
