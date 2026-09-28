@@ -27,9 +27,10 @@
   "coding-max": [
     "claude-bridge/claude-opus-5-5",
     "claude-bridge/claude-opus-5",
-    "openai-codex/gpt-5.6-sol"
+    "openai-codex/gpt-5.6-sol",
+    "cursor/grok-4.7"
   ],
-{{-   $chat := list "openai-codex/gpt-5.6-luna" "cursor/grok-4.5" "claude-bridge/claude-haiku-4-5" }}
+{{-   $chat := list "openai-codex/gpt-5.6-luna" "cursor/grok-4.7" "claude-bridge/claude-haiku-4-5" }}
 {{-   if $hasLocal }}
 {{-     $chat = concat $chat (list $localAssistant) }}
 {{-   end }}
@@ -37,19 +38,21 @@
   "research": [
     "claude-bridge/claude-fable-5",
     "claude-bridge/claude-opus-5",
-    "openai-codex/gpt-5.6-terra"
+    "openai-codex/gpt-5.6-terra",
+    "cursor/grok-4.7"
   ],
   "light": [
     "openai-codex/gpt-5.6-luna",
-    "claude-bridge/claude-sonnet-4-6"
+    "cursor/composer-2.5",
+    "claude-bridge/claude-haiku-4-5"
   ]
 {{- else }}
   "coding": [
     "claude-bridge/claude-sonnet-5",
     "claude-bridge/claude-sonnet-4-6",
+    "openai-codex/gpt-5.6-terra",
     "opencode-go/kimi-k2.7-code",
-    "opencode-go/deepseek-v4.1-flash",
-    "openai-codex/gpt-5.6-terra"
+    "opencode-go/deepseek-v4.1-flash"
   ],
   "coding-budget": [
     "opencode-go/kimi-k2.7-code",
@@ -65,14 +68,11 @@
     "opencode-go/kimi-k3",
     "opencode-go/deepseek-v4-pro"
   ],
-{{-   $chatBudget := list "opencode-go/glm-5.3-flash" "openai-codex/gpt-5.6-luna" "claude-bridge/claude-haiku-4-5" }}
-{{-   $chatQuality := list "opencode-go/glm-5.3-flash" "openai-codex/gpt-5.6-luna" "claude-bridge/claude-haiku-4-5" }}
+{{-   $chat := list "opencode-go/glm-5.3-flash" "openai-codex/gpt-5.6-luna" "claude-bridge/claude-haiku-4-5" }}
 {{-   if $hasLocal }}
-{{-     $chatBudget = concat $chatBudget (list $localAssistant) }}
-{{-     $chatQuality = concat $chatQuality (list $localAssistant) }}
+{{-     $chat = concat $chat (list $localAssistant) }}
 {{-   end }}
-  "chat": {{ $chatBudget | toJson }},
-  "chat-quality": {{ $chatQuality | toJson }},
+  "chat": {{ $chat | toJson }},
   "research": [
     "claude-bridge/claude-fable-5",
     "claude-bridge/claude-opus-5",
