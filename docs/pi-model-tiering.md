@@ -131,24 +131,23 @@ Quality-ordered by default (`alias/coding`); `alias/coding-budget` front-loads
 the `opencode-go` window for conserving the Claude and Codex windows. Escalate
 on evidence, not upfront.
 
-- **Sonnet tier (default)**: `claude-bridge/claude-sonnet-5` ahead of
-  `claude-bridge/claude-sonnet-4-6` (trial, September 2026 — sonnet-5 first
-  with 4-6 as fallback; revert the order if sonnet-5's higher per-task token
-  use outweighs its lower per-token price), then `openai-codex/gpt-5.6-terra`,
-  then (personal only) `opencode-go/kimi-k2.7-code` and
-  `opencode-go/deepseek-v4.1-flash` once the opencode-go window opens;
-  `cursor/auto-smart` at work. `alias/coding-budget` (personal only)
-  front-loads the opencode-go pair ahead of the claude-bridge and terra
-  targets. Best fit: known-pattern changes, small diffs, routine refactors.
-- **Opus tier (escalation)**: `opencode-go/kimi-k3`, `opencode-go/glm-5.3`,
-  `opencode-go/deepseek-v4-pro`, `claude-bridge/claude-opus-5-5` ahead of
-  `claude-bridge/claude-opus-5` (trial, September 2026 — Anthropic claims
-  opus-5.5 costs ~40% less per completed task than opus-5; unverified
-  independently), `openai-codex/gpt-5.6-terra` or `openai-codex/gpt-5.6-sol`,
-  `cursor/grok-4.7` at work — cursor-native (Cursor Models pool), not a
-  third-party pick routed through cursor, so it adds real provider diversity
-  instead of just re-billing a pool already covered by `claude-bridge` or
-  `openai-codex` at a surcharge.
+- **Sonnet tier (default)**: `claude-bridge/claude-sonnet-5`, then
+  `openai-codex/gpt-5.6-terra`, then (personal only)
+  `opencode-go/kimi-k2.7-code` and `opencode-go/deepseek-v4.1-flash` once
+  the opencode-go window opens; `cursor/auto-smart` at work.
+  `alias/coding-budget` (personal only) front-loads the opencode-go pair
+  ahead of the claude-bridge and terra targets. Best fit: known-pattern
+  changes, small diffs, routine refactors.
+- **Opus tier (escalation)**: `claude-bridge/claude-opus-5-5`, then
+  `openai-codex/gpt-5.6-sol`, then (personal only)
+  `opencode-go/deepseek-v4-pro` ahead of `opencode-go/kimi-k3` (October
+  2026 — deepseek-v4-pro carries roughly 10x kimi-k3's monthly quota on
+  OpenCode Go, so spending it first reserves kimi-k3's thin allowance for
+  when deepseek-v4-pro is also exhausted; the two aren't ranked on quality,
+  only quota), `cursor/grok-4.7` at work — cursor-native (Cursor Models
+  pool), not a third-party pick routed through cursor, so it adds real
+  provider diversity instead of just re-billing a pool already covered by
+  `claude-bridge` or `openai-codex` at a surcharge.
   Best fit: novel design, ambiguous debugging, large refactor planning.
 - **Escalation policy**: two strikes. One stall or unsatisfied retry at the
   sonnet tier, then jump. Prune or summarize the stalled transcript before
@@ -199,12 +198,12 @@ that manual step proves too easy to forget).
 
 - **Default (`alias/research`)**: `claude-bridge/claude-opus-5`, then
   `openai-codex/gpt-5.6-terra`, then (personal only)
-  `opencode-go/kimi-k3` or `opencode-go/deepseek-v4-pro` for interactive
-  research sessions (an evening of source reading, then a synthesis; both
-  carry 1M context at sonnet-plus pricing), then (work only)
-  `cursor/grok-4.7` — cursor-native rather than a third-party pick routed
-  through cursor, for the same provider-diversity reason as the opus coding
-  tier.
+  `opencode-go/deepseek-v4-pro` ahead of `opencode-go/kimi-k3` (same
+  quota-first ordering as the opus coding tier) for interactive research
+  sessions (an evening of source reading, then a synthesis; both carry 1M
+  context at sonnet-plus pricing), then (work only) `cursor/grok-4.7` —
+  cursor-native rather than a third-party pick routed through cursor, for
+  the same provider-diversity reason as the opus coding tier.
 - **Manual escalation**: `claude-bridge/claude-fable-5`, for
   multi-hour-plus autonomous research and synthesis. This is its design
   center; reach for it deliberately on genuinely long-horizon work, not as
