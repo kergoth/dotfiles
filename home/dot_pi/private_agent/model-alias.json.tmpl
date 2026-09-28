@@ -29,7 +29,7 @@
     "claude-bridge/claude-opus-5",
     "openai-codex/gpt-5.6-sol"
   ],
-{{-   $chat := list "openai-codex/gpt-5.6-luna" "cursor/grok-4.5" }}
+{{-   $chat := list "openai-codex/gpt-5.6-luna" "cursor/grok-4.5" "claude-bridge/claude-haiku-4-5" }}
 {{-   if $hasLocal }}
 {{-     $chat = concat $chat (list $localAssistant) }}
 {{-   end }}
@@ -48,7 +48,8 @@
     "claude-bridge/claude-sonnet-5",
     "claude-bridge/claude-sonnet-4-6",
     "opencode-go/kimi-k2.7-code",
-    "opencode-go/deepseek-v4.1-flash"
+    "opencode-go/deepseek-v4.1-flash",
+    "openai-codex/gpt-5.6-terra"
   ],
   "coding-budget": [
     "opencode-go/kimi-k2.7-code",
@@ -64,8 +65,8 @@
     "opencode-go/kimi-k3",
     "opencode-go/deepseek-v4-pro"
   ],
-{{-   $chatBudget := list "opencode-go/glm-5.3-flash" "openai-codex/gpt-5.6-luna" }}
-{{-   $chatQuality := list "opencode-go/glm-5.3-flash" "openai-codex/gpt-5.6-luna" }}
+{{-   $chatBudget := list "opencode-go/glm-5.3-flash" "openai-codex/gpt-5.6-luna" "claude-bridge/claude-haiku-4-5" }}
+{{-   $chatQuality := list "opencode-go/glm-5.3-flash" "openai-codex/gpt-5.6-luna" "claude-bridge/claude-haiku-4-5" }}
 {{-   if $hasLocal }}
 {{-     $chatBudget = concat $chatBudget (list $localAssistant) }}
 {{-     $chatQuality = concat $chatQuality (list $localAssistant) }}
@@ -81,7 +82,8 @@
   ],
   "light": [
     "opencode-go/mimo-v2.5",
-    "openai-codex/gpt-5.6-luna"
+    "openai-codex/gpt-5.6-luna",
+    "claude-bridge/claude-haiku-4-5"
   ]
 {{- end }}
 }
