@@ -19,7 +19,7 @@
 {{- $localAssistant := "local-assistant/mlx-community/gemma-4-26B-A4B-it-qat-4bit" }}
 {{- if .work }}
   "coding": [
-    "claude-bridge/claude-sonnet-5",
+    "claude-bridge/claude-sonnet-5-5",
     "openai-codex/gpt-5.6-terra",
     "cursor/auto-smart"
   ],
@@ -34,7 +34,7 @@
 {{-   end }}
   "chat": {{ $chat | toJson }},
   "research": [
-    "claude-bridge/claude-opus-5",
+    "claude-bridge/claude-opus-5-5",
     "openai-codex/gpt-5.6-terra",
     "cursor/grok-4.7"
   ],
@@ -45,7 +45,7 @@
   ]
 {{- else }}
   "coding": [
-    "claude-bridge/claude-sonnet-5",
+    "claude-bridge/claude-sonnet-5-5",
     "openai-codex/gpt-5.6-terra",
     "opencode-go/kimi-k2.7-code",
     "opencode-go/deepseek-v4.1-flash"
@@ -53,7 +53,7 @@
   "coding-budget": [
     "opencode-go/kimi-k2.7-code",
     "opencode-go/deepseek-v4.1-flash",
-    "claude-bridge/claude-sonnet-5",
+    "claude-bridge/claude-sonnet-5-5",
     "openai-codex/gpt-5.6-terra"
   ],
   "coding-max": [
@@ -68,7 +68,7 @@
 {{-   end }}
   "chat": {{ $chat | toJson }},
   "research": [
-    "claude-bridge/claude-opus-5",
+    "claude-bridge/claude-opus-5-5",
     "openai-codex/gpt-5.6-terra",
     "opencode-go/deepseek-v4-pro",
     "opencode-go/kimi-k3"
