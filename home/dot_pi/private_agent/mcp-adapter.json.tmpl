@@ -1,4 +1,7 @@
 {{- $servers := (joinPath .chezmoi.workingTree "settings/pi/mcp.json" | include | fromJson) -}}
+{{- if .personal -}}
+{{-   $_ := set $servers "romm" (dict "command" "uvx" "args" (list "--python" "3.12" "--from" "https://github.com/X1pheR/romm-mcp/releases/download/v0.1.1/romm_mcp-0.1.1-py3-none-any.whl" "romm-mcp") "env" (dict "ROMM_BASE_URL" "https://romm.home.kergoth.com" "ROMM_API_TOKEN_FILE" (joinPath .chezmoi.homeDir ".romm-token") "ROMM_TIMEOUT_SECONDS" "15")) -}}
+{{- end -}}
 {{- if and .personal .secrets -}}
 {{-   $_ := set $servers "firecrawl" (dict "type" "stdio" "command" "npx" "args" (list "-y" "firecrawl-mcp") "env" (dict "FIRECRAWL_API_KEY" (joinPath .chezmoi.workingTree "settings/agents/firecrawl-api-key.age" | include | decrypt | trim))) -}}
 {{-   $_ := set $servers "kagi" (dict "type" "stdio" "command" "uvx" "args" (list "kagimcp") "env" (dict "KAGI_API_KEY" (joinPath .chezmoi.workingTree "settings/agents/kagi-api-key.age" | include | decrypt | trim))) -}}
