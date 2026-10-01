@@ -169,15 +169,17 @@ an untracked plaintext file.
 
 ### Private file externals
 
-Include an encrypted TOML fragment in `.chezmoiexternal.toml.tmpl` to add private files. This keeps destination paths out of the public source tree.
+Include an encrypted TOML fragment in `.chezmoiexternal.toml.tmpl` to add
+private files. This keeps destination paths out of the public source tree.
 
-```
+```gotmpl
 {{- if and .secrets (not .ephemeral) -}}
 {{-   joinPath .chezmoi.sourceDir ".chezmoitemplates/external/private-files.toml.age" | include | decrypt -}}
 {{- end -}}
 ```
 
-Store the encrypted fragment under `home/.chezmoitemplates/external/`. The fragment is standard chezmoi externals TOML:
+Store the encrypted fragment under `home/.chezmoitemplates/external/`. The
+fragment is standard chezmoi externals TOML:
 
 ```toml
 [".cursor/cli-config.json"]
@@ -187,7 +189,9 @@ Store the encrypted fragment under `home/.chezmoitemplates/external/`. The fragm
 
 chezmoi copies each listed file to its destination.
 
-`agent-content-work.toml.age` uses this pattern for work-only external content. Add the gate shown above to keep `chezmoi diff` clean on machines where the private files do not apply.
+`agent-content-work.toml.age` uses this pattern for work-only external
+content. Add the gate shown above to keep `chezmoi diff` clean on machines
+where the private files do not apply.
 
 ## Runtime Directories
 
@@ -261,4 +265,4 @@ Chezmoi may consider its state current.
 
 - [Repository Architecture](repository-architecture.md)
 - [Adding Software](contributing-software.md)
-- [README setup and usage](../README.md#usage)
+- [README day-to-day usage](../README.md#day-to-day-usage)

@@ -27,7 +27,7 @@ repository, external content, and Home Manager inputs.
 Manager configuration. `script/update` calls it as part of the larger update
 flow.
 
-See the [README](../README.md#usage) for setup and update command examples.
+See the [README setup](../README.md#setup) for setup and update command examples.
 
 ## Top-Level Responsibilities
 
