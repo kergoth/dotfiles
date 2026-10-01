@@ -20,7 +20,7 @@ beyond a one-sentence definition. The inline portion answers "what is it";
 continuation handles caveats, structure, deployment details, or anything
 that would otherwise stretch the bullet into a run-on. Example:
 
-```
+```text
 - **Pool size**: 20 connections by default.
   Production overrides via PGPOOL_SIZE; tune per service in infra/db.yml.
 ```

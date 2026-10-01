@@ -40,7 +40,7 @@ Subject and body alike: describe the change, not the workflow event that produce
 
 **Body-echoes-subject is not a body.** A body that merely rephrases the subject in past tense conveys nothing and is a strong AI-generation signal. Delete it or replace it with actual motivation:
 
-```
+```text
 # Bad — body adds no information
 Update README with Paper Atlas Tool details
 

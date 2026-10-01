@@ -11,7 +11,7 @@ from liability.
 ## Acceptance
 
 In order to receive this license, you must agree to its
-rules.  The rules of this license are both obligations
+rules. The rules of this license are both obligations
 under that agreement and conditions to your license.
 You must not do anything with this software that triggers
 a rule that you cannot or will not follow.
@@ -34,7 +34,7 @@ changes, also gets the text of this license or a link to
 If anyone notifies you in writing that you have not
 complied with [Notices](#notices), you can keep your
 license by taking all practical steps to comply within 30
-days after the notice.  If you do not do so, your license
+days after the notice. If you do not do so, your license
 ends immediately.
 
 ## Patent

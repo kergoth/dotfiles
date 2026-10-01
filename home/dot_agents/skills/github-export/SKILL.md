@@ -22,15 +22,18 @@ cat github-data/repo.yml   # look at synced_at
 ```
 
 What "fresh enough" means depends on the task:
+
 - Triage, pattern analysis, scoring: hours to a day is fine
 - Real-time state of a specific item: use `gh` unless synced within the last hour
 - Cross-issue analysis tolerates staleness well — content changes slowly
 
 If absent or too stale, sync first:
+
 ```bash
 github-export owner/repo                 # sync into github-data/ in current dir
 github-export --max-age=6mo owner/repo  # scope first sync of large repos
 ```
+
 Requires `GITHUB_TOKEN` or `gh auth login` (token picked up automatically from `gh`).
 
 ## Decision: Local Files vs API
@@ -45,7 +48,7 @@ Requires `GITHUB_TOKEN` or `gh auth login` (token picked up automatically from `
 
 ## File Layout
 
-```
+```text
 github-data/
   repo.yml               # metadata + synced_at
   labels.yml
@@ -105,6 +108,7 @@ Event types include `issue_created`, `issue_closed`, `pr_created`, `pr_merged`,
 
 Filter by date using the filename prefix — no need to read all files when only
 recent changes matter:
+
 ```bash
 # Events since yesterday
 ls github-data/events/20260904-* github-data/events/20260905-* 2>/dev/null

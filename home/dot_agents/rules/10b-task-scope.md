@@ -14,6 +14,7 @@ Classify the task and proceed. For modes 1+, open with the label:
 Modes 0–2: this policy overrides broad skill triggers. Don't invoke workflow skills unless task facts independently require them. Mode 2 uses its bounded contract; Mode 3+ invokes the appropriate skills.
 
 **Mode 2 contract:**
+
 1. Derive 3-7 testable acceptance criteria.
 2. Name canonical source files and explicit non-goals.
 3. Implement the smallest change that satisfies the criteria.

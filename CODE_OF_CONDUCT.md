@@ -107,7 +107,7 @@ Violating these terms may lead to a permanent ban.
 ### 4. Permanent Ban
 
 **Community Impact**: Demonstrating a pattern of violation of community
-standards, including sustained inappropriate behavior,  harassment of an
+standards, including sustained inappropriate behavior, harassment of an
 individual, or aggression toward or disparagement of classes of individuals.
 
 **Consequence**: A permanent ban from any sort of public interaction within
@@ -131,4 +131,3 @@ at [https://www.contributor-covenant.org/translations][translations].
 [Mozilla CoC]: https://github.com/mozilla/diversity
 [FAQ]: https://www.contributor-covenant.org/faq
 [translations]: https://www.contributor-covenant.org/translations
-

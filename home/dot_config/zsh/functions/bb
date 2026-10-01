@@ -1,4 +1,4 @@
-local command="${1#sh-}" 
+local command="${1#sh-}"
 if (( $+commands[bb-sh-$command] )); then
     command=sh-$command
 fi

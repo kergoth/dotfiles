@@ -26,6 +26,7 @@ A workspace is another working copy backed by the same repository state. Each wo
 A workspace becomes stale when its files no longer match the operation state jj expects, often because another workspace rewrote the working-copy commit.
 
 Use:
+
 - `jj workspace update-stale`
 
 This updates the workspace and may create a recovery commit if needed.

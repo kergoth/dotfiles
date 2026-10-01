@@ -36,7 +36,7 @@ export FPATH="$(brew --prefix)/share/zsh/site-functions:$FPATH"
 Simple OS or platform guards are self-documenting. Complex conditions —
 especially those encoding policy decisions or workarounds — need a comment.
 
-```
+```text
 {{- /* Self-documenting — no comment needed */ -}}
 {{ if eq .chezmoi.os "darwin" }}
 

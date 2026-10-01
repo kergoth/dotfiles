@@ -83,13 +83,15 @@ when help is requested — the user should be able to append `-h` to any invocat
 Don't overload `-h` for anything else.
 
 **Display concise help when run with no arguments (if arguments are required).** Include:
+
 - A description of what the program does
 - One or two example invocations
 - Descriptions of flags (unless there are many)
 - An instruction to pass `--help` for more detail
 
 Example (`jq`):
-```
+
+```text
 $ jq
 jq - commandline JSON processor [version 1.6]
 
@@ -103,7 +105,8 @@ For a listing of options, use jq --help.
 ```
 
 **For git-style tools, also support `help` as a subcommand:**
-```
+
+```text
 $ myapp help
 $ myapp help subcommand
 $ myapp subcommand --help
@@ -129,7 +132,8 @@ frequently used subcommands appear before the full list.
 formatting so users don't see raw escape sequences.
 
 **Suggest corrections when input looks like a typo.**
-```
+
+```text
 $ brew update jq
 Error: This command updates brew itself. Use `brew upgrade jq` to upgrade a formula.
 ```
@@ -192,6 +196,7 @@ state like a cache).
 overcolor — if everything is colored, color means nothing.
 
 **Disable color when:**
+
 - stdout/stderr is not a TTY (check each stream independently)
 - `NO_COLOR` env var is set and non-empty
 - `TERM=dumb`
@@ -238,6 +243,7 @@ terminal. Pre-populate bug report URLs with available context to make reporting 
 ## Arguments and Flags
 
 **Terminology:**
+
 - *Arguments* (args): positional parameters. Order matters. E.g., `cp foo bar`.
 - *Flags*: named parameters with `-` or `--` prefix. Order generally doesn't matter.
   May take values: `--file foo.txt` or `--file=foo.txt`.
@@ -284,6 +290,7 @@ non-interactively. Skip prompts when stdin is not a TTY.
 
 **Confirm before dangerous actions.** Prompt for `y`/`yes` interactively, or require
 `-f`/`--force` in scripts. Scale confirmation difficulty to danger level:
+
 - *Mild* (delete a file): optional confirmation
 - *Moderate* (delete a directory, remote resource): prompt + offer dry-run
 - *Severe* (delete entire application/server): require typing the resource name, or
@@ -293,7 +300,8 @@ Watch for non-obvious destruction (e.g., changing a count from 10 to 1 implicitl
 9 things).
 
 **Support `-` for stdin/stdout.** When input or output is a file, let `-` mean stdin or stdout:
-```
+
+```text
 $ curl https://example.com/something.tar.gz | tar xvf -
 ```
 
@@ -351,7 +359,7 @@ Show estimated time remaining or at least an animated element so the user knows 
 Use established progress-bar libraries for your language.
 
 **Parallelize where possible, but manage output carefully.** Don't let parallel output
-interleave confusingly. Use libraries that support multiple progress bars (e.g., tqdm, 
+interleave confusingly. Use libraries that support multiple progress bars (e.g., tqdm,
 schollz/progressbar). If parallel operations error, make sure logs are still accessible.
 
 **Set network timeouts.** Allow configuration, but have a reasonable default. Don't hang
@@ -402,7 +410,8 @@ cleanup. Timeout cleanup so it can't hang forever.
 
 **On second Ctrl-C during cleanup, skip cleanup.** Tell the user what will happen if they
 hit Ctrl-C again, especially if it's destructive.
-```
+
+```text
 $ docker-compose up
 …
 ^CGracefully stopping... (press Ctrl+C again to force)
@@ -432,6 +441,7 @@ proliferating dotfiles in `$HOME`. See the
 comments to delimit your additions.
 
 **Apply configuration in this precedence order** (highest to lowest):
+
 1. Flags
 2. Environment variables (running shell)
 3. Project-level config (e.g., `.env`)
@@ -453,6 +463,7 @@ environment: they may vary per invocation, per machine, or per project.
 [POSIX standard env vars](https://pubs.opengroup.org/onlinepubs/009695399/basedefs/xbd_chap08.html).
 
 **Check standard env vars where applicable:**
+
 - `NO_COLOR` — color control
 - `DEBUG` — verbose output
 - `EDITOR` — when prompting for multi-line input
@@ -512,6 +523,7 @@ about what you collect, why, how it's anonymized, and how long it's retained.
 or your website, and make disabling it easy.
 
 **Consider alternatives to telemetry:**
+
 - Instrument your web docs (search queries, page views)
 - Instrument downloads (usage proxy, OS distribution)
 - Talk to users directly (feedback channels, issue trackers)
@@ -530,7 +542,7 @@ established clig content.
 The clig Output section recommends `--no-color` as a flag. In practice, most modern CLIs
 have converged on a tri-state `--color` flag instead:
 
-```
+```text
 --color=always    Force color output regardless of TTY
 --color=auto      Color when the output stream is a TTY (the default)
 --color=never     Disable color unconditionally
@@ -602,6 +614,7 @@ machine-parseable fields beyond just a message string:
 ```
 
 Key fields for programmatic consumers:
+
 - `type`: machine-readable error category (not just a code number)
 - `message`: human-readable explanation
 - `recoverable`: whether retry makes sense (helps agents decide without parsing the message)

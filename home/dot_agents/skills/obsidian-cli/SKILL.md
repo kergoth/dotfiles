@@ -21,7 +21,7 @@ The CLI communicates with the running Obsidian app via IPC (Unix socket). Sandbo
 
 ## Parameter Syntax — CRITICAL
 
-```
+```text
 obsidian <command> [parameter=value] [--flag]
 ```
 
@@ -94,7 +94,7 @@ For create, overwrite, rename, move, or delete operations where correctness matt
 | `grep -r "..." vault/` | `obsidian search query="..."` | Use CLI search; don't fall back to grep |
 | `echo "..." >> file` | `obsidian append content="..."` | Use CLI for append/prepend; Read/Edit tools for surgical edits |
 | `... \| pbcopy` | `... --copy` | Use built-in clipboard flag |
-| `content="... \`code\` ..."` | `content='... \`code\` ...'` or a `<<'END'` heredoc | Avoid shell command substitution from backticks |
+| `content="... \`code\` ..."` | `content='... \`code\` ...'` or a `<<'END'` heredoc | Avoid shell command substitution from backticks |  |
 | `create name="Note"` when `Note.md` may already exist | `create name="Note" overwrite ...` or `read` first | Prevent silent `Note 1.md` duplicates |
 
 ## Command Categories

@@ -25,6 +25,7 @@
 Prefer non-interactive `jj split` by path when the split boundary is clear.
 
 Examples:
+
 - `jj split path/to/file`
 - `jj split file1 file2`
 - `jj split -r <rev> file1 file2`
@@ -32,6 +33,7 @@ Examples:
 Interactive `jj split` is available, but it is a poor default for agents.
 
 If the change does not divide cleanly by path:
+
 1. Inspect the current state with `jj diff`.
 2. Prefer documenting that the split is hunk-based and may require an interactive tool or a more careful manual rewrite.
 3. Only fall back to restore-based surgery when you can state exactly which revision is the source and target for `jj restore --from F --to T`, and verify the result immediately with `jj diff` and `jj log`.
@@ -59,11 +61,13 @@ revset, each with its own private working copy. Commands may update the
 working copy; changes and conflicts propagate automatically.
 
 Common uses:
+
 - `jj run -- cargo check --all-features`
 - `jj run -- cargo fix`
 - `jj run -r 'main::@' -- ./run-tests.sh`
 
 Flags:
+
 - `--jobs N`: run N revisions concurrently (start order is still guaranteed)
 - `--passthrough`: connect subprocess stdout/stderr to terminal
 - `--ignore-changes`: avoid editing any revision even if the command modifies the working copy

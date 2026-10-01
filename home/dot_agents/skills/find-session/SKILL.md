@@ -22,18 +22,21 @@ Search past Claude Code, Codex, or Cursor Agent session history by keyword and p
 From the user's description:
 
 **Scope:**
+
 - "in this project" / "here" / "in this repo" / "in this directory" → `--scope project --cwd "$(pwd)"`
 - User names a specific project or repo (e.g. "it was in my-api-project", "in the backend-service repo") → resolve the path (check `~/Workspace/`, `~/Repos/`) and use `--scope project --cwd <resolved-path>`
 - "somewhere" / "I can't remember" / "I was working on X" / no location specified → `--scope global`
 - When ambiguous, default to `--scope global`
 
 **Agent:**
+
 - User says "Claude", "Claude Code", or asks for a Claude session -> `--agent claude`
 - User says "Codex" or asks for a Codex session -> `--agent codex`
 - User says "Cursor" or asks for a Cursor Agent session -> `--agent cursor`
 - User does not identify the agent -> `--agent all`
 
 **Keywords:** Extract 2–4 specific, concrete terms. Prefer domain nouns over generic verbs.
+
 - "that session about the marketplace proposal" → `marketplace proposal`
 - "where we set up the mender deployment" → `mender deploy`
 
@@ -54,7 +57,8 @@ The script outputs a JSON object with `total_matching` (all files rg found) and 
 If a result is clearly the current session (the one you're running in right now), re-run with `--exclude <session_id>` to drop it from results. `--exclude` is repeatable.
 
 **Output schema:**
-```
+
+```text
 {
   "total_matching": number,            // total files rg matched (may exceed sessions shown)
   "sessions": [
@@ -87,6 +91,7 @@ If a result is clearly the current session (the one you're running in right now)
 ```
 
 To fetch thorough context for specific sessions by ID (bypassing keyword search):
+
 ```bash
 python ~/.agents/skills/find-session/scripts/search_sessions.py \
   --agent <claude|codex|cursor|all> \
@@ -104,6 +109,7 @@ Work through these in order — don't skip to keyword changes until you've exhau
 After every quick search, run a targeted thorough pass on the top candidates (those with the highest `match_count`, typically the top 2–3) before presenting results or drawing any conclusions. Use `--session-ids` so you only read those files — not all 28 matches.
 
 Extract full session IDs from the quick search output — never truncate and then reconstruct:
+
 ```bash
 # Extract full IDs for the top 3 candidates
 <quick_output> | jq -r '[.sessions[:3] | .[].session_id] | join(" ")'
@@ -138,6 +144,7 @@ Never tell the user the session wasn't found when the cap was applied — you ha
 ### Step 3c: Zero or few results, cap not applied
 
 The keywords genuinely didn't match. Try variations:
+
 - Split compound/hyphenated terms: `app-deploy` → try `app deploy` or `deploy` alone
 - Try synonyms or adjacent terms the session might have used
 - Reduce to a single highly distinctive keyword
@@ -165,7 +172,7 @@ For each session write a short (≤10 word) summary label. Always include a `Ses
 
 When `match_source` is `"subagent"`, mention that the keyword match came from subagent work in that session; resume still uses the parent `session_id`.
 
-```
+```text
 Found N sessions matching "<keywords>":
 
 #  Agent   Date        Project          Name                      Session ID    Summary
@@ -223,7 +230,7 @@ Otherwise ask the user to pick a number, then show the resume command.
 
 Output is the final response — list resume commands for all candidates, best match first:
 
-```
+```text
 To resume the best match:
 <resume_command>
 

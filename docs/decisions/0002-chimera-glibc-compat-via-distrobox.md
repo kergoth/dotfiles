@@ -41,10 +41,11 @@ Chosen option: "Ubuntu 22.04 distrobox", because it provides a full glibc enviro
 ### Confirmation
 
 After `chezmoi apply` on a non-headless, non-ephemeral Chimera system:
-- `distrobox list` shows an `ubuntu` container
-- Vivaldi, 1Password, and Zed appear in the KDE application launcher
-- 1Password browser extension connects to the app without re-authentication
-- A second `chezmoi apply` is idempotent (no script body emitted)
+
+* `distrobox list` shows an `ubuntu` container
+* Vivaldi, 1Password, and Zed appear in the KDE application launcher
+* 1Password browser extension connects to the app without re-authentication
+* A second `chezmoi apply` is idempotent (no script body emitted)
 
 ## More Information
 

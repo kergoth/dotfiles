@@ -69,6 +69,7 @@ codex exec -s read-only --skip-git-repo-check "prompt"
 $ codex exec --full-auto "review this"
 error: unexpected argument '--full-auto'
 ```
+
 Exit code: 0. Treat as failure, not an empty review.
 
 **Sandbox requirement:** Codex requires write access to `~/.codex/sessions`. Run with `dangerouslyDisableSandbox: true` in Claude Code.
@@ -100,6 +101,7 @@ When dispatching from within a sandboxed agent (e.g., Claude Code), the sandbox 
 **From Claude Code:** Use `dangerouslyDisableSandbox: true` in the Bash tool for all external model dispatch. The child process inherits sandbox restrictions that block session/state directory writes.
 
 **From Cursor:** Cursor has no per-tool-call sandbox escape (unlike Claude's `dangerouslyDisableSandbox`). Options:
+
 - **Interactive mode**: User approves each command when prompted
 - **Allowlist**: Pre-configure commands in `permissions.json` (`terminalAllowlist`)
 - **Full YOLO**: Use `--yolo` flag — requires explicit user request and approval

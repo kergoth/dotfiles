@@ -16,7 +16,7 @@ and documentation all in one file.
 
 ## Core Syntax
 
-```
+```text
 This is a comment — any unindented line is documentation.
 
   $ command to execute
@@ -33,8 +33,9 @@ This is a comment — any unindented line is documentation.
 ```
 
 **Indentation rules:**
-- 2-space indent + `$ ` = shell command
-- 2-space indent + `> ` = continuation of previous command (shell PS2 prompt)
+
+- 2-space indent + `$` = shell command
+- 2-space indent + `>` = continuation of previous command (shell PS2 prompt)
 - 2-space indent (no prefix) = expected output
 - No indent = comment/documentation
 
@@ -61,7 +62,7 @@ output, etc.
 **Exit code 80 means "skip this test."** Cram marks it with `s` in output and
 does not count it as a failure. Use this for conditional tests:
 
-```
+```text
   $ command -v some-tool > /dev/null 2>&1 || exit 80
   $ some-tool --version
   some-tool 1.2.3
@@ -114,27 +115,27 @@ This is the standard way to create tests for existing working commands.
 
 ### Source helpers from test directory
 
-```
+```text
   $ source "$TESTDIR/helpers.sh"
 ```
 
 ### Normalize variable output
 
-```
+```text
   $ date +%Y
   \d{4} (re)
 ```
 
 ### Match paths across platforms
 
-```
+```text
   $ echo "$HOME/some/path"
   */some/path (glob)
 ```
 
 ### Guard on tool availability
 
-```
+```text
   $ command -v jq > /dev/null 2>&1 || exit 80
   $ echo '{"a":1}' | jq .a
   1

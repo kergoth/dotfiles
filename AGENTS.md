@@ -55,17 +55,20 @@ See `docs/commenting-standard.md` for full detail and examples. Rules apply to
 new and modified code only — do not backfill.
 
 **Foundation (Ottinger's Rules):**
+
 - Comments are for things that cannot be expressed in code.
 - Comments that restate code must be deleted.
 - If a comment says what the code could say, change the code instead.
 
 **Required:**
+
 - Workarounds must reference the upstream issue (URL or bug tracker link).
 - Non-obvious chezmoi template conditions need a WHY comment; simple OS/platform guards do not.
 - `run_once_` and `run_onchange_` scripts need a one-line comment at the top stating what triggers them and what they achieve.
 - Cross-file sync dependencies must be called out explicitly.
 
 **Prohibited:**
+
 - Comments that restate what the code does must be removed from new and modified code.
 - When removing code, remove its comments too. Do not leave orphaned explanations for things that no longer exist.
 

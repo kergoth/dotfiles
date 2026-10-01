@@ -7,6 +7,7 @@
 A colocated workspace has both `.jj/` and `.git/` in the working copy.
 
 Use this when reasoning about the repo:
+
 - jj and Git share the same working copy.
 - Call this repo state `colocated` explicitly when explaining it to the user.
 - Mixing `jj` and `git` commands is allowed.
@@ -18,6 +19,7 @@ Use this when reasoning about the repo:
 A non-colocated jj workspace may show only `.jj/`.
 
 Use this when reasoning about the repo:
+
 - still prefer `jj`
 - remote sync still happens through `jj git ...`
 - if external Git state must be synchronized explicitly, look for `jj git import` and `jj git export`

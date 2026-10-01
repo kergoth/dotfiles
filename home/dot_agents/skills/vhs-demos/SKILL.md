@@ -28,16 +28,19 @@ clears the visible screen in one line with no typing animation artifact.
 
 **`Read` on a GIF shows only the first frame.** To verify what the recording
 looks like at the end, extract the last frame with ffmpeg:
+
 ```bash
 COUNT=$(ffprobe -v error -count_frames -select_streams v:0 \
   -show_entries stream=nb_read_frames -of csv=p=0 demo.gif 2>/dev/null)
 ffmpeg -i demo.gif -vf "select='eq(n\,$((COUNT-1)))'" -vsync 0 /tmp/last.png -y
 ```
+
 Then `Read /tmp/last.png`.
 
 **Color PS1 needs readline width guards.** Without `\001...\002` wrappers the
 cursor position is miscalculated and the prompt wraps incorrectly. Use a
 sourced setup script rather than inline tape escaping:
+
 ```bash
 # demo-env.sh
 export PS1=$'\001\e[1;32m\002myproject\001\e[0m\002 \$ '

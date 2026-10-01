@@ -102,6 +102,7 @@ pages of noise. Make functionality discoverable through help text, examples, and
 ## Configuration
 
 Apply config in this precedence (highest to lowest):
+
 1. Flags
 2. Environment variables
 3. Project-level config (`.env`)
@@ -159,6 +160,7 @@ single flag and is widely understood. `auto` (the default) enables color when th
 stream is a TTY.
 
 Full evaluation order for color decisions:
+
 1. `NO_COLOR` env var — if set and non-empty, disable color
 2. `--color` flag — `always` forces on, `never` forces off, `auto` defers to TTY detection
 3. `TERM=dumb` — disable color (when still in `auto` mode)

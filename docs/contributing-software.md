@@ -4,7 +4,7 @@ This guide documents how to add software installations to this chezmoi-managed d
 
 ## Quick Reference: Decision Tree
 
-```
+```text
 Is this a GUI application?
 ├── Yes
 │   ├── macOS (user) → Homebrew cask (scripts/macos/Brewfile.tmpl)
@@ -208,6 +208,7 @@ Install-WinGetPackageIfNotInstalled -Mode Silent -Id tailscale.tailscale | Out-N
 ```
 
 This script self-elevates to administrator. Use for:
+
 - Apps that require system-level installation
 - Microsoft Store apps
 - Apps not available in Scoop

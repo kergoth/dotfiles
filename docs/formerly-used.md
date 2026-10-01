@@ -82,7 +82,6 @@ Software I've used in the past but no longer use. Kept for historical reference.
 
 - **[Readwise Reader](https://readwise.io/read)**: Save everything to one place, highlight like a pro, and replace several apps with Reader.
 
-
 ## Formerly-Used macOS Software
 
 - **[AppCleaner](https://freemacsoft.net/appcleaner/)**: A small application which allows you to thoroughly uninstall unwanted apps.

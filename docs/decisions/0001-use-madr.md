@@ -44,7 +44,7 @@ Check that `docs/decisions/` contains numbered MADR files and that new architect
 
 ## More Information
 
-Official MADR project: https://adr.github.io/madr/
+Official MADR project: <https://adr.github.io/madr/>
 
 Templates are in `docs/decisions/templates/`. Use the full template for decisions with multiple real alternatives; use the minimal template for straightforward decisions.
 

@@ -97,6 +97,7 @@ the regex is never evaluated. This means `.*` on a line will literally match
 ### Glob `(glob)`
 
 Shell-style glob matching:
+
 - `*` matches any string (including empty)
 - `?` matches any single character
 - Escape with `\*` or `\?` for literal matching
@@ -147,7 +148,7 @@ A background process that inherits stdout and does not close it will prevent
 cram from detecting EOF on the command's output. The test will hang
 indefinitely. Always redirect daemon output:
 
-```
+```text
   $ mydaemon > /dev/null 2>&1 &
 ```
 

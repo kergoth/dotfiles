@@ -5,4 +5,3 @@ if command -v selinuxenabled >/dev/null 2>&1 && selinuxenabled; then
 else
     echo false
 fi
-

@@ -228,4 +228,3 @@ if ! [ -e ~/.config/chezmoi/chezmoi.toml ] || echo "$@" | grep -Eq '\--prompt|--
     chezmoi init --source "$DOTFILES_DIR" "$@" kergoth/dotfiles
     chmod 0600 "$HOME/.config/chezmoi/chezmoi.toml"
 fi
-

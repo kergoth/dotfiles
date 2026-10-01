@@ -62,11 +62,9 @@ This inventory lists the managed or included pieces that make up the dotfiles en
 - **[git-lfs](https://git-lfs.github.com)**: An open source Git extension for versioning large files.
 - **[vim](https://www.vim.org)**: The ubiquitous text editor
 - **[gnupg](https://www.gnupg.org)**: A complete and free implementation of the OpenPGP standard.
-
 - **[nodejs](https://nodejs.org)** ([Open-Source](https://github.com/nodejs/node)): A JavaScript runtime built on Chrome's V8 JavaScript engine.
 - **[python](https://www.python.org)**: A programming language that lets you work quickly and integrate systems more effectively.
 - **[uv](https://github.com/astral-sh/uv)**: An extremely fast Python package installer and resolver, written in Rust.
-
 - **[atuin](https://github.com/ellie/atuin)**: ✨ Magical shell history.
 - **[bat](https://github.com/sharkdp/bat)**: A cat(1) clone with syntax highlighting and Git integration.
   - **[bat-extras](https://github.com/eth-p/bat-extras)**: Scripts that integrate bat with various command line tools.
@@ -120,6 +118,7 @@ This inventory lists the managed or included pieces that make up the dotfiles en
 #### CLI Software on Linux, macOS, and FreeBSD
 
 - **[Codex](https://github.com/openai/codex)**: OpenAI's agentic coding tool for your terminal.
+
 - **[patchutils](http://cyberelk.net/tim/software/patchutils/)**: A small collection of programs that operate on patch files.
   - On Windows, patchutils can be used via either WSL or MSYS2 (which can be installed via scoop and run as `msys2`, ex. `msys2 -c 'exec filterdiff "$@"' -`).
 
@@ -139,6 +138,7 @@ This inventory lists the managed or included pieces that make up the dotfiles en
   - Installed so we can `go install` various tools.
 
 - **[podman](https://podman.io)**: A daemonless container engine for developing, managing, and running OCI Containers. _Conditional: containers flag._
+
 - **[podman-compose](https://github.com/containers/podman-compose)**: A script to run docker-compose.yml using podman. _Conditional: containers flag._
 
 - **[rust](https://www.rust-lang.org)**: A multi-paradigm, general-purpose programming language.

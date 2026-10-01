@@ -39,10 +39,13 @@ This document captures preferred Bash/POSIX shell scripting style.
 - Argument parsing lives in a dedicated `process_arguments()` function called from `main "$@"`.
 - For scripts that need the script's directory, use a global `scriptdir` variable.
 - **Bash scripts**: Use `BASH_SOURCE[0]` which is more reliable than `$0`:
+
   ```bash
   scriptdir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
   ```
+
 - **POSIX sh scripts**: Note that `$0` isn't guaranteed to be absolute. For better portability, handle both absolute and relative paths:
+
   ```bash
   # Portable POSIX approach (avoids readlink -f which isn't available on macOS)
   if [ -z "${0##/*}" ]; then
@@ -54,13 +57,17 @@ This document captures preferred Bash/POSIX shell scripting style.
       scriptdir=$(cd "$(dirname "$script")" && pwd -P)
   fi
   ```
+
 - **Note on `readlink -f`**: While sometimes used for convenience (especially when you know you have a more capable environment), `readlink -f` isn't portable to most macOS systems. The POSIX approach above avoids this dependency, though it has limitations if the script's PATH differs from the caller's PATH.
 - For scripts that need to reference the script name in multiple places (beyond just usage/help text), use a global `scriptname` variable:
   - **Bash scripts**: Use `BASH_SOURCE[0]` for consistency:
+
     ```bash
     scriptname=${BASH_SOURCE[0]##*/}
     ```
+
   - **POSIX sh scripts**: Use `$0`:
+
     ```bash
     scriptname=${0##*/}
     ```
@@ -72,6 +79,7 @@ This document captures preferred Bash/POSIX shell scripting style.
 - Use comments to explain the "why" behind unusual code or decisions that can't be derived from context.
 - Use simple comments. Avoid decorative comment blocks with `=====` or similar separators.
 - For usage/help text, place it in comments at the top of the script and extract it:
+
   ```bash
   # Usage: script-name [options] args
   #
@@ -84,6 +92,7 @@ This document captures preferred Bash/POSIX shell scripting style.
   #     -q          Decrease verbosity, can be specified multiple times
   #     -h          Show this help message
   ```
+
   The description should appear between the `Usage:` line and the `Options:` line so it is included when the usage is displayed. Extract from `Usage:` through `Options:` and then from `Options:` through the `-h` option.
 
   **Option ordering:** List script-specific options first, followed by standard options in this order: `-n`, `-v`, `-q`, `-h`.
@@ -102,6 +111,7 @@ This document captures preferred Bash/POSIX shell scripting style.
   - Use a numeric `verbosity` variable, starting at 0
   - Example: `v) verbosity=$((verbosity + 1)) ;;` and `q) verbosity=$((verbosity - 1)) ;;`
 - Handle unknown options by showing usage and exiting with error:
+
   ```bash
   \?)
       echo "Unknown option: -$OPTARG" >&2
@@ -109,7 +119,9 @@ This document captures preferred Bash/POSIX shell scripting style.
       exit 1
       ;;
   ```
+
 - Extract help text from comments when using `show_help()`:
+
   ```bash
   show_help() {
       sed -n '/^# Usage:/,/^# *-h /p' "$0" | sed 's/^# *//'
@@ -120,6 +132,7 @@ This document captures preferred Bash/POSIX shell scripting style.
 
 - When a POSIX sh wrapper needs to consume only some arguments but later replay or reorder the remainder, saving and restoring the positional args can help keep the logic linear.
 - Use the `saved` string and `eval set -- "$saved"` approach rather than manipulating `$@` directly; bash scripts should prefer arrays instead.
+
   ```bash
   quote(){
       sed -e "s,','\\\\'',g; 1s,^,',; \$s,\$,',;" <<'EOF'
@@ -138,7 +151,8 @@ EOF
       esac
   }
 
-  # Usage pattern:
+## Usage pattern
+
   saved=""
   while [ $# -gt 0 ]; do
       case "$1" in
@@ -153,7 +167,8 @@ EOF
   done
 
   eval set -- "$saved"
-  ```
+
+  ```text
 - Quote the captured arguments carefully as shown so `eval set --` may restore them faithfully.
 
 ## Formatting
@@ -184,9 +199,11 @@ EOF
   tmpdir=$(mktemp -d "${TMPDIR:-/tmp}/myapp.XXXXXX")
   trap 'rm -rf "$tmpdir"' EXIT
   ```
+
 - **Temporary directory selection**: macOS ignores `$TMPDIR` for `mktemp -t` and when no template is given. Use an explicit template rooted at `${TMPDIR:-/tmp}`. Do not use `-t` or `-p` in new scripts. `-p` is valid on current BSD and GNU implementations, but an explicit template makes the selected directory visible and avoids option-specific behavior.
 - **Signal handling complexity**: Handling interrupts (INT/TERM) in shell scripts is complex. Anything checking child process exit codes needs to explicitly check for interruption/termination, as the child may catch the signal but the parent might not, or they may receive the handler at different times. While INT/TERM traps have been used before (e.g., `trap 'trap - INT; kill -INT $$ &>/dev/null' INT`), more investigation is necessary to consider best practices. If signal handling becomes a serious issue, that's an indicator it's time to switch to Python instead of shell.
 - **Exception for atomic operations**: When downloading or unpacking artifacts to a destination, it's appropriate to create the tmpdir relative to the destination (in the same parent directory) rather than using a global tmpdir. This ensures atomic renames work correctly, as renames across filesystems are not atomic. **Important**: Setting a trap in a function overrides any global trap for that signal. If your script already uses a global EXIT trap, you **must** use a subshell to avoid overriding it:
+
   ```bash
   # Preferred: If global EXIT trap already exists, use subshell:
   (
@@ -212,15 +229,18 @@ EOF
   trap 'rm -rf -- "$tmpdir"' EXIT
   # ... (but be aware this pattern precludes adding a global trap later)
   ```
+
 - Then create temporary files within `$tmpdir` using simple, descriptive names:
+
   ```bash
   tempfile="$tmpdir/config"
   ```
 
-## Messaging Functions
+### Messaging Functions
 
 - Use `msg_` prefixed functions for output:
   - `msg()` - Basic printf wrapper that outputs to stderr:
+
     ```bash
     msg() {
         fmt="$1"
@@ -231,8 +251,10 @@ EOF
         printf -- "$fmt\n" "$@" >&2
     }
     ```
+
     The `--` is necessary: without it, a format string that starts with `-` (e.g. `"--- section ---"`) is misinterpreted by `printf` as a flag.
   - `msg_color()` - Color support with NO_COLOR/COLOR checks:
+
     ```bash
     msg_color() {
         local color=$1
@@ -248,8 +270,10 @@ EOF
         fi
     }
     ```
+
   - `msg_blue()`, `msg_green()`, `msg_red()`, `msg_yellow()` - Color variants using `msg_color()`.
   - `msg_verbose()` - Shows when `verbosity > 0`:
+
     ```bash
     msg_verbose() {
         if [ "${verbosity:-0}" -gt 0 ]; then
@@ -257,7 +281,9 @@ EOF
         fi
     }
     ```
+
   - `msg_debug()` - Shows when `verbosity > 1`:
+
     ```bash
     msg_debug() {
         if [ "${verbosity:-0}" -gt 1 ]; then
@@ -265,8 +291,10 @@ EOF
         fi
     }
     ```
+
   - `msg_verydebug()` - Shows when `verbosity > 2` (optional, for very verbose output).
   - `die()` - Error message and exit:
+
     ```bash
     die() {
         msg_red "$@"
@@ -274,9 +302,10 @@ EOF
     }
     ```
 
-## Command Execution
+### Command Execution
 
 - Use a `run()` function pattern to enable easily showing executed commands for `-v` or `-vv`:
+
   ```bash
   run() {
       if [ "${dry_run:-0}" = "1" ] || [ "${verbosity:-0}" -gt 0 ]; then
@@ -287,14 +316,18 @@ EOF
       fi
   }
   ```
+
 - Use `printcmd` (or equivalent) to format commands for display. This can be a Python helper:
+
   ```python
   #!/usr/bin/env python3
   import subprocess
   import sys
   print(subprocess.list2cmdline(sys.argv[1:]))
   ```
+
 - For commands that should always run (not subject to dry-run), use `run_always()`:
+
   ```bash
   run_always() {
       local ret=0
@@ -306,11 +339,12 @@ EOF
   }
   ```
 
-## Control Practices
+### Control Practices
 
 - Allow `|| true` only when intentionally masking errors.
 - Avoid `predicate && action` with `set -e` as a standalone statement (`[[ … ]]`, `[ … ]`, `grep -q`, `command -v`, or any other test-like command used as a pseudo-if). When the predicate is false, the whole `&&` list's exit status is nonzero, and since the statement isn't inside an `if`/`while`/`until` condition or another `&&`/`||` chain, `set -e` treats that as a script-ending error rather than an expected false result. This only bites when the first command is a check whose failure is a normal outcome; plain sequential commands like `mkdir -p foo && cd foo` don't have this problem; mkdir failing should stop the script anyway.
 - Avoid `A && B || C` as a substitute for `if/else`. The intent is usually "if A succeeds do B, otherwise do C", but `C` runs whenever `B` fails too — not only when `A` fails. Use an explicit `if/else`:
+
   ```bash
   # Wrong: "Failed" also prints if chmod fails, even though cp succeeded
   cp "$src" "$dst" && chmod 644 "$dst" || echo "Failed"
@@ -322,52 +356,59 @@ EOF
       echo "Failed"
   fi
   ```
+
 - When you want cleanup to run if *any* step in a pipeline fails, `A && B && C || cleanup` and `{ A && B && C; } || cleanup` are functionally equivalent — but prefer the grouped form because it makes the intent unambiguous:
+
   ```bash
   # Both rm invocations behave the same way, but the grouped form is clearer
   cp "$f" "$f.new" && transform "$f.new" && mv "$f.new" "$f" || rm -f "$f.new"
   { cp "$f" "$f.new" && transform "$f.new" && mv "$f.new" "$f"; } || rm -f "$f.new"
   ```
 
-## Function Practices
+### Function Practices
 
 - Use local variables inside all functions.
 - Avoid trivial wrapper functions around obvious commands.
 
-## File System and State
+### File System and State
 
 - Prefer XDG directories for cache/state.
 - Avoid stale state across runs.
 - Use `.part` files and rename them on success.
 - Prune and namespace state to avoid reuse of stale artifacts.
 
-## Tools and Parsing
+### Tools and Parsing
 
 - Use `jq` for JSON parsing whenever possible.
 - If JSON isn't available, fall back to clear `awk`/`grep` parsing.
 
-## Error Handling
+### Error Handling
 
 - Fail fast with explicit messages and exit codes.
 - Branch explicitly on alternatives.
 - **Use of `set -e`**: The `set -e` option (used in `set -euo pipefail`) is good to avoid continuing when the script should not. However, be careful with commands that legitimately return non-zero exit codes, especially in pipelines with `pipefail`.
 - **Storing exit codes with `set -e`**: If you need to store the exit code of a command for your logic, don't temporarily disable `set -e` with `set +e` - that gets messy fast. If you must temporarily disable it due to a complex case, do it in a subshell rather than in the parent and then re-enabling `set -e` when done. For simpler cases, use this common pattern:
+
   ```bash
   ret=0
   some_command || ret=$?
   # ... do something with $ret ...
   ```
+
   Always use `ret` as the variable name when storing exit/return codes, in this pattern or otherwise. This pattern also works well with multiple commands when you want to see if any of a series of commands failed, or when you want to continue but store a non-zero exit code for exiting later (such as a `-k` argument to continue as much as possible).
 - **Common pitfall with `grep` in pipelines**: When using `grep` in a pipeline, it returns a non-zero exit code when nothing is found, which will cause the script to exit immediately with `set -e` and `pipefail`. For example:
+
   ```bash
   # This will exit immediately if 'something' isn't found:
   check_for_error=$(some command | grep something)
   ```
+
   To handle this, either:
   - Use `|| true` to mask the expected non-zero exit: `check_for_error=$(some command | grep something || true)`
   - Restructure to check the exit code explicitly before using the result
   - In bash scripts with `pipefail`, redirect to `/dev/null` instead of using `-q` (see critical warning below)
 - **CRITICAL: Never use `grep -q` in pipelines with `pipefail`**: When `pipefail` is set (as in `set -euo pipefail` for bash scripts), using `grep -q` in a pipeline can cause the pipeline to fail even when grep successfully matches. This happens because `grep -q` exits immediately on the first match as a performance optimization, which sends `SIGPIPE` to the upstream process. This causes the upstream process to fail, which triggers `pipefail` to make the whole pipeline fail.
+
   ```bash
   # BAD - Can fail even when grep matches:
   if some_command | grep -q "pattern"; then
@@ -379,11 +420,12 @@ EOF
       echo "Found it"
   fi
   ```
+
   **Exception cases where `grep -q` is safe**:
   - `echo "text" | grep -q "pattern"` is fine because echo only outputs one line, so early exit doesn't matter
   - POSIX sh scripts with `set -eu` (without `pipefail`) don't have this issue
 
-## Miscellaneous
+### Miscellaneous
 
 - Avoid `.sh` suffixes in filenames.
 - Prefer dashes instead of underscores in script filenames.

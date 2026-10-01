@@ -186,6 +186,7 @@ quality-ordered variant. It existed as `chat-quality` briefly but collapsed
 back to one alias (October 2026) since it never diverged from `chat` in
 practice and chat volume is low enough that a dedicated quality tier isn't
 worth maintaining — revisit if chat quality becomes a real complaint.
+
 - **Personal `alias/chat`**: `opencode-go/glm-5.3-flash` (Arena Elo 1471,
   image input, 1M context), then `openai-codex/gpt-5.6-luna`, then
   `claude-bridge/claude-haiku-4-5` if neither cheap tier is cutting it, then

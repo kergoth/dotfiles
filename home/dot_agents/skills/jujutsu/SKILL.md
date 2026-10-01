@@ -68,6 +68,7 @@ Validated against jj `0.44.0` on 2026-08-30 using `jj/docs/`, `jj/cli/docs/`, an
 ## Version Discipline
 
 Before changing this skill for a newer jj release:
+
 - check the local `jj --version` output if available
 - review release notes newer than `0.39.0`
 - update `references/version-notes.md`

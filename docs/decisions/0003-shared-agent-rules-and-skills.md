@@ -40,19 +40,22 @@ Chosen option: "Shared repo-managed layer (`~/.agents/`)", because it provides a
 ### Confirmation
 
 After `chezmoi apply`:
-- `~/.agents/skills/` contains the shared skill set
-- `~/.claude/` and `~/.codex/` each symlink or render from the shared layer
-- `chezmoi apply` does not update pinned external SHAs (updates are explicit via `script/update`)
+
+* `~/.agents/skills/` contains the shared skill set
+* `~/.claude/` and `~/.codex/` each symlink or render from the shared layer
+* `chezmoi apply` does not update pinned external SHAs (updates are explicit via `script/update`)
 
 ## More Information
 
 Repository responsibility split:
-- `home/dot_agents/` — shared skills, symlinks to approved third-party content, rendered shared rules under `rules/`
-- `settings/agents/` — backing fragments for shared rules, including sensitive or profile-specific content
-- `home/dot_claude/` — Claude-specific config, MCP wiring, retained native integrations
-- `home/dot_codex/` — Codex-specific config
+
+* `home/dot_agents/` — shared skills, symlinks to approved third-party content, rendered shared rules under `rules/`
+* `settings/agents/` — backing fragments for shared rules, including sensitive or profile-specific content
+* `home/dot_claude/` — Claude-specific config, MCP wiring, retained native integrations
+* `home/dot_codex/` — Codex-specific config
 
 Alternatives rejected:
-- Claude plugins: makes Claude the source of truth for behavior that should be portable
-- External skill managers: adds dependency and state complexity without solving pinning or provenance
-- Custom installer: would become a lightweight package manager, broader than the problem
+
+* Claude plugins: makes Claude the source of truth for behavior that should be portable
+* External skill managers: adds dependency and state complexity without solving pinning or provenance
+* Custom installer: would become a lightweight package manager, broader than the problem

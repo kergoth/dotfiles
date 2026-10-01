@@ -20,6 +20,7 @@ This skill is intentionally versioned.
 ## Refresh Rule
 
 Update this skill when any of the following is true:
+
 - the installed `jj --version` is newer than `0.44.0`
 - upstream release notes introduce command, workflow, or safety changes that affect agent behavior
 - local docs contradict the current skill guidance
@@ -27,6 +28,7 @@ Update this skill when any of the following is true:
 If the installed `jj` is older than `0.44.0`, do not fork the whole skill by version. Instead, verify drift-prone commands with `jj help ...` and treat the skill as a documented baseline until there is evidence that an older-version incompatibility matters in practice.
 
 When updating:
+
 1. review the new release notes
 2. update this file first
 3. adjust `SKILL.md` only if the immediate guidance changed
@@ -140,6 +142,7 @@ When updating:
 ## Current Guidance Boundaries
 
 If a future release changes any of these, revisit the skill:
+
 - bookmark movement and push semantics
 - workspace creation and stale-update behavior
 - colocation defaults

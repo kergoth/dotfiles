@@ -28,11 +28,13 @@ github-export owner/repo   # sync issue data locally; re-run to refresh
 ## Workflow
 
 Set a script path first (the script resolves symlinks to find sibling bundled scripts):
+
 ```bash
 triage_script="<skill_dir>/scripts/generate-github-issue-triage"
 ```
 
 1. Prepare snapshot and chunks.
+
    ```bash
    "$triage_script" -m prepare -r <repo> -t <task_dir> -c <chunk_count>
    ```
@@ -57,6 +59,7 @@ triage_script="<skill_dir>/scripts/generate-github-issue-triage"
    - Fail closed if any chunk is missing.
 
 4. Consolidate and render report.
+
    ```bash
    "$triage_script" -m consolidate -t <task_dir> -o <output_doc> -c <chunk_count>
    ```
@@ -173,6 +176,7 @@ Consolidate reads all `scored-chunk-*.json` files (including `scored-chunk-0.jso
 ### Step 7: Summary
 
 Report:
+
 - Issues carried forward (unchanged)
 - Issues re-scored (new or modified)
 - Issues dropped from output (removed from current snapshot, e.g., closed)
