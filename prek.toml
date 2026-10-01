@@ -13,6 +13,13 @@ hooks = [
 ]
 
 [[repos]]
+repo = "https://github.com/rvben/rumdl-pre-commit"
+rev = "v0.2.78"
+hooks = [
+    { id = "rumdl", additional_dependencies = ["ruff==0.16.6"] },
+]
+
+[[repos]]
 repo = "local"
 hooks = [
     { id = "commit-message-line-length", name = "commit message line length", language = "python", entry = "scripts/check-commit-message.py", stages = ["commit-msg"] },

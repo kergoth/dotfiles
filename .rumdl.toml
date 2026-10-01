@@ -1,0 +1,6 @@
+[code-block-tools]
+enabled = true
+on-missing-tool-binary = "fail"
+
+[code-block-tools.languages]
+python = { lint = ["ruff:check"] }
