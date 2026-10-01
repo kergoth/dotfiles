@@ -4,3 +4,7 @@ on-missing-tool-binary = "fail"
 
 [code-block-tools.languages]
 python = { lint = ["ruff:check"] }
+
+# Skip line length checks in code blocks
+[MD013]
+code-block-line-length = 0
