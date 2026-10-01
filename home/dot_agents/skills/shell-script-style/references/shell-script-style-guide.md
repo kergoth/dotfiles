@@ -321,8 +321,10 @@ EOF
 
   ```python
   #!/usr/bin/env python3
+
   import subprocess
   import sys
+
   print(subprocess.list2cmdline(sys.argv[1:]))
   ```
 
