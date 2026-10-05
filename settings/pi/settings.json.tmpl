@@ -1,6 +1,9 @@
 {
   "theme": "catppuccin-latte/dracula",
   "packages": [
+{{- if .work }}
+    "npm:pi-cursor-sdk",
+{{- end }}
     "npm:@sherif-fanous/pi-catppuccin",
     "npm:@sherif-fanous/pi-dracula",
     "git:github.com/kergoth/pi-claude-bridge@alias-fallback",
