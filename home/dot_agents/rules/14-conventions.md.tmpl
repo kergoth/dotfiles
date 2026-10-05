@@ -7,7 +7,7 @@
 {{- else }}
 ## Documentation Lookup Priority
 - **MCP tools first**: Fast-changing APIs (LangChain, OpenAI, web frameworks) — verify current docs via MCP before implementation.
-- **Available MCPs**: context7 (library docs), deepwiki (GitHub repo docs).
+- **Available doc MCPs**: context7 (library docs), deepwiki (GitHub repo docs).
 - **context7 resolver call signature**: `context7_resolve-library-id` requires both `libraryName` and `query`. Example: `{"libraryName": "Yocto Project", "query": "latest release documentation"}`.
 - **deepwiki call signature**: Parameter is `repoName` (not `repo`), in `owner/repo` format. Example: `{"repoName": "twpayne/chezmoi", "question": "..."}`. Accepts a list of up to 10 repos.
 - **Web search fallback**: When MCP tools don't cover library.
@@ -20,7 +20,13 @@
 - **Fetch**: WebFetch first. Empty/SPA content or 403/challenge page → Firecrawl MCP. Don't default every fetch to Firecrawl — reserve for WebFetch failures or known JS-heavy/anti-bot domains.
 - **Interactive**: Playwright MCP for tasks needing real form/click interaction (address-lookup widgets, logins) — a capability tier, not a fallback; invoke when the task requires it.
 {{- end }}
-
+{{ if eq $agent "pi" }}
+{{-   $piServers := (includeTemplate (joinPath .chezmoi.workingTree "home/dot_pi/private_agent/mcp.json.tmpl") . | fromJson).mcpServers }}
+## MCP Servers (Pi)
+- **Access**: MCP servers are reachable only through `codemode`, not as top-level tools.
+- **Configured on this machine**: {{ keys $piServers | sortAlpha | join ", " }}.
+- **Discovery first**: Before falling back to a CLI (`gh`, `gcloud`, `acli`) or web search for a capability one of these servers might provide, list `ALL_TOOLS` or call `searchTools(query)` in codemode.
+{{ end }}
 ## Source Lookup Precedence
 When source-level inspection is required (not just usage docs or API references):
 1. **Currently active working tree** — this session's project, any size, including a nested or sibling clone already on disk (e.g. `./pano-ec` inside `meta-pano`). Read/grep it directly; that tree is the revision in play, not a reference snapshot. Current branch and uncommitted edits beat a synced snapshot.
