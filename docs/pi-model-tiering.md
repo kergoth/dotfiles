@@ -187,7 +187,7 @@ on evidence, not upfront.
   2026 — deepseek-v4-pro carries roughly 10x kimi-k3's monthly quota on
   OpenCode Go, so spending it first reserves kimi-k3's thin allowance for
   when deepseek-v4-pro is also exhausted; the two aren't ranked on quality,
-  only quota), `cursor/grok-4.7` at work — cursor-native (Cursor Models
+  only quota), `cursor/grok-4.7@256k` at work — cursor-native (Cursor Models
   pool), not a third-party pick routed through cursor, so it adds real
   provider diversity instead of just re-billing a pool already covered by
   `claude-bridge` or `openai-codex` at a surcharge.
@@ -218,7 +218,7 @@ worth maintaining — revisit if chat quality becomes a real complaint.
   `local-assistant/**` last — on-demand only, since the local server isn't
   always running.
 - **Work `alias/chat`**: `openai-codex/gpt-5.6-luna`, then
-  `cursor/grok-4.7` on provider-diversity grounds (no chat-quality evidence
+  `cursor/grok-4.7@256k` on provider-diversity grounds (no chat-quality evidence
   either way; swap for `cursor/auto-smart` if the tone does not suit), then
   `claude-bridge/claude-haiku-4-5`, then `local-assistant/**` where
   `models.json` exists.
@@ -245,7 +245,7 @@ that manual step proves too easy to forget).
   `opencode-go/deepseek-v4-pro` ahead of `opencode-go/kimi-k3` (same
   quota-first ordering as the opus coding tier) for interactive research
   sessions (an evening of source reading, then a synthesis), then (work
-  only) `cursor/grok-4.7` — cursor-native rather than a third-party pick
+  only) `cursor/grok-4.7@256k` — cursor-native rather than a third-party pick
   routed through cursor, for the same provider-diversity reason as the opus
   coding tier.
 - **Manual escalation**: `claude-bridge/claude-fable-5`, for

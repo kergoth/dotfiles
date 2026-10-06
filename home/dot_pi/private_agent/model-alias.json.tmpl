@@ -30,9 +30,9 @@
   "coding-max": [
     "claude-bridge/claude-opus-5-5",
     "openai-codex/gpt-5.6-sol",
-    "cursor/grok-4.7"
+    "cursor/grok-4.7@256k"
   ],
-{{-   $chat := list "openai-codex/gpt-5.6-luna" "cursor/grok-4.7" "claude-bridge/claude-haiku-4-5" }}
+{{-   $chat := list "openai-codex/gpt-5.6-luna" "cursor/grok-4.7@256k" "claude-bridge/claude-haiku-4-5" }}
 {{-   if $hasLocal }}
 {{-     $chat = concat $chat (list $localAssistant) }}
 {{-   end }}
@@ -40,7 +40,7 @@
   "research": [
     "claude-bridge/claude-opus-5-5",
     "openai-codex/gpt-5.6-terra",
-    "cursor/grok-4.7"
+    "cursor/grok-4.7@256k"
   ],
   "light": [
     "openai-codex/gpt-5.6-luna",
