@@ -8,3 +8,7 @@ python = { lint = ["ruff:check"] }
 # Skip line length checks in code blocks
 [MD013]
 code-block-line-length = 0
+
+# Skills are agent-facing prose written one paragraph per line.
+[per-file-ignores]
+"home/dot_agents/skills/**/*.md" = ["MD013"]
