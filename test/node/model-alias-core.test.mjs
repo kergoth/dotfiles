@@ -10,6 +10,7 @@ import {
   parseOpenCodeUsage,
   recordFailure,
   recordSuccess,
+  selectTarget,
 } from "../../home/dot_pi/private_agent/extensions/model-alias/model-alias-core.js";
 
 const base = { coding: ["claude-bridge/sonnet", "openai-codex/terra"], light: ["opencode-go/mimo"] };
@@ -49,6 +50,36 @@ test("usage parsers normalize provider windows", () => {
   const oc = parseOpenCodeUsage({ usage: { monthly: { status: "rate-limited", percent: 100, resetsAt: "2026-10-18T17:23:10.000Z" } } }, 1);
   assert.equal(oc.windows[0].limited, true);
   assert.equal(oc.windows[0].resetsAt, Date.parse("2026-10-18T17:23:10.000Z"));
+});
+
+const selectBase = {
+  chain: ["claude/a", "openai/b", "openai/c"], current: "claude/a", previous: "claude/a", failed: null,
+  contextTokens: 1000, cooldowns: {}, usage: {}, settings: { confirmSwitchAboveTokens: 131072, switchAboveUsedPercent: 95 }, nowMs: 1000,
+};
+
+test("continuation keeps available previous and leaves unavailable previous", () => {
+  assert.equal(selectTarget({ ...selectBase, routeReason: "continuation" }).target, "claude/a");
+  const selected = selectTarget({ ...selectBase, routeReason: "continuation", cooldowns: { "claude/a": { nextRetryAt: 2000 } } });
+  assert.equal(selected.target, "openai/b");
+  assert.equal(selected.crossesProvider, true);
+});
+
+test("user selection is preferred when small and sticky when large", () => {
+  assert.equal(selectTarget({ ...selectBase, routeReason: "user", current: "openai/b" }).target, "claude/a");
+  assert.equal(selectTarget({ ...selectBase, routeReason: "user", current: "openai/b", contextTokens: 200000 }).target, "openai/b");
+  const selected = selectTarget({ ...selectBase, routeReason: "user", contextTokens: 200000, cooldowns: { "claude/a": { nextRetryAt: 2000 } } });
+  assert.equal(selected.target, "openai/b");
+  assert.equal(selected.needsConfirmation, true);
+});
+
+test("retry advances after failed target", () => {
+  assert.equal(selectTarget({ ...selectBase, routeReason: "retry", failed: "claude/a" }).target, "openai/b");
+});
+
+test("all unavailable selects earliest cooldown or lowest usage", () => {
+  assert.equal(selectTarget({ ...selectBase, routeReason: "user", cooldowns: { "claude/a": { nextRetryAt: 4000 }, "openai/b": { nextRetryAt: 3000 }, "openai/c": { nextRetryAt: 5000 } } }).target, "openai/b");
+  const usage = { claude: { windows: [{ usedPercent: 99 }] }, openai: { windows: [{ usedPercent: 96 }] } };
+  assert.equal(selectTarget({ ...selectBase, routeReason: "user", usage }).target, "openai/b");
 });
 
 test("cooldown uses reset then clears after successes", () => {

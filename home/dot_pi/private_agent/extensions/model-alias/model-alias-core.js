@@ -103,6 +103,39 @@ export function parseOpenCodeUsage(data, capturedAt = Date.now()) {
   return { provider: "opencode-go", capturedAt, windows };
 }
 
+function providerOf(ref) { return parseModelRef(ref).provider; }
+function providerUsedPercent(snapshot) {
+  return Math.max(0, ...(snapshot?.windows ?? []).map((window) => Number(window.usedPercent) || 0));
+}
+
+export function selectTarget(input) {
+  const { chain, routeReason, current, previous, failed, contextTokens, cooldowns, usage, settings, nowMs } = input;
+  if (!Array.isArray(chain) || !chain.length) throw new Error("selectTarget requires a non-empty chain");
+  const cooled = (target) => (cooldowns[target]?.nextRetryAt ?? 0) > nowMs;
+  const overUsage = (target) => routeReason === "user" && providerUsedPercent(usage[providerOf(target)]) >= settings.switchAboveUsedPercent;
+  const available = (target) => !cooled(target) && !overUsage(target);
+  let ordered = chain;
+  if (routeReason === "retry" || (routeReason === "continuation" && previous && !available(previous))) {
+    const from = failed ?? previous;
+    const index = chain.indexOf(from);
+    ordered = index < 0 ? chain : [...chain.slice(index + 1), ...chain.slice(0, index + 1)];
+  }
+  let target;
+  if (routeReason === "continuation" && previous && available(previous)) target = previous;
+  else if (routeReason === "user" && contextTokens !== null && contextTokens >= settings.confirmSwitchAboveTokens && current && available(current)) target = current;
+  else target = ordered.find(available);
+  if (!target) {
+    const allCooled = chain.every(cooled);
+    target = allCooled
+      ? [...chain].sort((a, b) => cooldowns[a].nextRetryAt - cooldowns[b].nextRetryAt)[0]
+      : [...chain].sort((a, b) => providerUsedPercent(usage[providerOf(a)]) - providerUsedPercent(usage[providerOf(b)]))[0];
+  }
+  const origin = routeReason === "retry" ? failed : (previous ?? current);
+  const crossesProvider = Boolean(origin && providerOf(origin) !== providerOf(target));
+  const large = contextTokens !== null && contextTokens >= settings.confirmSwitchAboveTokens;
+  return { target, crossesProvider, needsConfirmation: crossesProvider && large, reason: available(target) ? "available" : "least-unavailable" };
+}
+
 export function recordFailure(entry, failure, policy, nowMs = Date.now()) {
   const failCount = (entry?.failCount ?? 0) + 1;
   const backoff = Math.min(policy.capMs, policy.baseMs * 2 ** (failCount - 1));
