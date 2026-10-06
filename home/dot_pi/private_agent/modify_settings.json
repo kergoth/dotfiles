@@ -13,6 +13,8 @@
       "npm:pi-claude-bridge"
       "npm:pi-model-fallback-alias"
       "npm:@nicknisi/pi-session-name"
+      "git:github.com/kergoth/pi-claude-bridge@alias-fallback"
+      "git:github.com/kergoth/pi-model-fallback-alias@opencode"
       -}}
 
 {{- $managedRaw := includeTemplate (joinPath .chezmoi.workingTree "settings/pi/settings.json.tmpl") . -}}
