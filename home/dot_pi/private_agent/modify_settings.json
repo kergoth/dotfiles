@@ -14,6 +14,7 @@
       "npm:pi-model-fallback-alias"
       "npm:@nicknisi/pi-session-name"
       "git:github.com/kergoth/pi-claude-bridge@alias-fallback"
+      "git:github.com/kergoth/pi-claude-bridge@model-alias-usage-events"
       "git:github.com/kergoth/pi-model-fallback-alias@opencode"
       -}}
 
