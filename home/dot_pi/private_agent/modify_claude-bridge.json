@@ -1,6 +1,11 @@
 {{- /* chezmoi:modify-template */ -}}
 {{- /* Preserve live-only settings while keeping managed values authoritative. */ -}}
 {{- $persist := list -}}
+{{- /* Live-only keys survive the merge, so a key dropped from the template
+       must be deleted explicitly. forceTwoHundredK pinned 200K and would
+       override contextCap. */ -}}
+{{- $removePaths := list
+      "provider.forceTwoHundredK" -}}
 
 {{- $managedRaw := includeTemplate (joinPath .chezmoi.workingTree "settings/pi/claude-bridge.json.tmpl") . -}}
 {{- $managed := $managedRaw | fromJson -}}
@@ -13,5 +18,8 @@
         "managed"  $managed
         "persist"  $persist
         ) | fromJson -}}
+{{-   range $removePaths -}}
+{{-     $merged = $merged | deleteValueAtPath . -}}
+{{-   end -}}
 {{-   $merged | toPrettyJson -}}
 {{- end -}}

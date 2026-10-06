@@ -213,7 +213,7 @@ practice and chat volume is low enough that a dedicated quality tier isn't
 worth maintaining — revisit if chat quality becomes a real complaint.
 
 - **Personal `alias/chat`**: `opencode-go/glm-5.3-flash` (Arena Elo 1471,
-  image input, 1M context), then `openai-codex/gpt-5.6-luna`, then
+  image input), then `openai-codex/gpt-5.6-luna`, then
   `claude-bridge/claude-haiku-4-5` if neither cheap tier is cutting it, then
   `local-assistant/**` last — on-demand only, since the local server isn't
   always running.
@@ -244,10 +244,10 @@ that manual step proves too easy to forget).
   `openai-codex/gpt-5.6-terra`, then (personal only)
   `opencode-go/deepseek-v4-pro` ahead of `opencode-go/kimi-k3` (same
   quota-first ordering as the opus coding tier) for interactive research
-  sessions (an evening of source reading, then a synthesis; both carry 1M
-  context at sonnet-plus pricing), then (work only) `cursor/grok-4.7` —
-  cursor-native rather than a third-party pick routed through cursor, for
-  the same provider-diversity reason as the opus coding tier.
+  sessions (an evening of source reading, then a synthesis), then (work
+  only) `cursor/grok-4.7` — cursor-native rather than a third-party pick
+  routed through cursor, for the same provider-diversity reason as the opus
+  coding tier.
 - **Manual escalation**: `claude-bridge/claude-fable-5`, for
   multi-hour-plus autonomous research and synthesis. This is its design
   center; reach for it deliberately on genuinely long-horizon work, not as
@@ -275,6 +275,26 @@ machine type (October 2026 decision) so a provider outage or usage-limit hit
 doesn't stall summarization or session naming — even though the task is
 low-stakes, having no path through a downed provider is worse than the
 modest window cost of an occasional fallback hit.
+
+## Context ceilings
+
+Long sessions degrade well before a 1M window fills, so every long-window
+model in the scoped list is registered at 272K, the real window of the
+`openai-codex` models. Pi compacts when context exceeds the registered window
+minus its reserve, so every target compacts near 256K regardless of which
+alias target answers. The ceiling is applied per physical model because Pi
+takes the window from the model that answered last but looks up compaction
+settings by the selected model, which for an alias is the alias itself. A
+reserve set on `alias/*` would therefore apply to every fallback target.
+
+- **Claude:** `provider.contextCap` in `settings/pi/claude-bridge.json.tmpl`.
+  The bridge still requests the `[1m]` model, so the entitlement stays. A new
+  Claude model needs an entry there.
+- **`opencode-go`:** `modelOverrides` in `~/.pi/agent/models.json`, which is
+  machine-local and not managed by chezmoi. A new 1M model needs an entry.
+- **Exempt:** `opencode-go/mimo-v2.5`, which only backs `alias/light` and never
+  accumulates context, and `claude-bridge/claude-fable-5*`, which is invoked
+  directly for long-horizon work.
 
 ## Evidence notes
 
