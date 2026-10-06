@@ -11,6 +11,8 @@ import {
   recordFailure,
   recordSuccess,
   selectTarget,
+  recoveryAction,
+  advanceResume,
 } from "../../home/dot_pi/private_agent/extensions/model-alias/model-alias-core.js";
 
 const base = { coding: ["claude-bridge/sonnet", "openai-codex/terra"], light: ["opencode-go/mimo"] };
@@ -80,6 +82,23 @@ test("all unavailable selects earliest cooldown or lowest usage", () => {
   assert.equal(selectTarget({ ...selectBase, routeReason: "user", cooldowns: { "claude/a": { nextRetryAt: 4000 }, "openai/b": { nextRetryAt: 3000 }, "openai/c": { nextRetryAt: 5000 } } }).target, "openai/b");
   const usage = { claude: { windows: [{ usedPercent: 99 }] }, openai: { windows: [{ usedPercent: 96 }] } };
   assert.equal(selectTarget({ ...selectBase, routeReason: "user", usage }).target, "openai/b");
+});
+
+test("recovery policy degrades compact outside interactive modes", () => {
+  assert.equal(recoveryAction("compact", "interactive", false), "compact");
+  assert.equal(recoveryAction("compact", "rpc", false), "compact");
+  assert.equal(recoveryAction("compact", "print", false), "switch");
+  assert.equal(recoveryAction("compact", "json", true), "switch");
+  assert.equal(recoveryAction("fail", "interactive", false), "stop");
+});
+
+test("automatic resume is capped and resets on a new user route", () => {
+  assert.deepEqual(advanceResume({ routeId: 1, count: 2 }, 1, 2), { allowed: false, state: { routeId: 1, count: 2 } });
+  assert.deepEqual(advanceResume({ routeId: 1, count: 2 }, 2, 2), { allowed: true, state: { routeId: 2, count: 1 } });
+});
+
+test("compact failure resumes by switching", () => {
+  assert.equal(recoveryAction("compact", "interactive", true), "switch");
 });
 
 test("cooldown uses reset then clears after successes", () => {

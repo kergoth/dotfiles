@@ -136,6 +136,18 @@ export function selectTarget(input) {
   return { target, crossesProvider, needsConfirmation: crossesProvider && large, reason: available(target) ? "available" : "least-unavailable" };
 }
 
+export function recoveryAction(policy, mode, compactFailed) {
+  if (policy === "fail") return "stop";
+  if (policy === "compact" && !compactFailed && (mode === "interactive" || mode === "rpc")) return "compact";
+  return "switch";
+}
+
+export function advanceResume(state, routeId, cap = 2) {
+  const count = state.routeId === routeId ? state.count : 0;
+  if (count >= cap) return { allowed: false, state: { routeId, count } };
+  return { allowed: true, state: { routeId, count: count + 1 } };
+}
+
 export function recordFailure(entry, failure, policy, nowMs = Date.now()) {
   const failCount = (entry?.failCount ?? 0) + 1;
   const backoff = Math.min(policy.capMs, policy.baseMs * 2 ** (failCount - 1));

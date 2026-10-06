@@ -3,8 +3,8 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
 import { clampThinkingLevel, getSupportedThinkingLevels, isRetryableAssistantError, type AssistantMessage, type ModelThinkingLevel } from "@earendil-works/pi-ai";
-import { getAgentDir, type ExtensionAPI, type ExtensionContext, type ModelRouteReason } from "@earendil-works/pi-coding-agent";
-import { classifyFailure, parseConfig, parseModelRef, recordFailure, recordSuccess, selectTarget } from "./model-alias-core.js";
+import { getAgentDir, type ExtensionAPI, type ExtensionContext } from "@earendil-works/pi-coding-agent";
+import { advanceResume, classifyFailure, parseConfig, parseModelRef, recordFailure, recordSuccess, recoveryAction, selectTarget } from "./model-alias-core.js";
 import { appendEvent, readState, resolveStatePaths, updateState } from "./model-alias-store.js";
 
 const agentDir = getAgentDir();
@@ -21,6 +21,39 @@ export default function modelAlias(pi: ExtensionAPI): void {
   let ctx: ExtensionContext | undefined;
   let requiredRegistration: { dispose(): void } | undefined;
   let activeTarget: string | undefined;
+  let activeTimer: ReturnType<typeof setTimeout> | undefined;
+  let firstEvent = true;
+  let pendingTarget: string | undefined;
+  let pendingCompaction = false;
+  let compactionInProgress = false;
+  let pendingResume = false;
+  let resuming = false;
+  let routeId = 0;
+  let resumeState = { routeId: 0, count: 0 };
+
+  const clearWatchdog = () => { if (activeTimer) clearTimeout(activeTimer); activeTimer = undefined; };
+  const queueResume = () => {
+    const next = advanceResume(resumeState, routeId, 2);
+    resumeState = next.state;
+    if (!next.allowed) { ctx?.ui.notify("model-alias: automatic recovery stopped after two resumes", "error"); pendingResume = false; pendingTarget = undefined; return; }
+    pendingResume = true;
+  };
+  const sendResume = () => {
+    if (!pendingResume) return;
+    pendingResume = false;
+    resuming = true;
+    pi.sendMessage({ customType: "model-alias-resume", content: "Continue after model alias recovery.", display: false }, { triggerTurn: true, deliverAs: "followUp" });
+  };
+  const expireWatchdog = async () => {
+    activeTimer = undefined;
+    if (!activeTarget || !ctx) return;
+    const target = activeTarget;
+    await updateState(statePaths, (state) => { state.targets[target] = recordFailure(state.targets[target], { kind: "transient" }, config.defaults.cooldown, Date.now()); });
+    await appendEvent(statePaths, { type: "stall", target, phase: firstEvent ? "first-event" : "event-gap", timestamp: Date.now() });
+    queueResume();
+    ctx.abort();
+  };
+  const armWatchdog = (ms: number) => { clearWatchdog(); activeTimer = setTimeout(() => { void expireWatchdog(); }, ms); };
 
   for (const warning of config.warnings) console.warn(`[model-alias] ${warning}`);
 
@@ -32,15 +65,33 @@ export default function modelAlias(pi: ExtensionAPI): void {
       input: metadata?.input ?? ["text", "image"],
       thinkingLevels: metadata?.thinkingLevels ?? ["off", "minimal", "low", "medium", "high", "xhigh"],
       async route(request, routeCtx) {
-        const chain = config.roles.get(role) ?? [];
+        if (request.reason === "user" && !resuming) { routeId += 1; resumeState = { routeId, count: 0 }; }
+        resuming = false;
+        const routeRole = request.reason === "direct" && compactionInProgress ? config.settings.compactionAlias : role;
+        const chain = config.roles.get(routeRole) ?? [];
         const shared = await readState(statePaths.state);
         const previous = request.previous ? `${request.previous.model.provider}/${request.previous.model.id}` : undefined;
         const failed = request.failed ? `${request.failed.model.provider}/${request.failed.model.id}` : undefined;
-        const selected = selectTarget({ routeReason: request.reason, chain, current: request.state?.current, previous, failed, contextTokens: routeCtx.getContextUsage()?.tokens ?? null, cooldowns: shared.targets, usage: shared.usage, settings: config.settings, nowMs: Date.now() });
+        const selected = pendingTarget && chain.includes(pendingTarget)
+          ? { target: pendingTarget, crossesProvider: true, needsConfirmation: false, reason: "pending-recovery" }
+          : selectTarget({ routeReason: request.reason, chain, current: request.state?.current, previous, failed, contextTokens: routeCtx.getContextUsage()?.tokens ?? null, cooldowns: shared.targets, usage: shared.usage, settings: config.settings, nowMs: Date.now() });
+        if (selected.needsConfirmation && !pendingTarget) {
+          const fallback = recoveryAction(config.settings.unattendedSwitch, routeCtx.mode === "tui" ? "interactive" : routeCtx.mode, false);
+          let action = fallback;
+          if (routeCtx.hasUI) {
+            const options = ["Switch provider", "Compact then switch", "Stop"];
+            const answer = await routeCtx.ui.select(`Switch a ${routeCtx.getContextUsage()?.tokens ?? "large"}-token session to ${selected.target}?`, options, { timeout: config.settings.confirmTimeoutMs });
+            action = answer === options[0] ? "switch" : answer === options[1] ? "compact" : answer === options[2] ? "stop" : fallback;
+          }
+          if (action === "stop") throw new Error("model-alias: cross-provider switch declined");
+          if (action === "compact") { pendingTarget = selected.target; pendingCompaction = true; throw new Error("model-alias: compacting before cross-provider switch"); }
+        }
         const ref = parseModelRef(selected.target);
         const model = routeCtx.modelRegistry.find(ref.provider, ref.modelId);
         if (!model) throw new Error(`model-alias: target not found: ${selected.target}`);
         activeTarget = selected.target;
+        if (request.reason !== "direct") { firstEvent = true; armWatchdog(config.defaults.timeouts.firstEventMs); }
+        if (pendingTarget === selected.target) pendingTarget = undefined;
         return { model, thinkingLevel: clampThinkingLevel(model, request.thinkingLevel), state: request.state?.current === selected.target ? request.state : { current: selected.target } };
       },
     });
@@ -68,7 +119,16 @@ export default function modelAlias(pi: ExtensionAPI): void {
     await registerForChildren(sessionCtx.sessionManager.getSessionId());
   });
 
+  const observeStreamEvent = () => {
+    if (!activeTimer) return;
+    firstEvent = false;
+    armWatchdog(config.defaults.timeouts.stallMs);
+  };
+  pi.on("provider_stream_event", observeStreamEvent);
+  pi.on("message_update", observeStreamEvent);
+
   pi.on("message_end", async (event) => {
+    clearWatchdog();
     if (event.message.role !== "assistant") return;
     const message = event.message as AssistantMessage;
     const target = `${message.provider}/${message.model}`;
@@ -89,5 +149,15 @@ export default function modelAlias(pi: ExtensionAPI): void {
     if (failure.kind === "quota" && anotherAvailable && !isRetryableAssistantError(message)) return { message: { ...message, errorMessage: `rate limit: ${message.provider} quota exhausted [model-alias]` } };
   });
 
-  pi.on("session_shutdown", () => { requiredRegistration?.dispose(); requiredRegistration = undefined; ctx = undefined; });
+  pi.on("agent_settled", async () => {
+    if (pendingCompaction && ctx) {
+      pendingCompaction = false;
+      compactionInProgress = true;
+      ctx.compact({ onComplete: () => { compactionInProgress = false; queueResume(); sendResume(); }, onError: (error) => { compactionInProgress = false; ctx?.ui.notify(`model-alias: compaction failed, switching without it: ${error.message}`, "warning"); queueResume(); sendResume(); } });
+      return;
+    }
+    sendResume();
+  });
+
+  pi.on("session_shutdown", () => { clearWatchdog(); requiredRegistration?.dispose(); requiredRegistration = undefined; ctx = undefined; });
 }
