@@ -228,7 +228,7 @@ $env:NPM_CONFIG_CACHE = Join-Path $env:USERPROFILE ".cache\npm"
 $env:NPM_CONFIG_FUND = "false"
 $env:NPM_CONFIG_AUDIT = "false"
 {{-       range $npm_to_install }}
-& "{{ $npm_path }}" install -g {{ . }}
+& "{{ $npm_path }}" install -g --ignore-scripts {{ . }}
 {{-       end }}
 {{-     end }}
 {{-   end }}

@@ -227,7 +227,7 @@ export NPM_CONFIG_CACHE="$HOME/.cache/npm"
 export NPM_CONFIG_FUND=false
 export NPM_CONFIG_AUDIT=false
 {{         range $npm_to_install }}
-"{{ $npm }}" install -g {{ . }}
+"{{ $npm }}" install -g --ignore-scripts {{ . }}
 {{         end }}
 {{       end }}
 
