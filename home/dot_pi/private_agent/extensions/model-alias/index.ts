@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import { join } from "node:path";
 import { clampThinkingLevel, getSupportedThinkingLevels, isRetryableAssistantError, type AssistantMessage, type ModelThinkingLevel } from "@earendil-works/pi-ai";
 import { getAgentDir, type ExtensionAPI, type ExtensionContext } from "@earendil-works/pi-coding-agent";
-import { advanceResume, classifyFailure, filterResolvedTargets, mergeUsage, parseClaudeRateLimit, parseCodexRateLimits, parseConfig, parseModelRef, pendingRecoveryTarget, recordFailure, recordSuccess, recoveryAction, selectTarget, watchdogStillCurrent } from "./model-alias-core.js";
+import { advanceResume, classifyFailure, filterResolvedTargets, mergeUsage, parseClaudeRateLimit, parseCodexRateLimits, parseConfig, parseModelRef, ownsSessionState, pendingRecoveryTarget, recordFailure, recordSuccess, recoveryAction, selectTarget, watchdogStillCurrent } from "./model-alias-core.js";
 import { appendEvent, readState, resolveStatePaths, updateState } from "./model-alias-store.js";
 import { fetchOpenCodeUsage } from "./model-alias-usage.js";
 
@@ -93,7 +93,7 @@ export default function modelAlias(pi: ExtensionAPI): void {
       thinkingLevels: metadata?.thinkingLevels ?? ["off", "minimal", "low", "medium", "high", "xhigh"],
       async route(request, routeCtx) {
         if (request.reason === "user" && !resuming) { routeId += 1; resumeState = { routeId, count: 0 }; }
-        resuming = false;
+        if (ownsSessionState(request.reason)) resuming = false;
         const routeRole = request.reason === "direct" && compactionInProgress ? config.settings.compactionAlias : role;
         const configuredChain = config.roles.get(routeRole) ?? [];
         const chain = filterResolvedTargets(configuredChain, (target) => { const ref = parseModelRef(target); return Boolean(routeCtx.modelRegistry.find(ref.provider, ref.modelId)); });
@@ -132,7 +132,7 @@ export default function modelAlias(pi: ExtensionAPI): void {
         const ref = parseModelRef(selected.target);
         const model = routeCtx.modelRegistry.find(ref.provider, ref.modelId);
         if (!model) throw new Error(`model-alias: target not found: ${selected.target}`);
-        activeTarget = selected.target;
+        if (ownsSessionState(request.reason)) activeTarget = selected.target;
         if (request.reason !== "direct") { firstEvent = true; armWatchdog(config.defaults.timeouts.firstEventMs); }
         if (request.reason !== "direct" && pendingTarget === selected.target) pendingTarget = undefined;
         return { model, thinkingLevel: clampThinkingLevel(model, request.thinkingLevel), state: request.state?.current === selected.target ? request.state : { current: selected.target } };

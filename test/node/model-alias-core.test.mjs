@@ -15,6 +15,7 @@ import {
   recoveryAction,
   advanceResume,
   filterResolvedTargets,
+  ownsSessionState,
   pendingRecoveryTarget,
   watchdogStillCurrent,
 } from "../../home/dot_pi/private_agent/extensions/model-alias/model-alias-core.js";
@@ -161,4 +162,9 @@ test("cooldown uses reset then clears after successes", () => {
   assert.equal(entry.successCount, 1);
   entry = recordSuccess(recordSuccess(entry, 3), 3);
   assert.equal(entry, undefined);
+});
+
+test("ownsSessionState excludes direct requests", () => {
+  assert.equal(ownsSessionState("direct"), false);
+  for (const reason of ["user", "continuation", "retry"]) assert.equal(ownsSessionState(reason), true);
 });

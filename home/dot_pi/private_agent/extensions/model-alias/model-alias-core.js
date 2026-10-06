@@ -145,6 +145,11 @@ export function selectTarget(input) {
   return { target, crossesProvider, needsConfirmation: crossesProvider && large, reason: available(target) ? "available" : "least-unavailable" };
 }
 
+// Direct requests (compaction, side calls such as session titling) run outside the agent turn and must not touch its recovery state.
+export function ownsSessionState(routeReason) {
+  return routeReason !== "direct";
+}
+
 export function pendingRecoveryTarget(routeReason, pendingTarget, chain) {
   return routeReason !== "direct" && pendingTarget && chain.includes(pendingTarget) ? pendingTarget : undefined;
 }
