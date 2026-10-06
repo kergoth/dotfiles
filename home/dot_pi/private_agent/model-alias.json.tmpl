@@ -1,13 +1,17 @@
 {
-  "$comment": "Rendered by chezmoi; consumed by the pi-model-fallback-alias extension. Reload with /reload after changes. Chain rationale: docs/pi-model-tiering.md.",
+  "$comment": "Rendered by chezmoi; consumed by the local model-alias extension. Reload with /reload after changes. Chain rationale: docs/pi-model-tiering.md.",
   "$settings": {
-    "statusRefreshMs": 2000
+    "confirmSwitchAboveTokens": 131072,
+    "confirmTimeoutMs": 60000,
+    "unattendedSwitch": "compact",
+    "compactionAlias": "light",
+    "switchAboveUsedPercent": 95,
+    "opencodeUsagePollMs": 300000
   },
   "$defaults": {
     "timeouts": {
-      "firstEventMs": 30000,
-      "stallMs": 60000,
-      "commitMs": 90000
+      "firstEventMs": 60000,
+      "stallMs": 90000
     },
     "cooldown": {
       "baseMs": 300000,

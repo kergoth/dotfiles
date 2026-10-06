@@ -30,7 +30,7 @@ chain and why it's ordered that way.
 | Claude subscription | `claude-bridge/*`, `pi-claude-cli/*` | flat until usage limit |
 | Codex subscription | `openai-codex/*` | flat until usage limit |
 | Cursor subscription | `cursor/*` (work machines only) | flat until usage limit |
-| opencode subscription | `opencode-go/*` | per-model monthly dollar limit, not a shared pool |
+| opencode subscription | `opencode-go/*` | account-level rolling, weekly, and monthly windows exposed by the usage endpoint |
 | Local | `local-coder`, `local-reason`, `local-reason-long`, `local-assistant`, `local-quality`, `mtplx` | free, on-device or pre-paid flat |
 
 Every interactive pool here is subscription or free. A true per-token pool
@@ -113,14 +113,39 @@ Where the two orderings differ, each purpose carries both, exposed as aliases
 
 ### Alias roles
 
-The `pi-model-fallback-alias` extension turns each chain into a stable
-`alias/<role>` model with automatic failover: it advances on connection,
-authentication, and HTTP errors until output commits, then puts failed
-targets on an exponential cooldown shared across aliases and pi processes.
-Configuration renders from `home/dot_pi/private_agent/model-alias.json.tmpl`,
-so work and personal machines get different chains; `/reload` picks up edits,
-`/model-alias-targets` shows the flattened chains, and
-`/model-alias-latency-report` shows attempt statistics.
+The local `model-alias` extension registers each chain as a native Pi virtual
+model named `alias/<role>`. Pi still owns physical provider dispatch, request
+headers, stream handling, and model continuity. The extension selects the
+physical target, tracks failures in shared state, and retries on another pool
+when the failure is recoverable. Configuration renders from
+`home/dot_pi/private_agent/model-alias.json.tmpl`, so work and personal
+machines get different chains; `/reload` picks up edits.
+
+A continuation stays on its last successful physical model while that model is
+available. This warm-provider rule preserves provider-side prompt caches and
+prevents a recovered first-choice model from pulling a large conversation back
+across providers. For a cross-provider switch at 131072 context tokens or
+more, TUI and RPC sessions ask whether to switch, compact through
+`alias/light` before switching, or stop. The prompt times out after 60 seconds.
+The unattended default is compact, but print and JSON modes switch directly
+because those modes cannot finish extension-requested compaction. Subagents
+load the same extension through Pi's required-child-extension registry, so
+`alias/*` resolves in their print-mode processes too.
+
+The extension treats 60 seconds without the first provider event, or 90
+seconds between later events, as a stall. Any provider stream event resets the
+gap timer, including streamed thinking that has not produced visible text.
+After aborting a stalled request, the extension resumes on another target and
+allows at most two automatic resumes for one user route.
+
+Cooldowns and usage windows are shared under
+`~/.pi/agent/state/model-alias/`. Codex stream events and sanitized Claude
+bridge events provide utilization and reset times. OpenCode Go is polled no
+more than every five minutes from its authenticated usage endpoint, which
+reports account-level rolling, weekly, and monthly windows. A provider at 95%
+or above is avoided at the next user-turn boundary; an in-progress tool loop
+stays warm until the target fails. Error classification remains the fallback
+when usage data is absent or stale.
 
 | Role | Ordering | Purpose |
 | --- | --- | --- |
