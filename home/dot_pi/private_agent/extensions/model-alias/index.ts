@@ -4,8 +4,9 @@ import { fileURLToPath } from "node:url";
 import { join } from "node:path";
 import { clampThinkingLevel, getSupportedThinkingLevels, isRetryableAssistantError, type AssistantMessage, type ModelThinkingLevel } from "@earendil-works/pi-ai";
 import { getAgentDir, type ExtensionAPI, type ExtensionContext } from "@earendil-works/pi-coding-agent";
-import { advanceResume, classifyFailure, parseConfig, parseModelRef, recordFailure, recordSuccess, recoveryAction, selectTarget } from "./model-alias-core.js";
+import { advanceResume, classifyFailure, parseCodexRateLimits, parseConfig, parseModelRef, recordFailure, recordSuccess, recoveryAction, selectTarget } from "./model-alias-core.js";
 import { appendEvent, readState, resolveStatePaths, updateState } from "./model-alias-store.js";
+import { fetchOpenCodeUsage } from "./model-alias-usage.js";
 
 const agentDir = getAgentDir();
 const mapPath = process.env.PI_MODEL_ALIAS_MAP || join(agentDir, "model-alias.json");
@@ -30,6 +31,7 @@ export default function modelAlias(pi: ExtensionAPI): void {
   let resuming = false;
   let routeId = 0;
   let resumeState = { routeId: 0, count: 0 };
+  let openCodePollAt = 0;
 
   const clearWatchdog = () => { if (activeTimer) clearTimeout(activeTimer); activeTimer = undefined; };
   const queueResume = () => {
@@ -69,7 +71,21 @@ export default function modelAlias(pi: ExtensionAPI): void {
         resuming = false;
         const routeRole = request.reason === "direct" && compactionInProgress ? config.settings.compactionAlias : role;
         const chain = config.roles.get(routeRole) ?? [];
-        const shared = await readState(statePaths.state);
+        let shared = await readState(statePaths.state);
+        const openCodeTarget = chain.map(parseModelRef).find((ref) => ref.provider === "opencode-go");
+        if (openCodeTarget && Date.now() >= openCodePollAt) {
+          openCodePollAt = Date.now() + config.settings.opencodeUsagePollMs;
+          const model = routeCtx.modelRegistry.find(openCodeTarget.provider, openCodeTarget.modelId);
+          if (model) try {
+            const auth = await routeCtx.modelRegistry.getApiKeyAndHeaders(model);
+            if (!auth.ok) throw new Error(auth.error);
+            const snapshot = await fetchOpenCodeUsage("https://opencode.ai/zen/go/v1/usage", auth.headers ?? (auth.apiKey ? { Authorization: `Bearer ${auth.apiKey}` } : {}));
+            await updateState(statePaths, (state) => { state.usage[snapshot.provider] = snapshot; });
+            shared = await readState(statePaths.state);
+          } catch (error) {
+            await appendEvent(statePaths, { type: "usage-error", provider: "opencode-go", reason: error instanceof Error ? error.message : String(error), timestamp: Date.now() });
+          }
+        }
         const previous = request.previous ? `${request.previous.model.provider}/${request.previous.model.id}` : undefined;
         const failed = request.failed ? `${request.failed.model.provider}/${request.failed.model.id}` : undefined;
         const selected = pendingTarget && chain.includes(pendingTarget)
@@ -117,6 +133,16 @@ export default function modelAlias(pi: ExtensionAPI): void {
       registerRole(role, { contextWindow: first.contextWindow, maxTokens: first.maxTokens, input: first.input, thinkingLevels: getSupportedThinkingLevels(first) });
     }
     await registerForChildren(sessionCtx.sessionManager.getSessionId());
+  });
+
+  pi.on("provider_stream_event", async (event) => {
+    const snapshot = parseCodexRateLimits(event.data, Date.now());
+    if (!snapshot) return;
+    await updateState(statePaths, (state) => {
+      state.usage[snapshot.provider] = snapshot;
+      const reset = snapshot.windows.filter((window) => window.limited && window.resetsAt).map((window) => window.resetsAt!);
+      if (reset.length) for (const targets of config.roles.values()) for (const target of targets) if (parseModelRef(target).provider === snapshot.provider) state.targets[target] = { failCount: 1, successCount: 0, nextRetryAt: Math.max(...reset) };
+    });
   });
 
   const observeStreamEvent = () => {

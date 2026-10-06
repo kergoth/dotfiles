@@ -78,6 +78,14 @@ test("retry advances after failed target", () => {
   assert.equal(selectTarget({ ...selectBase, routeReason: "retry", failed: "claude/a" }).target, "openai/b");
 });
 
+test("usage threshold excludes only user-turn candidates at 95 percent", () => {
+  for (const [usedPercent, expected] of [[94.9, "claude/a"], [95, "openai/b"], [100, "openai/b"]]) {
+    const usage = { claude: { windows: [{ usedPercent }] } };
+    assert.equal(selectTarget({ ...selectBase, routeReason: "user", usage }).target, expected);
+    assert.equal(selectTarget({ ...selectBase, routeReason: "continuation", usage }).target, "claude/a");
+  }
+});
+
 test("all unavailable selects earliest cooldown or lowest usage", () => {
   assert.equal(selectTarget({ ...selectBase, routeReason: "user", cooldowns: { "claude/a": { nextRetryAt: 4000 }, "openai/b": { nextRetryAt: 3000 }, "openai/c": { nextRetryAt: 5000 } } }).target, "openai/b");
   const usage = { claude: { windows: [{ usedPercent: 99 }] }, openai: { windows: [{ usedPercent: 96 }] } };
