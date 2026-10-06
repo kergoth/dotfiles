@@ -182,42 +182,13 @@ else
     fi
 fi
 
-if [ -f "$sourcedir/scripts/update-review.py" ] && command -v uv >/dev/null 2>&1; then
-    result_file=$(mktemp "${TMPDIR:-/tmp}/update-review.XXXXXX")
-    trap 'rm -f "$result_file"' EXIT INT TERM
-    review_args=(git --result-file "$result_file")
-    [ "$dry_run" -eq 1 ] && review_args+=(--dry-run)
-    [ "$no_review" -eq 1 ] && review_args+=(--no-review)
-    uv run --script "$sourcedir/scripts/update-review.py" "${review_args[@]}"
-    outcome=$(jq -r '.outcome' "$result_file")
-    case "$outcome" in
-        cancel) exit 0 ;;
-        dry-run) ;;
-        complete|finish)
-            chezmoi apply -R || :
-            if ! (cd "$sourcedir" && git diff --quiet -- home/.chezmoidata/git-lock.yml); then
-                {
-                    echo 'Update Git lock'
-                    echo
-                    echo 'Record approved Git source revisions.'
-                    echo
-                    echo 'Git lock updates:'
-                    jq -r '.providers.git[] | "  \(.id): \(.old_sha) → \(.new_sha)"' "$result_file"
-                } > "$sourcedir/.git/COMMIT_EDITMSG"
-                if [ "$use_jj" -eq 1 ]; then
-                    commit_msg=$(cat "$sourcedir/.git/COMMIT_EDITMSG")
-                    (cd "$sourcedir" && jj commit -m "$commit_msg" home/.chezmoidata/git-lock.yml)
-                else
-                    (cd "$sourcedir" && git commit --no-verify -F .git/COMMIT_EDITMSG home/.chezmoidata/git-lock.yml)
-                fi
-            fi
-            [ "$outcome" = finish ] && exit 0 ;;
-    esac
-fi
+fetch_lock_done=0
 
-if [ "$dry_run" -eq 0 ] && [ -f "$sourcedir/scripts/update-fetch-lock.py" ] && command -v uv >/dev/null 2>&1; then
+update_fetch_lock() {
+    fetch_lock_done=1
+    [ -f "$sourcedir/scripts/update-fetch-lock.py" ] || return 0
+    command -v uv >/dev/null 2>&1 || return 0
     uv run "$sourcedir/scripts/update-fetch-lock.py"
-    chezmoi apply -R || :
     if ! (cd "$sourcedir" && git diff --quiet -- home/.chezmoidata/fetch-lock.yml); then
         {
             echo 'Update fetch lock'
@@ -270,6 +241,45 @@ PYEOF
             (cd "$sourcedir" && git commit --no-verify -F .git/COMMIT_EDITMSG home/.chezmoidata/fetch-lock.yml)
         fi
     fi
+}
+
+if [ -f "$sourcedir/scripts/update-review.py" ] && command -v uv >/dev/null 2>&1; then
+    result_file=$(mktemp "${TMPDIR:-/tmp}/update-review.XXXXXX")
+    trap 'rm -f "$result_file"' EXIT INT TERM
+    review_args=(git --result-file "$result_file")
+    [ "$dry_run" -eq 1 ] && review_args+=(--dry-run)
+    [ "$no_review" -eq 1 ] && review_args+=(--no-review)
+    uv run --script "$sourcedir/scripts/update-review.py" "${review_args[@]}"
+    outcome=$(jq -r '.outcome' "$result_file")
+    case "$outcome" in
+        cancel) exit 0 ;;
+        dry-run) ;;
+        complete|finish)
+            if ! (cd "$sourcedir" && git diff --quiet -- home/.chezmoidata/git-lock.yml); then
+                {
+                    echo 'Update Git lock'
+                    echo
+                    echo 'Record approved Git source revisions.'
+                    echo
+                    echo 'Git lock updates:'
+                    jq -r '.providers.git[] | "  \(.id): \(.old_sha) → \(.new_sha)"' "$result_file"
+                } > "$sourcedir/.git/COMMIT_EDITMSG"
+                if [ "$use_jj" -eq 1 ]; then
+                    commit_msg=$(cat "$sourcedir/.git/COMMIT_EDITMSG")
+                    (cd "$sourcedir" && jj commit -m "$commit_msg" home/.chezmoidata/git-lock.yml)
+                else
+                    (cd "$sourcedir" && git commit --no-verify -F .git/COMMIT_EDITMSG home/.chezmoidata/git-lock.yml)
+                fi
+            fi
+            update_fetch_lock
+            chezmoi apply -R || :
+            [ "$outcome" = finish ] && exit 0 ;;
+    esac
+fi
+
+if [ "$dry_run" -eq 0 ] && [ "$fetch_lock_done" -eq 0 ]; then
+    update_fetch_lock
+    chezmoi apply -R || :
 fi
 
 if [ "$dry_run" -eq 1 ]; then

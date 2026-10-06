@@ -254,57 +254,17 @@ if ($DryRun) {
     }
 }
 
-$reviewRunner = Join-Path $repodir "scripts/update-review.py"
-if (Test-Path $reviewRunner) {
-    if (-not (Get-Command uv -ErrorAction SilentlyContinue)) {
-        Write-Warning "Warning: uv not available; skipping Git source update"
-    } else {
-        $resultFile = [System.IO.Path]::GetTempFileName()
-        try {
-            $reviewArgs = @("--script", $reviewRunner, "git", "--result-file", $resultFile)
-            if ($DryRun) { $reviewArgs += "--dry-run" }
-            if ($NoReview) { $reviewArgs += "--no-review" }
-            uv run @reviewArgs
-            if ($LASTEXITCODE -ne 0) { throw "Git review failed (exit $LASTEXITCODE)" }
-            $reviewResult = Get-Content $resultFile -Raw | ConvertFrom-Json
-            if ($reviewResult.outcome -eq "cancel") { exit 0 }
-            if (-not $DryRun -and @($reviewResult.providers.git).Count -gt 0) {
-                try { chezmoi apply -R } catch {}
-                Set-Location $repodir
-                $lines = @(
-                    "Update Git lock"
-                    ""
-                    "Record approved Git source revisions."
-                    ""
-                    "Git lock updates:"
-                )
-                foreach ($change in @($reviewResult.providers.git)) {
-                    $lines += "  $($change.id): $($change.old_sha) -> $($change.new_sha)"
-                }
-                $lines -join "`n" | Out-File -FilePath "$repodir\.git\COMMIT_EDITMSG" -Encoding utf8
-                git diff --quiet -- home/.chezmoidata/git-lock.yml
-                if ($LASTEXITCODE -ne 0) {
-                    if ($use_jj -eq 1) {
-                        jj commit -m (Get-Content "$repodir\.git\COMMIT_EDITMSG" -Raw) home/.chezmoidata/git-lock.yml
-                    } else {
-                        git commit --no-verify -F .git/COMMIT_EDITMSG home/.chezmoidata/git-lock.yml
-                    }
-                }
-            }
-            if ($reviewResult.outcome -eq "finish") { exit 0 }
-        } finally {
-            Remove-Item $resultFile -Force -ErrorAction SilentlyContinue
-        }
-    }
-}
+$script:FetchLockDone = $false
 
-$fetchLockUpdater = Join-Path $repodir "scripts/update-fetch-lock.py"
-if (-not $DryRun -and (Test-Path $fetchLockUpdater) -and (Get-Command uv -ErrorAction SilentlyContinue)) {
+function Update-FetchLock {
+    $script:FetchLockDone = $true
+    $fetchLockUpdater = Join-Path $repodir "scripts/update-fetch-lock.py"
+    if (-not (Test-Path $fetchLockUpdater)) { return }
+    if (-not (Get-Command uv -ErrorAction SilentlyContinue)) { return }
     uv run $fetchLockUpdater
     if ($LASTEXITCODE -ne 0) {
         throw "update-fetch-lock.py failed with exit code $LASTEXITCODE"
     }
-    try { chezmoi apply -R } catch {}
     Set-Location $repodir
     git diff --quiet -- home/.chezmoidata/fetch-lock.yml
     if ($LASTEXITCODE -ne 0) {
@@ -363,6 +323,58 @@ for key in sorted(set(old_map) | set(new_map)):
             git commit --no-verify -F .git/COMMIT_EDITMSG home/.chezmoidata/fetch-lock.yml
         }
     }
+}
+
+$reviewRunner = Join-Path $repodir "scripts/update-review.py"
+if (Test-Path $reviewRunner) {
+    if (-not (Get-Command uv -ErrorAction SilentlyContinue)) {
+        Write-Warning "Warning: uv not available; skipping Git source update"
+    } else {
+        $resultFile = [System.IO.Path]::GetTempFileName()
+        try {
+            $reviewArgs = @("--script", $reviewRunner, "git", "--result-file", $resultFile)
+            if ($DryRun) { $reviewArgs += "--dry-run" }
+            if ($NoReview) { $reviewArgs += "--no-review" }
+            uv run @reviewArgs
+            if ($LASTEXITCODE -ne 0) { throw "Git review failed (exit $LASTEXITCODE)" }
+            $reviewResult = Get-Content $resultFile -Raw | ConvertFrom-Json
+            if ($reviewResult.outcome -eq "cancel") { exit 0 }
+            if (-not $DryRun -and @($reviewResult.providers.git).Count -gt 0) {
+                Set-Location $repodir
+                $lines = @(
+                    "Update Git lock"
+                    ""
+                    "Record approved Git source revisions."
+                    ""
+                    "Git lock updates:"
+                )
+                foreach ($change in @($reviewResult.providers.git)) {
+                    $lines += "  $($change.id): $($change.old_sha) -> $($change.new_sha)"
+                }
+                $lines -join "`n" | Out-File -FilePath "$repodir\.git\COMMIT_EDITMSG" -Encoding utf8
+                git diff --quiet -- home/.chezmoidata/git-lock.yml
+                if ($LASTEXITCODE -ne 0) {
+                    if ($use_jj -eq 1) {
+                        jj commit -m (Get-Content "$repodir\.git\COMMIT_EDITMSG" -Raw) home/.chezmoidata/git-lock.yml
+                    } else {
+                        git commit --no-verify -F .git/COMMIT_EDITMSG home/.chezmoidata/git-lock.yml
+                    }
+                }
+            }
+            if (-not $DryRun -and $reviewResult.outcome -in @("complete", "finish")) {
+                Update-FetchLock
+                try { chezmoi apply -R } catch {}
+            }
+            if ($reviewResult.outcome -eq "finish") { exit 0 }
+        } finally {
+            Remove-Item $resultFile -Force -ErrorAction SilentlyContinue
+        }
+    }
+}
+
+if (-not $DryRun -and -not $script:FetchLockDone) {
+    Update-FetchLock
+    try { chezmoi apply -R } catch {}
 }
 
 function Get-HomeManagerGenerationPath {

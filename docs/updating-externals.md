@@ -127,8 +127,8 @@ The reviewer then chooses from:
 
 Cancel exits before Home Manager and other later categories. Finish applies
 only the Git selections already made, skipping sources not yet reached, then
-also exits before later categories. Work completed in earlier categories is
-not rolled back by either action.
+refreshes the fetch lock for them and exits before later categories. Work
+completed in earlier categories is not rolled back by either action.
 
 Sources with `review: false` are accepted automatically without interaction.
 If no source requires review, all are accepted and the session ends without
