@@ -143,6 +143,39 @@ test("drops the route tag for alias provider", () => {
   assert.doesNotMatch(lineFor("coding-budget", "alias"), /PI·[A-Z]+·coding-budget/);
 });
 
+test("shows the routed physical model after a virtual selection", () => {
+  const data = {
+    model: "coding",
+    provider: "alias",
+    routed: { provider: "claude-bridge", model: "claude-sonnet-5-5" },
+    cwd: "/Users/testuser/projects/myapp",
+    branch: null,
+    contextPercent: 0,
+    palette: "dark",
+  };
+  assert.match(formatStatusLine(data), /PI·coding → CC·claude-sonnet-5-5/);
+});
+
+test("budgets the routed model when choosing a degradation tier", () => {
+  const data = {
+    model: "coding",
+    provider: "alias",
+    routed: { provider: "claude-bridge", model: "claude-sonnet-5-5" },
+    cwd: "/Users/testuser/projects/myapp",
+    branch: null,
+    inputTokens: 0,
+    outputTokens: 0,
+    costUsd: 0,
+    contextPercent: 0,
+    palette: "dark",
+  };
+  const plain = formatStatusLineForWidth({ ...data, routed: undefined }, 60);
+  const routed = formatStatusLineForWidth(data, 60);
+  assert.match(plain, /myapp/);
+  assert.doesNotMatch(routed, /myapp/);
+  assert.match(routed, /ctx 0%/);
+});
+
 test("documents the Dracula and Catppuccin Latte palette sources", () => {
   assert.equal(PALETTES.dark.name, "Dracula");
   assert.equal(PALETTES.light.name, "Catppuccin Latte");

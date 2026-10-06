@@ -104,9 +104,16 @@ function routeTag(provider) {
   return ROUTE_TAGS[id] ?? generatedRouteTag(id);
 }
 
+function taggedLabel(provider, model) {
+  const tag = routeTag(provider);
+  return tag ? `${tag}·${model}` : model;
+}
+
+// `routed` is the physical model that answered last when the selection is a
+// virtual model; omit it when it matches the selection.
 function modelLabel(data) {
-  const tag = routeTag(data.provider);
-  return tag ? `${tag}·${data.model}` : data.model;
+  const selected = taggedLabel(data.provider, data.model);
+  return data.routed ? `${selected} → ${taggedLabel(data.routed.provider, data.routed.model)}` : selected;
 }
 
 // Match Pi default footer token compaction (footer.ts formatTokens).

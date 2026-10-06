@@ -41,9 +41,24 @@ function sessionUsage(ctx: any): { inputTokens: number; outputTokens: number; co
   return { inputTokens: totals.input, outputTokens: totals.output, costUsd: totals.cost };
 }
 
+function routedModel(ctx: any): { provider: string; model: string } | undefined {
+  const selected = ctx.model;
+  if (!selected) return undefined;
+
+  const branch = ctx.sessionManager.getBranch();
+  for (let i = branch.length - 1; i >= 0; i--) {
+    const message = branch[i].type === "message" ? branch[i].message : undefined;
+    if (message?.role !== "assistant") continue;
+    if (message.provider === selected.provider && message.model === selected.id) return undefined;
+    return { provider: message.provider, model: message.model };
+  }
+  return undefined;
+}
+
 function installFooter(ctx: any): void {
-  const model = ctx.model?.displayName ?? ctx.model?.name ?? ctx.model?.id ?? "Pi";
   const provider = ctx.model?.provider;
+  const model =
+    provider === "alias" ? ctx.model.id : (ctx.model?.displayName ?? ctx.model?.name ?? ctx.model?.id ?? "Pi");
 
   ctx.ui.setFooter((tui: any, _theme: any, footerData: any) => ({
     dispose: footerData.onBranchChange(() => tui.requestRender()),
@@ -55,6 +70,7 @@ function installFooter(ctx: any): void {
           {
             model,
             provider,
+            routed: routedModel(ctx),
             cwd: ctx.cwd,
             branch: footerData.getGitBranch(),
             inputTokens: usage.inputTokens,
