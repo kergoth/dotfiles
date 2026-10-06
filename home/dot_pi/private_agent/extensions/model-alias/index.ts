@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import { join } from "node:path";
 import { clampThinkingLevel, getSupportedThinkingLevels, isRetryableAssistantError, type AssistantMessage, type ModelThinkingLevel } from "@earendil-works/pi-ai";
 import { getAgentDir, type ExtensionAPI, type ExtensionContext } from "@earendil-works/pi-coding-agent";
-import { advanceResume, classifyFailure, parseCodexRateLimits, parseConfig, parseModelRef, recordFailure, recordSuccess, recoveryAction, selectTarget } from "./model-alias-core.js";
+import { advanceResume, classifyFailure, filterResolvedTargets, mergeUsage, parseClaudeRateLimit, parseCodexRateLimits, parseConfig, parseModelRef, pendingRecoveryTarget, recordFailure, recordSuccess, recoveryAction, selectTarget, watchdogStillCurrent } from "./model-alias-core.js";
 import { appendEvent, readState, resolveStatePaths, updateState } from "./model-alias-store.js";
 import { fetchOpenCodeUsage } from "./model-alias-usage.js";
 
@@ -21,6 +21,7 @@ const STARTUP_OUTPUT = 128_000;
 export default function modelAlias(pi: ExtensionAPI): void {
   let ctx: ExtensionContext | undefined;
   let requiredRegistration: { dispose(): void } | undefined;
+  let disposeClaudeEvents: (() => void) | undefined;
   let activeTarget: string | undefined;
   let activeTimer: ReturnType<typeof setTimeout> | undefined;
   let firstEvent = true;
@@ -32,8 +33,9 @@ export default function modelAlias(pi: ExtensionAPI): void {
   let routeId = 0;
   let resumeState = { routeId: 0, count: 0 };
   let openCodePollAt = 0;
+  let watchdogGeneration = 0;
 
-  const clearWatchdog = () => { if (activeTimer) clearTimeout(activeTimer); activeTimer = undefined; };
+  const clearWatchdog = () => { watchdogGeneration += 1; if (activeTimer) clearTimeout(activeTimer); activeTimer = undefined; };
   const queueResume = () => {
     const next = advanceResume(resumeState, routeId, 2);
     resumeState = next.state;
@@ -46,18 +48,41 @@ export default function modelAlias(pi: ExtensionAPI): void {
     resuming = true;
     pi.sendMessage({ customType: "model-alias-resume", content: "Continue after model alias recovery.", display: false }, { triggerTurn: true, deliverAs: "followUp" });
   };
-  const expireWatchdog = async () => {
+  const expireWatchdog = async (generation: number, target: string, phase: string) => {
     activeTimer = undefined;
-    if (!activeTarget || !ctx) return;
-    const target = activeTarget;
-    await updateState(statePaths, (state) => { state.targets[target] = recordFailure(state.targets[target], { kind: "transient" }, config.defaults.cooldown, Date.now()); });
-    await appendEvent(statePaths, { type: "stall", target, phase: firstEvent ? "first-event" : "event-gap", timestamp: Date.now() });
+    let expired = false;
+    await updateState(statePaths, (state) => {
+      expired = watchdogStillCurrent(generation, watchdogGeneration, Boolean(ctx));
+      if (expired) state.targets[target] = recordFailure(state.targets[target], { kind: "transient" }, config.defaults.cooldown, Date.now());
+    });
+    if (!expired || !watchdogStillCurrent(generation, watchdogGeneration, Boolean(ctx))) return;
+    await appendEvent(statePaths, { type: "stall", target, phase, timestamp: Date.now() });
+    if (!watchdogStillCurrent(generation, watchdogGeneration, Boolean(ctx))) return;
     queueResume();
-    ctx.abort();
+    ctx!.abort();
   };
-  const armWatchdog = (ms: number) => { clearWatchdog(); activeTimer = setTimeout(() => { void expireWatchdog(); }, ms); };
+  const armWatchdog = (ms: number) => {
+    clearWatchdog();
+    if (!activeTarget) return;
+    const generation = watchdogGeneration;
+    const target = activeTarget;
+    const phase = firstEvent ? "first-event" : "event-gap";
+    activeTimer = setTimeout(() => { void expireWatchdog(generation, target, phase); }, ms);
+  };
 
   for (const warning of config.warnings) console.warn(`[model-alias] ${warning}`);
+
+  async function persistUsage(snapshot: ReturnType<typeof parseClaudeRateLimit> | ReturnType<typeof parseCodexRateLimits>) {
+    if (!snapshot) return;
+    await updateState(statePaths, (state) => {
+      state.usage[snapshot.provider] = mergeUsage(state.usage[snapshot.provider], snapshot);
+      const reset = snapshot.windows.filter((window) => window.limited && window.resetsAt).map((window) => window.resetsAt!);
+      if (reset.length) for (const targets of config.roles.values()) for (const target of targets) if (parseModelRef(target).provider === snapshot.provider) {
+        const previous = state.targets[target];
+        state.targets[target] = { failCount: Math.max(1, previous?.failCount ?? 0), successCount: 0, nextRetryAt: Math.max(previous?.nextRetryAt ?? 0, ...reset) };
+      }
+    });
+  }
 
   function registerRole(role: string, metadata?: { contextWindow?: number; maxTokens?: number; input?: readonly ("text" | "image")[]; thinkingLevels?: readonly ModelThinkingLevel[] }) {
     pi.registerVirtualModel<SessionState>({
@@ -70,7 +95,8 @@ export default function modelAlias(pi: ExtensionAPI): void {
         if (request.reason === "user" && !resuming) { routeId += 1; resumeState = { routeId, count: 0 }; }
         resuming = false;
         const routeRole = request.reason === "direct" && compactionInProgress ? config.settings.compactionAlias : role;
-        const chain = config.roles.get(routeRole) ?? [];
+        const configuredChain = config.roles.get(routeRole) ?? [];
+        const chain = filterResolvedTargets(configuredChain, (target) => { const ref = parseModelRef(target); return Boolean(routeCtx.modelRegistry.find(ref.provider, ref.modelId)); });
         let shared = await readState(statePaths.state);
         const openCodeTarget = chain.map(parseModelRef).find((ref) => ref.provider === "opencode-go");
         if (openCodeTarget && Date.now() >= openCodePollAt) {
@@ -80,7 +106,7 @@ export default function modelAlias(pi: ExtensionAPI): void {
             const auth = await routeCtx.modelRegistry.getApiKeyAndHeaders(model);
             if (!auth.ok) throw new Error(auth.error);
             const snapshot = await fetchOpenCodeUsage("https://opencode.ai/zen/go/v1/usage", auth.headers ?? (auth.apiKey ? { Authorization: `Bearer ${auth.apiKey}` } : {}));
-            await updateState(statePaths, (state) => { state.usage[snapshot.provider] = snapshot; });
+            await persistUsage(snapshot);
             shared = await readState(statePaths.state);
           } catch (error) {
             await appendEvent(statePaths, { type: "usage-error", provider: "opencode-go", reason: error instanceof Error ? error.message : String(error), timestamp: Date.now() });
@@ -88,8 +114,9 @@ export default function modelAlias(pi: ExtensionAPI): void {
         }
         const previous = request.previous ? `${request.previous.model.provider}/${request.previous.model.id}` : undefined;
         const failed = request.failed ? `${request.failed.model.provider}/${request.failed.model.id}` : undefined;
-        const selected = pendingTarget && chain.includes(pendingTarget)
-          ? { target: pendingTarget, crossesProvider: true, needsConfirmation: false, reason: "pending-recovery" }
+        const recoveryTarget = pendingRecoveryTarget(request.reason, pendingTarget, chain);
+        const selected = recoveryTarget
+          ? { target: recoveryTarget, crossesProvider: true, needsConfirmation: false, reason: "pending-recovery" }
           : selectTarget({ routeReason: request.reason, chain, current: request.state?.current, previous, failed, contextTokens: routeCtx.getContextUsage()?.tokens ?? null, cooldowns: shared.targets, usage: shared.usage, settings: config.settings, nowMs: Date.now() });
         if (selected.needsConfirmation && !pendingTarget) {
           const fallback = recoveryAction(config.settings.unattendedSwitch, routeCtx.mode === "tui" ? "interactive" : routeCtx.mode, false);
@@ -107,7 +134,7 @@ export default function modelAlias(pi: ExtensionAPI): void {
         if (!model) throw new Error(`model-alias: target not found: ${selected.target}`);
         activeTarget = selected.target;
         if (request.reason !== "direct") { firstEvent = true; armWatchdog(config.defaults.timeouts.firstEventMs); }
-        if (pendingTarget === selected.target) pendingTarget = undefined;
+        if (request.reason !== "direct" && pendingTarget === selected.target) pendingTarget = undefined;
         return { model, thinkingLevel: clampThinkingLevel(model, request.thinkingLevel), state: request.state?.current === selected.target ? request.state : { current: selected.target } };
       },
     });
@@ -128,21 +155,25 @@ export default function modelAlias(pi: ExtensionAPI): void {
   pi.on("session_start", async (_event, sessionCtx) => {
     ctx = sessionCtx;
     for (const [role, chain] of config.roles) {
-      const first = chain.map(parseModelRef).map((ref) => sessionCtx.modelRegistry.find(ref.provider, ref.modelId)).find(Boolean);
+      const models = chain.map(parseModelRef).map((ref) => sessionCtx.modelRegistry.find(ref.provider, ref.modelId)).filter((model) => model !== undefined);
+      const first = models[0];
       if (!first) { sessionCtx.ui.notify(`model-alias: ${role} has no resolvable targets`, "warning"); continue; }
-      registerRole(role, { contextWindow: first.contextWindow, maxTokens: first.maxTokens, input: first.input, thinkingLevels: getSupportedThinkingLevels(first) });
+      if (models.length !== chain.length) sessionCtx.ui.notify(`model-alias: ${role} is skipping ${chain.length - models.length} unresolved target(s)`, "warning");
+      const thinkingLevels = [...new Set(models.flatMap((model) => getSupportedThinkingLevels(model)))];
+      registerRole(role, { contextWindow: first.contextWindow, maxTokens: first.maxTokens, input: first.input, thinkingLevels });
     }
+    disposeClaudeEvents = pi.events.on("claude-bridge/rate-limit/v1", (data) => {
+      const snapshot = parseClaudeRateLimit(data, Date.now());
+      if (snapshot) void persistUsage(snapshot);
+      else void appendEvent(statePaths, { type: "usage-error", provider: "claude-bridge", reason: "invalid rate-limit event", timestamp: Date.now() });
+    });
     await registerForChildren(sessionCtx.sessionManager.getSessionId());
   });
 
   pi.on("provider_stream_event", async (event) => {
     const snapshot = parseCodexRateLimits(event.data, Date.now());
     if (!snapshot) return;
-    await updateState(statePaths, (state) => {
-      state.usage[snapshot.provider] = snapshot;
-      const reset = snapshot.windows.filter((window) => window.limited && window.resetsAt).map((window) => window.resetsAt!);
-      if (reset.length) for (const targets of config.roles.values()) for (const target of targets) if (parseModelRef(target).provider === snapshot.provider) state.targets[target] = { failCount: 1, successCount: 0, nextRetryAt: Math.max(...reset) };
-    });
+    await persistUsage(snapshot);
   });
 
   const observeStreamEvent = () => {
@@ -185,5 +216,5 @@ export default function modelAlias(pi: ExtensionAPI): void {
     sendResume();
   });
 
-  pi.on("session_shutdown", () => { clearWatchdog(); requiredRegistration?.dispose(); requiredRegistration = undefined; ctx = undefined; });
+  pi.on("session_shutdown", () => { clearWatchdog(); disposeClaudeEvents?.(); disposeClaudeEvents = undefined; requiredRegistration?.dispose(); requiredRegistration = undefined; ctx = undefined; });
 }

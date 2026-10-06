@@ -104,36 +104,59 @@ export function parseOpenCodeUsage(data, capturedAt = Date.now()) {
 }
 
 function providerOf(ref) { return parseModelRef(ref).provider; }
-function providerUsedPercent(snapshot) {
-  return Math.max(0, ...(snapshot?.windows ?? []).map((window) => Number(window.usedPercent) || 0));
+function providerUsedPercent(snapshot, nowMs) {
+  const windows = (snapshot?.windows ?? []).filter((window) => !window.resetsAt || window.resetsAt > nowMs);
+  return Math.max(0, ...windows.map((window) => Number(window.usedPercent) || 0));
+}
+
+export function mergeUsage(previous, incoming) {
+  if (!previous || previous.provider !== incoming.provider) return incoming;
+  const byId = new Map(previous.windows.map((window) => [window.id, window]));
+  for (const window of incoming.windows) byId.set(window.id, window);
+  return { ...incoming, windows: [...byId.values()] };
 }
 
 export function selectTarget(input) {
   const { chain, routeReason, current, previous, failed, contextTokens, cooldowns, usage, settings, nowMs } = input;
   if (!Array.isArray(chain) || !chain.length) throw new Error("selectTarget requires a non-empty chain");
   const cooled = (target) => (cooldowns[target]?.nextRetryAt ?? 0) > nowMs;
-  const overUsage = (target) => routeReason === "user" && providerUsedPercent(usage[providerOf(target)]) >= settings.switchAboveUsedPercent;
+  const usedPercent = (target) => providerUsedPercent(usage[providerOf(target)], nowMs);
+  const overUsage = (target) => routeReason === "user" && usedPercent(target) >= settings.switchAboveUsedPercent;
   const available = (target) => !cooled(target) && !overUsage(target);
+  const origin = routeReason === "retry" ? failed : (previous ?? current);
+  const large = contextTokens !== null && contextTokens >= settings.confirmSwitchAboveTokens;
+  const advance = routeReason === "retry" || ((routeReason === "continuation" || routeReason === "direct" || large) && origin && !available(origin));
   let ordered = chain;
-  if (routeReason === "retry" || (routeReason === "continuation" && previous && !available(previous))) {
-    const from = failed ?? previous;
-    const index = chain.indexOf(from);
+  if (advance) {
+    const index = chain.indexOf(origin);
     ordered = index < 0 ? chain : [...chain.slice(index + 1), ...chain.slice(0, index + 1)];
   }
   let target;
-  if (routeReason === "continuation" && previous && available(previous)) target = previous;
-  else if (routeReason === "user" && contextTokens !== null && contextTokens >= settings.confirmSwitchAboveTokens && current && available(current)) target = current;
+  if ((routeReason === "continuation" || routeReason === "direct") && origin && chain.includes(origin) && available(origin)) target = origin;
+  else if (routeReason === "user" && large && current && chain.includes(current) && available(current)) target = current;
   else target = ordered.find(available);
   if (!target) {
-    const allCooled = chain.every(cooled);
-    target = allCooled
-      ? [...chain].sort((a, b) => cooldowns[a].nextRetryAt - cooldowns[b].nextRetryAt)[0]
-      : [...chain].sort((a, b) => providerUsedPercent(usage[providerOf(a)]) - providerUsedPercent(usage[providerOf(b)]))[0];
+    const notCooled = ordered.filter((candidate) => !cooled(candidate));
+    target = notCooled.length
+      ? [...notCooled].sort((a, b) => usedPercent(a) - usedPercent(b))[0]
+      : [...ordered].sort((a, b) => cooldowns[a].nextRetryAt - cooldowns[b].nextRetryAt)[0];
   }
-  const origin = routeReason === "retry" ? failed : (previous ?? current);
   const crossesProvider = Boolean(origin && providerOf(origin) !== providerOf(target));
-  const large = contextTokens !== null && contextTokens >= settings.confirmSwitchAboveTokens;
   return { target, crossesProvider, needsConfirmation: crossesProvider && large, reason: available(target) ? "available" : "least-unavailable" };
+}
+
+export function pendingRecoveryTarget(routeReason, pendingTarget, chain) {
+  return routeReason !== "direct" && pendingTarget && chain.includes(pendingTarget) ? pendingTarget : undefined;
+}
+
+export function filterResolvedTargets(chain, resolves) {
+  const filtered = chain.filter(resolves);
+  if (!filtered.length) throw new Error("model-alias role has no resolvable targets");
+  return filtered;
+}
+
+export function watchdogStillCurrent(generation, currentGeneration, active) {
+  return active && generation === currentGeneration;
 }
 
 export function recoveryAction(policy, mode, compactFailed) {
@@ -152,7 +175,7 @@ export function recordFailure(entry, failure, policy, nowMs = Date.now()) {
   const failCount = (entry?.failCount ?? 0) + 1;
   const backoff = Math.min(policy.capMs, policy.baseMs * 2 ** (failCount - 1));
   const reset = Number.isFinite(failure?.resetsAt) && failure.resetsAt > nowMs ? failure.resetsAt : undefined;
-  return { failCount, successCount: 0, nextRetryAt: reset ?? nowMs + backoff };
+  return { failCount, successCount: 0, nextRetryAt: Math.max(entry?.nextRetryAt ?? 0, reset ?? nowMs + backoff) };
 }
 export function recordSuccess(entry, resetSuccesses) {
   if (!entry) return undefined;

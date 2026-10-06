@@ -10,9 +10,13 @@ import {
   parseOpenCodeUsage,
   recordFailure,
   recordSuccess,
+  mergeUsage,
   selectTarget,
   recoveryAction,
   advanceResume,
+  filterResolvedTargets,
+  pendingRecoveryTarget,
+  watchdogStillCurrent,
 } from "../../home/dot_pi/private_agent/extensions/model-alias/model-alias-core.js";
 
 const base = { coding: ["claude-bridge/sonnet", "openai-codex/terra"], light: ["opencode-go/mimo"] };
@@ -66,6 +70,12 @@ test("continuation keeps available previous and leaves unavailable previous", ()
   assert.equal(selected.crossesProvider, true);
 });
 
+test("large and direct routes advance from unavailable current without bouncing backward", () => {
+  const input = { ...selectBase, chain: ["a/1", "b/2", "c/3"], current: "b/2", previous: "b/2", contextTokens: 200000, cooldowns: { "b/2": { nextRetryAt: 2000 } } };
+  assert.equal(selectTarget({ ...input, routeReason: "user" }).target, "c/3");
+  assert.equal(selectTarget({ ...input, routeReason: "direct", cooldowns: {} }).target, "b/2");
+});
+
 test("user selection is preferred when small and sticky when large", () => {
   assert.equal(selectTarget({ ...selectBase, routeReason: "user", current: "openai/b" }).target, "claude/a");
   assert.equal(selectTarget({ ...selectBase, routeReason: "user", current: "openai/b", contextTokens: 200000 }).target, "openai/b");
@@ -78,6 +88,17 @@ test("retry advances after failed target", () => {
   assert.equal(selectTarget({ ...selectBase, routeReason: "retry", failed: "claude/a" }).target, "openai/b");
 });
 
+test("expired usage windows do not exclude recovered providers", () => {
+  const usage = { claude: { windows: [{ usedPercent: 100, resetsAt: 999 }] } };
+  assert.equal(selectTarget({ ...selectBase, routeReason: "user", usage, nowMs: 1000 }).target, "claude/a");
+});
+
+test("usage snapshots merge distinct windows and replace matching windows", () => {
+  const previous = { provider: "claude-bridge", capturedAt: 1, windows: [{ id: "seven_day", usedPercent: 99 }, { id: "five_hour", usedPercent: 80 }] };
+  const incoming = { provider: "claude-bridge", capturedAt: 2, windows: [{ id: "five_hour", usedPercent: 10 }] };
+  assert.deepEqual(mergeUsage(previous, incoming).windows, [{ id: "seven_day", usedPercent: 99 }, { id: "five_hour", usedPercent: 10 }]);
+});
+
 test("usage threshold excludes only user-turn candidates at 95 percent", () => {
   for (const [usedPercent, expected] of [[94.9, "claude/a"], [95, "openai/b"], [100, "openai/b"]]) {
     const usage = { claude: { windows: [{ usedPercent }] } };
@@ -86,10 +107,32 @@ test("usage threshold excludes only user-turn candidates at 95 percent", () => {
   }
 });
 
+test("mixed exclusions prefer a usage-limited target over a cooled target", () => {
+  const usage = { openai: { windows: [{ usedPercent: 99 }] } };
+  const selected = selectTarget({ ...selectBase, chain: ["claude/a", "openai/b"], routeReason: "user", cooldowns: { "claude/a": { nextRetryAt: 2000 } }, usage });
+  assert.equal(selected.target, "openai/b");
+});
+
 test("all unavailable selects earliest cooldown or lowest usage", () => {
   assert.equal(selectTarget({ ...selectBase, routeReason: "user", cooldowns: { "claude/a": { nextRetryAt: 4000 }, "openai/b": { nextRetryAt: 3000 }, "openai/c": { nextRetryAt: 5000 } } }).target, "openai/b");
   const usage = { claude: { windows: [{ usedPercent: 99 }] }, openai: { windows: [{ usedPercent: 96 }] } };
   assert.equal(selectTarget({ ...selectBase, routeReason: "user", usage }).target, "openai/b");
+});
+
+test("compaction direct routes cannot consume pending recovery target", () => {
+  assert.equal(pendingRecoveryTarget("direct", "openai/b", ["openai/b"]), undefined);
+  assert.equal(pendingRecoveryTarget("continuation", "openai/b", ["openai/b"]), "openai/b");
+});
+
+test("unresolved targets are filtered while preserving order", () => {
+  assert.deepEqual(filterResolvedTargets(["missing/a", "valid/b", "valid/c"], (target) => target.startsWith("valid/")), ["valid/b", "valid/c"]);
+  assert.throws(() => filterResolvedTargets(["missing/a"], () => false), /resolvable/);
+});
+
+test("watchdog expiry is ignored after request generation changes", () => {
+  assert.equal(watchdogStillCurrent(1, 1, true), true);
+  assert.equal(watchdogStillCurrent(1, 2, true), false);
+  assert.equal(watchdogStillCurrent(1, 1, false), false);
 });
 
 test("recovery policy degrades compact outside interactive modes", () => {
@@ -113,6 +156,7 @@ test("cooldown uses reset then clears after successes", () => {
   const policy = { baseMs: 300000, capMs: 3600000, resetSuccesses: 3 };
   let entry = recordFailure(undefined, { kind: "quota", resetsAt: 2_000_000 }, policy, 1_000_000);
   assert.equal(entry.nextRetryAt, 2_000_000);
+  assert.equal(recordFailure(entry, { kind: "quota" }, policy, 1_100_000).nextRetryAt, 2_000_000);
   entry = recordSuccess(entry, 3);
   assert.equal(entry.successCount, 1);
   entry = recordSuccess(recordSuccess(entry, 3), 3);
