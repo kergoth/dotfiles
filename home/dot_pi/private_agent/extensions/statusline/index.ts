@@ -7,6 +7,11 @@ function contextPercent(ctx: any): number {
   return typeof percent === "number" && Number.isFinite(percent) ? Math.max(0, Math.min(100, Math.round(percent))) : 0;
 }
 
+function contextWindow(ctx: any): number {
+  const window = ctx.getContextUsage()?.contextWindow;
+  return typeof window === "number" && Number.isFinite(window) && window > 0 ? window : 0;
+}
+
 const LIGHT_THEMES = new Set(["light", "catppuccin-latte"]);
 
 function paletteName(ctx: any): "dark" | "light" {
@@ -56,6 +61,7 @@ function installFooter(ctx: any): void {
             outputTokens: usage.outputTokens,
             costUsd: usage.costUsd,
             contextPercent: contextPercent(ctx),
+            contextWindow: contextWindow(ctx),
             palette: paletteName(ctx),
           },
           width,

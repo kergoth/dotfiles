@@ -41,6 +41,15 @@ test("formats the compact Pi footer with a green context pill below the warning 
   assert.ok(line.includes(CONTEXT_COLORS.dark.green.background));
 });
 
+test("shows the active context window next to the percentage", () => {
+  const base = { model: "Claude Sonnet 5.5", cwd: "/Users/testuser/projects/myapp", branch: null, contextPercent: 12, palette: "dark" };
+
+  assert.match(formatStatusLine({ ...base, contextWindow: 272000 }), /ctx 12%\/272k/);
+  assert.match(formatStatusLine({ ...base, contextWindow: 1000000 }), /ctx 12%\/1\.0M/);
+  assert.match(formatStatusLine({ ...base, contextWindow: 0 }), /ctx 12% /);
+  assert.doesNotMatch(formatStatusLine(base), /ctx 12%\//);
+});
+
 test("formats session burn tokens like the Pi default footer", () => {
   assert.equal(formatTokenCount(999), "999");
   assert.equal(formatTokenCount(5000), "5.0k");

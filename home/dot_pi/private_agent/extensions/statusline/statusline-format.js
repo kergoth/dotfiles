@@ -131,13 +131,18 @@ export function formatBurnSegment(data) {
   return `${palette.branch}${formatBurnText(data)}${RESET}`;
 }
 
+function contextText(data) {
+  const window = data.contextWindow > 0 ? `/${formatTokenCount(data.contextWindow)}` : "";
+  return `ctx ${data.contextPercent}%${window}`;
+}
+
 function plainSegmentTexts(data) {
   return {
     model: `PI·${modelLabel(data)}`,
     path: shortenPath(data.cwd),
     branch: data.branch ?? "",
     burn: formatBurnText(data),
-    context: `ctx ${data.contextPercent}%`,
+    context: contextText(data),
   };
 }
 
@@ -176,7 +181,7 @@ export function formatStatusLine(data, tier = 0) {
   if (tier <= 2) {
     segments.push(formatBurnSegment(data));
   }
-  segments.push(`${context.background}${context.foreground} ctx ${data.contextPercent}% ${RESET}`);
+  segments.push(`${context.background}${context.foreground} ${contextText(data)} ${RESET}`);
 
   return segments.join("  ");
 }
