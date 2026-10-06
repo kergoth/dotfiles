@@ -1,6 +1,6 @@
 // Vendored from nicknisi/pi-extensions packages/session-name @ 831da2a (MIT, Nick Nisi),
 // with title calls routed through ctx.modelRegistry.streamSimple so virtual models
-// (alias/light) work, and no fallback to the session model when llmModel is unresolved.
+// (alias/title) work, and no fallback to the session model when llmModel is unresolved.
 // Upstream pins pi 0.84, whose ModelRegistry has no streamSimple, so this is not upstreamable as-is.
 // Configured by home/dot_pi/private_agent/configs/session-name.json.tmpl.
 /**

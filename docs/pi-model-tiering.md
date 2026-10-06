@@ -154,7 +154,8 @@ when usage data is absent or stale.
 | `alias/coding-max` | quality | opus-tier escalation for hard or novel work |
 | `alias/chat` | budget | casual chat and assistant use |
 | `alias/research` | quality | research and synthesis; fable is a manual escalation, not in the chain |
-| `alias/light` | budget | background text tasks: contextPrune summarization, session auto-naming |
+| `alias/light` | budget | background text tasks: contextPrune summarization |
+| `alias/title` | budget | session auto-naming; only providers that accept requests made outside an agent session |
 
 `coding-budget` exists only on personal machines; work has no `opencode-go`
 window to front-load.
@@ -257,9 +258,8 @@ that manual step proves too easy to forget).
 
 `alias/light` is not a cheap-chat tier; it's the model for background work
 that never needs interactive selection: `contextPrune` summarization
-(`settings/pi/settings.json.tmpl`'s `summarizerModel`) and session
-auto-naming (`home/dot_pi/private_agent/configs/session-name.json.tmpl`).
-Both are trivial, low-stakes text tasks, so `light` stays budget-ordered and
+(`settings/pi/settings.json.tmpl`'s `summarizerModel`).
+The task is a trivial, low-stakes text task, so `light` stays budget-ordered and
 leads with the cheapest option per machine type.
 
 - **Personal**: `opencode-go/mimo-v2.5` first — mid-pack overall, concise,
@@ -275,6 +275,15 @@ machine type (October 2026 decision) so a provider outage or usage-limit hit
 doesn't stall summarization or session naming — even though the task is
 low-stakes, having no path through a downed provider is worse than the
 modest window cost of an occasional fallback hit.
+
+`alias/title` backs session auto-naming
+(`home/dot_pi/private_agent/configs/session-name.json.tmpl`). Title calls are
+made outside any agent session, and `cursor` and `claude-bridge` reject those
+(cursor: "Bare modelRegistry.streamSimple calls are unsupported"; claude-bridge:
+a `prompt-capture` error), so the chain holds only providers that accept them:
+`opencode-go/mimo-v2.5` then `openai-codex/gpt-5.6-luna` on personal machines,
+luna alone at work, which has no `opencode-go`. When the chain is exhausted
+the session gets the heuristic title, never a session-model title.
 
 ## Context ceilings
 
@@ -292,9 +301,10 @@ reserve set on `alias/*` would therefore apply to every fallback target.
   Claude model needs an entry there.
 - **`opencode-go`:** `modelOverrides` in `~/.pi/agent/models.json`, which is
   machine-local and not managed by chezmoi. A new 1M model needs an entry.
-- **Exempt:** `opencode-go/mimo-v2.5`, which only backs `alias/light` and never
-  accumulates context, and `claude-bridge/claude-fable-5*`, which is invoked
-  directly for long-horizon work.
+- **Exempt:** `opencode-go/mimo-v2.5`, which only backs `alias/light` and
+  `alias/title` and never accumulates context, and
+  `claude-bridge/claude-fable-5*`, which is invoked directly for long-horizon
+  work.
 
 ## Evidence notes
 
