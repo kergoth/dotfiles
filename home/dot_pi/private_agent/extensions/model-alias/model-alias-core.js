@@ -142,6 +142,13 @@ export function parseClaudeUsage(data, capturedAt = Date.now()) {
     const usedPercent = percent(raw?.utilization); if (usedPercent === undefined) continue;
     windows.push({ id, usedPercent, limited: usedPercent >= 100, capturedAt, ...(epochMs(raw.resets_at) ? { resetsAt: epochMs(raw.resets_at) } : {}) });
   }
+  // Enterprise logins bill by usage and report no five_hour/seven_day windows, only a monthly spend meter.
+  // It gets its own id: the stream events' "overage" window measures something else and must not overwrite it.
+  const spend = limits.extra_usage;
+  const spendPercent = spend?.is_enabled ? percent(spend.utilization) : undefined;
+  if (!windows.length && spendPercent !== undefined) {
+    windows.push({ id: "spend", usedPercent: spendPercent, limited: Boolean(spend.spend_limit_reached) || spendPercent >= 100, capturedAt });
+  }
   if (!windows.length) throw new Error("Claude usage response has no valid windows");
   return { provider: "claude-bridge", capturedAt, windows };
 }

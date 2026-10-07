@@ -270,6 +270,13 @@ test("parseClaudeUsage keeps the routable windows and drops model-scoped ones", 
   assert.throws(() => parseClaudeUsage({ rate_limits: { five_hour: { utilization: null } } }), /no valid windows/);
 });
 
+test("parseClaudeUsage falls back to the spend meter when plan windows are null", () => {
+  const snapshot = parseClaudeUsage({ rate_limits: { five_hour: null, seven_day: null, extra_usage: { is_enabled: true, utilization: 20.97, spend_limit_reached: false } } }, 5);
+  assert.deepEqual(snapshot.windows, [{ id: "spend", usedPercent: 20.97, limited: false, capturedAt: 5 }]);
+  assert.equal(parseClaudeUsage({ rate_limits: { extra_usage: { is_enabled: true, utilization: 40, spend_limit_reached: true } } }).windows[0].limited, true);
+  assert.throws(() => parseClaudeUsage({ rate_limits: { five_hour: null, extra_usage: { is_enabled: false, utilization: 20 } } }), /no valid windows/);
+});
+
 test("parseCodexUsage uses the stream-event window ids", () => {
   const snapshot = parseCodexUsage({ rate_limit: { primary_window: { used_percent: 33, reset_at: 2000 }, secondary_window: { used_percent: 8, reset_at: 9000 } } }, 7);
   assert.deepEqual(snapshot.windows, [
