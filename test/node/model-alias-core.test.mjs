@@ -48,6 +48,10 @@ const failures = [
   ['402: {"type":"server_error","message":"Upstream request failed: Insufficient account funds"}', "opencode-go", "quota"],
   ["HTTP 503 server error", "x", "transient"],
   ["bad syntax", "x", "other"],
+  ["This operation was aborted", "claude-bridge", "aborted"],
+  ["Operation aborted", "claude-bridge", "aborted"],
+  ["Request was aborted", "openai-codex", "aborted"],
+  ["Connection aborted by peer", "x", "transient"],
 ];
 for (const [message, provider, kind] of failures) test(`classifyFailure ${kind}: ${message.slice(0, 20)}`, () => assert.equal(classifyFailure(message, provider, Date.UTC(2026, 0, 1)).kind, kind));
 

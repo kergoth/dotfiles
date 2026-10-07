@@ -145,7 +145,8 @@ more than every five minutes from its authenticated usage endpoint, which
 reports account-level rolling, weekly, and monthly windows. A provider at 95%
 or above is avoided at the next user-turn boundary; an in-progress tool loop
 stays warm until the target fails. Error classification remains the fallback
-when usage data is absent or stale.
+when usage data is absent or stale. User interrupts are not failures and never
+start a cooldown.
 
 | Role | Ordering | Purpose |
 | --- | --- | --- |

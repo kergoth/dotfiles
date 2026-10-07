@@ -197,6 +197,7 @@ export default function modelAlias(pi: ExtensionAPI): void {
     }
     if (message.stopReason !== "error") return;
     const failure = classifyFailure(message.errorMessage, message.provider, Date.now());
+    if (failure.kind === "aborted") return;
     let anotherAvailable = false;
     await updateState(statePaths, (state) => {
       state.targets[target] = recordFailure(state.targets[target], failure, config.defaults.cooldown, Date.now());
