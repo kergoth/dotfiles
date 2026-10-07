@@ -5,9 +5,13 @@ import { homedir } from "node:os";
 import { join } from "node:path";
 
 import { DEFAULT_USAGE_SETTINGS, formatStatusLineForWidth, parseStatuslineConfig, usageWindows } from "./statusline-format.js";
+import { parseConfig } from "../model-alias/model-alias-core.js";
 
 const configFile = join(process.env.PI_CODING_AGENT_DIR || join(homedir(), ".pi", "agent"), "statusline.json");
 let usageSettings = DEFAULT_USAGE_SETTINGS;
+// Model-alias owns both routing limits and shared display pacing settings.
+const aliasConfigFile = process.env.PI_MODEL_ALIAS_MAP || join(process.env.PI_CODING_AGENT_DIR || join(homedir(), ".pi", "agent"), "model-alias.json");
+let aliasSettings: ReturnType<typeof parseConfig>["settings"] = { switchAboveUsedPercent: 95 };
 
 // Same location model-alias writes; the footer only reads it, and at most once every few seconds.
 const aliasStateFile = join(
@@ -26,7 +30,7 @@ function providerUsage(provider: string | undefined) {
       cachedUsage = { at: now, usage: {} };
     }
   }
-  return usageWindows(cachedUsage.usage[provider], now, usageSettings);
+  return usageWindows(cachedUsage.usage[provider], now, usageSettings, aliasSettings);
 }
 
 function contextPercent(ctx: any): number {
@@ -131,6 +135,14 @@ export default function (pi: ExtensionAPI) {
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
         ctx.ui.notify(`statusline: ${configFile}: ${error instanceof Error ? error.message : String(error)}; using defaults`, "warning");
+      }
+    }
+    aliasSettings = { switchAboveUsedPercent: 95 };
+    try {
+      aliasSettings = parseConfig(JSON.parse(readFileSync(aliasConfigFile, "utf8"))).settings;
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
+        ctx.ui.notify(`statusline: ${aliasConfigFile}: ${error instanceof Error ? error.message : String(error)}; using default pacing`, "warning");
       }
     }
     installFooter(ctx);

@@ -1,3 +1,6 @@
+import { usagePace, paceDuration } from "../model-alias/usage-pacing.js";
+import { windowThreshold } from "../model-alias/model-alias-core.js";
+
 const RESET = "\x1b[0m";
 const BOLD = "\x1b[1m";
 
@@ -100,28 +103,32 @@ const WINDOW_LABELS = {
   monthly: "mo",
 };
 
-// Windows worth showing for the active provider: unreset and at or above the show threshold.
-// `limited` windows always show. A trailing ~ marks a reading older than the stale cutoff.
-export function usageWindows(snapshot, nowMs = Date.now(), settings = DEFAULT_USAGE_SETTINGS) {
+// A trailing ~ marks stale percentages; stale readings never contribute pacing warnings.
+export function usageWindows(snapshot, nowMs = Date.now(), settings = DEFAULT_USAGE_SETTINGS, aliasSettings = { switchAboveUsedPercent: 95 }) {
   const shown = [];
   for (const window of snapshot?.windows ?? []) {
-    if (window.resetsAt && window.resetsAt <= nowMs) continue;
+    const pace = usagePace(window, snapshot, nowMs, windowThreshold(aliasSettings, snapshot.provider, window.id), aliasSettings.usagePacing);
+    if (pace.expired) continue;
     const percent = typeof window.usedPercent === "number" && Number.isFinite(window.usedPercent) ? Math.round(window.usedPercent) : null;
-    if (!window.limited && (percent === null || percent < settings.showAboveUsedPercent)) continue;
-    const stale = nowMs - (window.capturedAt ?? snapshot.capturedAt ?? nowMs) > settings.staleAfterMs;
-    shown.push({ label: WINDOW_LABELS[window.id] ?? window.id, percent: percent === null ? null : window.limited ? Math.max(percent, 100) : percent, stale });
+    const stale = pace.stale || nowMs - (window.capturedAt ?? snapshot.capturedAt ?? nowMs) > settings.staleAfterMs;
+    const overPace = !stale && pace.overPace === true;
+    const earlyWarning = overPace && window.usedPercent >= pace.warningMinPercent;
+    if (!window.limited && (percent === null || (percent < settings.showAboveUsedPercent && !earlyWarning))) continue;
+    shown.push({ label: WINDOW_LABELS[window.id] ?? window.id, percent: percent === null ? null : window.limited ? Math.max(percent, 100) : percent, stale,
+      ...(!window.limited && !stale && pace.projectedPercent !== undefined ? { overPace, timeToLimitMs: pace.timeToLimitMs } : {}) });
   }
   return shown;
 }
 
 function usageText(data) {
-  return (data.usage ?? []).map((w) => `${w.label} ${w.percent === null ? "limited" : `${w.percent}%`}${w.stale ? "~" : ""}`).join(" ");
+  return (data.usage ?? []).map((w) => `${w.label} ${w.overPace ? "⚠ " : w.overPace === false ? "✓ " : ""}${w.percent === null ? "limited" : `${w.percent}%`}${w.stale ? "~" : ""}${w.overPace ? ` ~${paceDuration(w.timeToLimitMs)}` : ""}`).join(" ");
 }
 
 function usageSegment(data) {
   const palette = PALETTES[data.palette];
-  const critical = data.usage.some((w) => w.percent === null || w.percent >= (data.usageSettings ?? DEFAULT_USAGE_SETTINGS).criticalAboveUsedPercent);
-  const color = critical ? palette.context.red : palette.context.yellow;
+  const critical = data.usage.some((w) => w.percent === null || (w.percent >= (data.usageSettings ?? DEFAULT_USAGE_SETTINGS).criticalAboveUsedPercent && w.overPace !== false));
+  const warning = data.usage.some((w) => w.overPace !== false);
+  const color = critical ? palette.context.red : warning ? palette.context.yellow : palette.context.green;
   return `${color.background}${color.foreground} ${usageText(data)} ${RESET}`;
 }
 

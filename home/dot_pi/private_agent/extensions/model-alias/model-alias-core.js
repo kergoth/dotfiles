@@ -1,3 +1,5 @@
+import { parsePacingConfig, usagePace, paceDuration } from "./usage-pacing.js";
+
 const SETTINGS = Object.freeze({
   confirmSwitchAboveTokens: 131072,
   confirmTimeoutMs: 60000,
@@ -28,6 +30,7 @@ export function parseConfig(raw) {
   const warnings = [];
   const inputSettings = raw.$settings ?? {};
   const settings = { ...SETTINGS, ...inputSettings };
+  settings.usagePacing = parsePacingConfig(settings.usagePacing);
   delete settings.statusRefreshMs;
   if (inputSettings.statusRefreshMs !== undefined) warnings.push("$settings.statusRefreshMs is ignored");
   if (!["compact", "switch", "fail"].includes(settings.unattendedSwitch)) throw new Error("unattendedSwitch must be compact, switch, or fail");
@@ -222,7 +225,7 @@ function providerUsedPercent(snapshot, nowMs) {
 }
 
 // A "provider:window" key beats a "provider" key, which beats the global threshold.
-function windowThreshold(settings, provider, windowId) {
+export function windowThreshold(settings, provider, windowId) {
   const overrides = settings.providerSwitchAboveUsedPercent ?? {};
   return overrides[`${provider}:${windowId}`] ?? overrides[provider] ?? settings.switchAboveUsedPercent;
 }
@@ -365,17 +368,23 @@ export function formatUsage({ providers, state, settings, refresh = {}, nowMs })
       const used = percent(window.usedPercent);
       const reading = used === undefined ? "unknown" : `${Math.round(used)}%`;
       const parts = [];
-      if (window.resetsAt && window.resetsAt <= nowMs) parts.push(`reset (last read ${reading})`);
+      const threshold = windowThreshold(settings, provider, window.id);
+      const pace = usagePace(window, snapshot, nowMs, threshold, settings.usagePacing);
+      if (pace.expired) parts.push(`reset (last read ${reading})`);
       else {
-        const threshold = windowThreshold(settings, provider, window.id);
         parts.push(reading);
-        if (window.resetsAt) parts.push(`resets in ${duration(window.resetsAt - nowMs)}`);
+        if (pace.resetsAt) parts.push(`resets in ${duration(pace.resetsAt - nowMs)}`);
         parts.push(`limit ${threshold}%`);
         if (window.limited || (used !== undefined && Math.round(used) >= threshold)) parts.push("OVER");
+        if (!window.limited && pace.projectedPercent !== undefined) {
+          parts.push(`projected ~${Math.round(pace.projectedPercent)}% at period-average pace`);
+          if (pace.overPace && used < threshold) parts.push(`limit in ~${paceDuration(pace.timeToLimitMs)}`);
+        }
       }
       const age = nowMs - (window.capturedAt ?? snapshot.capturedAt ?? nowMs);
       if (age >= 60_000) parts.push(`as of ${duration(age)} ago`);
       lines.push(`  ${String(window.id).padEnd(10)} ${parts.join(", ")}`);
+      if (pace.assumption) lines.push(`             ${pace.assumption}`);
     }
   }
   return lines.join("\n");

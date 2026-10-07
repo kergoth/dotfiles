@@ -36,7 +36,9 @@ test("parseConfig preserves role and target order", () => {
 
 test("parseConfig applies defaults and compatibility warnings", () => {
   const parsed = parseConfig({ ...base, $settings: { statusRefreshMs: 3 }, $defaults: { timeouts: { commitMs: 9 } } });
-  assert.deepEqual(parsed.settings, { confirmSwitchAboveTokens: 131072, confirmTimeoutMs: 60000, unattendedSwitch: "compact", compactionAlias: "light", switchAboveUsedPercent: 95, opencodeUsagePollMs: 300000, claudeUsagePollMs: 900000 });
+  assert.deepEqual(parsed.settings, { confirmSwitchAboveTokens: 131072, confirmTimeoutMs: 60000, unattendedSwitch: "compact", compactionAlias: "light", switchAboveUsedPercent: 95, opencodeUsagePollMs: 300000, claudeUsagePollMs: 900000,
+    usagePacing: { monthlyTimeZones: {}, warningMinPercent: { fiveHour: 30, sevenDay: 20, monthly: 20 }, staleAfterMs: 1800000 },
+  });
   assert.deepEqual(parsed.defaults, { timeouts: { firstEventMs: 60000, stallMs: 90000 }, cooldown: { baseMs: 300000, capMs: 3600000, resetSuccesses: 3 } });
   assert.equal(parsed.warnings.length, 2);
 });
@@ -361,8 +363,8 @@ test("formatUsage shows thresholds, resets, staleness, and refresh failures", ()
     refresh: { "claude-bridge": { ok: true }, "openai-codex": { ok: false, error: "HTTP 401" } },
   });
   assert.match(text, /claude-bridge \(refreshed\)/);
-  assert.match(text, /five_hour\s+14%, resets in 3h0m, limit 95%\n/);
-  assert.match(text, /seven_day\s+81%, resets in 4d0h, limit 75%, OVER\n/);
+  assert.match(text, /five_hour\s+14%, resets in 3h0m, limit 95%, projected ~35% at period-average pace\n/);
+  assert.match(text, /seven_day\s+81%, resets in 4d0h, limit 75%, OVER, projected ~189% at period-average pace\n/);
   assert.match(text, /openai-codex \(not refreshed: HTTP 401\)/);
   assert.match(text, /primary\s+reset \(last read 96%\), as of 2h0m ago/);
   assert.match(text, /secondary\s+40%, resets in 24h0m, limit 95%, as of 2h0m ago/);

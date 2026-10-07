@@ -11,7 +11,12 @@
       "claude-bridge:seven_day": 75
     },
     "opencodeUsagePollMs": 300000,
-    "claudeUsagePollMs": 900000
+    "claudeUsagePollMs": 900000,
+    "usagePacing": {
+      "monthlyTimeZones": { "claude-bridge": "America/Los_Angeles" },
+      "warningMinPercent": { "fiveHour": 30, "sevenDay": 20, "monthly": 20 },
+      "staleAfterMs": 1800000
+    }
   },
   "$defaults": {
     "timeouts": {
