@@ -142,11 +142,21 @@ Cooldowns and usage windows are shared under
 `~/.pi/agent/state/model-alias/`. Codex stream events and sanitized Claude
 bridge events provide utilization and reset times. OpenCode Go is polled no
 more than every five minutes from its authenticated usage endpoint, which
-reports account-level rolling, weekly, and monthly windows. A provider at 95%
-or above is avoided at the next user-turn boundary; an in-progress tool loop
-stays warm until the target fails. Error classification remains the fallback
-when usage data is absent or stale. User interrupts are not failures and never
-start a cooldown.
+reports account-level rolling, weekly, and monthly windows. A provider with
+any window at or above its threshold, or flagged as limited, is avoided at the
+next user-turn boundary; an in-progress tool loop stays warm until the target
+fails. Error classification remains the fallback when usage data is absent or
+stale. User interrupts are not failures and never start a cooldown.
+
+The default threshold is `$settings.switchAboveUsedPercent` (95). To reserve
+headroom on a shared account, `$settings.providerSwitchAboveUsedPercent` maps a
+provider, or a `provider:window` pair such as `claude-bridge:seven_day`, to its
+own threshold. The most specific key wins, then the global value. Claude
+reports every window on each turn (`unifiedWindows` in the SDK's rate-limit
+event, forwarded by the bridge as `windows`), so a weekly reserve takes effect
+even while the five-hour window is low. Utilization is account-wide but only
+refreshes when this machine uses Claude, so another machine's usage shows up on
+the next request.
 
 `/alias` lists each chain with the session's current target, active
 cooldowns, and providers over the usage threshold. `/alias reset [target]`

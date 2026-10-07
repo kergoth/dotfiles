@@ -197,3 +197,60 @@ test("formatStatus marks the active target, cooldowns, and exhausted usage", () 
   });
   assert.equal(text, "model-alias: this session is on b/y\ncoding:\n    a/x (cooldown 4m)\n  * b/y (usage 97%)\n    c/z (cooldown 1h5m)\n    d/w");
 });
+
+const usageOf = (provider, windows) => ({ [provider]: { provider, capturedAt: 0, windows } });
+const userSelect = (usage, settings = {}) => selectTarget({
+  ...selectBase, routeReason: "user", usage,
+  settings: { ...selectBase.settings, ...settings },
+}).target;
+
+test("parseConfig validates per-provider usage thresholds and flags unused providers", () => {
+  const ok = parseConfig({ ...base, $settings: { providerSwitchAboveUsedPercent: { "claude-bridge": 75, "claude-bridge:seven_day": 60, "nowhere": 50 } } });
+  assert.equal(ok.warnings.length, 1);
+  assert.match(ok.warnings[0], /nowhere/);
+  assert.throws(() => parseConfig({ ...base, $settings: { providerSwitchAboveUsedPercent: { "claude-bridge": 101 } } }), /0\.\.100/);
+  assert.throws(() => parseConfig({ ...base, $settings: { providerSwitchAboveUsedPercent: [] } }), /object/);
+});
+
+test("per-provider threshold replaces the global one only for that provider", () => {
+  const claude = usageOf("claude", [{ id: "seven_day", usedPercent: 80 }]);
+  assert.equal(userSelect(claude), "claude/a");
+  assert.equal(userSelect(claude, { providerSwitchAboveUsedPercent: { claude: 75 } }), "openai/b");
+  const openai = usageOf("openai", [{ id: "primary", usedPercent: 80 }]);
+  assert.equal(userSelect(openai, { providerSwitchAboveUsedPercent: { claude: 75 } }), "claude/a");
+});
+
+test("provider:window threshold applies to that window only", () => {
+  const settings = { providerSwitchAboveUsedPercent: { "claude:seven_day": 70 } };
+  assert.equal(userSelect(usageOf("claude", [{ id: "five_hour", usedPercent: 80 }]), settings), "claude/a");
+  assert.equal(userSelect(usageOf("claude", [{ id: "five_hour", usedPercent: 10 }, { id: "seven_day", usedPercent: 71 }]), settings), "openai/b");
+  const mixed = { providerSwitchAboveUsedPercent: { claude: 90, "claude:seven_day": 70 } };
+  assert.equal(userSelect(usageOf("claude", [{ id: "five_hour", usedPercent: 80 }]), mixed), "claude/a");
+});
+
+test("a limited window counts as over usage regardless of its percent", () => {
+  assert.equal(userSelect(usageOf("claude", [{ id: "monthly", usedPercent: 0, limited: true }])), "openai/b");
+  assert.equal(userSelect(usageOf("claude", [{ id: "monthly", usedPercent: 0, limited: true, resetsAt: 500 }])), "claude/a");
+});
+
+test("formatStatus applies per-provider usage thresholds", () => {
+  const text = formatStatus({
+    roles: new Map([["coding", ["claude/a", "openai/b"]]]), activeTarget: "claude/a", nowMs: 1000,
+    state: { targets: {}, usage: usageOf("claude", [{ id: "seven_day", usedPercent: 80 }]) },
+    settings: { switchAboveUsedPercent: 95, providerSwitchAboveUsedPercent: { claude: 75 } },
+  });
+  assert.match(text, /claude\/a \(usage 80%\)/);
+  assert.doesNotMatch(text, /openai\/b \(/);
+});
+
+test("parseClaudeRateLimit reads every unified window and limits only the rejected one", () => {
+  const allowed = parseClaudeRateLimit({ status: "allowed", utilization: .14, rateLimitType: "five_hour", resetsAt: 2000, windows: { five_hour: { utilization: .14, resetsAt: 2000 }, seven_day: { utilization: .81, resetsAt: 3000 } } }, 1);
+  assert.deepEqual(allowed.windows, [
+    { id: "five_hour", usedPercent: 14, limited: false, resetsAt: 2000000 },
+    { id: "seven_day", usedPercent: 81, limited: false, resetsAt: 3000000 },
+  ]);
+  const rejected = parseClaudeRateLimit({ status: "rejected", rateLimitType: "seven_day", resetsAt: 3000, windows: { five_hour: { utilization: .2, resetsAt: 2000 }, seven_day: { utilization: 1, resetsAt: 3000 } } }, 1);
+  assert.deepEqual(rejected.windows.map((w) => [w.id, w.limited]), [["five_hour", false], ["seven_day", true]]);
+  const headlineOnly = parseClaudeRateLimit({ status: "allowed", utilization: .3, rateLimitType: "five_hour" }, 1);
+  assert.deepEqual(headlineOnly.windows, [{ id: "five_hour", usedPercent: 30, limited: false }]);
+});

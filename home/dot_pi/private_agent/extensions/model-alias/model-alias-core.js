@@ -32,6 +32,13 @@ export function parseConfig(raw) {
   if (!["compact", "switch", "fail"].includes(settings.unattendedSwitch)) throw new Error("unattendedSwitch must be compact, switch, or fail");
   for (const key of ["confirmSwitchAboveTokens", "confirmTimeoutMs", "opencodeUsagePollMs"]) positive(key, settings[key]);
   if (typeof settings.switchAboveUsedPercent !== "number" || settings.switchAboveUsedPercent < 0 || settings.switchAboveUsedPercent > 100) throw new Error("switchAboveUsedPercent must be 0..100");
+  const overrides = settings.providerSwitchAboveUsedPercent;
+  if (overrides !== undefined) {
+    if (!overrides || typeof overrides !== "object" || Array.isArray(overrides)) throw new Error("providerSwitchAboveUsedPercent must be an object");
+    for (const [key, value] of Object.entries(overrides)) {
+      if (typeof value !== "number" || value < 0 || value > 100) throw new Error(`providerSwitchAboveUsedPercent.${key} must be 0..100`);
+    }
+  }
   if (typeof settings.compactionAlias !== "string" || !settings.compactionAlias) throw new Error("compactionAlias must name a role");
 
   const time = raw.$defaults?.timeouts ?? {};
@@ -49,6 +56,11 @@ export function parseConfig(raw) {
     roles.set(name, targets.map((ref) => { parseModelRef(ref); return ref; }));
   }
   if (!roles.has(settings.compactionAlias)) throw new Error(`compactionAlias ${settings.compactionAlias} is not a configured role`);
+  const providers = new Set([...roles.values()].flat().map((ref) => parseModelRef(ref).provider));
+  for (const key of Object.keys(overrides ?? {})) {
+    const provider = key.split(":", 1)[0];
+    if (!providers.has(provider)) warnings.push(`$settings.providerSwitchAboveUsedPercent.${key} names a provider no role uses`);
+  }
   return { roles, settings, defaults, warnings };
 }
 
@@ -89,10 +101,20 @@ export function parseCodexRateLimits(data, capturedAt = Date.now()) {
   }
   return windows.length ? { provider: "openai-codex", capturedAt, windows } : null;
 }
+const fractionToPercent = (fraction) => percent(Math.round(fraction * 10000) / 100);
+
 export function parseClaudeRateLimit(data, capturedAt = Date.now()) {
   if (!data || !["allowed", "allowed_warning", "rejected"].includes(data.status)) return null;
-  const usedPercent = percent(Number(data.utilization ?? (data.status === "rejected" ? 1 : 0)) * 100);
-  return { provider: "claude-bridge", capturedAt, windows: [{ id: data.rateLimitType ?? "subscription", usedPercent, limited: data.status === "rejected", ...(epochMs(data.resetsAt) ? { resetsAt: epochMs(data.resetsAt) } : {}) }] };
+  const rejected = data.status === "rejected";
+  const headlineId = data.rateLimitType ?? "subscription";
+  const headline = { id: headlineId, usedPercent: fractionToPercent(Number(data.utilization ?? (rejected ? 1 : 0))), limited: rejected, ...(epochMs(data.resetsAt) ? { resetsAt: epochMs(data.resetsAt) } : {}) };
+  const windows = [];
+  for (const [id, raw] of Object.entries(data.windows ?? {})) {
+    const usedPercent = fractionToPercent(Number(raw?.utilization)); if (usedPercent === undefined) continue;
+    windows.push({ id, usedPercent, limited: rejected && id === headlineId, ...(epochMs(raw.resetsAt) ? { resetsAt: epochMs(raw.resetsAt) } : {}) });
+  }
+  if (!windows.some((window) => window.id === headlineId)) windows.push(headline);
+  return { provider: "claude-bridge", capturedAt, windows };
 }
 export function parseOpenCodeUsage(data, capturedAt = Date.now()) {
   const windows = [];
@@ -110,6 +132,17 @@ function providerUsedPercent(snapshot, nowMs) {
   return Math.max(0, ...windows.map((window) => Number(window.usedPercent) || 0));
 }
 
+// A "provider:window" key beats a "provider" key, which beats the global threshold.
+function windowThreshold(settings, provider, windowId) {
+  const overrides = settings.providerSwitchAboveUsedPercent ?? {};
+  return overrides[`${provider}:${windowId}`] ?? overrides[provider] ?? settings.switchAboveUsedPercent;
+}
+function providerOverUsage(snapshot, provider, settings, nowMs) {
+  return (snapshot?.windows ?? []).some((window) =>
+    (!window.resetsAt || window.resetsAt > nowMs)
+    && (window.limited || (Number(window.usedPercent) || 0) >= windowThreshold(settings, provider, window.id)));
+}
+
 export function mergeUsage(previous, incoming) {
   if (!previous || previous.provider !== incoming.provider) return incoming;
   const byId = new Map(previous.windows.map((window) => [window.id, window]));
@@ -122,7 +155,7 @@ export function selectTarget(input) {
   if (!Array.isArray(chain) || !chain.length) throw new Error("selectTarget requires a non-empty chain");
   const cooled = (target) => (cooldowns[target]?.nextRetryAt ?? 0) > nowMs;
   const usedPercent = (target) => providerUsedPercent(usage[providerOf(target)], nowMs);
-  const overUsage = (target) => routeReason === "user" && usedPercent(target) >= settings.switchAboveUsedPercent;
+  const overUsage = (target) => routeReason === "user" && providerOverUsage(usage[providerOf(target)], providerOf(target), settings, nowMs);
   const available = (target) => !cooled(target) && !overUsage(target);
   const origin = routeReason === "retry" ? failed : (previous ?? current);
   const large = contextTokens !== null && contextTokens >= settings.confirmSwitchAboveTokens;
@@ -213,8 +246,8 @@ export function formatStatus({ roles, state, activeTarget, settings, nowMs }) {
       const notes = [];
       const retryAt = state.targets[target]?.nextRetryAt ?? 0;
       if (retryAt > nowMs) notes.push(`cooldown ${remaining(retryAt - nowMs)}`);
-      const used = providerUsedPercent(state.usage[providerOf(target)], nowMs);
-      if (used >= settings.switchAboveUsedPercent) notes.push(`usage ${used}%`);
+      const snapshot = state.usage[providerOf(target)];
+      if (providerOverUsage(snapshot, providerOf(target), settings, nowMs)) notes.push(`usage ${providerUsedPercent(snapshot, nowMs)}%`);
       lines.push(`  ${target === activeTarget ? "*" : " "} ${target}${notes.length ? ` (${notes.join(", ")})` : ""}`);
     }
   }
