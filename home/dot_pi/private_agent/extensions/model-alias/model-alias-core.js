@@ -330,6 +330,17 @@ const remaining = (ms) => {
   return minutes < 60 ? `${minutes}m` : `${Math.floor(minutes / 60)}h${minutes % 60}m`;
 };
 
+export function branchRoutedTarget(branch) {
+  for (let i = branch.length - 1; i >= 0; i--) {
+    const entry = branch[i];
+    if (entry.type === "model_change") return undefined;
+    if (entry.type === "message" && entry.message.role === "assistant") {
+      return `${entry.message.provider}/${entry.message.model}`;
+    }
+  }
+  return undefined;
+}
+
 export function formatStatus({ roles, state, activeTarget, settings, nowMs }) {
   const lines = [`model-alias: this session is on ${activeTarget ?? "no routed target yet"}`];
   for (const [role, chain] of roles) {

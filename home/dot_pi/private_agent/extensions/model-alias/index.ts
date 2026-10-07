@@ -4,7 +4,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { join } from "node:path";
 import { clampThinkingLevel, getSupportedThinkingLevels, isRetryableAssistantError, type AssistantMessage, type ModelThinkingLevel } from "@earendil-works/pi-ai";
 import { getAgentDir, type ExtensionAPI, type ExtensionContext } from "@earendil-works/pi-coding-agent";
-import { advanceResume, classifyFailure, clearCooldowns, configuredTargets, formatStatus, formatUsage, filterResolvedTargets, mergeUsage, parseClaudeRateLimit, parseCodexRateLimits, parseConfig, parseModelRef, ownsSessionState, pendingRecoveryTarget, recordFailure, recordSuccess, recoveryAction, selectTarget, watchdogStillCurrent } from "./model-alias-core.js";
+import { advanceResume, branchRoutedTarget, classifyFailure, clearCooldowns, configuredTargets, formatStatus, formatUsage, filterResolvedTargets, mergeUsage, parseClaudeRateLimit, parseCodexRateLimits, parseConfig, parseModelRef, ownsSessionState, pendingRecoveryTarget, recordFailure, recordSuccess, recoveryAction, selectTarget, watchdogStillCurrent } from "./model-alias-core.js";
 import { appendEvent, readState, resolveStatePaths, updateState } from "./model-alias-store.js";
 import { fetchClaudeUsage, fetchCodexUsage, fetchOpenCodeUsage } from "./model-alias-usage.js";
 
@@ -276,7 +276,7 @@ export default function modelAlias(pi: ExtensionAPI): void {
       const [action, target, ...extra] = args.trim().split(/\s+/).filter(Boolean);
       if (!action) {
         const state = await readState(statePaths.state);
-        commandCtx.ui.notify(commandCtx.ui.theme.fg("text", formatStatus({ roles: config.roles, state, activeTarget, settings: config.settings, nowMs: Date.now() })), "info");
+        commandCtx.ui.notify(commandCtx.ui.theme.fg("text", formatStatus({ roles: config.roles, state, activeTarget: branchRoutedTarget(commandCtx.sessionManager.getBranch()), settings: config.settings, nowMs: Date.now() })), "info");
         return;
       }
       if (action === "usage" && !target) {
