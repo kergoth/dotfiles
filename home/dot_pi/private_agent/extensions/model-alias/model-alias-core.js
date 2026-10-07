@@ -5,6 +5,7 @@ const SETTINGS = Object.freeze({
   compactionAlias: "light",
   switchAboveUsedPercent: 95,
   opencodeUsagePollMs: 300000,
+  claudeUsagePollMs: 900000,
 });
 const DEFAULTS = Object.freeze({
   timeouts: Object.freeze({ firstEventMs: 60000, stallMs: 90000 }),
@@ -30,7 +31,7 @@ export function parseConfig(raw) {
   delete settings.statusRefreshMs;
   if (inputSettings.statusRefreshMs !== undefined) warnings.push("$settings.statusRefreshMs is ignored");
   if (!["compact", "switch", "fail"].includes(settings.unattendedSwitch)) throw new Error("unattendedSwitch must be compact, switch, or fail");
-  for (const key of ["confirmSwitchAboveTokens", "confirmTimeoutMs", "opencodeUsagePollMs"]) positive(key, settings[key]);
+  for (const key of ["confirmSwitchAboveTokens", "confirmTimeoutMs", "opencodeUsagePollMs", "claudeUsagePollMs"]) positive(key, settings[key]);
   if (typeof settings.switchAboveUsedPercent !== "number" || settings.switchAboveUsedPercent < 0 || settings.switchAboveUsedPercent > 100) throw new Error("switchAboveUsedPercent must be 0..100");
   const overrides = settings.providerSwitchAboveUsedPercent;
   if (overrides !== undefined) {

@@ -32,7 +32,7 @@ export default function modelAlias(pi: ExtensionAPI): void {
   let resuming = false;
   let routeId = 0;
   let resumeState = { routeId: 0, count: 0 };
-  let openCodePollAt = 0;
+  const usagePollAt = new Map<string, number>();
   let watchdogGeneration = 0;
 
   const clearWatchdog = () => { watchdogGeneration += 1; if (activeTimer) clearTimeout(activeTimer); activeTimer = undefined; };
@@ -92,6 +92,18 @@ export default function modelAlias(pi: ExtensionAPI): void {
     return fetchOpenCodeUsage("https://opencode.ai/zen/go/v1/usage", auth.headers ?? (auth.apiKey ? { Authorization: `Bearer ${auth.apiKey}` } : {}));
   }
 
+  async function pollUsageIfDue(provider: string, intervalMs: number, fetchSnapshot: () => Promise<ReturnType<typeof parseClaudeRateLimit>>) {
+    if (Date.now() < (usagePollAt.get(provider) ?? 0)) return false;
+    usagePollAt.set(provider, Date.now() + intervalMs);
+    try {
+      await persistUsage(await fetchSnapshot());
+      return true;
+    } catch (error) {
+      await appendEvent(statePaths, { type: "usage-error", provider, reason: error instanceof Error ? error.message : String(error), timestamp: Date.now() });
+      return false;
+    }
+  }
+
   const loadClaudeSdk = async () => {
     const require = createRequire(join(agentDir, "npm", "package.json"));
     return import(pathToFileURL(require.resolve("@anthropic-ai/claude-agent-sdk")).href);
@@ -140,16 +152,15 @@ export default function modelAlias(pi: ExtensionAPI): void {
         const configuredChain = config.roles.get(routeRole) ?? [];
         const chain = filterResolvedTargets(configuredChain, (target) => { const ref = parseModelRef(target); return Boolean(routeCtx.modelRegistry.find(ref.provider, ref.modelId)); });
         let shared = await readState(statePaths.state);
-        const openCodeTarget = chain.map(parseModelRef).find((ref) => ref.provider === "opencode-go");
-        if (openCodeTarget && Date.now() >= openCodePollAt) {
-          openCodePollAt = Date.now() + config.settings.opencodeUsagePollMs;
-          try {
-            await persistUsage(await pollOpenCode(routeCtx.modelRegistry, openCodeTarget));
-            shared = await readState(statePaths.state);
-          } catch (error) {
-            await appendEvent(statePaths, { type: "usage-error", provider: "opencode-go", reason: error instanceof Error ? error.message : String(error), timestamp: Date.now() });
-          }
-        }
+        const chainRefs = chain.map(parseModelRef);
+        const openCodeTarget = chainRefs.find((ref) => ref.provider === "opencode-go");
+        // Usage-billed Claude logins send no utilization in stream events, so only a poll can show spend approaching the switch threshold.
+        const claudeTarget = request.reason === "user" ? chainRefs.find((ref) => ref.provider === "claude-bridge") : undefined;
+        const polled = await Promise.all([
+          openCodeTarget ? pollUsageIfDue("opencode-go", config.settings.opencodeUsagePollMs, () => pollOpenCode(routeCtx.modelRegistry, openCodeTarget)) : false,
+          claudeTarget ? pollUsageIfDue("claude-bridge", config.settings.claudeUsagePollMs, () => fetchClaudeUsage(loadClaudeSdk, { timeoutMs: 10000 })) : false,
+        ]);
+        if (polled.some(Boolean)) shared = await readState(statePaths.state);
         const previous = request.previous ? `${request.previous.model.provider}/${request.previous.model.id}` : undefined;
         const failed = request.failed ? `${request.failed.model.provider}/${request.failed.model.id}` : undefined;
         const recoveryTarget = pendingRecoveryTarget(request.reason, pendingTarget, chain);
