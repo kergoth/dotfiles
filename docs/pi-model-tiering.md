@@ -165,6 +165,23 @@ the problem that caused it. The reset applies to every Pi session because the
 state is shared; usage windows are left alone, since the next provider report
 would restore them. To pin a physical model, select it directly with `/model`.
 
+`/alias usage` fetches live utilization for every provider in the alias
+chains before printing each window's percent, reset time, applicable threshold,
+and whether it is over, so an idle provider never shows a reading from its last
+turn. Fetched values are written back to the shared state, which also corrects
+routing. A provider whose fetch fails is shown from stored data, labeled with
+the error and the reading's age. Codex is read from the undocumented ChatGPT
+usage endpoint the Codex CLI uses, with pi's own login. Claude is read through
+the Agent SDK's experimental usage call on a throwaway session, with
+`CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` and `CLAUDE_CODE_OAUTH_TOKEN`
+removed from that child's environment: the first makes the CLI skip the fetch,
+and the second is a setup-token limited to the `user:inference` scope, while
+the usage endpoint needs `user:profile`. The child therefore uses the
+interactive Claude Code login, so the machine needs one. Only the five-hour and
+seven-day Claude windows are kept; the per-model weekly caps are not, because
+routing treats any window at its limit as making the whole provider
+unavailable. Both endpoints can change without notice.
+
 | Role | Ordering | Purpose |
 | --- | --- | --- |
 | `alias/coding` | quality | sonnet-tier default for coding and agentic work |

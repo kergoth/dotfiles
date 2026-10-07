@@ -1,12 +1,12 @@
 import { createRequire } from "node:module";
 import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { join } from "node:path";
 import { clampThinkingLevel, getSupportedThinkingLevels, isRetryableAssistantError, type AssistantMessage, type ModelThinkingLevel } from "@earendil-works/pi-ai";
 import { getAgentDir, type ExtensionAPI, type ExtensionContext } from "@earendil-works/pi-coding-agent";
-import { advanceResume, classifyFailure, clearCooldowns, configuredTargets, formatStatus, filterResolvedTargets, mergeUsage, parseClaudeRateLimit, parseCodexRateLimits, parseConfig, parseModelRef, ownsSessionState, pendingRecoveryTarget, recordFailure, recordSuccess, recoveryAction, selectTarget, watchdogStillCurrent } from "./model-alias-core.js";
+import { advanceResume, classifyFailure, clearCooldowns, configuredTargets, formatStatus, formatUsage, filterResolvedTargets, mergeUsage, parseClaudeRateLimit, parseCodexRateLimits, parseConfig, parseModelRef, ownsSessionState, pendingRecoveryTarget, recordFailure, recordSuccess, recoveryAction, selectTarget, watchdogStillCurrent } from "./model-alias-core.js";
 import { appendEvent, readState, resolveStatePaths, updateState } from "./model-alias-store.js";
-import { fetchOpenCodeUsage } from "./model-alias-usage.js";
+import { fetchClaudeUsage, fetchCodexUsage, fetchOpenCodeUsage } from "./model-alias-usage.js";
 
 const agentDir = getAgentDir();
 const mapPath = process.env.PI_MODEL_ALIAS_MAP || join(agentDir, "model-alias.json");
@@ -84,6 +84,48 @@ export default function modelAlias(pi: ExtensionAPI): void {
     });
   }
 
+  async function pollOpenCode(registry: ExtensionContext["modelRegistry"], ref: ReturnType<typeof parseModelRef>) {
+    const model = registry.find(ref.provider, ref.modelId);
+    if (!model) throw new Error(`${ref.provider}/${ref.modelId} is not registered`);
+    const auth = await registry.getApiKeyAndHeaders(model);
+    if (!auth.ok) throw new Error(auth.error);
+    return fetchOpenCodeUsage("https://opencode.ai/zen/go/v1/usage", auth.headers ?? (auth.apiKey ? { Authorization: `Bearer ${auth.apiKey}` } : {}));
+  }
+
+  const loadClaudeSdk = async () => {
+    const require = createRequire(join(agentDir, "npm", "package.json"));
+    return import(pathToFileURL(require.resolve("@anthropic-ai/claude-agent-sdk")).href);
+  };
+
+  // Fetches live utilization for every provider an alias chain uses, so `/alias usage` never reports a snapshot left over from the last time that provider streamed.
+  async function refreshUsage(registry: ExtensionContext["modelRegistry"]) {
+    const refs = [...new Set([...config.roles.values()].flat())].map(parseModelRef);
+    const firstOf = (provider: string) => refs.find((ref) => ref.provider === provider);
+    const fetchers: Record<string, (ref: ReturnType<typeof parseModelRef>) => Promise<NonNullable<ReturnType<typeof parseClaudeRateLimit>>>> = {
+      "claude-bridge": () => fetchClaudeUsage(loadClaudeSdk),
+      "openai-codex": async (ref) => {
+        const model = registry.find(ref.provider, ref.modelId);
+        if (!model) throw new Error(`${ref.provider}/${ref.modelId} is not registered`);
+        const auth = await registry.getApiKeyAndHeaders(model);
+        if (!auth.ok || !auth.apiKey) throw new Error(auth.ok ? "no Codex token" : auth.error);
+        return fetchCodexUsage(auth.apiKey);
+      },
+      "opencode-go": (ref) => pollOpenCode(registry, ref),
+    };
+    const providers = Object.keys(fetchers).filter((provider) => firstOf(provider));
+    const refresh: Record<string, { ok: boolean; error?: string }> = {};
+    await Promise.all(providers.map(async (provider) => {
+      try {
+        await persistUsage(await fetchers[provider](firstOf(provider)!));
+        refresh[provider] = { ok: true };
+      } catch (error) {
+        refresh[provider] = { ok: false, error: error instanceof Error ? error.message : String(error) };
+        await appendEvent(statePaths, { type: "usage-error", provider, reason: refresh[provider].error, timestamp: Date.now() });
+      }
+    }));
+    return { providers, refresh };
+  }
+
   function registerRole(role: string, metadata?: { contextWindow?: number; maxTokens?: number; input?: readonly ("text" | "image")[]; thinkingLevels?: readonly ModelThinkingLevel[] }) {
     pi.registerVirtualModel<SessionState>({
       provider: "alias", id: role, name: `Alias: ${role}`,
@@ -101,12 +143,8 @@ export default function modelAlias(pi: ExtensionAPI): void {
         const openCodeTarget = chain.map(parseModelRef).find((ref) => ref.provider === "opencode-go");
         if (openCodeTarget && Date.now() >= openCodePollAt) {
           openCodePollAt = Date.now() + config.settings.opencodeUsagePollMs;
-          const model = routeCtx.modelRegistry.find(openCodeTarget.provider, openCodeTarget.modelId);
-          if (model) try {
-            const auth = await routeCtx.modelRegistry.getApiKeyAndHeaders(model);
-            if (!auth.ok) throw new Error(auth.error);
-            const snapshot = await fetchOpenCodeUsage("https://opencode.ai/zen/go/v1/usage", auth.headers ?? (auth.apiKey ? { Authorization: `Bearer ${auth.apiKey}` } : {}));
-            await persistUsage(snapshot);
+          try {
+            await persistUsage(await pollOpenCode(routeCtx.modelRegistry, openCodeTarget));
             shared = await readState(statePaths.state);
           } catch (error) {
             await appendEvent(statePaths, { type: "usage-error", provider: "opencode-go", reason: error instanceof Error ? error.message : String(error), timestamp: Date.now() });
@@ -165,7 +203,7 @@ export default function modelAlias(pi: ExtensionAPI): void {
     disposeClaudeEvents = pi.events.on("claude-bridge/rate-limit/v1", (data) => {
       const snapshot = parseClaudeRateLimit(data, Date.now());
       if (snapshot) void persistUsage(snapshot);
-      else void appendEvent(statePaths, { type: "usage-error", provider: "claude-bridge", reason: "invalid rate-limit event", timestamp: Date.now() });
+      else if (!["allowed", "allowed_warning", "rejected"].includes(data?.status)) void appendEvent(statePaths, { type: "usage-error", provider: "claude-bridge", reason: "invalid rate-limit event", timestamp: Date.now() });
     });
     await registerForChildren(sessionCtx.sessionManager.getSessionId());
   });
@@ -218,9 +256,9 @@ export default function modelAlias(pi: ExtensionAPI): void {
   });
 
   pi.registerCommand("alias", {
-    description: "Show alias routing and cooldowns, or `reset [target]` to clear cooldowns",
+    description: "Show alias routing and cooldowns, `usage` for live provider limits, or `reset [target]` to clear cooldowns",
     getArgumentCompletions: (prefix) => {
-      const words = ["reset", ...configuredTargets(config.roles).map((target) => `reset ${target}`)];
+      const words = ["usage", "reset", ...configuredTargets(config.roles).map((target) => `reset ${target}`)];
       return words.filter((word) => word.startsWith(prefix)).map((word) => ({ value: word, label: word }));
     },
     handler: async (args, commandCtx) => {
@@ -230,7 +268,14 @@ export default function modelAlias(pi: ExtensionAPI): void {
         commandCtx.ui.notify(formatStatus({ roles: config.roles, state, activeTarget, settings: config.settings, nowMs: Date.now() }), "info");
         return;
       }
-      if (action !== "reset" || extra.length) { commandCtx.ui.notify("usage: /alias [reset [provider/model]]", "error"); return; }
+      if (action === "usage" && !target) {
+        commandCtx.ui.notify("model-alias: fetching live usage...", "info");
+        const { providers, refresh } = await refreshUsage(commandCtx.modelRegistry);
+        const state = await readState(statePaths.state);
+        commandCtx.ui.notify(formatUsage({ providers, state, settings: config.settings, refresh, nowMs: Date.now() }), "info");
+        return;
+      }
+      if (action !== "reset" || extra.length) { commandCtx.ui.notify("usage: /alias [usage | reset [provider/model]]", "error"); return; }
       if (target && !configuredTargets(config.roles).includes(target)) { commandCtx.ui.notify(`model-alias: ${target} is not in any alias chain`, "error"); return; }
       let cleared: string[] = [];
       await updateState(statePaths, (state) => { cleared = clearCooldowns(state, target); });

@@ -21,6 +21,9 @@ import {
   clearCooldowns,
   configuredTargets,
   formatStatus,
+  formatUsage,
+  parseClaudeUsage,
+  parseCodexUsage,
 } from "../../home/dot_pi/private_agent/extensions/model-alias/model-alias-core.js";
 
 const base = { coding: ["claude-bridge/sonnet", "openai-codex/terra"], light: ["opencode-go/mimo"] };
@@ -246,11 +249,67 @@ test("formatStatus applies per-provider usage thresholds", () => {
 test("parseClaudeRateLimit reads every unified window and limits only the rejected one", () => {
   const allowed = parseClaudeRateLimit({ status: "allowed", utilization: .14, rateLimitType: "five_hour", resetsAt: 2000, windows: { five_hour: { utilization: .14, resetsAt: 2000 }, seven_day: { utilization: .81, resetsAt: 3000 } } }, 1);
   assert.deepEqual(allowed.windows, [
-    { id: "five_hour", usedPercent: 14, limited: false, resetsAt: 2000000 },
-    { id: "seven_day", usedPercent: 81, limited: false, resetsAt: 3000000 },
+    { id: "five_hour", usedPercent: 14, limited: false, capturedAt: 1, resetsAt: 2000000 },
+    { id: "seven_day", usedPercent: 81, limited: false, capturedAt: 1, resetsAt: 3000000 },
   ]);
   const rejected = parseClaudeRateLimit({ status: "rejected", rateLimitType: "seven_day", resetsAt: 3000, windows: { five_hour: { utilization: .2, resetsAt: 2000 }, seven_day: { utilization: 1, resetsAt: 3000 } } }, 1);
   assert.deepEqual(rejected.windows.map((w) => [w.id, w.limited]), [["five_hour", false], ["seven_day", true]]);
   const headlineOnly = parseClaudeRateLimit({ status: "allowed", utilization: .3, rateLimitType: "five_hour" }, 1);
-  assert.deepEqual(headlineOnly.windows, [{ id: "five_hour", usedPercent: 30, limited: false }]);
+  assert.deepEqual(headlineOnly.windows, [{ id: "five_hour", usedPercent: 30, limited: false, capturedAt: 1 }]);
+});
+
+test("parseClaudeUsage keeps the routable windows and drops model-scoped ones", () => {
+  const snapshot = parseClaudeUsage({ rate_limits: {
+    five_hour: { utilization: 14, resets_at: "2026-10-07T20:00:00.000Z" },
+    seven_day: { utilization: 100, resets_at: "2026-10-12T04:00:00.000Z" },
+    seven_day_opus: { utilization: 100, resets_at: "2026-10-12T04:00:00.000Z" },
+  } }, 5);
+  assert.deepEqual(snapshot.windows.map((w) => [w.id, w.usedPercent, w.limited, w.capturedAt]), [["five_hour", 14, false, 5], ["seven_day", 100, true, 5]]);
+  assert.equal(snapshot.windows[0].resetsAt, Date.parse("2026-10-07T20:00:00.000Z"));
+  assert.throws(() => parseClaudeUsage({ rate_limits: null }), /unavailable/);
+  assert.throws(() => parseClaudeUsage({ rate_limits: { five_hour: { utilization: null } } }), /no valid windows/);
+});
+
+test("parseCodexUsage uses the stream-event window ids", () => {
+  const snapshot = parseCodexUsage({ rate_limit: { primary_window: { used_percent: 33, reset_at: 2000 }, secondary_window: { used_percent: 8, reset_at: 9000 } } }, 7);
+  assert.deepEqual(snapshot.windows, [
+    { id: "primary", usedPercent: 33, limited: false, capturedAt: 7, resetsAt: 2000000 },
+    { id: "secondary", usedPercent: 8, limited: false, capturedAt: 7, resetsAt: 9000000 },
+  ]);
+  assert.equal(parseCodexUsage({ rate_limit: { limit_reached: true, primary_window: { used_percent: 10 } } }).windows[0].limited, true);
+  assert.throws(() => parseCodexUsage({}), /no valid windows/);
+});
+
+test("formatUsage shows thresholds, resets, staleness, and refresh failures", () => {
+  const nowMs = 10_000_000;
+  const state = { usage: {
+    "claude-bridge": { provider: "claude-bridge", capturedAt: nowMs, windows: [
+      { id: "five_hour", usedPercent: 14, capturedAt: nowMs, resetsAt: nowMs + 3 * 3600_000 },
+      { id: "seven_day", usedPercent: 81, capturedAt: nowMs, resetsAt: nowMs + 4 * 86400_000 },
+    ] },
+    "openai-codex": { provider: "openai-codex", capturedAt: nowMs - 2 * 3600_000, windows: [
+      { id: "primary", usedPercent: 96, capturedAt: nowMs - 2 * 3600_000, resetsAt: nowMs - 1000 },
+      { id: "secondary", usedPercent: 40, capturedAt: nowMs - 2 * 3600_000, resetsAt: nowMs + 86400_000 },
+    ] },
+  } };
+  const text = formatUsage({
+    providers: ["claude-bridge", "openai-codex", "opencode-go"], state, nowMs,
+    settings: { switchAboveUsedPercent: 95, providerSwitchAboveUsedPercent: { "claude-bridge:seven_day": 75 } },
+    refresh: { "claude-bridge": { ok: true }, "openai-codex": { ok: false, error: "HTTP 401" } },
+  });
+  assert.match(text, /claude-bridge \(refreshed\)/);
+  assert.match(text, /five_hour\s+14%, resets in 3h0m, limit 95%\n/);
+  assert.match(text, /seven_day\s+81%, resets in 4d0h, limit 75%, OVER\n/);
+  assert.match(text, /openai-codex \(not refreshed: HTTP 401\)/);
+  assert.match(text, /primary\s+reset \(last read 96%\), as of 2h0m ago/);
+  assert.match(text, /secondary\s+40%, resets in 24h0m, limit 95%, as of 2h0m ago/);
+  assert.match(text, /opencode-go \(stored\):\n  no usage data yet/);
+});
+
+test("a Claude event without utilization never records 0%", () => {
+  assert.equal(parseClaudeRateLimit({ status: "allowed", rateLimitType: "five_hour", resetsAt: 2 }, 1), null);
+  const rejected = parseClaudeRateLimit({ status: "rejected", rateLimitType: "seven_day", resetsAt: 3 }, 1);
+  assert.deepEqual(rejected.windows.map((w) => [w.id, w.usedPercent, w.limited]), [["seven_day", 100, true]]);
+  const withWindows = parseClaudeRateLimit({ status: "allowed", rateLimitType: "five_hour", windows: { seven_day: { utilization: .27 } } }, 1);
+  assert.deepEqual(withWindows.windows.map((w) => [w.id, w.usedPercent]), [["seven_day", 27]]);
 });

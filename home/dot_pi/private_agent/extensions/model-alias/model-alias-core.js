@@ -97,7 +97,7 @@ export function parseCodexRateLimits(data, capturedAt = Date.now()) {
   for (const [id, raw] of Object.entries(data.rate_limits)) {
     if (!raw || typeof raw !== "object") continue;
     const usedPercent = percent(raw.used_percent); if (usedPercent === undefined) continue;
-    windows.push({ id, usedPercent, limited: Boolean(data.rate_limits.limit_reached || raw.limit_reached), ...(epochMs(raw.reset_at) ? { resetsAt: epochMs(raw.reset_at) } : {}) });
+    windows.push({ id, usedPercent, limited: Boolean(data.rate_limits.limit_reached || raw.limit_reached), capturedAt, ...(epochMs(raw.reset_at) ? { resetsAt: epochMs(raw.reset_at) } : {}) });
   }
   return windows.length ? { provider: "openai-codex", capturedAt, windows } : null;
 }
@@ -107,23 +107,54 @@ export function parseClaudeRateLimit(data, capturedAt = Date.now()) {
   if (!data || !["allowed", "allowed_warning", "rejected"].includes(data.status)) return null;
   const rejected = data.status === "rejected";
   const headlineId = data.rateLimitType ?? "subscription";
-  const headline = { id: headlineId, usedPercent: fractionToPercent(Number(data.utilization ?? (rejected ? 1 : 0))), limited: rejected, ...(epochMs(data.resetsAt) ? { resetsAt: epochMs(data.resetsAt) } : {}) };
   const windows = [];
   for (const [id, raw] of Object.entries(data.windows ?? {})) {
     const usedPercent = fractionToPercent(Number(raw?.utilization)); if (usedPercent === undefined) continue;
-    windows.push({ id, usedPercent, limited: rejected && id === headlineId, ...(epochMs(raw.resetsAt) ? { resetsAt: epochMs(raw.resetsAt) } : {}) });
+    windows.push({ id, usedPercent, limited: rejected && id === headlineId, capturedAt, ...(epochMs(raw.resetsAt) ? { resetsAt: epochMs(raw.resetsAt) } : {}) });
   }
-  if (!windows.some((window) => window.id === headlineId)) windows.push(headline);
+  // A headline reading without a utilization is unknown, not zero; recording 0% would hide a nearly spent window.
+  const headlineUsed = data.utilization === undefined ? (rejected ? 100 : undefined) : fractionToPercent(Number(data.utilization));
+  if ((headlineUsed !== undefined || rejected) && !windows.some((window) => window.id === headlineId)) {
+    windows.push({ id: headlineId, usedPercent: headlineUsed ?? 100, limited: rejected, capturedAt, ...(epochMs(data.resetsAt) ? { resetsAt: epochMs(data.resetsAt) } : {}) });
+  }
+  if (!windows.length) return null;
   return { provider: "claude-bridge", capturedAt, windows };
 }
 export function parseOpenCodeUsage(data, capturedAt = Date.now()) {
   const windows = [];
   for (const [id, raw] of Object.entries(data?.usage ?? {})) {
     const usedPercent = percent(raw?.percent); if (usedPercent === undefined) continue;
-    windows.push({ id, usedPercent, limited: raw.status === "rate-limited", ...(epochMs(raw.resetsAt) ? { resetsAt: epochMs(raw.resetsAt) } : {}) });
+    windows.push({ id, usedPercent, limited: raw.status === "rate-limited", capturedAt, ...(epochMs(raw.resetsAt) ? { resetsAt: epochMs(raw.resetsAt) } : {}) });
   }
   if (!windows.length) throw new Error("OpenCode usage response has no valid windows");
   return { provider: "opencode-go", capturedAt, windows };
+}
+
+// Windows of the claude.ai usage response that routing may act on. The model-scoped weekly
+// caps (opus, sonnet) are left out: one at 100% must not mark the whole provider unavailable.
+const CLAUDE_USAGE_WINDOWS = ["five_hour", "seven_day"];
+export function parseClaudeUsage(data, capturedAt = Date.now()) {
+  const limits = data?.rate_limits;
+  if (!limits) throw new Error("Claude plan rate limits are unavailable for this login");
+  const windows = [];
+  for (const id of CLAUDE_USAGE_WINDOWS) {
+    const raw = limits[id];
+    const usedPercent = percent(raw?.utilization); if (usedPercent === undefined) continue;
+    windows.push({ id, usedPercent, limited: usedPercent >= 100, capturedAt, ...(epochMs(raw.resets_at) ? { resetsAt: epochMs(raw.resets_at) } : {}) });
+  }
+  if (!windows.length) throw new Error("Claude usage response has no valid windows");
+  return { provider: "claude-bridge", capturedAt, windows };
+}
+export function parseCodexUsage(data, capturedAt = Date.now()) {
+  const limits = data?.rate_limit;
+  const windows = [];
+  for (const [id, key] of [["primary", "primary_window"], ["secondary", "secondary_window"]]) {
+    const raw = limits?.[key];
+    const usedPercent = percent(raw?.used_percent); if (usedPercent === undefined) continue;
+    windows.push({ id, usedPercent, limited: Boolean(limits.limit_reached) || usedPercent >= 100, capturedAt, ...(epochMs(raw.reset_at) ? { resetsAt: epochMs(raw.reset_at) } : {}) });
+  }
+  if (!windows.length) throw new Error("Codex usage response has no valid windows");
+  return { provider: "openai-codex", capturedAt, windows };
 }
 
 function providerOf(ref) { return parseModelRef(ref).provider; }
@@ -249,6 +280,40 @@ export function formatStatus({ roles, state, activeTarget, settings, nowMs }) {
       const snapshot = state.usage[providerOf(target)];
       if (providerOverUsage(snapshot, providerOf(target), settings, nowMs)) notes.push(`usage ${providerUsedPercent(snapshot, nowMs)}%`);
       lines.push(`  ${target === activeTarget ? "*" : " "} ${target}${notes.length ? ` (${notes.join(", ")})` : ""}`);
+    }
+  }
+  return lines.join("\n");
+}
+
+const duration = (ms) => {
+  const minutes = Math.max(1, Math.ceil(ms / 60_000));
+  if (minutes < 60) return `${minutes}m`;
+  const hours = Math.floor(minutes / 60);
+  return hours < 48 ? `${hours}h${minutes % 60}m` : `${Math.floor(hours / 24)}d${hours % 24}h`;
+};
+
+// refresh maps provider -> { ok } or { ok: false, error }; a provider without an entry shows stored data.
+export function formatUsage({ providers, state, settings, refresh = {}, nowMs }) {
+  const lines = ["model-alias usage:"];
+  for (const provider of providers) {
+    const snapshot = state.usage[provider];
+    const result = refresh[provider];
+    lines.push(`${provider} (${result?.ok ? "refreshed" : result ? `not refreshed: ${result.error}` : "stored"}):`);
+    if (!snapshot?.windows?.length) { lines.push("  no usage data yet"); continue; }
+    for (const window of snapshot.windows) {
+      const used = Math.round(Number(window.usedPercent) || 0);
+      const parts = [];
+      if (window.resetsAt && window.resetsAt <= nowMs) parts.push(`reset (last read ${used}%)`);
+      else {
+        const threshold = windowThreshold(settings, provider, window.id);
+        parts.push(`${used}%`);
+        if (window.resetsAt) parts.push(`resets in ${duration(window.resetsAt - nowMs)}`);
+        parts.push(`limit ${threshold}%`);
+        if (window.limited || used >= threshold) parts.push("OVER");
+      }
+      const age = nowMs - (window.capturedAt ?? snapshot.capturedAt ?? nowMs);
+      if (age >= 60_000) parts.push(`as of ${duration(age)} ago`);
+      lines.push(`  ${String(window.id).padEnd(10)} ${parts.join(", ")}`);
     }
   }
   return lines.join("\n");
