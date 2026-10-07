@@ -1,6 +1,30 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
-import { formatStatusLineForWidth } from "./statusline-format.js";
+import { readFileSync } from "node:fs";
+import { homedir } from "node:os";
+import { join } from "node:path";
+
+import { formatStatusLineForWidth, usageWindows } from "./statusline-format.js";
+
+// Same location model-alias writes; the footer only reads it, and at most once every few seconds.
+const aliasStateFile = join(
+  process.env.PI_MODEL_ALIAS_STATE_DIR || join(process.env.PI_CODING_AGENT_DIR || join(homedir(), ".pi", "agent"), "state", "model-alias"),
+  "state.json",
+);
+let cachedUsage: { at: number; usage: Record<string, any> } = { at: 0, usage: {} };
+
+function providerUsage(provider: string | undefined) {
+  if (!provider) return [];
+  const now = Date.now();
+  if (now - cachedUsage.at > 5000) {
+    try {
+      cachedUsage = { at: now, usage: JSON.parse(readFileSync(aliasStateFile, "utf8")).usage ?? {} };
+    } catch {
+      cachedUsage = { at: now, usage: {} };
+    }
+  }
+  return usageWindows(cachedUsage.usage[provider], now);
+}
 
 function contextPercent(ctx: any): number {
   const percent = ctx.getContextUsage()?.percent;
@@ -70,12 +94,14 @@ function installFooter(ctx: any): void {
     invalidate() {},
     render(width: number) {
       const usage = sessionUsage(ctx);
+      const routed = routedModel(ctx);
       return [
         formatStatusLineForWidth(
           {
             model,
             provider,
-            routed: routedModel(ctx),
+            routed,
+            usage: providerUsage(routed?.provider ?? provider),
             cwd: ctx.cwd,
             branch: footerData.getGitBranch(),
             inputTokens: usage.inputTokens,

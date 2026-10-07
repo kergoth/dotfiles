@@ -10,6 +10,7 @@ import {
   formatBurnText,
   formatStatusLine,
   formatStatusLineForWidth,
+  usageWindows,
   formatTokenCount,
   selectDegradationTier,
 } from "../../home/dot_pi/private_agent/extensions/statusline/statusline-format.js";
@@ -207,4 +208,25 @@ test("changes the context pill from yellow to red at the existing thresholds", (
 
   assert.ok(yellow.includes(CONTEXT_COLORS.light.yellow.background));
   assert.ok(red.includes(CONTEXT_COLORS.light.red.background));
+});
+
+test("usageWindows shows only unreset windows at 50% or more and marks stale readings", () => {
+  const nowMs = 10_000_000;
+  const windows = usageWindows({ capturedAt: nowMs, windows: [
+    { id: "five_hour", usedPercent: 49, resetsAt: nowMs + 1000 },
+    { id: "seven_day", usedPercent: 81, resetsAt: nowMs + 1000 },
+    { id: "primary", usedPercent: 96, resetsAt: nowMs - 1 },
+    { id: "monthly", usedPercent: 100, limited: true, capturedAt: nowMs - 11 * 60_000 },
+  ] }, nowMs);
+  assert.deepEqual(windows, [{ label: "7d", percent: 81, stale: false }, { label: "mo", percent: 100, stale: true }]);
+  assert.deepEqual(usageWindows(undefined), []);
+});
+
+test("renders the usage segment before context and drops it before context", () => {
+  const data = { model: "coding", provider: "alias", cwd: "/tmp", contextPercent: 10, contextWindow: 0, palette: "dark", usage: [{ label: "7d", percent: 81, stale: false }] };
+  assert.match(formatStatusLineForWidth(data, 200), /7d 81%.*ctx 10%/);
+  const narrow = formatStatusLineForWidth(data, 30);
+  assert.doesNotMatch(narrow, /7d 81%/);
+  assert.match(narrow, /ctx 10%/);
+  assert.doesNotMatch(formatStatusLineForWidth({ ...data, usage: [] }, 200), /7d/);
 });

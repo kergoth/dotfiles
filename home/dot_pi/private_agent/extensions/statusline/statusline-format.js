@@ -74,6 +74,41 @@ function contextColor(palette, percentage) {
   return CONTEXT_COLORS[palette].green;
 }
 
+const USAGE_SHOW_THRESHOLD = 50;
+const USAGE_CRIT_THRESHOLD = 80;
+const USAGE_STALE_MS = 10 * 60_000;
+const WINDOW_LABELS = {
+  five_hour: "5h", primary: "5h", rolling: "5h",
+  seven_day: "7d", secondary: "7d", weekly: "7d",
+  monthly: "mo",
+};
+
+// Windows worth showing for the active provider: unreset and at or above the show threshold.
+// `limited` windows always show. A trailing ~ marks a reading older than the stale cutoff.
+export function usageWindows(snapshot, nowMs = Date.now()) {
+  const shown = [];
+  for (const window of snapshot?.windows ?? []) {
+    if (window.resetsAt && window.resetsAt <= nowMs) continue;
+    const percent = Math.round(Number(window.usedPercent));
+    if (!Number.isFinite(percent)) continue;
+    if (percent < USAGE_SHOW_THRESHOLD && !window.limited) continue;
+    const stale = nowMs - (window.capturedAt ?? snapshot.capturedAt ?? nowMs) > USAGE_STALE_MS;
+    shown.push({ label: WINDOW_LABELS[window.id] ?? window.id, percent: window.limited ? Math.max(percent, 100) : percent, stale });
+  }
+  return shown;
+}
+
+function usageText(data) {
+  return (data.usage ?? []).map((w) => `${w.label} ${w.percent}%${w.stale ? "~" : ""}`).join(" ");
+}
+
+function usageSegment(data) {
+  const palette = PALETTES[data.palette];
+  const critical = data.usage.some((w) => w.percent >= USAGE_CRIT_THRESHOLD);
+  const color = critical ? palette.context.red : palette.context.yellow;
+  return `${color.background}${color.foreground} ${usageText(data)} ${RESET}`;
+}
+
 // Route tags identify the execution backend when model display names collide.
 // Recognizable applications have explicit tags, local variants share LO, and
 // providers in TAG_DROP_PROVIDERS suppress the tag entirely (e.g. alias,
@@ -149,11 +184,12 @@ function plainSegmentTexts(data) {
     path: shortenPath(data.cwd),
     branch: data.branch ?? "",
     burn: formatBurnText(data),
+    usage: data.usage?.length ? usageText(data) : "",
     context: contextText(data),
   };
 }
 
-// Returns tier 0-4. Context always survives; burn drops before context.
+// Returns tier 0-4. Context always survives; burn and usage drop before context.
 export function selectDegradationTier(cols, segments) {
   const padding = 6;
   const segWidth = (...texts) => {
@@ -164,10 +200,10 @@ export function selectDegradationTier(cols, segments) {
     return total;
   };
 
-  const { model, path, branch, burn, context } = segments;
-  if (segWidth(model, path, branch, burn, context) <= cols) return 0;
-  if (segWidth(model, branch, burn, context) <= cols) return 1;
-  if (segWidth(model, burn, context) <= cols) return 2;
+  const { model, path, branch, burn, usage, context } = segments;
+  if (segWidth(model, path, branch, burn, usage, context) <= cols) return 0;
+  if (segWidth(model, branch, burn, usage, context) <= cols) return 1;
+  if (segWidth(model, burn, usage, context) <= cols) return 2;
   if (segWidth(model, context) <= cols) return 3;
   return 4;
 }
@@ -187,6 +223,7 @@ export function formatStatusLine(data, tier = 0) {
   }
   if (tier <= 2) {
     segments.push(formatBurnSegment(data));
+    if (data.usage?.length) segments.push(usageSegment(data));
   }
   segments.push(`${context.background}${context.foreground} ${contextText(data)} ${RESET}`);
 
