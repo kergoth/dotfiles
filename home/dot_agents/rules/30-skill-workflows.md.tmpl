@@ -12,6 +12,10 @@
 ## Cross-Model Routing
 When native cross-model routing is available via registered Pi providers (e.g., pi-claude-bridge, pi-cursor-sdk), prefer `subagent` with a `model:` override over the `dispatch-external-model` skill for cross-model review and multi-model delegation. Use `dispatch-external-model` when no native provider covers the target model, or when the task requires the external CLI's own harness environment.
 {{ end }}
+{{ if includeTemplate "find-tool" (dict "root" . "tool" "nix") }}
+## CLI Tool Availability
+Use existing project tooling and environments first (e.g. uv, mise, dev shells). Nix is available for tools still missing; use it before weaker substitutes, Homebrew, or declaring a blocker. Use `nix run 'nixpkgs#<pkg>' -- <args>` for a package's default executable; use `nix shell 'nixpkgs#<pkg>' … --command <tool> <args>` for another executable or multiple packages. Don't install persistently for one-off use.
+{{ end }}
 ## CLI Tool Discovery
 Escalate in order — each step only when the prior one is missing, thin, or ambiguous:
 1. **`<tool> -h`**, then `--help`, then `man <tool>` — but skip straight to `--help`/`man` for tools where `-h` is known to mean something other than help (e.g. `du`, `df`, `ls`, `sort`, `grep`, `tar`, `rsync`). When unsure, `--help` is always safe to try; `-h` is only a shortcut when known safe. getopts scripts often accept `-h` not `--help`; argparse accepts both.
