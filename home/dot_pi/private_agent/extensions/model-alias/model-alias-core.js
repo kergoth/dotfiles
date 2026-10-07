@@ -188,3 +188,35 @@ export function recordSuccess(entry, resetSuccesses) {
   const successCount = (entry.successCount ?? 0) + 1;
   return successCount >= resetSuccesses ? undefined : { ...entry, successCount };
 }
+
+export function configuredTargets(roles) {
+  return [...new Set([...roles.values()].flat())];
+}
+
+export function clearCooldowns(state, target) {
+  const cleared = Object.keys(state.targets).filter((candidate) => !target || candidate === target);
+  for (const candidate of cleared) delete state.targets[candidate];
+  return cleared;
+}
+
+const remaining = (ms) => {
+  if (ms < 60_000) return `${Math.ceil(ms / 1000)}s`;
+  const minutes = Math.ceil(ms / 60_000);
+  return minutes < 60 ? `${minutes}m` : `${Math.floor(minutes / 60)}h${minutes % 60}m`;
+};
+
+export function formatStatus({ roles, state, activeTarget, settings, nowMs }) {
+  const lines = [`model-alias: this session is on ${activeTarget ?? "no routed target yet"}`];
+  for (const [role, chain] of roles) {
+    lines.push(`${role}:`);
+    for (const target of chain) {
+      const notes = [];
+      const retryAt = state.targets[target]?.nextRetryAt ?? 0;
+      if (retryAt > nowMs) notes.push(`cooldown ${remaining(retryAt - nowMs)}`);
+      const used = providerUsedPercent(state.usage[providerOf(target)], nowMs);
+      if (used >= settings.switchAboveUsedPercent) notes.push(`usage ${used}%`);
+      lines.push(`  ${target === activeTarget ? "*" : " "} ${target}${notes.length ? ` (${notes.join(", ")})` : ""}`);
+    }
+  }
+  return lines.join("\n");
+}

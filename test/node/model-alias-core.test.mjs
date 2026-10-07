@@ -18,6 +18,9 @@ import {
   ownsSessionState,
   pendingRecoveryTarget,
   watchdogStillCurrent,
+  clearCooldowns,
+  configuredTargets,
+  formatStatus,
 } from "../../home/dot_pi/private_agent/extensions/model-alias/model-alias-core.js";
 
 const base = { coding: ["claude-bridge/sonnet", "openai-codex/terra"], light: ["opencode-go/mimo"] };
@@ -171,4 +174,26 @@ test("cooldown uses reset then clears after successes", () => {
 test("ownsSessionState excludes direct requests", () => {
   assert.equal(ownsSessionState("direct"), false);
   for (const reason of ["user", "continuation", "retry"]) assert.equal(ownsSessionState(reason), true);
+});
+
+test("clearCooldowns clears one target or all and reports what it cleared", () => {
+  const state = { targets: { "a/x": { nextRetryAt: 5 }, "b/y": { nextRetryAt: 5 } }, usage: {} };
+  assert.deepEqual(clearCooldowns(state, "a/x"), ["a/x"]);
+  assert.deepEqual(Object.keys(state.targets), ["b/y"]);
+  assert.deepEqual(clearCooldowns(state, "missing/z"), []);
+  assert.deepEqual(clearCooldowns(state), ["b/y"]);
+  assert.deepEqual(state.targets, {});
+});
+
+test("configuredTargets dedupes targets across roles in order", () => {
+  assert.deepEqual(configuredTargets(new Map([["coding", ["a/x", "b/y"]], ["light", ["b/y", "c/z"]]])), ["a/x", "b/y", "c/z"]);
+});
+
+test("formatStatus marks the active target, cooldowns, and exhausted usage", () => {
+  const text = formatStatus({
+    roles: new Map([["coding", ["a/x", "b/y", "c/z", "d/w"]]]),
+    state: { targets: { "a/x": { nextRetryAt: 1000 + 240_000 }, "c/z": { nextRetryAt: 1000 + 3_900_000 }, "d/w": { nextRetryAt: 500 } }, usage: { b: { windows: [{ usedPercent: 97 }] } } },
+    activeTarget: "b/y", settings: { switchAboveUsedPercent: 95 }, nowMs: 1000,
+  });
+  assert.equal(text, "model-alias: this session is on b/y\ncoding:\n    a/x (cooldown 4m)\n  * b/y (usage 97%)\n    c/z (cooldown 1h5m)\n    d/w");
 });

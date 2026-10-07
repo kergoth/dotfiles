@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import { join } from "node:path";
 import { clampThinkingLevel, getSupportedThinkingLevels, isRetryableAssistantError, type AssistantMessage, type ModelThinkingLevel } from "@earendil-works/pi-ai";
 import { getAgentDir, type ExtensionAPI, type ExtensionContext } from "@earendil-works/pi-coding-agent";
-import { advanceResume, classifyFailure, filterResolvedTargets, mergeUsage, parseClaudeRateLimit, parseCodexRateLimits, parseConfig, parseModelRef, ownsSessionState, pendingRecoveryTarget, recordFailure, recordSuccess, recoveryAction, selectTarget, watchdogStillCurrent } from "./model-alias-core.js";
+import { advanceResume, classifyFailure, clearCooldowns, configuredTargets, formatStatus, filterResolvedTargets, mergeUsage, parseClaudeRateLimit, parseCodexRateLimits, parseConfig, parseModelRef, ownsSessionState, pendingRecoveryTarget, recordFailure, recordSuccess, recoveryAction, selectTarget, watchdogStillCurrent } from "./model-alias-core.js";
 import { appendEvent, readState, resolveStatePaths, updateState } from "./model-alias-store.js";
 import { fetchOpenCodeUsage } from "./model-alias-usage.js";
 
@@ -215,6 +215,28 @@ export default function modelAlias(pi: ExtensionAPI): void {
       return;
     }
     sendResume();
+  });
+
+  pi.registerCommand("alias", {
+    description: "Show alias routing and cooldowns, or `reset [target]` to clear cooldowns",
+    getArgumentCompletions: (prefix) => {
+      const words = ["reset", ...configuredTargets(config.roles).map((target) => `reset ${target}`)];
+      return words.filter((word) => word.startsWith(prefix)).map((word) => ({ value: word, label: word }));
+    },
+    handler: async (args, commandCtx) => {
+      const [action, target, ...extra] = args.trim().split(/\s+/).filter(Boolean);
+      if (!action) {
+        const state = await readState(statePaths.state);
+        commandCtx.ui.notify(formatStatus({ roles: config.roles, state, activeTarget, settings: config.settings, nowMs: Date.now() }), "info");
+        return;
+      }
+      if (action !== "reset" || extra.length) { commandCtx.ui.notify("usage: /alias [reset [provider/model]]", "error"); return; }
+      if (target && !configuredTargets(config.roles).includes(target)) { commandCtx.ui.notify(`model-alias: ${target} is not in any alias chain`, "error"); return; }
+      let cleared: string[] = [];
+      await updateState(statePaths, (state) => { cleared = clearCooldowns(state, target); });
+      await appendEvent(statePaths, { type: "reset", target: target ?? "all", cleared, timestamp: Date.now() });
+      commandCtx.ui.notify(cleared.length ? `model-alias: cleared cooldowns for ${cleared.join(", ")}` : "model-alias: no cooldowns to clear", "info");
+    },
   });
 
   pi.on("session_shutdown", () => { clearWatchdog(); disposeClaudeEvents?.(); disposeClaudeEvents = undefined; requiredRegistration?.dispose(); requiredRegistration = undefined; ctx = undefined; });

@@ -148,6 +148,13 @@ stays warm until the target fails. Error classification remains the fallback
 when usage data is absent or stale. User interrupts are not failures and never
 start a cooldown.
 
+`/alias` lists each chain with the session's current target, active
+cooldowns, and providers over the usage threshold. `/alias reset [target]`
+clears cooldowns for one target or all of them, for when a cooldown outlives
+the problem that caused it. The reset applies to every Pi session because the
+state is shared; usage windows are left alone, since the next provider report
+would restore them. To pin a physical model, select it directly with `/model`.
+
 | Role | Ordering | Purpose |
 | --- | --- | --- |
 | `alias/coding` | quality | sonnet-tier default for coding and agentic work |
