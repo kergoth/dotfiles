@@ -24,36 +24,36 @@
 {{- if .work }}
   "coding": [
     "claude-bridge/claude-sonnet-5-5",
-    "openai-codex/gpt-5.6-terra",
+    "openai-codex/gpt-6.1-sol",
     "cursor/auto-smart"
   ],
   "coding-max": [
     "claude-bridge/claude-opus-5-5",
-    "openai-codex/gpt-5.6-sol",
+    "openai-codex/gpt-6.1-sol",
     "cursor/grok-4.7@256k"
   ],
-{{-   $chat := list "openai-codex/gpt-5.6-luna" "cursor/grok-4.7@256k" "claude-bridge/claude-haiku-4-5" }}
+{{-   $chat := list "openai-codex/gpt-6-luna" "cursor/grok-4.7@256k" "claude-bridge/claude-haiku-4-5" }}
 {{-   if $hasLocal }}
 {{-     $chat = concat $chat (list $localAssistant) }}
 {{-   end }}
   "chat": {{ $chat | toJson }},
   "research": [
     "claude-bridge/claude-opus-5-5",
-    "openai-codex/gpt-5.6-terra",
+    "openai-codex/gpt-6.1-sol",
     "cursor/grok-4.7@256k"
   ],
   "light": [
-    "openai-codex/gpt-5.6-luna",
+    "openai-codex/gpt-6-luna",
     "cursor/composer-2.5",
     "claude-bridge/claude-haiku-4-5"
   ],
   "title": [
-    "openai-codex/gpt-5.6-luna"
+    "openai-codex/gpt-6-luna"
   ]
 {{- else }}
   "coding": [
     "claude-bridge/claude-sonnet-5-5",
-    "openai-codex/gpt-5.6-terra",
+    "openai-codex/gpt-6.1-sol",
     "opencode-go/kimi-k2.7-code",
     "opencode-go/deepseek-v4.1-flash"
   ],
@@ -61,33 +61,33 @@
     "opencode-go/kimi-k2.7-code",
     "opencode-go/deepseek-v4.1-flash",
     "claude-bridge/claude-sonnet-5-5",
-    "openai-codex/gpt-5.6-terra"
+    "openai-codex/gpt-6.1-sol"
   ],
   "coding-max": [
     "claude-bridge/claude-opus-5-5",
-    "openai-codex/gpt-5.6-sol",
+    "openai-codex/gpt-6.1-sol",
     "opencode-go/deepseek-v4-pro",
     "opencode-go/kimi-k3"
   ],
-{{-   $chat := list "opencode-go/glm-5.3-flash" "openai-codex/gpt-5.6-luna" "claude-bridge/claude-haiku-4-5" }}
+{{-   $chat := list "opencode-go/glm-5.3-flash" "openai-codex/gpt-6-luna" "claude-bridge/claude-haiku-4-5" }}
 {{-   if $hasLocal }}
 {{-     $chat = concat $chat (list $localAssistant) }}
 {{-   end }}
   "chat": {{ $chat | toJson }},
   "research": [
     "claude-bridge/claude-opus-5-5",
-    "openai-codex/gpt-5.6-terra",
+    "openai-codex/gpt-6.1-sol",
     "opencode-go/deepseek-v4-pro",
     "opencode-go/kimi-k3"
   ],
   "light": [
     "opencode-go/mimo-v2.5",
-    "openai-codex/gpt-5.6-luna",
+    "openai-codex/gpt-6-luna",
     "claude-bridge/claude-haiku-4-5"
   ],
   "title": [
     "opencode-go/mimo-v2.5",
-    "openai-codex/gpt-5.6-luna"
+    "openai-codex/gpt-6-luna"
   ]
 {{- end }}
 }

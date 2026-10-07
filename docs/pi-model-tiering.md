@@ -184,14 +184,14 @@ the `opencode-go` window for conserving the Claude and Codex windows. Escalate
 on evidence, not upfront.
 
 - **Sonnet tier (default)**: `claude-bridge/claude-sonnet-5`, then
-  `openai-codex/gpt-5.6-terra`, then (personal only)
+  `openai-codex/gpt-6.1-sol`, then (personal only)
   `opencode-go/kimi-k2.7-code` and `opencode-go/deepseek-v4.1-flash` once
   the opencode-go window opens; `cursor/auto-smart` at work.
   `alias/coding-budget` (personal only) front-loads the opencode-go pair
-  ahead of the claude-bridge and terra targets. Best fit: known-pattern
+  ahead of the claude-bridge and `gpt-6.1-sol` targets. Best fit: known-pattern
   changes, small diffs, routine refactors.
 - **Opus tier (escalation)**: `claude-bridge/claude-opus-5-5`, then
-  `openai-codex/gpt-5.6-sol`, then (personal only)
+  `openai-codex/gpt-6.1-sol`, then (personal only)
   `opencode-go/deepseek-v4-pro` ahead of `opencode-go/kimi-k3` (October
   2026 — deepseek-v4-pro carries roughly 10x kimi-k3's monthly quota on
   OpenCode Go, so spending it first reserves kimi-k3's thin allowance for
@@ -213,6 +213,26 @@ least valuable planned use. The loop-cost argument for starting strong still
 holds through time and retries, and would regain its dollar force on a
 per-token pool such as opencode-zen.
 
+### Codex tier selection
+
+The Codex slots use the GPT-6 family (October 2026). `gpt-6.1-sol` fills the
+sonnet-tier and research fallback slot and the opus-tier fallback slot;
+`gpt-6-luna` backs `chat`, `light`, and `title`. There is no GPT-6 Terra:
+`gpt-5.6-terra` is dominated by `gpt-6.1-sol` ($2/$10 per million tokens; sources
+disagree on Terra's exact list price, but none put it below Sol's) and scores
+lower, so it was dropped rather than kept as a
+middle rung. `gpt-6-astra` ($10/$50) is in the scoped list for manual
+selection only, not in any chain, since nothing here has shown a task that
+`gpt-6.1-sol` fails and Astra passes.
+
+A local A/B (`scripts/pi-ab`, five fixed tasks, one run each) found all three
+of `claude-sonnet-5-5`, `gpt-6.1-sol`, and `gpt-5.6-terra` passing every task.
+`claude-sonnet-5-5` was fastest (3 turns, about 20s median), `gpt-6.1-sol` next
+(6 turns, about 57s), `gpt-5.6-terra` slowest (8 turns, about 104s, roughly 60%
+more output tokens than Sol), with the same Codex window delta for Sol and
+Terra. The tasks were too easy to separate the models on correctness, so this
+supports Sol over Terra and Sonnet as the default, not a ranking on hard work.
+
 ### Chat and assistant
 
 Budget-ordered (`alias/chat`); a single chain per machine type, no
@@ -222,18 +242,19 @@ practice and chat volume is low enough that a dedicated quality tier isn't
 worth maintaining — revisit if chat quality becomes a real complaint.
 
 - **Personal `alias/chat`**: `opencode-go/glm-5.3-flash` (Arena Elo 1471,
-  image input), then `openai-codex/gpt-5.6-luna`, then
+  image input), then `openai-codex/gpt-6-luna`, then
   `claude-bridge/claude-haiku-4-5` if neither cheap tier is cutting it, then
   `local-assistant/**` last — on-demand only, since the local server isn't
   always running.
-- **Work `alias/chat`**: `openai-codex/gpt-5.6-luna`, then
+- **Work `alias/chat`**: `openai-codex/gpt-6-luna`, then
   `cursor/grok-4.7@256k` on provider-diversity grounds (no chat-quality evidence
   either way; swap for `cursor/auto-smart` if the tone does not suit), then
   `claude-bridge/claude-haiku-4-5`, then `local-assistant/**` where
   `models.json` exists.
 
-`opencode-go/qwen3.8-flash` and `openai-codex/gpt-5.6-luna` are roughly a
-wash on conversational quality; `opencode-go/glm-5.3-flash` dominates both on
+`opencode-go/qwen3.8-flash` and `openai-codex/gpt-5.6-luna` were roughly a
+wash on conversational quality (measured before `gpt-6-luna` replaced it; not
+re-measured); `opencode-go/glm-5.3-flash` dominates both on
 current Arena evidence at the same price class. Reserve `opencode-go/kimi-k3`
 for coding; its chat quality is real but pays opus-tier prices for a purpose
 where the flash tier gets most of the way there.
@@ -250,7 +271,7 @@ manual invocation for now, with a `research-max` alias as a future option if
 that manual step proves too easy to forget).
 
 - **Default (`alias/research`)**: `claude-bridge/claude-opus-5`, then
-  `openai-codex/gpt-5.6-terra`, then (personal only)
+  `openai-codex/gpt-6.1-sol`, then (personal only)
   `opencode-go/deepseek-v4-pro` ahead of `opencode-go/kimi-k3` (same
   quota-first ordering as the opus coding tier) for interactive research
   sessions (an evening of source reading, then a synthesis), then (work
@@ -273,8 +294,8 @@ leads with the cheapest option per machine type.
 - **Personal**: `opencode-go/mimo-v2.5` first — mid-pack overall, concise,
   cheap to run (15B of 310B activated), with the 1M context that condensation
   needs, and not a candidate for the interactive tiers above. Then
-  `openai-codex/gpt-5.6-luna`, then `claude-bridge/claude-haiku-4-5`.
-- **Work**: `openai-codex/gpt-5.6-luna` first, then `cursor/composer-2.5`
+  `openai-codex/gpt-6-luna`, then `claude-bridge/claude-haiku-4-5`.
+- **Work**: `openai-codex/gpt-6-luna` first, then `cursor/composer-2.5`
   (cheapest cursor-native model; its coding specialization doesn't matter
   for title/summary text), then `claude-bridge/claude-haiku-4-5`.
 
@@ -289,7 +310,7 @@ modest window cost of an occasional fallback hit.
 made outside any agent session, and `cursor` and `claude-bridge` reject those
 (cursor: "Bare modelRegistry.streamSimple calls are unsupported"; claude-bridge:
 a `prompt-capture` error), so the chain holds only providers that accept them:
-`opencode-go/mimo-v2.5` then `openai-codex/gpt-5.6-luna` on personal machines,
+`opencode-go/mimo-v2.5` then `openai-codex/gpt-6-luna` on personal machines,
 luna alone at work, which has no `opencode-go`. When the chain is exhausted
 the session gets the heuristic title, never a session-model title.
 
@@ -331,8 +352,8 @@ before major re-tiering; the catalog moves monthly.
   cheaper model, higher total spend), and the [quadratic agent loop cost
   analysis][quadratic] for the cost axis.
 - [llm-stats comparisons][llmstats] for spec-level head-to-heads
-  (`openai-codex/gpt-5.6-luna` vs `opencode-go/qwen3.8-flash`,
-  `opencode-go/mimo-v2.5` vs `opencode-go/qwen3.8-flash`).
+  (`openai-codex/gpt-5.6-luna` vs `opencode-go/qwen3.8-flash`, before the
+  GPT-6 refresh; `opencode-go/mimo-v2.5` vs `opencode-go/qwen3.8-flash`).
 
 [llming]: https://llm.ing/benchmarks/lmarena-text
 [benchleader]: https://www.benchleader.com/benchmarks/lmarena_text
