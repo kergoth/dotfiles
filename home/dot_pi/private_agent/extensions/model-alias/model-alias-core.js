@@ -64,15 +64,50 @@ export function parseConfig(raw) {
   return { roles, settings, defaults, warnings };
 }
 
+const MONTH_NAMES = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+
+function wallClockIn(zone, ms) {
+  const parts = Object.fromEntries(new Intl.DateTimeFormat("en-US", {
+    timeZone: zone, hourCycle: "h23", year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "numeric",
+  }).formatToParts(ms).map((part) => [part.type, Number(part.value)]));
+  return parts;
+}
+
+// Two passes converge on the right offset even when the guess lands on the far side of a DST change.
+function epochInZone(zone, year, month, day, hour, minute) {
+  const wall = Date.UTC(year, month - 1, day, hour, minute);
+  let guess = wall;
+  for (let pass = 0; pass < 2; pass++) {
+    const at = wallClockIn(zone, guess);
+    guess += wall - Date.UTC(at.year, at.month - 1, at.day, at.hour, at.minute);
+  }
+  return guess;
+}
+
+// Reset phrases seen in Claude and Codex failures: "resets 8:00:00 PM" (local time), "resets 5pm (America/Phoenix)",
+// "resets Sep 30 at 5pm (America/Phoenix)". A phrase without a zone name is read in the local zone.
 function resetFromText(message, nowMs) {
-  const match = message.match(/resets?\s+(?:at\s+)?(\d{1,2}):(\d{2})(?::\d{2})?\s*(AM|PM)?/i);
+  const match = message.match(/resets?\s+(?:(?:([A-Za-z]{3})[a-z]*\.?\s+(\d{1,2})\s+at\s+)|at\s+)?(\d{1,2})(?::(\d{2}))?(?::\d{2})?\s*(AM|PM)?(?:\s*\(([A-Za-z_]+(?:\/[A-Za-z_+-]+)+)\))?/i);
   if (!match) return undefined;
-  let hour = Number(match[1]);
-  if (match[3]?.toUpperCase() === "PM" && hour < 12) hour += 12;
-  if (match[3]?.toUpperCase() === "AM" && hour === 12) hour = 0;
-  const date = new Date(nowMs); date.setHours(hour, Number(match[2]), 0, 0);
-  if (date.getTime() <= nowMs) date.setDate(date.getDate() + 1);
-  return date.getTime();
+  const [, monthName, dayOfMonth, hourText, minuteText, meridiem, zoneName] = match;
+  if (minuteText === undefined && !meridiem) return undefined;
+  let hour = Number(hourText);
+  if (meridiem?.toUpperCase() === "PM" && hour < 12) hour += 12;
+  if (meridiem?.toUpperCase() === "AM" && hour === 12) hour = 0;
+  if (hour > 23) return undefined;
+  const minute = Number(minuteText ?? 0);
+  const month = monthName ? MONTH_NAMES.indexOf(monthName.toLowerCase()) + 1 : 0;
+  if (monthName && !month) return undefined;
+  try {
+    const zone = zoneName ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const today = wallClockIn(zone, nowMs);
+    if (month) {
+      const thisYear = epochInZone(zone, today.year, month, Number(dayOfMonth), hour, minute);
+      return thisYear > nowMs ? thisYear : epochInZone(zone, today.year + 1, month, Number(dayOfMonth), hour, minute);
+    }
+    const sameDay = epochInZone(zone, today.year, today.month, today.day, hour, minute);
+    return sameDay > nowMs ? sameDay : epochInZone(zone, today.year, today.month, today.day + 1, hour, minute);
+  } catch { return undefined; }
 }
 
 export function classifyFailure(errorMessage, provider, nowMs = Date.now()) {

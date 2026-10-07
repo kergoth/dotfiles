@@ -63,6 +63,17 @@ const failures = [
   ["Request was aborted", "openai-codex", "aborted"],
   ["Connection aborted by peer", "x", "transient"],
 ];
+test("classifyFailure reads the reset time in the zone the message names", () => {
+  const nowMs = Date.UTC(2026, 8, 30, 12, 0);
+  const resets = (message) => classifyFailure(message, "claude-bridge", nowMs).resetsAt;
+  assert.equal(resets("You've hit your limit · resets 5pm (America/Phoenix)"), Date.UTC(2026, 9, 1, 0, 0));
+  assert.equal(resets("You've hit your limit · resets Sep 30 at 5pm (America/Phoenix)"), Date.UTC(2026, 9, 1, 0, 0));
+  assert.equal(resets("You've hit your limit · resets May 31 at 5pm (America/Phoenix)"), Date.UTC(2027, 5, 1, 0, 0));
+  assert.equal(resets("You've hit your limit · resets 5:30pm (Asia/Tokyo)"), Date.UTC(2026, 9, 1, 8, 30));
+  assert.equal(resets("You've hit your limit · resets 5pm (Not/AZone)"), undefined);
+  assert.equal(resets("rate limit (five_hour): resets in 3 days"), undefined);
+});
+
 for (const [message, provider, kind] of failures) test(`classifyFailure ${kind}: ${message.slice(0, 20)}`, () => assert.equal(classifyFailure(message, provider, Date.UTC(2026, 0, 1)).kind, kind));
 
 test("usage parsers normalize provider windows", () => {
