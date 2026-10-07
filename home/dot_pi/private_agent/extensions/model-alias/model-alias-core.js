@@ -342,7 +342,7 @@ export function branchRoutedTarget(branch) {
 }
 
 export function formatStatus({ roles, state, activeTarget, settings, nowMs }) {
-  const lines = [`model-alias: this session is on ${activeTarget ?? "no routed target yet"}`];
+  const lines = [`model-alias: this session is on ${activeTarget ?? "no routed target yet"}`, ""];
   for (const [role, chain] of roles) {
     lines.push(`${role}:`);
     for (const target of chain) {

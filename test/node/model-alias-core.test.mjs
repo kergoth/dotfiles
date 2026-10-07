@@ -235,7 +235,7 @@ test("formatStatus marks the active target, cooldowns, and exhausted usage", () 
     state: { targets: { "a/x": { nextRetryAt: 1000 + 240_000 }, "c/z": { nextRetryAt: 1000 + 3_900_000 }, "d/w": { nextRetryAt: 500 } }, usage: { b: { windows: [{ usedPercent: 97 }] } } },
     activeTarget: "b/y", settings: { switchAboveUsedPercent: 95 }, nowMs: 1000,
   });
-  assert.equal(text, "model-alias: this session is on b/y\ncoding:\n    a/x (cooldown 4m)\n  * b/y (usage 97%)\n    c/z (cooldown 1h5m)\n    d/w");
+  assert.equal(text, "model-alias: this session is on b/y\n\ncoding:\n    a/x (cooldown 4m)\n  * b/y (usage 97%)\n    c/z (cooldown 1h5m)\n    d/w");
 });
 
 const usageOf = (provider, windows) => ({ [provider]: { provider, capturedAt: 0, windows } });
