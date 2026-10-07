@@ -106,22 +106,21 @@ export function usageWindows(snapshot, nowMs = Date.now(), settings = DEFAULT_US
   const shown = [];
   for (const window of snapshot?.windows ?? []) {
     if (window.resetsAt && window.resetsAt <= nowMs) continue;
-    const percent = Math.round(Number(window.usedPercent));
-    if (!Number.isFinite(percent)) continue;
-    if (percent < settings.showAboveUsedPercent && !window.limited) continue;
+    const percent = typeof window.usedPercent === "number" && Number.isFinite(window.usedPercent) ? Math.round(window.usedPercent) : null;
+    if (!window.limited && (percent === null || percent < settings.showAboveUsedPercent)) continue;
     const stale = nowMs - (window.capturedAt ?? snapshot.capturedAt ?? nowMs) > settings.staleAfterMs;
-    shown.push({ label: WINDOW_LABELS[window.id] ?? window.id, percent: window.limited ? Math.max(percent, 100) : percent, stale });
+    shown.push({ label: WINDOW_LABELS[window.id] ?? window.id, percent: percent === null ? null : window.limited ? Math.max(percent, 100) : percent, stale });
   }
   return shown;
 }
 
 function usageText(data) {
-  return (data.usage ?? []).map((w) => `${w.label} ${w.percent}%${w.stale ? "~" : ""}`).join(" ");
+  return (data.usage ?? []).map((w) => `${w.label} ${w.percent === null ? "limited" : `${w.percent}%`}${w.stale ? "~" : ""}`).join(" ");
 }
 
 function usageSegment(data) {
   const palette = PALETTES[data.palette];
-  const critical = data.usage.some((w) => w.percent >= (data.usageSettings ?? DEFAULT_USAGE_SETTINGS).criticalAboveUsedPercent);
+  const critical = data.usage.some((w) => w.percent === null || w.percent >= (data.usageSettings ?? DEFAULT_USAGE_SETTINGS).criticalAboveUsedPercent);
   const color = critical ? palette.context.red : palette.context.yellow;
   return `${color.background}${color.foreground} ${usageText(data)} ${RESET}`;
 }

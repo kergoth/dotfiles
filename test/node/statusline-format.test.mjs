@@ -222,6 +222,18 @@ test("usageWindows shows only unreset windows at 50% or more and marks stale rea
   assert.deepEqual(usageWindows(undefined), []);
 });
 
+test("unknown exhausted spend shows a critical label without a percentage", () => {
+  const usage = usageWindows({ capturedAt: 5, windows: [
+    { id: "spend", usedPercent: null, limited: true },
+    { id: "unknown", usedPercent: null, limited: false },
+  ] }, 5);
+  assert.deepEqual(usage, [{ label: "spend", percent: null, stale: false }]);
+  const line = formatStatusLineForWidth({ model: "coding", provider: "alias", cwd: "/tmp", contextPercent: 10, palette: "dark", usage }, 200);
+  assert.match(line, /spend limited/);
+  assert.doesNotMatch(line, /spend (?:0|100|null)%/);
+  assert.ok(line.includes(CONTEXT_COLORS.dark.red.background));
+});
+
 test("renders the usage segment before context and drops it before context", () => {
   const data = { model: "coding", provider: "alias", cwd: "/tmp", contextPercent: 10, contextWindow: 0, palette: "dark", usage: [{ label: "7d", percent: 81, stale: false }] };
   assert.match(formatStatusLineForWidth(data, 200), /7d 81%.*ctx 10%/);

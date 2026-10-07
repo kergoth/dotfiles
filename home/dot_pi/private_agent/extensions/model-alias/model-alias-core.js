@@ -88,8 +88,18 @@ function epochInZone(zone, year, month, day, hour, minute) {
 // Reset phrases seen in Claude and Codex failures: "resets 8:00:00 PM" (local time), "resets 5pm (America/Phoenix)",
 // "resets Sep 30 at 5pm (America/Phoenix)". A phrase without a zone name is read in the local zone.
 function resetFromText(message, nowMs) {
-  const match = message.match(/resets?\s+(?:(?:([A-Za-z]{3})[a-z]*\.?\s+(\d{1,2})\s+at\s+)|at\s+)?(\d{1,2})(?::(\d{2}))?(?::\d{2})?\s*(AM|PM)?(?:\s*\(([A-Za-z_]+(?:\/[A-Za-z_+-]+)+)\))?/i);
-  if (!match) return undefined;
+  const matches = [...message.matchAll(/resets?\s+(?:(?:([A-Za-z]{3})[a-z]*\.?\s+(\d{1,2})\s+at\s+)|at\s+)?(\d{1,2})(?::(\d{2}))?(?::\d{2})?\s*(AM|PM)?(?:\s*\(([A-Za-z_]+(?:\/[A-Za-z_+-]+)+)\))?/gi)];
+  const specificity = (match) => (match[1] ? 2 : 0) + (match[6] ? 1 : 0);
+  // The bridge can prepend a clock-only reset to a failure containing the full date and zone.
+  matches.sort((a, b) => specificity(b) - specificity(a));
+  for (const match of matches) {
+    const reset = resetFromMatch(match, nowMs);
+    if (reset !== undefined) return reset;
+  }
+  return undefined;
+}
+
+function resetFromMatch(match, nowMs) {
   const [, monthName, dayOfMonth, hourText, minuteText, meridiem, zoneName] = match;
   if (minuteText === undefined && !meridiem) return undefined;
   let hour = Number(hourText);
@@ -114,8 +124,11 @@ function resetFromText(message, nowMs) {
 export function classifyFailure(errorMessage, provider, nowMs = Date.now()) {
   const text = String(errorMessage ?? "");
   if (/^aborted$|\b(?:operation|request) (?:was )?aborted\b/i.test(text)) return { kind: "aborted" };
-  const quota = /rate limit \((?:five_hour|seven_day|overage)\)|you've hit your (?:(?:individual|org's) )?(?:monthly )?(?:spend )?limit|usage limit has been reached|GoUsageLimitError|Monthly usage limit reached|Insufficient account funds|insufficient_quota|out of budget|billing/i;
-  if (quota.test(text)) return { kind: "quota", ...(resetFromText(text, nowMs) ? { resetsAt: resetFromText(text, nowMs) } : {}) };
+  const quota = /rate limit \((?:five_hour|seven_day(?:_opus|_sonnet|_overage_included)?|overage)\)|you've hit your (?:(?:individual|org's) )?(?:monthly )?(?:spend )?limit|usage limit has been reached|GoUsageLimitError|Monthly usage limit reached|Insufficient account funds|insufficient_quota|out of budget|billing/i;
+  if (quota.test(text)) {
+    const resetsAt = resetFromText(text, nowMs);
+    return { kind: "quota", ...(resetsAt !== undefined ? { resetsAt } : {}) };
+  }
   if (/rate.?limit|429|50[0234]|server.?error|overloaded|timed? out|timeout|connection/i.test(text)) return { kind: "transient" };
   return { kind: "other" };
 }
@@ -182,8 +195,9 @@ export function parseClaudeUsage(data, capturedAt = Date.now()) {
   // It gets its own id: the stream events' "overage" window measures something else and must not overwrite it.
   const spend = limits.extra_usage;
   const spendPercent = spend?.is_enabled ? percent(spend.utilization) : undefined;
-  if (!windows.length && spendPercent !== undefined) {
-    windows.push({ id: "spend", usedPercent: spendPercent, limited: Boolean(spend.spend_limit_reached) || spendPercent >= 100, capturedAt });
+  const spendLimited = spend?.is_enabled && spend.spend_limit_reached === true;
+  if (!windows.length && (spendPercent !== undefined || spendLimited)) {
+    windows.push({ id: "spend", usedPercent: spendPercent ?? null, limited: Boolean(spendLimited) || spendPercent >= 100, capturedAt });
   }
   if (!windows.length) throw new Error("Claude usage response has no valid windows");
   return { provider: "claude-bridge", capturedAt, windows };
@@ -203,7 +217,8 @@ export function parseCodexUsage(data, capturedAt = Date.now()) {
 function providerOf(ref) { return parseModelRef(ref).provider; }
 function providerUsedPercent(snapshot, nowMs) {
   const windows = (snapshot?.windows ?? []).filter((window) => !window.resetsAt || window.resetsAt > nowMs);
-  return Math.max(0, ...windows.map((window) => Number(window.usedPercent) || 0));
+  // Unknown exhausted windows must not rank below measured usage when every target is unavailable.
+  return Math.max(0, ...windows.map((window) => window.limited && percent(window.usedPercent) === undefined ? 100 : Number(window.usedPercent) || 0));
 }
 
 // A "provider:window" key beats a "provider" key, which beats the global threshold.
@@ -321,7 +336,10 @@ export function formatStatus({ roles, state, activeTarget, settings, nowMs }) {
       const retryAt = state.targets[target]?.nextRetryAt ?? 0;
       if (retryAt > nowMs) notes.push(`cooldown ${remaining(retryAt - nowMs)}`);
       const snapshot = state.usage[providerOf(target)];
-      if (providerOverUsage(snapshot, providerOf(target), settings, nowMs)) notes.push(`usage ${providerUsedPercent(snapshot, nowMs)}%`);
+      if (providerOverUsage(snapshot, providerOf(target), settings, nowMs)) {
+        const unknownLimited = snapshot.windows.some((window) => window.limited && percent(window.usedPercent) === undefined && (!window.resetsAt || window.resetsAt > nowMs));
+        notes.push(unknownLimited ? "usage limited" : `usage ${providerUsedPercent(snapshot, nowMs)}%`);
+      }
       lines.push(`  ${target === activeTarget ? "*" : " "} ${target}${notes.length ? ` (${notes.join(", ")})` : ""}`);
     }
   }
@@ -344,15 +362,16 @@ export function formatUsage({ providers, state, settings, refresh = {}, nowMs })
     lines.push(`${provider} (${result?.ok ? "refreshed" : result ? `not refreshed: ${result.error}` : "stored"}):`);
     if (!snapshot?.windows?.length) { lines.push("  no usage data yet"); continue; }
     for (const window of snapshot.windows) {
-      const used = Math.round(Number(window.usedPercent) || 0);
+      const used = percent(window.usedPercent);
+      const reading = used === undefined ? "unknown" : `${Math.round(used)}%`;
       const parts = [];
-      if (window.resetsAt && window.resetsAt <= nowMs) parts.push(`reset (last read ${used}%)`);
+      if (window.resetsAt && window.resetsAt <= nowMs) parts.push(`reset (last read ${reading})`);
       else {
         const threshold = windowThreshold(settings, provider, window.id);
-        parts.push(`${used}%`);
+        parts.push(reading);
         if (window.resetsAt) parts.push(`resets in ${duration(window.resetsAt - nowMs)}`);
         parts.push(`limit ${threshold}%`);
-        if (window.limited || used >= threshold) parts.push("OVER");
+        if (window.limited || (used !== undefined && Math.round(used) >= threshold)) parts.push("OVER");
       }
       const age = nowMs - (window.capturedAt ?? snapshot.capturedAt ?? nowMs);
       if (age >= 60_000) parts.push(`as of ${duration(age)} ago`);

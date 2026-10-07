@@ -74,6 +74,26 @@ test("classifyFailure reads the reset time in the zone the message names", () =>
   assert.equal(resets("rate limit (five_hour): resets in 3 days"), undefined);
 });
 
+test("all supported Claude limit types preserve quota resets", () => {
+  const nowMs = Date.UTC(2026, 8, 20, 12);
+  for (const type of ["five_hour", "seven_day", "seven_day_opus", "seven_day_sonnet", "seven_day_overage_included", "overage"]) {
+    assert.deepEqual(classifyFailure(`Claude rate limit (${type}) — resets 5pm (America/Phoenix)`, "claude-bridge", nowMs), {
+      kind: "quota", resetsAt: Date.UTC(2026, 8, 21, 0),
+    });
+  }
+});
+
+test("detailed reset phrases outrank the bridge clock-only prefix", () => {
+  const nowMs = Date.UTC(2026, 8, 20, 12);
+  const prefix = "Claude rate limit (overage) — resets 5:00:00 PM: ";
+  const failure = classifyFailure(prefix + "You've hit your limit · resets Sep 30 at 5pm (America/Phoenix)", "claude-bridge", nowMs);
+  assert.equal(failure.resetsAt, Date.UTC(2026, 9, 1, 0));
+  assert.equal(classifyFailure(prefix + "You've hit your limit · resets 5pm (Asia/Tokyo)", "claude-bridge", nowMs).resetsAt, Date.UTC(2026, 8, 21, 8));
+  assert.equal(classifyFailure(prefix + "You've hit your limit · resets Sep 30 at 5pm (Not/AZone)", "claude-bridge", nowMs).resetsAt, classifyFailure(prefix, "claude-bridge", nowMs).resetsAt);
+  const structuredReset = Date.UTC(2026, 9, 2, 0);
+  assert.equal(recordFailure({ nextRetryAt: structuredReset }, failure, { baseMs: 300000, capMs: 3600000 }, nowMs).nextRetryAt, structuredReset);
+});
+
 for (const [message, provider, kind] of failures) test(`classifyFailure ${kind}: ${message.slice(0, 20)}`, () => assert.equal(classifyFailure(message, provider, Date.UTC(2026, 0, 1)).kind, kind));
 
 test("usage parsers normalize provider windows", () => {
@@ -290,6 +310,27 @@ test("parseClaudeUsage falls back to the spend meter when plan windows are null"
   assert.deepEqual(snapshot.windows, [{ id: "spend", usedPercent: 20.97, limited: false, capturedAt: 5 }]);
   assert.equal(parseClaudeUsage({ rate_limits: { extra_usage: { is_enabled: true, utilization: 40, spend_limit_reached: true } } }).windows[0].limited, true);
   assert.throws(() => parseClaudeUsage({ rate_limits: { five_hour: null, extra_usage: { is_enabled: false, utilization: 20 } } }), /no valid windows/);
+});
+
+test("unknown spend utilization preserves exhaustion through storage, routing and display", () => {
+  const parsed = parseConfig(base);
+  for (const utilization of [null, undefined]) {
+    const snapshot = parseClaudeUsage({ rate_limits: { extra_usage: { is_enabled: true, utilization, spend_limit_reached: true } } }, 5);
+    assert.deepEqual(snapshot.windows, [{ id: "spend", usedPercent: null, limited: true, capturedAt: 5 }]);
+    const stored = JSON.parse(JSON.stringify(snapshot));
+    const state = { targets: {}, usage: { "claude-bridge": stored } };
+    const input = { ...selectBase, chain: base.coding, current: base.coding[0], previous: base.coding[0], routeReason: "user", usage: state.usage, settings: parsed.settings };
+    assert.equal(selectTarget(input).target, base.coding[1]);
+    assert.equal(selectTarget({ ...input, usage: { ...state.usage, "openai-codex": { windows: [{ usedPercent: 99 }] } } }).target, base.coding[1]);
+    const status = formatStatus({ roles: parsed.roles, state, activeTarget: base.coding[0], settings: parsed.settings, nowMs: 5 });
+    assert.match(status, /claude-bridge\/sonnet \(usage limited\)/);
+    const usage = formatUsage({ providers: ["claude-bridge"], state, settings: parsed.settings, nowMs: 5 });
+    assert.match(usage, /spend\s+unknown, limit 95%, OVER/);
+    assert.doesNotMatch(usage, /(?:0|100)%/);
+    assert.throws(() => parseClaudeUsage({ rate_limits: { extra_usage: { is_enabled: true, utilization, spend_limit_reached: false } } }), /no valid windows/);
+    const streamed = parseClaudeRateLimit({ status: "allowed", rateLimitType: "five_hour", utilization: .2 }, 6);
+    assert.deepEqual(mergeUsage(stored, streamed).windows[0], stored.windows[0]);
+  }
 });
 
 test("parseCodexUsage uses the stream-event window ids", () => {
