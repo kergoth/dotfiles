@@ -149,6 +149,11 @@ next user-turn boundary; an in-progress tool loop stays warm until the target
 fails. Error classification remains the fallback when usage data is absent or
 stale. User interrupts are not failures and never start a cooldown.
 
+When a preemptive fallback would move a large session to another provider,
+the confirmation prompt offers "Stay on <target>" if that target is only over
+its usage threshold. Staying waives the threshold for that target for the rest
+of the process; a window flagged as limited still forces a switch.
+
 The default threshold is `$settings.switchAboveUsedPercent` (95). To reserve
 headroom on a shared account, `$settings.providerSwitchAboveUsedPercent` maps a
 provider, or a `provider:window` pair such as `claude-bridge:seven_day`, to its

@@ -273,6 +273,20 @@ test("a limited window counts as over usage regardless of its percent", () => {
   assert.equal(userSelect(usageOf("claude", [{ id: "monthly", usedPercent: 0, limited: true, resetsAt: 500 }])), "claude/a");
 });
 
+test("waiving a threshold keeps the target but never overrides a limited window", () => {
+  const input = { ...selectBase, routeReason: "user", contextTokens: 200000 };
+  const high = usageOf("claude", [{ id: "five_hour", usedPercent: 97 }]);
+  const over = selectTarget({ ...input, usage: high });
+  assert.equal(over.target, "openai/b");
+  assert.equal(over.origin, "claude/a");
+  assert.equal(over.needsConfirmation, true);
+  const stayed = selectTarget({ ...input, usage: high, waivedThresholds: ["claude/a"] });
+  assert.equal(stayed.target, "claude/a");
+  assert.equal(stayed.needsConfirmation, false);
+  const limited = usageOf("claude", [{ id: "five_hour", usedPercent: 97, limited: true }]);
+  assert.equal(selectTarget({ ...input, usage: limited, waivedThresholds: ["claude/a"] }).target, "openai/b");
+});
+
 test("formatStatus applies per-provider usage thresholds", () => {
   const text = formatStatus({
     roles: new Map([["coding", ["claude/a", "openai/b"]]]), activeTarget: "claude/a", nowMs: 1000,

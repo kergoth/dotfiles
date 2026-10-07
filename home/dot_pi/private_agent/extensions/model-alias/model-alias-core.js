@@ -229,10 +229,10 @@ export function windowThreshold(settings, provider, windowId) {
   const overrides = settings.providerSwitchAboveUsedPercent ?? {};
   return overrides[`${provider}:${windowId}`] ?? overrides[provider] ?? settings.switchAboveUsedPercent;
 }
-function providerOverUsage(snapshot, provider, settings, nowMs) {
+function providerOverUsage(snapshot, provider, settings, nowMs, thresholdWaived = false) {
   return (snapshot?.windows ?? []).some((window) =>
     (!window.resetsAt || window.resetsAt > nowMs)
-    && (window.limited || (Number(window.usedPercent) || 0) >= windowThreshold(settings, provider, window.id)));
+    && (window.limited || (!thresholdWaived && (Number(window.usedPercent) || 0) >= windowThreshold(settings, provider, window.id))));
 }
 
 export function mergeUsage(previous, incoming) {
@@ -243,11 +243,11 @@ export function mergeUsage(previous, incoming) {
 }
 
 export function selectTarget(input) {
-  const { chain, routeReason, current, previous, failed, contextTokens, cooldowns, usage, settings, nowMs } = input;
+  const { chain, routeReason, current, previous, failed, contextTokens, cooldowns, usage, settings, nowMs, waivedThresholds = [] } = input;
   if (!Array.isArray(chain) || !chain.length) throw new Error("selectTarget requires a non-empty chain");
   const cooled = (target) => (cooldowns[target]?.nextRetryAt ?? 0) > nowMs;
   const usedPercent = (target) => providerUsedPercent(usage[providerOf(target)], nowMs);
-  const overUsage = (target) => routeReason === "user" && providerOverUsage(usage[providerOf(target)], providerOf(target), settings, nowMs);
+  const overUsage = (target) => routeReason === "user" && providerOverUsage(usage[providerOf(target)], providerOf(target), settings, nowMs, waivedThresholds.includes(target));
   const available = (target) => !cooled(target) && !overUsage(target);
   const origin = routeReason === "retry" ? failed : (previous ?? current);
   const large = contextTokens !== null && contextTokens >= settings.confirmSwitchAboveTokens;
@@ -268,7 +268,7 @@ export function selectTarget(input) {
       : [...ordered].sort((a, b) => cooldowns[a].nextRetryAt - cooldowns[b].nextRetryAt)[0];
   }
   const crossesProvider = Boolean(origin && providerOf(origin) !== providerOf(target));
-  return { target, crossesProvider, needsConfirmation: crossesProvider && large, reason: available(target) ? "available" : "least-unavailable" };
+  return { target, origin, crossesProvider, needsConfirmation: crossesProvider && large, reason: available(target) ? "available" : "least-unavailable" };
 }
 
 // Direct requests (compaction, side calls such as session titling) run outside the agent turn and must not touch its recovery state.
