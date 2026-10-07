@@ -7,6 +7,9 @@
     "npm:@sherif-fanous/pi-catppuccin",
     "npm:@sherif-fanous/pi-dracula",
     "git:github.com/kergoth/pi-claude-bridge@context-cap",
+{{- /* extensions/model-alias/index.ts resolves this SDK from agent/npm;
+       the Git-installed bridge's dependency tree is not visible there. */}}
+    "npm:@anthropic-ai/claude-agent-sdk",
     "npm:pi-web-access",
     {
       "skills": [
