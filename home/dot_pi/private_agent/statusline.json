@@ -1,0 +1,7 @@
+{
+  "usage": {
+    "showAboveUsedPercent": 50,
+    "criticalAboveUsedPercent": 80,
+    "staleAfterMs": 1800000
+  }
+}

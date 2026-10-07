@@ -74,9 +74,26 @@ function contextColor(palette, percentage) {
   return CONTEXT_COLORS[palette].green;
 }
 
-const USAGE_SHOW_THRESHOLD = 50;
-const USAGE_CRIT_THRESHOLD = 80;
-const USAGE_STALE_MS = 10 * 60_000;
+export const DEFAULT_USAGE_SETTINGS = Object.freeze({
+  showAboveUsedPercent: 50,
+  criticalAboveUsedPercent: 80,
+  staleAfterMs: 30 * 60_000,
+});
+
+export function parseStatuslineConfig(raw = {}) {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw new Error("statusline config must be an object");
+  const usage = raw.usage === undefined ? {} : raw.usage;
+  if (!usage || typeof usage !== "object" || Array.isArray(usage)) throw new Error("usage must be an object");
+  const settings = { ...DEFAULT_USAGE_SETTINGS, ...usage };
+  for (const key of ["showAboveUsedPercent", "criticalAboveUsedPercent"]) {
+    if (typeof settings[key] !== "number" || !Number.isFinite(settings[key]) || settings[key] < 0 || settings[key] > 100) {
+      throw new Error(`usage.${key} must be a number from 0 to 100`);
+    }
+  }
+  if (settings.criticalAboveUsedPercent < settings.showAboveUsedPercent) throw new Error("usage.criticalAboveUsedPercent must be at least showAboveUsedPercent");
+  if (typeof settings.staleAfterMs !== "number" || !Number.isFinite(settings.staleAfterMs) || settings.staleAfterMs <= 0) throw new Error("usage.staleAfterMs must be a positive number");
+  return { usage: settings };
+}
 const WINDOW_LABELS = {
   five_hour: "5h", primary: "5h", rolling: "5h",
   seven_day: "7d", secondary: "7d", weekly: "7d",
@@ -85,14 +102,14 @@ const WINDOW_LABELS = {
 
 // Windows worth showing for the active provider: unreset and at or above the show threshold.
 // `limited` windows always show. A trailing ~ marks a reading older than the stale cutoff.
-export function usageWindows(snapshot, nowMs = Date.now()) {
+export function usageWindows(snapshot, nowMs = Date.now(), settings = DEFAULT_USAGE_SETTINGS) {
   const shown = [];
   for (const window of snapshot?.windows ?? []) {
     if (window.resetsAt && window.resetsAt <= nowMs) continue;
     const percent = Math.round(Number(window.usedPercent));
     if (!Number.isFinite(percent)) continue;
-    if (percent < USAGE_SHOW_THRESHOLD && !window.limited) continue;
-    const stale = nowMs - (window.capturedAt ?? snapshot.capturedAt ?? nowMs) > USAGE_STALE_MS;
+    if (percent < settings.showAboveUsedPercent && !window.limited) continue;
+    const stale = nowMs - (window.capturedAt ?? snapshot.capturedAt ?? nowMs) > settings.staleAfterMs;
     shown.push({ label: WINDOW_LABELS[window.id] ?? window.id, percent: window.limited ? Math.max(percent, 100) : percent, stale });
   }
   return shown;
@@ -104,7 +121,7 @@ function usageText(data) {
 
 function usageSegment(data) {
   const palette = PALETTES[data.palette];
-  const critical = data.usage.some((w) => w.percent >= USAGE_CRIT_THRESHOLD);
+  const critical = data.usage.some((w) => w.percent >= (data.usageSettings ?? DEFAULT_USAGE_SETTINGS).criticalAboveUsedPercent);
   const color = critical ? palette.context.red : palette.context.yellow;
   return `${color.background}${color.foreground} ${usageText(data)} ${RESET}`;
 }

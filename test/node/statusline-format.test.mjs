@@ -216,7 +216,7 @@ test("usageWindows shows only unreset windows at 50% or more and marks stale rea
     { id: "five_hour", usedPercent: 49, resetsAt: nowMs + 1000 },
     { id: "seven_day", usedPercent: 81, resetsAt: nowMs + 1000 },
     { id: "primary", usedPercent: 96, resetsAt: nowMs - 1 },
-    { id: "monthly", usedPercent: 100, limited: true, capturedAt: nowMs - 11 * 60_000 },
+    { id: "monthly", usedPercent: 100, limited: true, capturedAt: nowMs - 31 * 60_000 },
   ] }, nowMs);
   assert.deepEqual(windows, [{ label: "7d", percent: 81, stale: false }, { label: "mo", percent: 100, stale: true }]);
   assert.deepEqual(usageWindows(undefined), []);

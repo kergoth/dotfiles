@@ -4,7 +4,10 @@ import { readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
-import { formatStatusLineForWidth, usageWindows } from "./statusline-format.js";
+import { DEFAULT_USAGE_SETTINGS, formatStatusLineForWidth, parseStatuslineConfig, usageWindows } from "./statusline-format.js";
+
+const configFile = join(process.env.PI_CODING_AGENT_DIR || join(homedir(), ".pi", "agent"), "statusline.json");
+let usageSettings = DEFAULT_USAGE_SETTINGS;
 
 // Same location model-alias writes; the footer only reads it, and at most once every few seconds.
 const aliasStateFile = join(
@@ -23,7 +26,7 @@ function providerUsage(provider: string | undefined) {
       cachedUsage = { at: now, usage: {} };
     }
   }
-  return usageWindows(cachedUsage.usage[provider], now);
+  return usageWindows(cachedUsage.usage[provider], now, usageSettings);
 }
 
 function contextPercent(ctx: any): number {
@@ -102,6 +105,7 @@ function installFooter(ctx: any): void {
             provider,
             routed,
             usage: providerUsage(routed?.provider ?? provider),
+            usageSettings,
             cwd: ctx.cwd,
             branch: footerData.getGitBranch(),
             inputTokens: usage.inputTokens,
@@ -121,6 +125,14 @@ function installFooter(ctx: any): void {
 export default function (pi: ExtensionAPI) {
   pi.on("session_start", (_event, ctx) => {
     staleAssistantId = undefined;
+    usageSettings = DEFAULT_USAGE_SETTINGS;
+    try {
+      usageSettings = parseStatuslineConfig(JSON.parse(readFileSync(configFile, "utf8"))).usage;
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
+        ctx.ui.notify(`statusline: ${configFile}: ${error instanceof Error ? error.message : String(error)}; using defaults`, "warning");
+      }
+    }
     installFooter(ctx);
   });
   pi.on("turn_end", (_event, ctx) => installFooter(ctx));
