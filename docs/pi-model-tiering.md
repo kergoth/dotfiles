@@ -8,8 +8,9 @@ what it is, so future additions land in the right slot.
 ## When to use which alias
 
 - **`alias/coding`** — default for coding and agentic work. Start here.
-- **`alias/coding-budget`** (personal only) — same tier, spends the
-  `opencode-go` window before `claude-bridge`/`openai-codex`.
+- **`alias/coding-budget`** — same coding tier, conserves the Claude window.
+  Personal machines spend OpenCode Go first, then Codex, then Claude; work
+  machines start with Codex, then Claude, then Cursor.
 - **`alias/coding-max`** — opus-tier escalation. Manual jump after two
   strikes (a stall or unsatisfied retry) at `coding`, not a default.
 - **`alias/chat`** — casual chat and assistant use, budget-ordered.
@@ -185,15 +186,18 @@ unavailable. Both endpoints can change without notice.
 | Role | Ordering | Purpose |
 | --- | --- | --- |
 | `alias/coding` | quality | sonnet-tier default for coding and agentic work |
-| `alias/coding-budget` | budget | same tier, `opencode-go` window first, conserving the Claude and Codex windows |
+| `alias/coding-budget` | budget | same coding tier, conserves Claude; personal machines also spend OpenCode Go before Codex |
 | `alias/coding-max` | quality | opus-tier escalation for hard or novel work |
 | `alias/chat` | budget | casual chat and assistant use |
 | `alias/research` | quality | research and synthesis; fable is a manual escalation, not in the chain |
 | `alias/light` | budget | background text tasks: contextPrune summarization |
 | `alias/title` | budget | session auto-naming; only providers that accept requests made outside an agent session |
 
-`coding-budget` exists only on personal machines; work has no `opencode-go`
-window to front-load.
+`coding-budget` conserves subscription pools within the coding tier rather
+than selecting a cheaper tier. Personal machines front-load OpenCode Go,
+then prefer Codex over Claude. Work machines have no OpenCode Go pool, so
+Sol leads, followed by Sonnet and `cursor/auto-smart`. The quality-ordered
+`coding` chain still prefers Sonnet over Sol on both machine types.
 The `chat` chain includes the local assistant target only where
 `~/.pi/agent/models.json` exists, and always last: the local model server
 isn't always running, so it's an on-demand fallback rather than a leading
@@ -206,17 +210,18 @@ escalation.
 
 ### Coding and agentic
 
-Quality-ordered by default (`alias/coding`); `alias/coding-budget` front-loads
-the `opencode-go` window for conserving the Claude and Codex windows. Escalate
-on evidence, not upfront.
+Quality-ordered by default (`alias/coding`); `alias/coding-budget` prefers
+Codex over Claude to conserve the Claude window, with OpenCode Go ahead of
+both on personal machines. Escalate on evidence, not upfront.
 
 - **Sonnet tier (default)**: `claude-bridge/claude-sonnet-5`, then
   `openai-codex/gpt-6.1-sol`, then (personal only)
   `opencode-go/kimi-k2.7-code` and `opencode-go/deepseek-v4.1-flash` once
   the opencode-go window opens; `cursor/auto-smart` at work.
-  `alias/coding-budget` (personal only) front-loads the opencode-go pair
-  ahead of the claude-bridge and `gpt-6.1-sol` targets. Best fit: known-pattern
-  changes, small diffs, routine refactors.
+  `alias/coding-budget` uses the opencode-go pair, then `gpt-6.1-sol`, then
+  Sonnet on personal machines; at work it uses `gpt-6.1-sol`, then Sonnet,
+  then `cursor/auto-smart`. Best fit: known-pattern changes, small diffs,
+  routine refactors.
 - **Opus tier (escalation)**: `claude-bridge/claude-opus-5-5`, then
   `openai-codex/gpt-6.1-sol`, then (personal only)
   `opencode-go/deepseek-v4-pro` ahead of `opencode-go/kimi-k3` (October
