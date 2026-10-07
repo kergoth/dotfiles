@@ -272,7 +272,7 @@ export default function modelAlias(pi: ExtensionAPI): void {
         commandCtx.ui.notify("model-alias: fetching live usage...", "info");
         const { providers, refresh } = await refreshUsage(commandCtx.modelRegistry);
         const state = await readState(statePaths.state);
-        commandCtx.ui.notify(formatUsage({ providers, state, settings: config.settings, refresh, nowMs: Date.now() }), "info");
+        commandCtx.ui.notify(commandCtx.ui.theme.fg("text", formatUsage({ providers, state, settings: config.settings, refresh, nowMs: Date.now() })), "info");
         return;
       }
       if (action !== "reset" || extra.length) { commandCtx.ui.notify("usage: /alias [usage | reset [provider/model]]", "error"); return; }
