@@ -276,7 +276,7 @@ export default function modelAlias(pi: ExtensionAPI): void {
       const [action, target, ...extra] = args.trim().split(/\s+/).filter(Boolean);
       if (!action) {
         const state = await readState(statePaths.state);
-        commandCtx.ui.notify(formatStatus({ roles: config.roles, state, activeTarget, settings: config.settings, nowMs: Date.now() }), "info");
+        commandCtx.ui.notify(commandCtx.ui.theme.fg("text", formatStatus({ roles: config.roles, state, activeTarget, settings: config.settings, nowMs: Date.now() })), "info");
         return;
       }
       if (action === "usage" && !target) {
