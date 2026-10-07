@@ -78,7 +78,7 @@ function resetFromText(message, nowMs) {
 export function classifyFailure(errorMessage, provider, nowMs = Date.now()) {
   const text = String(errorMessage ?? "");
   if (/^aborted$|\b(?:operation|request) (?:was )?aborted\b/i.test(text)) return { kind: "aborted" };
-  const quota = /rate limit \((?:five_hour|seven_day)|usage limit has been reached|GoUsageLimitError|Monthly usage limit reached|Insufficient account funds|insufficient_quota|out of budget|billing/i;
+  const quota = /rate limit \((?:five_hour|seven_day|overage)\)|you've hit your (?:(?:individual|org's) )?(?:monthly )?(?:spend )?limit|usage limit has been reached|GoUsageLimitError|Monthly usage limit reached|Insufficient account funds|insufficient_quota|out of budget|billing/i;
   if (quota.test(text)) return { kind: "quota", ...(resetFromText(text, nowMs) ? { resetsAt: resetFromText(text, nowMs) } : {}) };
   if (/rate.?limit|429|50[0234]|server.?error|overloaded|timed? out|timeout|connection/i.test(text)) return { kind: "transient" };
   return { kind: "other" };

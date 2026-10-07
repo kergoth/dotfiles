@@ -50,6 +50,10 @@ test("parseConfig rejects malformed configuration", () => {
 
 const failures = [
   ["Claude rate limit (five_hour) — resets 8:00:00 PM", "claude-bridge", "quota"],
+  ["Claude rate limit (overage) — resets 5:00:00 PM: You've hit your individual spend limit · ask your admin to raise it at claude.ai/settings/usage?from=cc_cli_limit_message", "claude-bridge", "quota"],
+  ["You've hit your individual spend limit · run /usage-credits to ask your admin for a higher limit", "claude-bridge", "quota"],
+  ["You've hit your org's monthly spend limit · run /usage-credits to ask your admin for a higher limit", "claude-bridge", "quota"],
+  ["You've hit your limit · resets Sep 30 at 5pm (America/Phoenix)", "claude-bridge", "quota"],
   ["Codex error: The usage limit has been reached", "openai-codex", "quota"],
   ['402: {"type":"server_error","message":"Upstream request failed: Insufficient account funds"}', "opencode-go", "quota"],
   ["HTTP 503 server error", "x", "transient"],
