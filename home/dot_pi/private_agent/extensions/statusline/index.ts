@@ -41,6 +41,10 @@ function sessionUsage(ctx: any): { inputTokens: number; outputTokens: number; co
   return { inputTokens: totals.input, outputTokens: totals.output, costUsd: totals.cost };
 }
 
+// Entry id of the last assistant message at the moment the model was switched; a routed model
+// recorded on that message answered for the previous selection, so it is not shown.
+let staleAssistantId: string | undefined;
+
 function routedModel(ctx: any): { provider: string; model: string } | undefined {
   const selected = ctx.model;
   if (!selected) return undefined;
@@ -49,6 +53,7 @@ function routedModel(ctx: any): { provider: string; model: string } | undefined 
   for (let i = branch.length - 1; i >= 0; i--) {
     const message = branch[i].type === "message" ? branch[i].message : undefined;
     if (message?.role !== "assistant") continue;
+    if (branch[i].id === staleAssistantId) return undefined;
     if (message.provider === selected.provider && message.model === selected.id) return undefined;
     return { provider: message.provider, model: message.model };
   }
@@ -88,7 +93,14 @@ function installFooter(ctx: any): void {
 }
 
 export default function (pi: ExtensionAPI) {
-  pi.on("session_start", (_event, ctx) => installFooter(ctx));
+  pi.on("session_start", (_event, ctx) => {
+    staleAssistantId = undefined;
+    installFooter(ctx);
+  });
   pi.on("turn_end", (_event, ctx) => installFooter(ctx));
-  pi.on("model_select", (_event, ctx) => installFooter(ctx));
+  pi.on("model_select", (_event, ctx) => {
+    const branch = ctx.sessionManager.getBranch();
+    staleAssistantId = branch.findLast((entry: any) => entry.type === "message" && entry.message?.role === "assistant")?.id;
+    installFooter(ctx);
+  });
 }
