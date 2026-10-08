@@ -280,13 +280,13 @@ worth maintaining — revisit if chat quality becomes a real complaint.
 
 - **Personal `alias/chat`**: `opencode-go/glm-5.3-flash` (Arena Elo 1471,
   image input), then `openai-codex/gpt-6-luna`, then
-  `claude-bridge/claude-haiku-4-5` if neither cheap tier is cutting it, then
+  `claude-bridge/claude-haiku-5-5` as the next available provider, then
   `local-assistant/**` last — on-demand only, since the local server isn't
   always running.
 - **Work `alias/chat`**: `openai-codex/gpt-6-luna`, then
   `cursor/grok-4.7@256k` on provider-diversity grounds (no chat-quality evidence
   either way; swap for `cursor/auto-smart` if the tone does not suit), then
-  `claude-bridge/claude-haiku-4-5`, then `local-assistant/**` where
+  `claude-bridge/claude-haiku-5-5`, then `local-assistant/**` where
   `models.json` exists.
 
 `opencode-go/qwen3.8-flash` and `openai-codex/gpt-5.6-luna` were roughly a
@@ -331,10 +331,10 @@ leads with the cheapest option per machine type.
 - **Personal**: `opencode-go/mimo-v2.5` first — mid-pack overall, concise,
   cheap to run (15B of 310B activated), with the 1M context that condensation
   needs, and not a candidate for the interactive tiers above. Then
-  `openai-codex/gpt-6-luna`, then `claude-bridge/claude-haiku-4-5`.
+  `openai-codex/gpt-6-luna`, then `claude-bridge/claude-haiku-5-5`.
 - **Work**: `openai-codex/gpt-6-luna` first, then `cursor/composer-2.5`
   (cheapest cursor-native model; its coding specialization doesn't matter
-  for title/summary text), then `claude-bridge/claude-haiku-4-5`.
+  for title/summary text), then `claude-bridge/claude-haiku-5-5`.
 
 Each chain still touches all three subscription providers available on that
 machine type (October 2026 decision) so a provider outage or usage-limit hit

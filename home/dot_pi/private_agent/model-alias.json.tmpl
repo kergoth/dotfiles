@@ -47,7 +47,7 @@
     "openai-codex/gpt-6.1-sol",
     "cursor/grok-4.7@256k"
   ],
-{{-   $chat := list "openai-codex/gpt-6-luna" "cursor/grok-4.7@256k" "claude-bridge/claude-haiku-4-5" }}
+{{-   $chat := list "openai-codex/gpt-6-luna" "cursor/grok-4.7@256k" "claude-bridge/claude-haiku-5-5" }}
 {{-   if $hasLocal }}
 {{-     $chat = concat $chat (list $localAssistant) }}
 {{-   end }}
@@ -60,7 +60,7 @@
   "light": [
     "openai-codex/gpt-6-luna",
     "cursor/composer-2.5",
-    "claude-bridge/claude-haiku-4-5"
+    "claude-bridge/claude-haiku-5-5"
   ],
   "title": [
     "openai-codex/gpt-6-luna"
@@ -84,7 +84,7 @@
     "opencode-go/deepseek-v4-pro",
     "opencode-go/kimi-k3"
   ],
-{{-   $chat := list "opencode-go/glm-5.3-flash" "openai-codex/gpt-6-luna" "claude-bridge/claude-haiku-4-5" }}
+{{-   $chat := list "opencode-go/glm-5.3-flash" "openai-codex/gpt-6-luna" "claude-bridge/claude-haiku-5-5" }}
 {{-   if $hasLocal }}
 {{-     $chat = concat $chat (list $localAssistant) }}
 {{-   end }}
@@ -98,7 +98,7 @@
   "light": [
     "opencode-go/mimo-v2.5",
     "openai-codex/gpt-6-luna",
-    "claude-bridge/claude-haiku-4-5"
+    "claude-bridge/claude-haiku-5-5"
   ],
   "title": [
     "opencode-go/mimo-v2.5",

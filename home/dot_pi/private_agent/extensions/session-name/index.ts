@@ -34,7 +34,7 @@
  *       "autoName": "heuristic" | "llm" | "off",
  *       "heuristicMaxLength": 60,
  *       "llmMaxWords": 6,
- *       "llmModel": "anthropic/claude-haiku-4-5",  // cheap model for titles;
+ *       "llmModel": "anthropic/claude-haiku-5-5",  // cheap model for titles;
  *                                                  // null = use session model
  *       "notifyOnAutoName": true,
  *       "setTitle": true,
