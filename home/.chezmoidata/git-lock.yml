@@ -1,7 +1,7 @@
 git_lock:
   86box_assets: "82de0b6c1e070e606c5ca23ac3a33c2c486ece26"
-  86box_roms: "9596fe8d80acb30b36a8a678c7bbce9a890f8050"
-  anthropic_official_plugins: "b8e53f1c05dff3b6d751297f6527990ffc81c2f4"
+  86box_roms: "4ca611cff142c666844f625264df363713e409f4"
+  anthropic_official_plugins: "f359d43b406057f1a8cdbc4ea93b827642c162e6"
   astral: "f3ce88a7ba830f53afd6d944c1d0278ed318e142"
   avoid_ai_writing: "5a5cf6a45331384d4ff68f1f6ce50da24da0da4c"
   bat_extras: "v2024.08.24"
@@ -36,7 +36,7 @@ git_lock:
   plasma_applet_commandoutput: "b2b5a3f05a5613fd4f57f448c34814f65e18a21f"
   powerlevel10k: "v1.20.0"
   powerlevel10k_media: "145eb9fbc2f42ee408dacd9b22d8e6e0e553f83d"
-  retroarch: "01b902b71637cc10502516a71595800a91ef8656"
+  retroarch: "fcdbd28ee3be2a3e678f6e35e598906cb40f7f41"
   steamtinkerlaunch: "8550ab26a712b7f5f6d0947070181446b9de61fd"
   superpowers: "bb92a77741419a4ab5f06e711a283343f1ada0c3"
   vim_profiler: "d4fda79830528ffb6cce895448ac10b502f9f756"
