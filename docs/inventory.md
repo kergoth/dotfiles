@@ -148,7 +148,6 @@ This inventory lists the managed or included pieces that make up the dotfiles en
 
 - **[colima](https://github.com/abiosoft/colima)**: Container runtimes on macOS (and Linux) with minimal setup. _Conditional: This is installed when a container runtime is enabled._
 - **[duti](https://github.com/moretension/duti)**: A command-line tool to select default applications for document types and URL schemes on Mac OS X.
-- **[GoodlinksCTL](https://github.com/viticci/GoodLinksCTL)**: A human- and agent-friendly macOS CLI for the GoodLinks local API.
 - **[lima](https://github.com/lima-vm/lima)**: Linux virtual machines, typically on macOS, for running containerd.
 - **[mas](https://github.com/mas-cli/mas)**: Mac App Store command line interface.
 - **[reattach-to-user-namespace](https://github.com/ChrisJohnsen/tmux-MacOSX-pasteboard)**: Reattach to the per-user bootstrap namespace. This is needed for tools like tmux, though tmux 2.6+ apparently incorporates this functionality already.

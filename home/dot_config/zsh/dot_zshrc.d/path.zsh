@@ -16,6 +16,14 @@ if [[ -e ~/Applications/Obsidian.app/Contents/MacOS/obsidian ]]; then
     path=($path $HOME/Applications/Obsidian.app/Contents/MacOS)
 fi
 
+if [[ -e ~/Applications/GoodLinks.app/Contents/MacOS/CLI/goodlinks ]]; then
+    path=($path ~/Applications/GoodLinks.app/Contents/MacOS/CLI)
+fi
+
+if [[ -e /Applications/GoodLinks.app/Contents/MacOS/CLI/goodlinks ]]; then
+    path=($path /Applications/GoodLinks.app/Contents/MacOS/CLI)
+fi
+
 if [[ $OSTYPE = WSL ]]; then
     path=(${0:h:A}/scripts-wsl $path)
 

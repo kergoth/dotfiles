@@ -39,6 +39,9 @@
         "persist"  $persist
         ) | fromJson -}}
 
+{{-   if hasKey $merged "extensions" -}}
+{{-     $_ := set $merged "extensions" (without (get $merged "extensions") "-builtin:mcp") -}}
+{{-   end -}}
 {{-   $mergedPackages := dig "packages" (list) $merged -}}
 {{-   range $removedPackages -}}
 {{-     $mergedPackages = without $mergedPackages . -}}
