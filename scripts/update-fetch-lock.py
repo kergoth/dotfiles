@@ -87,19 +87,21 @@ def main() -> int:
     current_lock = dict(data.get("fetch_lock", {}))
     updated_lock = dict(current_lock)
 
-    try:
-        for source_id, source in sources.items():
+    for source_id, source in sources.items():
+        try:
             url = resolve_url(data, source)
+        except (KeyError, TypeError, ValueError) as exc:
+            print(f"error: invalid fetch source metadata for {exc}", file=sys.stderr)
+            return 1
+
+        try:
             updated_lock[source_id] = sha256_url(url)
-    except (KeyError, TypeError, ValueError) as exc:
-        print(f"error: invalid fetch source metadata for {exc}", file=sys.stderr)
-        return 1
-    except HTTPError as exc:
-        print(f"error: failed to fetch {exc.url}: HTTP {exc.code}", file=sys.stderr)
-        return 1
-    except URLError as exc:
-        print(f"error: failed to fetch source URL: {exc.reason}", file=sys.stderr)
-        return 1
+        except HTTPError as exc:
+            print(f"error: failed to fetch {exc.url}: HTTP {exc.code}", file=sys.stderr)
+            return 1
+        except URLError as exc:
+            print(f"error: failed to fetch {url}: {exc.reason}", file=sys.stderr)
+            return 1
 
     rendered = dump_yaml(updated_lock)
     if args.dry_run:
