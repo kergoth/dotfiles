@@ -308,6 +308,7 @@ This inventory lists the managed or included pieces that make up the dotfiles en
 - **[Kagi for Safari](https://apps.apple.com/us/app/kagi-for-safari/id1622835804)**: Kagi search for Safari.
 - **[Noir](https://apps.apple.com/us/app/noir/id1592917505)**: Dark mode for every website.
 - **[Obsidian Web Clipper](https://apps.apple.com/us/app/obsidian-web-clipper/id6720708363)**: Clip web pages to Obsidian.
+- **[Privacy Badger](https://apps.apple.com/us/app/privacy-badger/id6761143693)**: Automatically learns to block invisible trackers.
 - [SessionRestore](https://apps.apple.com/us/app/sessionrestore-for-safari/id1463334954?mt=12&uo=4&at=10l4tL)
 - **[SponsorBlock](https://apps.apple.com/us/app/sponsorblock/id1573461917)**: Skip sponsorships in YouTube videos.
 - **[StopTheMadness Pro](https://apps.apple.com/us/app/stopthemadness-pro/id6471380298)**: A Safari extension that stops web site annoyances and privacy violations.
