@@ -6,6 +6,17 @@
 {{-     $_ := set $servers "kagi" (dict "type" "stdio" "command" "uvx" "args" (list "kagimcp") "env" (dict "KAGI_API_KEY" (joinPath .chezmoi.workingTree "settings/agents/kagi-api-key.age" | include | decrypt | trim))) -}}
 {{-   end -}}
 {{- end -}}
+{{- /* GoodLinks is only registered where the app is installed, and the cask installs it into either application directory. */ -}}
+{{- $goodlinksCLI := "" }}
+{{- range list (joinPath .chezmoi.homeDir "Applications") "/Applications" }}
+{{-   $candidate := joinPath . "GoodLinks.app" "Contents" "MacOS" "CLI" "goodlinks" }}
+{{-   if and (not $goodlinksCLI) (stat $candidate) }}
+{{-     $goodlinksCLI = $candidate }}
+{{-   end }}
+{{- end }}
+{{- if $goodlinksCLI }}
+{{-   $_ := set $servers "goodlinks" (dict "command" $goodlinksCLI "args" (list "mcp-server")) }}
+{{- end }}
 {{- if and .work .secrets -}}
 {{-   range $k, $v := (joinPath .chezmoi.workingTree "settings/pi/work-mcp.json.age" | include | decrypt | fromJson) -}}
 {{-     $_ := set $servers $k $v -}}
