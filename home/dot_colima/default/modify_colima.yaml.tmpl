@@ -1,0 +1,152 @@
+#!/usr/bin/env bash
+# chezmoi modify script for ~/.colima/default/colima.yaml.
+#
+# Colima owns this file's layout: `colima start` re-serializes it from its
+# embedded template through gopkg.in/yaml.v3, restoring upstream comments and
+# emitting two trailing spaces on blank lines inside nested comment blocks.
+# A whole-file template therefore drifts on every start. This script replaces
+# only the values below and passes every other byte through untouched.
+#
+# Keys deliberately absent are colima's to default: modelRunner, hostname,
+# network.*, cpuType, mounts, provision, env, and kubernetes.k3sArgs (a block
+# value, and already colima's own default).
+
+set -euo pipefail
+
+{{- $profiles := .vmProfiles }}
+{{- $default := .vmDefaultProfile }}
+{{- $cfg := index $profiles .hostname | default $default }}
+{{- $memory := $cfg.colima_mem_gib }}
+{{- $rosetta_enabled := and .container_runtime_crossarch (eq .chezmoi.os "darwin") (eq .chezmoi.arch "arm64") (not (not (stat "/Library/Apple/usr/share/rosetta/rosetta"))) }}
+{{- if .container_runtime_crossarch }}
+{{-   $memory = add $memory (div $memory 4) }}
+{{- end }}
+{{- $arch := "host" }}
+{{- if eq .chezmoi.arch "arm64" }}
+{{-   $arch = "aarch64" }}
+{{- else if eq .chezmoi.arch "amd64" }}
+{{-   $arch = "x86_64" }}
+{{- end }}
+
+managed_values="cpu={{ $cfg.colima_cpus }}
+disk={{ $cfg.vm_disk_gib }}
+memory={{ $memory }}
+arch={{ $arch }}
+vmType=vz
+mountType=virtiofs
+forwardAgent=true
+sshConfig=false
+rosetta={{ $rosetta_enabled }}
+binfmt={{ .container_runtime_crossarch }}
+kubernetes.version=v1.33.4+k3s1"
+
+patch_managed_values() {
+    COLIMA_MANAGED_VALUES="$managed_values" awk '
+        function strip_trailing(s) {
+            sub(/[[:space:]]+$/, "", s)
+            return s
+        }
+
+        function load_values(text,    lines, n, i, line, eq, path) {
+            n = split(text, lines, "\n")
+            for (i = 1; i <= n; i++) {
+                line = lines[i]
+                if (line == "") {
+                    continue
+                }
+                eq = index(line, "=")
+                path = substr(line, 1, eq - 1)
+                want[path] = substr(line, eq + 1)
+                order[++count] = path
+            }
+        }
+
+        BEGIN {
+            load_values(ENVIRON["COLIMA_MANAGED_VALUES"])
+            section = ""
+        }
+
+        {
+            if (match($0, /^[A-Za-z_][A-Za-z0-9_]*:/) != 0) {
+                section = substr($0, 1, RLENGTH - 1)
+                path = section
+            } else if (match($0, /^  [A-Za-z_][A-Za-z0-9_]*:/) != 0) {
+                path = section "." substr($0, 3, RLENGTH - 3)
+            } else {
+                print
+                next
+            }
+
+            if (!(path in want)) {
+                print
+                next
+            }
+
+            handled[path] = 1
+            if (strip_trailing(substr($0, RLENGTH + 1)) == "") {
+                printf "warning: %s holds a block value; left unchanged\n", path > "/dev/stderr"
+                print
+                next
+            }
+
+            print substr($0, 1, RLENGTH) " " want[path]
+        }
+
+        END {
+            for (i = 1; i <= count; i++) {
+                if (!(order[i] in handled)) {
+                    printf "warning: %s absent from live colima.yaml; colima value applies\n", order[i] > "/dev/stderr"
+                }
+            }
+        }
+    '
+}
+
+emit_minimal() {
+    COLIMA_MANAGED_VALUES="$managed_values" awk '
+        BEGIN {
+            n = split(ENVIRON["COLIMA_MANAGED_VALUES"], lines, "\n")
+            section = ""
+            for (i = 1; i <= n; i++) {
+                line = lines[i]
+                if (line == "") {
+                    continue
+                }
+                eq = index(line, "=")
+                path = substr(line, 1, eq - 1)
+                value = substr(line, eq + 1)
+                dot = index(path, ".")
+                if (dot != 0) {
+                    parent = substr(path, 1, dot - 1)
+                    key = substr(path, dot + 1)
+                } else {
+                    parent = ""
+                    key = path
+                }
+                if (parent != section) {
+                    section = parent
+                    if (parent != "") {
+                        print parent ":"
+                    }
+                }
+                if (parent == "") {
+                    print key ": " value
+                } else {
+                    print "  " key ": " value
+                }
+            }
+        }
+    '
+}
+
+main() {
+    local live=$1
+
+    if [ -z "$live" ]; then
+        printf '%s\n' "$managed_values" | emit_minimal
+    else
+        printf '%s\n' "$live" | patch_managed_values
+    fi
+}
+
+main "$(cat)"
