@@ -229,11 +229,10 @@ both on personal machines. Escalate on evidence, not upfront.
   routine refactors.
 - **Opus tier (escalation)**: `claude-bridge/claude-opus-5-5`, then
   `openai-codex/gpt-6.1-sol`, then (personal only)
-  `opencode-go/deepseek-v4-pro` ahead of `opencode-go/kimi-k3` (October
-  2026 — deepseek-v4-pro carries roughly 10x kimi-k3's monthly quota on
-  OpenCode Go, so spending it first reserves kimi-k3's thin allowance for
-  when deepseek-v4-pro is also exhausted; the two aren't ranked on quality,
-  only quota), `cursor/grok-4.7@256k` at work — cursor-native (Cursor Models
+  `opencode-go/deepseek-v4-pro` (October 2026 — `opencode-go/kimi-k3` was
+  dropped from the chain: its Go allowance is about 110 requests per 5
+  hours and $15 per month, too thin to be a useful last fallback),
+  `cursor/grok-4.7@256k` at work — cursor-native (Cursor Models
   pool), not a third-party pick routed through cursor, so it adds real
   provider diversity instead of just re-billing a pool already covered by
   `claude-bridge` or `openai-codex` at a surcharge.
@@ -292,8 +291,8 @@ worth maintaining — revisit if chat quality becomes a real complaint.
 `opencode-go/qwen3.8-flash` and `openai-codex/gpt-5.6-luna` were roughly a
 wash on conversational quality (measured before `gpt-6-luna` replaced it; not
 re-measured); `opencode-go/glm-5.3-flash` dominates both on
-current Arena evidence at the same price class. Reserve `opencode-go/kimi-k3`
-for coding; its chat quality is real but pays opus-tier prices for a purpose
+current Arena evidence at the same price class. `opencode-go/kimi-k3` is not
+in any chain; its chat quality is real but pays opus-tier prices for a purpose
 where the flash tier gets most of the way there.
 
 ### Research and long-horizon escalation
@@ -309,8 +308,7 @@ that manual step proves too easy to forget).
 
 - **Default (`alias/research`)**: `claude-bridge/claude-opus-5`, then
   `openai-codex/gpt-6.1-sol`, then (personal only)
-  `opencode-go/deepseek-v4-pro` ahead of `opencode-go/kimi-k3` (same
-  quota-first ordering as the opus coding tier) for interactive research
+  `opencode-go/deepseek-v4-pro` for interactive research
   sessions (an evening of source reading, then a synthesis), then (work
   only) `cursor/grok-4.7@256k` — cursor-native rather than a third-party pick
   routed through cursor, for the same provider-diversity reason as the opus
@@ -378,8 +376,8 @@ Rankings above rest on these sources, checked September 2026. Re-verify
 before major re-tiering; the catalog moves monthly.
 
 - [LMArena Text leaderboard snapshot][llming] and [BenchLeader text
-  rankings][benchleader] for chat-quality ordering (`opencode-go/kimi-k3` at
-  rank 7, `opencode-go/glm-5.3-flash` at 1471 Elo,
+  rankings][benchleader] for chat-quality ordering (`opencode-go/glm-5.3-flash`
+  at 1471 Elo,
   `claude-bridge/claude-fable-5` at the top).
 - [Anthropic's Fable 5 positioning][fable] for the long-horizon design center,
   and the [Opus 5 vs Fable 5 head-to-head][goldie] plus [cost
