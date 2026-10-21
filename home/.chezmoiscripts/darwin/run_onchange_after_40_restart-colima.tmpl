@@ -1,17 +1,20 @@
 {{- $colima := includeTemplate "find-tool" (dict "root" . "tool" "colima") -}}
 {{- if $colima -}}
 #!/bin/sh
+# Rendered Colima configuration changes trigger a restart when no containers are running.
 # hash: {{ includeTemplate (joinPath .chezmoi.sourceDir "dot_colima/default/modify_colima.yaml.tmpl") . | sha256sum }}
 # lima override hash: {{ includeTemplate (joinPath .chezmoi.sourceDir "dot_colima/_lima/_config/override.yaml") . | sha256sum }}
 
-if pgrep -q colima; then
+set -eu
+
+if LIMA_SHELL='' {{ $colima }} status >/dev/null 2>&1; then
     if command -v docker >/dev/null 2>&1 && [ -n "$(docker ps --format '{{ "{{" }}.Names{{ "}}" }}')" ]; then
         echo >&2 "Warning: colima should be restarted, but there are running containers."
         echo >&2 "Restarting is recommended: colima stop && LIMA_SHELL= colima start"
     else
         echo >&2 "Restarting colima..."
         {{ $colima }} stop
-        LIMA_SHELL= {{ $colima }} start
+        LIMA_SHELL='' {{ $colima }} start
     fi
 fi
 {{- end -}}
