@@ -1,0 +1,15 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- /* Docker updates authentication and context fields in this file. */ -}}
+{{- $managedRaw := joinPath .chezmoi.workingTree "settings/docker/config.json" | include -}}
+{{- $managed := mustFromJson $managedRaw -}}
+{{- if eq .chezmoi.stdin "" -}}
+{{-   $managedRaw -}}
+{{- else -}}
+{{-   $existing := mustFromJson .chezmoi.stdin -}}
+{{-   $merged := includeTemplate "mergeWithPersistedPaths" (dict
+        "existing" $existing
+        "managed"  $managed
+        "persist"  (list)
+        ) | fromJson -}}
+{{-   $merged | toPrettyJson -}}
+{{- end -}}

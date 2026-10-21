@@ -75,6 +75,9 @@ in {
     docker
     docker-buildx
     docker-compose
+{{- if eq .chezmoi.os "darwin" }}
+    docker-credential-helpers
+{{- end }}
 {{- end }}
     nixpkgs-fmt
     shellcheck

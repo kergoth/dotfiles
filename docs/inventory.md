@@ -146,6 +146,9 @@ This inventory lists the managed or included pieces that make up the dotfiles en
 
 #### CLI Software on macOS
 
+- **[docker-credential-helpers](https://github.com/docker/docker-credential-helpers)**:
+  Store Docker registry credentials in macOS Keychain.
+  _Conditional: Installed when a container runtime is enabled._
 - **[colima](https://github.com/abiosoft/colima)**: Container runtimes on macOS (and Linux) with minimal setup. _Conditional: This is installed when a container runtime is enabled._
 - **[duti](https://github.com/moretension/duti)**: A command-line tool to select default applications for document types and URL schemes on Mac OS X.
 - **[lima](https://github.com/lima-vm/lima)**: Linux virtual machines, typically on macOS, for running containerd.
