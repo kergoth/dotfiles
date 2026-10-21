@@ -20,6 +20,18 @@ State-changing commands (`chezmoi apply`, `./script/setup`, `./script/setup-syst
 
 This repository is public. When a commit changes an `.age` file, keep the subject and body vague — describe the shape of the change without naming plaintext specifics (people, companies, tools, internal URLs) the encryption is meant to protect.
 
+## Managed Configuration
+
+Prefer `settings/<tool>/` for managed configuration values. Use ordinary
+files or templates for configuration-only destinations. Reserve
+`chezmoi:modify-template` merging for mixed configuration and tool-managed
+state, loading managed values from `settings/` through shared merge helpers.
+Use executable `modify_` scripts with inline values only when JSON/YAML
+round-tripping would lose required comments or content, or cause problems
+with files rewritten by the tool, as with Colima. Document that constraint.
+See `docs/chezmoi-authoring.md#choosing-file-ownership` for the
+selection policy and verification requirements.
+
 ## Reference Guides
 
 | Guide | When to consult |

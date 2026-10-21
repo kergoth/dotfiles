@@ -30,6 +30,44 @@ chezmoi diff
 `chezmoi apply` changes the live home directory and may run setup scripts. Use
 it when the rendered change is ready to become active on the current machine.
 
+## Choosing File Ownership
+
+Choose the source form based on who writes the destination and what must
+survive an apply:
+
+1. **Configuration only:** use an ordinary managed file or template. Do not
+   use `modify_` merely to preserve unspecified preferences. Prefer
+   `settings/<tool>/` for managed configuration consumed by rendering or merge
+   logic, keeping configuration values separate from that logic.
+2. **Mixed configuration and state:** use a `chezmoi:modify-template` source
+   that loads managed values from `settings/<tool>/` and merges them with the
+   live destination. Use the shared `mergeWithPersistedPaths` helper rather
+   than embedding managed values or reimplementing merging in the modifier.
+   Docker's `config.json`, for example, combines credential-store preferences
+   with authentication and selected-context state.
+3. **Round-trip preservation exception:** use an executable `modify_` script
+   only when parsing and serializing through chezmoi's JSON or YAML template
+   functions would lose required content or conflict with the tool's own
+   writes. Examples include preserving comments or avoiding recurring layout
+   drift after a tool rewrites its configuration. This exception can apply
+   even when the destination contains configuration only.
+
+The executable exception permits inline managed values when needed for
+selective text patching. It is not the default for structured configuration.
+Colima's modifier patches individual values because Colima regenerates its
+YAML layout and comments on startup; reserializing the whole document creates
+recurring drift. Document the preservation constraint in each such modifier.
+
+For mixed files, keep state and credentials out of `settings/`. Identify which
+values are managed, which live-only values survive, and whether any list or
+nested field needs special merge behavior. Prefer the helper's default overlay
+mode for partial management: managed values win and live-only keys remain.
+Use explicit persisted paths only when live values must override managed ones.
+
+Verify empty-input creation, managed-value precedence, live-state preservation,
+and idempotence. Executable modifiers also need checks that comments and
+unmanaged text survive unchanged. See [Testing and Verification](testing.md).
+
 ## Data and Template Variables
 
 `.chezmoi.toml.tmpl` computes machine-specific state and publishes it under

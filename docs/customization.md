@@ -78,9 +78,15 @@ or the platform keychain for secrets.
 
 ## Partially Managed Files
 
-Some targets are managed through chezmoi `modify_` templates or scripts. Those
-files can contain local edits outside the managed subset, and those local edits
-are not visible through normal dotfiles review commands.
+Some targets combine managed configuration with tool-managed state. Their
+chezmoi `modify_` templates merge values from `settings/<tool>/` with the live
+file. Executable modifiers are reserved for files whose comments, layout, or
+other content cannot safely survive a JSON/YAML round trip. See the
+[file ownership policy](chezmoi-authoring.md#choosing-file-ownership)
+before adding a partially managed target.
+
+These files can contain local edits outside the managed subset, and those
+local edits are not visible through normal dotfiles review commands.
 
 `~/bin/chezmoi-diff-managed` can help review these files. Unlike
 `chezmoi diff`, it compares destination files with their managed baselines
