@@ -59,6 +59,9 @@ else
 fi
 manpath=($XDG_DATA_HOME/man $manpath)
 
+typeset -TUx XDG_DATA_DIRS xdg_data_dirs
+xdg_data_dirs=($xdg_data_dirs $HOMEBREW_PREFIX/share(N-/))
+
 # Set function path
 fpath=(
   $ZDOTDIR/functions
