@@ -206,8 +206,6 @@ applications.
 - **[ruff](https://docs.astral.sh/ruff/)**: A fast Python linter and formatter.
   Installed as a fallback for projects that do not manage it as a project
   dependency.
-- **[rusage.com](https://justine.lol/rusage/)**: Provides the best possible way
-  to report resource usage statistics when launching command line programs.
 - **[sad](https://github.com/ms-jpq/sad)**: CLI search and replace | Space Age
   seD.
 - **[sd](https://github.com/chmln/sd)**: Intuitive find & replace CLI (sed

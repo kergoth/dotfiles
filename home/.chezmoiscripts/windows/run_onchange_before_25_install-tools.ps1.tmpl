@@ -9,7 +9,6 @@
 
 RefreshEnvPath
 
-{{-   $rusage := includeTemplate "find-tool" (dict "root" . "tool" "rusage") -}}
 {{-   $lock := .git_lock -}}
 {{-   $claude_version := trimPrefix "v" (index $lock "claude_code") -}}
 {{-   $codex_tag := index $lock "codex_cli" -}}
@@ -232,16 +231,6 @@ $env:NPM_CONFIG_AUDIT = "false"
 {{-       end }}
 {{-     end }}
 {{-   end }}
-{{-   if not $rusage -}}
-
-Write-Host "Installing rusage"
-New-Item -ItemType Directory -Path $env:XDG_BIN_HOME -Force | Out-Null
-& "$env:CHEZMOI_COMMAND_DIR\scripts\fetch-verified.ps1" `
-    "https://cosmo.zip/pub/cosmos/bin/rusage" `
-    "{{ index .fetch_lock "rusage" }}" `
-    -OutFile (Join-Path $env:XDG_BIN_HOME "rusage")
-{{-   end }}
-
 {{   if $gh_cmd -}}
 {{     if and $chezmoiGithubTokenPath (stat $chezmoiGithubTokenPath) -}}
 $env:GH_TOKEN = Get-Content -Raw -Path "{{ $chezmoiGithubTokenPath }}"

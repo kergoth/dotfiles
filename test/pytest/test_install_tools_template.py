@@ -83,7 +83,6 @@ def test_darwin_install_tools_template_renders_valid_bash_and_invokes_codex_help
         },
         "fetch_lock": {
             "codex_macos_arm64_release": "74e6885e1a58d78f0249faed126eb6ab220f9ce34e7623f9e4108255035d61cc",
-            "rusage": "270e10853812f6c650f0eb4773354070a398f41738b95c4cb9f7e2f918d4833b",
             "eget_installer": "0e64b8a3c13f531da005096cc364ac77835bda54276fedef6c62f3dbdc1ee919",
         },
     }
@@ -138,7 +137,6 @@ def test_claude_installer_runs_with_isolated_curl_config():
         },
         "fetch_lock": {
             "codex_macos_arm64_release": "74e6885e1a58d78f0249faed126eb6ab220f9ce34e7623f9e4108255035d61cc",
-            "rusage": "270e10853812f6c650f0eb4773354070a398f41738b95c4cb9f7e2f918d4833b",
             "eget_installer": "0e64b8a3c13f531da005096cc364ac77835bda54276fedef6c62f3dbdc1ee919",
         },
     }

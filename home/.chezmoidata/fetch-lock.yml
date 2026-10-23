@@ -9,5 +9,4 @@ fetch_lock:
   codex_windows_arm64_release: "513db87ad85a52acb76e552e97caed87813e8ca3b861a1d69c9d5b1638bdb74b"
   eget_installer: "0e64b8a3c13f531da005096cc364ac77835bda54276fedef6c62f3dbdc1ee919"
   kitty_installer: "ca3e2e4cc5bdaf7b5b5d09f02d362b448fda34ce38cb2cb7750922af6a6d0e83"
-  rusage: "270e10853812f6c650f0eb4773354070a398f41738b95c4cb9f7e2f918d4833b"
   zed_installer: "c42e96c9e3da1fae61ac11b0922ad033e8fcac3c34b44303805ad3796081b502"

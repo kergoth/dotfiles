@@ -1,5 +1,0 @@
-if (( $+commands[rusage-readable] )); then
-    rusage-readable "$@"
-else
-    command rusage "$@"
-fi

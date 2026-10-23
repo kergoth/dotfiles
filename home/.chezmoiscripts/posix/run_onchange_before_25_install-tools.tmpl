@@ -4,8 +4,6 @@
 {{-     if .secrets -}}
 {{-       $chezmoiGithubTokenPath = joinPath (printf "%s" .chezmoi.destDir) ".config" "chezmoi_github_token" -}}
 {{-     end -}}
-{{-     $rusage := includeTemplate "find-tool" (dict "root" . "tool" "rusage") -}}
-{{-     $install_rusage := not $rusage -}}
 {{-     $install_distrobox := false -}}
 {{-     if eq .chezmoi.os "linux" -}}
 {{-       $distrobox := includeTemplate "find-tool" (dict "root" . "tool" "distrobox") -}}
@@ -224,16 +222,6 @@ export NPM_CONFIG_AUDIT=false
 {{         range $npm_to_install }}
 "{{ $npm }}" install -g --ignore-scripts {{ . }}
 {{         end }}
-{{       end }}
-
-{{       if $install_rusage }}
-echo >&2 "Installing rusage"
-mkdir -p "$HOME/.local/bin"
-fetch-verified \
-    -o "$HOME/.local/bin/rusage" \
-    "https://cosmo.zip/pub/cosmos/bin/rusage" \
-    "{{ index .fetch_lock "rusage" }}"
-chmod +x "$HOME/.local/bin/rusage"
 {{       end }}
 
 {{   if $gh_cmd -}}
