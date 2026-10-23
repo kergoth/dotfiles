@@ -1,3 +1,7 @@
+# The installed-software sections split by platform, so two Windows sections
+# carry the same heading until that split is reworked.
+disable = ["MD024"]
+
 [code-block-tools]
 enabled = true
 on-missing-tool-binary = "fail"
@@ -12,3 +16,8 @@ code-block-line-length = 0
 # Skills are agent-facing prose written one paragraph per line.
 [per-file-ignores]
 "home/dot_agents/skills/**/*.md" = ["MD013"]
+
+# README lays badges and screenshot pairs out as HTML, which is the only way to
+# get the side-by-side table structure.
+[MD033]
+allowed-elements = ["a", "img", "p", "table", "td", "tr"]
