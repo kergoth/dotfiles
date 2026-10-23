@@ -9,13 +9,23 @@ on-missing-tool-binary = "fail"
 [code-block-tools.languages]
 python = { lint = ["ruff:check"] }
 
-# Skip line length checks in code blocks
+# Skip line length checks in code blocks, which cannot be shortened by wrapping.
+# Reflow lets `rumdl check --fix` wrap over-long prose instead of only reporting it.
 [MD013]
 code-block-line-length = 0
+reflow = true
+reflow-mode = "default"
 
-# Skills are agent-facing prose written one paragraph per line.
+# Agent-facing prose is authored one paragraph per line so compiled rule and
+# skill diffs stay local; wrapping it at the column limit would undo that.
+# `.pi/skills` is vendored from upstream at a pinned tag, and the github-data
+# mirror is rewritten wholesale on every sync, so wrapping either only produces
+# churn on the next copy or sync.
 [per-file-ignores]
-"home/dot_agents/skills/**/*.md" = ["MD013"]
+"AGENTS.md" = ["MD013"]
+"home/dot_agents/**/*.md" = ["MD013"]
+".pi/skills/**/*.md" = ["MD013"]
+"github-data/**/*.md" = ["MD013"]
 
 # README lays badges and screenshot pairs out as HTML, which is the only way to
 # get the side-by-side table structure.
