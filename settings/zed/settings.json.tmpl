@@ -227,7 +227,7 @@
           }
         }
       ],
-      "language_servers": ["pyright", "ruff"]
+      "language_servers": ["ty", "ruff"]
     },
     "Shell Script": {
       "formatter": {
@@ -239,6 +239,14 @@
     }
   },
   "lsp": {
+    "ty": {
+      "initialization_options": {
+        // Have ty use uv for project and PEP 723 script environments.
+        "experimental": {
+          "useUv": "on"
+        }
+      }
+    },
     "ruff": {
       "initialization_options": {
         "settings": {
