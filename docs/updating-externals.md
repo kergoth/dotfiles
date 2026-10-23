@@ -89,8 +89,8 @@ Git sources can tune review without changing update mechanics:
   is intentionally unnecessary, such as some data-only assets.
 
 Release notes provide narrative context, but they do not replace inspection of
-the pinned revision range. For tagged GitHub sources, the review tool may include
-release notes alongside the log and diff.
+the pinned revision range. For tagged GitHub sources, the review tool may
+include release notes alongside the log and diff.
 
 `scripts/show-git-changes.py` is the review surface. It fetches the old and new
 range, displays history and changes, applies path and note metadata, and may

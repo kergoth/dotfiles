@@ -1,6 +1,10 @@
 # Contributor Guide
 
-Thank you for your interest in improving this project. This project is open-source under the [BlueOak 1.0.0 Model License](https://spdx.org/licenses/BlueOak-1.0.0) and welcomes contributions in the form of bug reports, feature requests, and pull requests.
+Thank you for your interest in improving this project. This project is
+open-source under the
+[BlueOak 1.0.0 Model License](https://spdx.org/licenses/BlueOak-1.0.0) and
+welcomes contributions in the form of bug reports, feature requests, and pull
+requests.
 
 Here is a list of important resources for contributors:
 
@@ -20,11 +24,13 @@ When filing an issue, make sure to answer these questions:
 - What did you expect to see?
 - What did you see instead?
 
-The best way to get your bug fixed is to provide a test case, and/or steps to reproduce the issue.
+The best way to get your bug fixed is to provide a test case, and/or steps to
+reproduce the issue.
 
 ## How to request a feature
 
-Request features on the [Issue Tracker](https://github.com/kergoth/dotfiles/issues).
+Request features on the
+[Issue Tracker](https://github.com/kergoth/dotfiles/issues).
 
 ## How to submit changes
 
@@ -38,7 +44,8 @@ Your pull request needs to meet the following guidelines for acceptance:
 - shellcheck should pass against all shell scripts
 - PSScriptAnalyzer should pass against all powershell scripts
 
-It is recommended to open an issue before starting work on anything. This will allow a chance to talk it over with the maintainers and validate your approach.
+It is recommended to open an issue before starting work on anything. This will
+allow a chance to talk it over with the maintainers and validate your approach.
 
 ## Development and testing
 

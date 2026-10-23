@@ -124,8 +124,8 @@ import.
 | `.retro_computing` | Install retro-computing emulators and related tools. |
 
 Combine role, capability, and software use case flags narrowly. For example, a
-GUI development tool may require `.coding`, a non-headless host, and a
-supported installation method. The [software contribution guide](contributing-software.md)
+GUI development tool may require `.coding`, a non-headless host, and a supported
+installation method. The [software contribution guide](contributing-software.md)
 contains installation-specific examples.
 
 ## Run Script Naming and Timing

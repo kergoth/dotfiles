@@ -1,9 +1,13 @@
 # Operating System Installation
 
-Some platforms have lower-level scripts for fresh OS installation or live environments:
+Some platforms have lower-level scripts for fresh OS installation or live
+environments:
 
-- **`os-install`** (`script/{distro}/os-install`): Installs the OS from a live environment. Available for Arch and Chimera Linux.
-- **`setup-root`** (`script/{distro}/setup-root`): Runs as root to create users, install base packages, and prepare for `setup-full`. Available for Arch, Chimera Linux, and FreeBSD.
+- **`os-install`** (`script/{distro}/os-install`): Installs the OS from a live
+  environment. Available for Arch and Chimera Linux.
+- **`setup-root`** (`script/{distro}/setup-root`): Runs as root to create users,
+  install base packages, and prepare for `setup-full`. Available for Arch,
+  Chimera Linux, and FreeBSD.
 
 ## WSL2 Arch Linux Installation (ArchWSL)
 
@@ -35,7 +39,8 @@ git clone https://github.com/kergoth/dotfiles .dotfiles
 ./.dotfiles/script/setup-full
 ```
 
-**Alternative (wget method):** If you prefer not to clone as root, you can download setup-root directly:
+**Alternative (wget method):** If you prefer not to clone as root, you can
+download setup-root directly:
 
 ```console
 cd
@@ -48,9 +53,12 @@ The setup-root script will initialize the keyring automatically if needed.
 
 ## WSL2 Chimera Linux Installation
 
-- Download the latest release zip file from [ChimeraWSL](https://github.com/tranzystorekk/ChimeraWSL) (Install Chimera Linux as a WSL instance).
+- Download the latest release zip file from
+  [ChimeraWSL](https://github.com/tranzystorekk/ChimeraWSL) (Install Chimera
+  Linux as a WSL instance).
 - Unpack `Chimera.zip` into ~/Apps/Chimera
-- Run ~/Apps/Chimera/chimera.exe, which registers the new distro with WSL and unpacks the rootfs tarball, then enters the wsl as root
+- Run ~/Apps/Chimera/chimera.exe, which registers the new distro with WSL and
+  unpacks the rootfs tarball, then enters the wsl as root
 - Initial setup, run the setup-root script, and exit wsl:
 
 ```console
@@ -63,7 +71,8 @@ git clone https://github.com/kergoth/dotfiles .dotfiles
 exit
 ```
 
-- Set our new user as default: `~/Apps/Chimera/chimera.exe config --default-user kergoth`
+- Set our new user as default:
+  `~/Apps/Chimera/chimera.exe config --default-user kergoth`
 - Re-enter wsl, as the new user: `wsl -d chimera`
 - Clone the dotfiles repository and run the system and user setup:
 
@@ -73,21 +82,27 @@ git clone https://github.com/kergoth/dotfiles .dotfiles
 ./.dotfiles/script/setup-full
 ```
 
-- Optionally, enable init and service management with dinit: `doas nvim /etc/wsl.conf` and add:
+- Optionally, enable init and service management with dinit:
+  `doas nvim /etc/wsl.conf` and add:
 
 ```ini
 [boot]
 systemd=true
 ```
 
-- If you set systemd=true, remember to shut down WSL so it will start init when you run it next: `wsl.exe --shutdown`.
+- If you set systemd=true, remember to shut down WSL so it will start init when
+  you run it next: `wsl.exe --shutdown`.
 
-**Note**: If you set `systemd=true`, it will run all the default Chimera Linux services, including **PipeWire**, but there's no need for this given the WSL2 system distro is already running **PulseAudio**. I need to determine which default services to disable in this situation.
+**Note**: If you set `systemd=true`, it will run all the default Chimera Linux
+services, including **PipeWire**, but there's no need for this given the WSL2
+system distro is already running **PulseAudio**. I need to determine which
+default services to disable in this situation.
 
 ## Chimera Linux Installation
 
 - Attach the Chimera Linux Live CD ISO to a VM or USB drive and boot from it.
-- If not using a `base` ISO, wait for the graphical environment to load. It will take a few seconds.
+- If not using a `base` ISO, wait for the graphical environment to load. It will
+  take a few seconds.
 - If using a `base` ISO, log in as `anon`.
 - Run the `Konsole` app.
 - Note that the default password, when prompted, is `chimera`.
@@ -101,7 +116,8 @@ doas ./.dotfiles/script/chimera/os-install
 ```
 
 - After rebooting:
-  - Note: By default, there will be no graphical environment available, but this will be installed by my dotfiles setup.
+  - Note: By default, there will be no graphical environment available, but this
+    will be installed by my dotfiles setup.
   - Log in as the new user and:
 
 ```console

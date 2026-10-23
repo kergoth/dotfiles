@@ -9,7 +9,8 @@ comments on existing files that are not otherwise being changed.
 
 ## Foundation: Ottinger's Rules for Comments
 
-Built on [Ottinger's Rules for Comments](https://ruthlesslyhelpful.net/2012/02/25/rules-for-commenting-code/),
+Built on
+[Ottinger's Rules for Comments](https://ruthlesslyhelpful.net/2012/02/25/rules-for-commenting-code/),
 three principles:
 
 1. **Comments are for things that cannot be expressed in code.**

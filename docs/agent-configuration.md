@@ -65,8 +65,8 @@ will be overwritten.
 
 ## Agent-Specific Conditionals
 
-The renderer supplies one of `default`, `claude`, `codex`, `cursor`, `delta`,
-or `pi` as the `agent` parameter. Keep shared guidance unconditional. Add a branch
+The renderer supplies one of `default`, `claude`, `codex`, `cursor`, `delta`, or
+`pi` as the `agent` parameter. Keep shared guidance unconditional. Add a branch
 only for a genuine tool capability or workflow difference, and keep the branch
 in the topic that owns the rule.
 

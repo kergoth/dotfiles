@@ -254,12 +254,11 @@ per-token pool such as opencode-zen.
 The Codex slots use the GPT-6 family (October 2026). `gpt-6.1-sol` fills the
 sonnet-tier and research fallback slot and the opus-tier fallback slot;
 `gpt-6-luna` backs `chat`, `light`, and `title`. There is no GPT-6 Terra:
-`gpt-5.6-terra` is dominated by `gpt-6.1-sol` ($2/$10 per million tokens; sources
-disagree on Terra's exact list price, but none put it below Sol's) and scores
-lower, so it was dropped rather than kept as a
-middle rung. `gpt-6-astra` ($10/$50) is in the scoped list for manual
-selection only, not in any chain, since nothing here has shown a task that
-`gpt-6.1-sol` fails and Astra passes.
+`gpt-5.6-terra` is dominated by `gpt-6.1-sol` ($2/$10 per million tokens;
+sources disagree on Terra's exact list price, but none put it below Sol's) and
+scores lower, so it was dropped rather than kept as a middle rung. `gpt-6-astra`
+($10/$50) is in the scoped list for manual selection only, not in any chain,
+since nothing here has shown a task that `gpt-6.1-sol` fails and Astra passes.
 
 A local A/B (`scripts/pi-ab`, five fixed tasks, one run each) found all three
 of `claude-sonnet-5-5`, `gpt-6.1-sol`, and `gpt-5.6-terra` passing every task.

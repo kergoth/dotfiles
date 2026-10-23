@@ -26,21 +26,30 @@
         <img src="https://img.shields.io/badge/-FreeBSD-%23870000?logo=freebsd&logoColor=white" alt="FreeBSD" /></a>
 </p>
 
-Personal dotfiles and system setup, managed with [chezmoi](https://www.chezmoi.io/) and [Nix Home Manager](https://nix-community.github.io/home-manager/). This repository covers application configuration, shell customization, package installation, and system-level setup across macOS, Linux, FreeBSD, and Windows.
+Personal dotfiles and system setup, managed with
+[chezmoi](https://www.chezmoi.io/) and
+[Nix Home Manager](https://nix-community.github.io/home-manager/). This
+repository covers application configuration, shell customization, package
+installation, and system-level setup across macOS, Linux, FreeBSD, and Windows.
 
-This project is not intended for wholesale adoption, as it adds complexity most people don't need.
+This project is not intended for wholesale adoption, as it adds complexity most
+people don't need.
 
 ## Tour
 
-Walk through the daily environment this repository builds. Not every tool is covered here. See the
-[Inventory](docs/inventory.md) for the complete list of installed software, plugins, fonts, and system
-components.
+Walk through the daily environment this repository builds. Not every tool is
+covered here. See the [Inventory](docs/inventory.md) for the complete list of
+installed software, plugins, fonts, and system components.
 
-- **Font:** [MesloLGS NF](https://github.com/romkatv/powerlevel10k/blob/master/font.md), shared across terminals and editors.
+- **Font:**
+  [MesloLGS NF](https://github.com/romkatv/powerlevel10k/blob/master/font.md),
+  shared across terminals and editors.
 - **Color modes:** Dark and light are first-class operating modes.
 - **Dark palette:** [Dracula](https://draculatheme.com).
-- **Light palette (editors):** [Alabaster BG](https://github.com/tonsky/vscode-theme-alabaster).
-- **Light palette (everything else):** [Catppuccin Latte](https://github.com/catppuccin/catppuccin).
+- **Light palette (editors):**
+  [Alabaster BG](https://github.com/tonsky/vscode-theme-alabaster).
+- **Light palette (everything else):**
+  [Catppuccin Latte](https://github.com/catppuccin/catppuccin).
 
 See [Theming](docs/theming.md) for the palette and mode-detection details.
 
@@ -51,15 +60,22 @@ See [Theming](docs/theming.md) for the palette and mode-detection details.
 <td><img src="docs/tour/terminal-workspace-light.png" alt="Terminal workspace in light mode: Zsh prompt with Git branch, status, and command duration visible" width="100%"></td>
 </tr></table>
 
-[Kitty](https://sw.kovidgoyal.net/kitty/) is the daily terminal, paired with Zsh and a [Powerlevel10k](https://github.com/romkatv/powerlevel10k) prompt. The prompt shows the working
-directory, Git branch and status, active language environments, and the duration of slow commands. [Atuin](https://atuin.sh/)
+[Kitty](https://sw.kovidgoyal.net/kitty/) is the daily terminal, paired with Zsh
+and a [Powerlevel10k](https://github.com/romkatv/powerlevel10k) prompt. The
+prompt shows the working directory, Git branch and status, active language
+environments, and the duration of slow commands. [Atuin](https://atuin.sh/)
 handles shell command history search.
 
-Near-daily utilities: [zoxide](https://github.com/ajeetdsouza/zoxide), [fd](https://github.com/sharkdp/fd), [ripgrep](https://github.com/BurntSushi/ripgrep), [fzf](https://github.com/junegunn/fzf), [eza](https://eza.rocks/), [bat](https://github.com/sharkdp/bat), [duf](https://github.com/muesli/duf), and [dua](https://github.com/Byron/dua-cli).
+Near-daily utilities: [zoxide](https://github.com/ajeetdsouza/zoxide),
+[fd](https://github.com/sharkdp/fd),
+[ripgrep](https://github.com/BurntSushi/ripgrep),
+[fzf](https://github.com/junegunn/fzf), [eza](https://eza.rocks/),
+[bat](https://github.com/sharkdp/bat), [duf](https://github.com/muesli/duf), and
+[dua](https://github.com/Byron/dua-cli).
 
-At startup, zsh runs a daily dotfiles check. If updates are available, it pulls them and applies the changes.
-Vim configuration follows the same pattern weekly. Set `DOTFILES_NO_UPDATE` or `VIM_NO_UPDATE` to disable either
-check.
+At startup, zsh runs a daily dotfiles check. If updates are available, it pulls
+them and applies the changes. Vim configuration follows the same pattern weekly.
+Set `DOTFILES_NO_UPDATE` or `VIM_NO_UPDATE` to disable either check.
 
 ### Editors
 
@@ -79,8 +95,8 @@ Vim is the terminal-native editor and fallback.
 
 ### Development
 
-Git is the primary source control tool. The configured pager and diff driver add syntax highlighting
-and color to log and diff output.
+Git is the primary source control tool. The configured pager and diff driver add
+syntax highlighting and color to log and diff output.
 
 <table><tr>
 <td><img src="docs/tour/git-show-dark.png" alt="git show output in dark mode: colored commit decoration, message, and diff" width="100%"></td>
@@ -103,8 +119,10 @@ Including the full branch status relative to its upstream:
 
 - **st**: Short status
 - **lg**: Single-line formatted log
-- **l**: Like `lg` with a line limit; substantially faster on large repositories such as the kernel
-- **brstat**: Branch status in both directions, including modified commits (via `git range-diff`)
+- **l**: Like `lg` with a line limit; substantially faster on large repositories
+  such as the kernel
+- **brstat**: Branch status in both directions, including modified commits (via
+  `git range-diff`)
 - **last**: Time-bounded log. Examples: `git last day`, `git last week`
 - **in**: Remote commits not yet in the local branch
 - **out**: Local commits not yet in the remote branch
@@ -112,17 +130,21 @@ Including the full branch status relative to its upstream:
 - **au**: Stage modifications to tracked files only
 - **amend**: Amend the top commit with staged changes
 
-[Tmux](https://github.com/tmux/tmux) maintains background sessions and multi-pane layouts, though most day-to-day splitting happens
-in Kitty, Vim, or Zed.
+[Tmux](https://github.com/tmux/tmux) maintains background sessions and
+multi-pane layouts, though most day-to-day splitting happens in Kitty, Vim, or
+Zed.
 
 <table><tr>
 <td><img src="docs/tour/tmux-statusline-dark.png" alt="Tmux statusline in dark mode with Dracula theme" width="100%"></td>
 <td><img src="docs/tour/tmux-statusline-light.png" alt="Tmux statusline in light mode" width="100%"></td>
 </tr></table>
 
-Modern Python tooling from [Astral](https://astral.sh/) is preinstalled across all systems: [uv](https://docs.astral.sh/uv/), [ruff](https://docs.astral.sh/ruff/), and [ty](https://github.com/astral-sh/ty).
+Modern Python tooling from [Astral](https://astral.sh/) is preinstalled across
+all systems: [uv](https://docs.astral.sh/uv/),
+[ruff](https://docs.astral.sh/ruff/), and [ty](https://github.com/astral-sh/ty).
 
-[Pi](https://pi.dev/) is the preferred LLM agent harness, chosen for its minimal baseline and extensibility.
+[Pi](https://pi.dev/) is the preferred LLM agent harness, chosen for its minimal
+baseline and extensibility.
 
 <table><tr>
 <td><img src="docs/tour/pi-statusline-dark.png" alt="Pi statusline in dark mode" width="100%"></td>
@@ -131,7 +153,9 @@ Modern Python tooling from [Astral](https://astral.sh/) is preinstalled across a
 
 ### Keyboard Configuration
 
-On macOS systems, [Karabiner-Elements](https://karabiner-elements.pqrs.org) is used to configure the keyboard, with these as the most important complex modifications:
+On macOS systems, [Karabiner-Elements](https://karabiner-elements.pqrs.org) is
+used to configure the keyboard, with these as the most important complex
+modifications:
 
 - Caps Lock to Escape on single press, Control on press and hold.
 - Control to Caps Lock on single press, 'Hyper Key' on press and hold.
@@ -139,7 +163,16 @@ On macOS systems, [Karabiner-Elements](https://karabiner-elements.pqrs.org) is u
 
 ## How It Works
 
-[Chezmoi](https://www.chezmoi.io/) renders managed source into `$HOME`, handles encrypted secrets via [age](https://age-encryption.org/), and runs setup scripts as part of the apply process. Home Manager is the preferred user package layer where Nix and nixpkgs fit; [Homebrew](https://brew.sh/), [Scoop](https://scoop.sh/), native packages, Flatpak, language package managers, and pinned external installers fill platform gaps. Machine roles and platform differences are handled through chezmoi templates. See [Repository Architecture](docs/repository-architecture.md), [Authoring Chezmoi Configuration](docs/chezmoi-authoring.md), and [Updating External Content](docs/updating-externals.md) for the details.
+[Chezmoi](https://www.chezmoi.io/) renders managed source into `$HOME`, handles
+encrypted secrets via [age](https://age-encryption.org/), and runs setup scripts
+as part of the apply process. Home Manager is the preferred user package layer
+where Nix and nixpkgs fit; [Homebrew](https://brew.sh/),
+[Scoop](https://scoop.sh/), native packages, Flatpak, language package managers,
+and pinned external installers fill platform gaps. Machine roles and platform
+differences are handled through chezmoi templates. See
+[Repository Architecture](docs/repository-architecture.md),
+[Authoring Chezmoi Configuration](docs/chezmoi-authoring.md), and
+[Updating External Content](docs/updating-externals.md) for the details.
 
 ## Getting Started
 
@@ -150,7 +183,8 @@ git clone https://github.com/kergoth/dotfiles ~/.dotfiles
 ~/.dotfiles/script/setup-full
 ```
 
-On a fresh machine without git, the bootstrap script installs prerequisites, clones the repository, and initializes chezmoi:
+On a fresh machine without git, the bootstrap script installs prerequisites,
+clones the repository, and initializes chezmoi:
 
 ```console
 curl -fsLS https://raw.githubusercontent.com/kergoth/dotfiles/main/script/bootstrap | sh
@@ -158,14 +192,24 @@ curl -fsLS https://raw.githubusercontent.com/kergoth/dotfiles/main/script/bootst
 
 ## Setup
 
-The setup scripts form a progression from system preparation to user-level configuration:
+The setup scripts form a progression from system preparation to user-level
+configuration:
 
-- `script/setup-system`: installs system-level packages, Nix, and host prerequisites. Requires a non-root user with sudo or doas access. On macOS, your admin user must have signed into the Mac App Store first. On Windows, run `script/setup-system.ps1` from PowerShell rather than WSL.
-- `script/setup`: applies dotfiles and runs user-level setup, including package installation via Home Manager and other configured package managers. Run after `setup-system` if system-level dependencies are needed.
+- `script/setup-system`: installs system-level packages, Nix, and host
+  prerequisites. Requires a non-root user with sudo or doas access. On macOS,
+  your admin user must have signed into the Mac App Store first. On Windows, run
+  `script/setup-system.ps1` from PowerShell rather than WSL.
+- `script/setup`: applies dotfiles and runs user-level setup, including package
+  installation via Home Manager and other configured package managers. Run after
+  `setup-system` if system-level dependencies are needed.
 - `script/setup-full`: runs `setup-system` followed by `setup`.
-- `script/bootstrap`: installs prerequisites, clones the repository, and initializes chezmoi. The setup scripts above run this automatically when needed.
+- `script/bootstrap`: installs prerequisites, clones the repository, and
+  initializes chezmoi. The setup scripts above run this automatically when
+  needed.
 
-Per-distribution `os-install` and `setup-root` entry points under `script/<distro>/` handle raw operating system and distro-specific preparation. See [Operating System Installation](docs/os-installation.md) for those flows.
+Per-distribution `os-install` and `setup-root` entry points under
+`script/<distro>/` handle raw operating system and distro-specific preparation.
+See [Operating System Installation](docs/os-installation.md) for those flows.
 
 ## Day-to-Day Usage
 
@@ -175,9 +219,11 @@ Edit a dotfile and watch for changes (re-applies on save):
 chezmoi edit --watch ~/.config/zsh/.zshrc
 ```
 
-See [Authoring Chezmoi Configuration](docs/chezmoi-authoring.md) for source resolution, template rendering, and safe inspection before applying changes.
+See [Authoring Chezmoi Configuration](docs/chezmoi-authoring.md) for source
+resolution, template rendering, and safe inspection before applying changes.
 
-Apply changes to the home directory manually after editing files in the repository checkout:
+Apply changes to the home directory manually after editing files in the
+repository checkout:
 
 ```console
 chezmoi apply
@@ -189,32 +235,45 @@ Run a `git pull` in the dotfiles repository and then run `chezmoi apply` on it:
 chezmoi update
 ```
 
-Review and apply available updates to dotfiles, external files, and software packages:
+Review and apply available updates to dotfiles, external files, and software
+packages:
 
 ```console
 ./script/update
 ```
 
-See [Updating External Content](docs/updating-externals.md) for the review-first source and lock workflow.
+See [Updating External Content](docs/updating-externals.md) for the review-first
+source and lock workflow.
 
 ## Supporting Docs
 
-- [Inventory](docs/inventory.md): installed software, included external projects, plugins, fonts, scripts, and system or desktop components.
-- [Customization](docs/customization.md): local override files and machine-specific configuration paths.
-- [Repository Architecture](docs/repository-architecture.md): setup layers, directory responsibilities, and source-to-rendered flow.
-- [Theming](docs/theming.md): dark/light mode behavior and tool-specific palettes.
-- [Operating System Installation](docs/os-installation.md): raw-OS, WSL, and distro-specific preparation flows.
-- [Updating External Content](docs/updating-externals.md): review-first source, lock, and container-pin updates.
-- [Contributor Guide](CONTRIBUTING.md): contribution workflow and contributor reference links.
+- [Inventory](docs/inventory.md): installed software, included external
+  projects, plugins, fonts, scripts, and system or desktop components.
+- [Customization](docs/customization.md): local override files and
+  machine-specific configuration paths.
+- [Repository Architecture](docs/repository-architecture.md): setup layers,
+  directory responsibilities, and source-to-rendered flow.
+- [Theming](docs/theming.md): dark/light mode behavior and tool-specific
+  palettes.
+- [Operating System Installation](docs/os-installation.md): raw-OS, WSL, and
+  distro-specific preparation flows.
+- [Updating External Content](docs/updating-externals.md): review-first source,
+  lock, and container-pin updates.
+- [Contributor Guide](CONTRIBUTING.md): contribution workflow and contributor
+  reference links.
 
 ## Contributing & Support
 
-Questions, comments, feedback, and contributions are welcome. Open an issue to start a discussion.
+Questions, comments, feedback, and contributions are welcome. Open an issue to
+start a discussion.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for ways to get started contributing to this project.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for ways to get started contributing to
+this project.
 
-Please adhere to this project's [Code of Conduct](CODE_OF_CONDUCT.md) and follow [The Ethical Source Principles](https://ethicalsource.dev/principles/).
+Please adhere to this project's [Code of Conduct](CODE_OF_CONDUCT.md) and follow
+[The Ethical Source Principles](https://ethicalsource.dev/principles/).
 
 ## License
 
-Distributed under the terms of the [Blue Oak Model License 1.0.0](LICENSE.md) license.
+Distributed under the terms of the [Blue Oak Model License 1.0.0](LICENSE.md)
+license.

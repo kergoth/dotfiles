@@ -1,6 +1,8 @@
 # Adding Software to This Dotfiles Repository
 
-This guide documents how to add software installations to this chezmoi-managed dotfiles repository. It covers supported platforms, install locations, template patterns, README inventory rules, and verification.
+This guide documents how to add software installations to this chezmoi-managed
+dotfiles repository. It covers supported platforms, install locations, template
+patterns, README inventory rules, and verification.
 
 ## Quick Reference: Decision Tree
 
@@ -36,31 +38,50 @@ Is this a GUI application?
 
 When multiple installation methods are available, prefer them in this order:
 
-1. **User installation over system installation** - Avoid requiring sudo/admin when possible
-2. **Reviewed, repeatable sources over floating installers** - Prefer package managers, pinned release assets, or lock-file-driven installers over unpinned downloads
-3. **Nix over Homebrew for shared CLI tools** - Use Homebrew casks for GUI apps on macOS
-4. **Language package managers only for approved gaps** - Use `uv`, `cargo`, or `npm` when the project already uses that path for the tool class or platform gap
-5. **System packages when Nix is unavailable** - Chimera uses `apk`, and FreeBSD uses pkg/ports
-6. **eget for Chimera gaps** - Use GitHub release binaries only when the tool is unavailable through the preferred package sources
+1. **User installation over system installation** - Avoid requiring sudo/admin
+   when possible
+2. **Reviewed, repeatable sources over floating installers** - Prefer package
+   managers, pinned release assets, or lock-file-driven installers over unpinned
+   downloads
+3. **Nix over Homebrew for shared CLI tools** - Use Homebrew casks for GUI apps
+   on macOS
+4. **Language package managers only for approved gaps** - Use `uv`, `cargo`, or
+   `npm` when the project already uses that path for the tool class or platform
+   gap
+5. **System packages when Nix is unavailable** - Chimera uses `apk`, and FreeBSD
+   uses pkg/ports
+6. **eget for Chimera gaps** - Use GitHub release binaries only when the tool is
+   unavailable through the preferred package sources
 
 ### Exception: Pinned or Freshness-Sensitive Tools
 
-Some tools update often enough, or have packaging constraints specific enough, that the default CLI hierarchy is not enough. Treat these as explicit design choices, not as a general excuse to bypass Nix or system packages.
+Some tools update often enough, or have packaging constraints specific enough,
+that the default CLI hierarchy is not enough. Treat these as explicit design
+choices, not as a general excuse to bypass Nix or system packages.
 
 Current examples:
 
-- **Claude Code**: pinned through `git-lock.yml`. POSIX and Windows install-tools use the official installer, and FreeBSD uses a pinned npm package.
-- **Codex**: pinned through `git-lock.yml` plus verified release assets in `fetch-lock.yml`. POSIX and Windows install-tools use the direct installer path when a locked asset exists.
-- **jujutsu (`jj`)**: installed through platform package managers. Homebrew is used on macOS because it tracks releases well enough for day-to-day use.
+- **Claude Code**: pinned through `git-lock.yml`. POSIX and Windows
+  install-tools use the official installer, and FreeBSD uses a pinned npm
+  package.
+- **Codex**: pinned through `git-lock.yml` plus verified release assets in
+  `fetch-lock.yml`. POSIX and Windows install-tools use the direct installer
+  path when a locked asset exists.
+- **jujutsu (`jj`)**: installed through platform package managers. Homebrew is
+  used on macOS because it tracks releases well enough for day-to-day use.
 
-When adding a new tool in this class, document why the ordinary hierarchy is insufficient, add or update lock data when direct downloads are involved, and include a verification path that proves the pinned version renders into the installer template.
+When adding a new tool in this class, document why the ordinary hierarchy is
+insufficient, add or update lock data when direct downloads are involved, and
+include a verification path that proves the pinned version renders into the
+installer template.
 
 ## Platform Support Matrix
 
-> **Note:** This matrix documents our current preferred installation methods, not every
-> available option. For example, Flatpak is our current approach for Linux GUI apps, but
-> AppImage, Snap, or native packages could also work. The decision tree and hierarchy above
-> guide which method to use when multiple options exist.
+> **Note:** This matrix documents our current preferred installation methods,
+> not every available option. For example, Flatpak is our current approach for
+> Linux GUI apps, but AppImage, Snap, or native packages could also work. The
+> decision tree and hierarchy above guide which method to use when multiple
+> options exist.
 
 | Platform | GUI Apps | CLI (Primary) | CLI (Fallback) | System-Level (admin/root) |
 |----------|----------|---------------|----------------|---------------------------|
@@ -166,12 +187,15 @@ mas "MusicHarbor", id: 1440405750
 
 ### 4. Windows GUI apps (User Level)
 
-**File:** `home/.chezmoiscripts/windows/run_onchange_after_10_install-apps.ps1.tmpl`
+**File:**
+`home/.chezmoiscripts/windows/run_onchange_after_10_install-apps.ps1.tmpl`
 
-New additions use `find-tool` in the template header plus bare `scoop install` in the body. For apps unavailable on
-Scoop, download directly from a reviewed source and install silently in the body. Use `Test-Path` on the known install
-location for idempotency instead of `find-tool`. Add a `find-tool` check in the header only for Scoop-installed apps,
-because those land in PATH. Skip it for direct-download apps.
+New additions use `find-tool` in the template header plus bare `scoop install`
+in the body. For apps unavailable on Scoop, download directly from a reviewed
+source and install silently in the body. Use `Test-Path` on the known install
+location for idempotency instead of `find-tool`. Add a `find-tool` check in the
+header only for Scoop-installed apps, because those land in PATH. Skip it for
+direct-download apps.
 
 ```powershell
 {{/* HEADER: before the main {{ if and .user_setup (not .headless) }} guard */}}
@@ -186,7 +210,10 @@ scoop install appname
 {{-     end }}
 ```
 
-**Legacy pattern** (`Install-Scoop-IfNotPresent <scoop-name> <winget-id>`): a winget-compatibility shim present in existing code. It checks if the app is already installed via winget before installing via Scoop. New additions should use `find-tool` plus `scoop install` instead.
+**Legacy pattern** (`Install-Scoop-IfNotPresent <scoop-name> <winget-id>`): a
+winget-compatibility shim present in existing code. It checks if the app is
+already installed via winget before installing via Scoop. New additions should
+use `find-tool` plus `scoop install` instead.
 
 ### 4b. Windows winget (GUI Apps - Admin Level)
 
@@ -238,15 +265,22 @@ This script self-elevates to administrator. Use for:
   ];
 ```
 
-**Note:** For macOS, prefer Homebrew casks for GUI apps. Only add CLI tools to the main packages list that should be shared across platforms.
+**Note:** For macOS, prefer Homebrew casks for GUI apps. Only add CLI tools to
+the main packages list that should be shared across platforms.
 
 ### 6. Linux Flatpak (GUI Apps)
 
 **File:** `home/.chezmoiscripts/linux/run_onchange_after_10_install-apps.tmpl`
 
-> The Linux Flatpak template has two phases. The header computes `$need_install`. The script body only emits if `$need_install` is true. New app classes must affect the header so the script renders when something is missing. Flatpak apps use a map of app IDs plus `packagesForMissingTools`. Direct installers such as Zed and kitty use their own detection variables.
+> The Linux Flatpak template has two phases. The header computes
+> `$need_install`. The script body only emits if `$need_install` is true. New
+> app classes must affect the header so the script renders when something is
+> missing. Flatpak apps use a map of app IDs plus `packagesForMissingTools`.
+> Direct installers such as Zed and kitty use their own detection variables.
 >
-> For flatpak-backed entries in this script, detection must use the exported flatpak app ID under `~/.local/share/flatpak/exports/bin` (for example `md.obsidian.Obsidian`), not a guessed short command such as `obsidian`.
+> For flatpak-backed entries in this script, detection must use the exported
+> flatpak app ID under `~/.local/share/flatpak/exports/bin` (for example
+> `md.obsidian.Obsidian`), not a guessed short command such as `obsidian`.
 
 ```go
 {{/* HEADER: add the app ID to the flatpak map inside the $flatpak guard */}}
@@ -267,7 +301,11 @@ flatpak install -y --user flathub {{ . }}
 
 **File:** `home/.chezmoiscripts/posix/run_onchange_before_25_install-tools.tmpl`
 
-Use this path for CLI tools that need a review-first direct install instead of ordinary package-manager handling. The current model is Codex: the version comes from `git-lock.yml`, platform assets come from `fetch-lock.yml`, and the rendered script calls a checked helper with the expected tag, version, URL, and SHA-256.
+Use this path for CLI tools that need a review-first direct install instead of
+ordinary package-manager handling. The current model is Codex: the version comes
+from `git-lock.yml`, platform assets come from `fetch-lock.yml`, and the
+rendered script calls a checked helper with the expected tag, version, URL, and
+SHA-256.
 
 ```go
 {{-     $tool := includeTemplate "find-tool" (dict "root" . "tool" "toolname") -}}
@@ -285,18 +323,29 @@ Use this path for CLI tools that need a review-first direct install instead of o
 {{-   end }}
 ```
 
-For new direct installers, prefer a small helper script under `scripts/` when checksum verification, archive layout, or migration from old install methods needs more than a few lines. Update `git-sources.yml`, `git-lock.yml`, `fetch-sources.yml`, and `fetch-lock.yml` as needed, then add tests for the helper or template behavior.
+For new direct installers, prefer a small helper script under `scripts/` when
+checksum verification, archive layout, or migration from old install methods
+needs more than a few lines. Update `git-sources.yml`, `git-lock.yml`,
+`fetch-sources.yml`, and `fetch-lock.yml` as needed, then add tests for the
+helper or template behavior.
 
 ### 8. CLI Tools via install-tools
 
-**File (POSIX):** `home/.chezmoiscripts/posix/run_onchange_before_25_install-tools.tmpl`
-**File (Windows):** `home/.chezmoiscripts/windows/run_onchange_before_25_install-tools.ps1.tmpl`
+**File (POSIX):**
+`home/.chezmoiscripts/posix/run_onchange_before_25_install-tools.tmpl`
+**File (Windows):**
+`home/.chezmoiscripts/windows/run_onchange_before_25_install-tools.ps1.tmpl`
 
-These scripts handle CLI tools that are not managed by Home Manager, platform system packages, or Homebrew. The POSIX script runs when `.user_setup` is true, including on Nix-capable hosts, because it also handles pinned direct installers and helper tools outside Home Manager. The Windows script is the primary user-level CLI install path and uses Scoop first.
+These scripts handle CLI tools that are not managed by Home Manager, platform
+system packages, or Homebrew. The POSIX script runs when `.user_setup` is true,
+including on Nix-capable hosts, because it also handles pinned direct installers
+and helper tools outside Home Manager. The Windows script is the primary
+user-level CLI install path and uses Scoop first.
 
 POSIX tools are organized into several categories:
 
-**eget tools**: GitHub release binaries for Chimera gaps, meaning tools not in apk repos:
+**eget tools**: GitHub release binaries for Chimera gaps, meaning tools not in
+apk repos:
 
 ```go
 {{- $eget_tools := dict -}}
@@ -323,17 +372,28 @@ POSIX tools are organized into several categories:
 {{- $uv_tools := dict "git-imerge" "git-imerge" "git-revise" "git-revise" -}}
 ```
 
-**npm tools and direct installers**: limited to specific pinned or fallback flows, such as Codex fallback handling and Claude Code on FreeBSD.
+**npm tools and direct installers**: limited to specific pinned or fallback
+flows, such as Codex fallback handling and Claude Code on FreeBSD.
 
-Each package-manager map uses the `packagesForMissingTools` helper to skip already-installed tools. If eget isn't already present, the script bootstraps it before installing eget tools.
+Each package-manager map uses the `packagesForMissingTools` helper to skip
+already-installed tools. If eget isn't already present, the script bootstraps it
+before installing eget tools.
 
-The Windows version follows the same pattern but installs Scoop packages as its primary tool source, with cargo and uv as secondary sources.
+The Windows version follows the same pattern but installs Scoop packages as its
+primary tool source, with cargo and uv as secondary sources.
 
 ### 9. Chimera Linux Distrobox (glibc GUI Apps)
 
-For glibc-linked GUI apps on Chimera that are either unavailable on Flathub or where Flatpak sandboxing is inappropriate (e.g., cross-app IPC, DE biometric integration, unrestricted filesystem access), use the Ubuntu 22.04 distrobox. The distrobox shares `$HOME` with the host and exports `.desktop` files so apps appear in the launcher.
+For glibc-linked GUI apps on Chimera that are either unavailable on Flathub or
+where Flatpak sandboxing is inappropriate (e.g., cross-app IPC, DE biometric
+integration, unrestricted filesystem access), use the Ubuntu 22.04 distrobox.
+The distrobox shares `$HOME` with the host and exports `.desktop` files so apps
+appear in the launcher.
 
-Add apps to `scripts/setup-distrobox-chimera.sh`. The host script (`run_onchange_after_20_setup-distrobox.tmpl`) re-runs automatically when `setup-distrobox-chimera.sh` changes via sha256sum in the template header, so no changes to the host script are needed.
+Add apps to `scripts/setup-distrobox-chimera.sh`. The host script
+(`run_onchange_after_20_setup-distrobox.tmpl`) re-runs automatically when
+`setup-distrobox-chimera.sh` changes via sha256sum in the template header, so no
+changes to the host script are needed.
 
 **Install block** (before the `distrobox-export` section):
 
@@ -359,7 +419,9 @@ if ! distrobox-export --app appname; then
 fi
 ```
 
-Conditions: host script runs only when `eq .osid "linux-chimera"` and `.container_runtime` (Podman/distrobox) and `not .headless` and `not .ephemeral` and not already inside a container (`not (env "CONTAINER_ID")`).
+Conditions: host script runs only when `eq .osid "linux-chimera"` and
+`.container_runtime` (Podman/distrobox) and `not .headless` and `not .ephemeral`
+and not already inside a container (`not (env "CONTAINER_ID")`).
 
 ### 10. Chimera Linux (apk + Flatpak)
 
@@ -409,7 +471,8 @@ set or needs a complete install specification such as Cargo `--git` arguments.
 
 ## Script Naming Conventions
 
-See [Run Script Naming and Timing](chezmoi-authoring.md#run-script-naming-and-timing)
+See
+[Run Script Naming and Timing](chezmoi-authoring.md#run-script-naming-and-timing)
 for chezmoi prefixes, execution semantics, and numeric phases.
 
 For software changes, place CLI tool installation in a `before_` script when
@@ -483,10 +546,14 @@ Include installation instructions:
 
 Software summary lines must be source-backed, not inferred.
 
-- Use at least one verified source: official product page, official store listing (App Store, Homebrew formula/cask page, Scoop/Winget/Flathub entry), or upstream docs/README.
-- Preserve official product naming and capitalization in package and `mas` entries.
+- Use at least one verified source: official product page, official store
+  listing (App Store, Homebrew formula/cask page, Scoop/Winget/Flathub entry),
+  or upstream docs/README.
+- Preserve official product naming and capitalization in package and `mas`
+  entries.
 - Prefer concise factual behavior statements over marketing language.
-- If sources conflict or no reliable source is available, use neutral wording and call out uncertainty in the change notes instead of guessing.
+- If sources conflict or no reliable source is available, use neutral wording
+  and call out uncertainty in the change notes instead of guessing.
 
 ## Verification Checklist
 
@@ -506,7 +573,8 @@ applicable:
 
 Manual or apply-time checks:
 
-- [ ] **macOS**: `brew info <package>`, `brew list <package>`, or check `~/Applications/`
+- [ ] **macOS**: `brew info <package>`, `brew list <package>`, or check
+      `~/Applications/`
 - [ ] **Windows**: `scoop list`, `winget list <id>`, or the known install path
 - [ ] **Linux (Nix)**: `which <cmd>` shows the expected Nix store path
 - [ ] **Linux (direct user install)**: `~/.local/bin/<cmd> --version`
@@ -520,7 +588,8 @@ When adding new software, check availability:
 
 - **Nix**: [NixOS package search](https://search.nixos.org/packages)
 - **Homebrew**: [Homebrew Formulae](https://formulae.brew.sh/)
-- **winget**: [winget.run](https://winget.run/) or [microsoft/winget-pkgs](https://github.com/microsoft/winget-pkgs)
+- **winget**: [winget.run](https://winget.run/) or
+  [microsoft/winget-pkgs](https://github.com/microsoft/winget-pkgs)
 - **Scoop**: [Scoop](https://scoop.sh/)
 - **Flatpak**: [Flathub](https://flathub.org/)
 - **Chimera Linux**: [Chimera package search](https://pkgs.chimera-linux.org/)

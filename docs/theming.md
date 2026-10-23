@@ -39,8 +39,8 @@ and `client-light-theme` hooks when the client reports a mode change.
 
 A terminal child process cannot always query OSC 11 because its standard input
 and output may be redirected, or the embedding host may start it without access
-to the controlling terminal. Statusline subprocesses are one common example. Shell
-wrappers therefore resolve `CLITHEME` as `dark` or `light` before starting
+to the controlling terminal. Statusline subprocesses are one common example.
+Shell wrappers therefore resolve `CLITHEME` as `dark` or `light` before starting
 tools that need it.
 
 `CLITHEME` is a mode signal, not a palette name. For background, see
@@ -112,8 +112,8 @@ Windows or Linux:
 
 Claude Code and Cursor receive `CLITHEME` from the `claude` and `agent` Zsh
 wrappers. Their statusline scripts use it first, query OSC 11 only when needed,
-and otherwise fall back to dark mode. The dark and light color values for these two
-tools are currently duplicated across their scripts. Keep them in sync when
+and otherwise fall back to dark mode. The dark and light color values for these
+two tools are currently duplicated across their scripts. Keep them in sync when
 changing either.
 
 Pi does not consume `CLITHEME`. Its statusline extension inspects the active Pi
@@ -145,10 +145,11 @@ applications, terminal wrappers, and Pi extensions each use separate signals.
 Add shared variables only when repeated palette values are clear and the shared
 model keeps those boundaries visible.
 
-Shared palette hex values can reduce duplication for UI chrome colors (statusline
-backgrounds, border accents) where the mapping is straightforward. Per-tool
-theme mappings, which palette color maps to which tool element, are judgment
-calls that differ by tool and by taste. Upstream theme ports (Catppuccin's 200+
-ports, Dracula's ecosystem) already encode those decisions. Reimplementing them
-locally as templated data files is only worthwhile when you disagree with enough
-of an upstream theme's mapping choices to justify the ongoing maintenance.
+Shared palette hex values can reduce duplication for UI chrome colors
+(statusline backgrounds, border accents) where the mapping is straightforward.
+Per-tool theme mappings, which palette color maps to which tool element, are
+judgment calls that differ by tool and by taste. Upstream theme ports
+(Catppuccin's 200+ ports, Dracula's ecosystem) already encode those decisions.
+Reimplementing them locally as templated data files is only worthwhile when you
+disagree with enough of an upstream theme's mapping choices to justify the
+ongoing maintenance.
