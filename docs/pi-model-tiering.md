@@ -329,12 +329,10 @@ leads with the cheapest option per machine type.
   `mimo-v2.5`: same Go price and limits, Artificial Analysis Intelligence
   Index 38 versus 22), cheap, with the 1M context that condensation needs, and
   not a candidate for the interactive tiers above. Then
-  `opencode-go/minimax-m3.1-flash-free`, which is free for a limited time
-  (no end date published) and does not draw on the Go quota; it scores
-  about 42 on the same index. Its AA-Omniscience hallucination rate is high,
-  which is why it is confined to summarization and naming and kept out of the
-  coding and chat chains. Remove the entry when the free window closes. Then
   `openai-codex/gpt-6-luna`, then `claude-bridge/claude-haiku-5-5`.
+  `opencode-go/minimax-m3.1-flash-free` was dropped when its free window
+  closed (it disappeared from the registry; the paid `minimax-m3.1-flash`
+  remains and would draw on the Go quota).
 - **Work**: `openai-codex/gpt-6-luna` first, then `cursor/composer-2.5`
   (cheapest cursor-native model; its coding specialization doesn't matter
   for title/summary text), then `claude-bridge/claude-haiku-5-5`.
@@ -350,7 +348,7 @@ modest window cost of an occasional fallback hit.
 made outside any agent session, and `cursor` and `claude-bridge` reject those
 (cursor: "Bare modelRegistry.streamSimple calls are unsupported"; claude-bridge:
 a `prompt-capture` error), so the chain holds only providers that accept them:
-`opencode-go/mimo-v2.6-flash`, `opencode-go/minimax-m3.1-flash-free`, then
+`opencode-go/mimo-v2.6-flash`, then
 `openai-codex/gpt-6-luna` on personal machines, luna alone at work, which has
 no `opencode-go`. When the chain is exhausted
 the session gets the heuristic title, never a session-model title.
@@ -371,9 +369,8 @@ reserve set on `alias/*` would therefore apply to every fallback target.
   Claude model needs an entry there.
 - **`opencode-go`:** `modelOverrides` in `~/.pi/agent/models.json`, which is
   machine-local and not managed by chezmoi. A new 1M model needs an entry.
-- **Exempt:** `opencode-go/mimo-v2.6-flash` and
-  `opencode-go/minimax-m3.1-flash-free`, which only back `alias/light` and
-  `alias/title` and never accumulate context, and
+- **Exempt:** `opencode-go/mimo-v2.6-flash`, which only backs `alias/light`
+  and `alias/title` and never accumulates context, and
   `claude-bridge/claude-fable-5*`, which is invoked directly for long-horizon
   work.
 
