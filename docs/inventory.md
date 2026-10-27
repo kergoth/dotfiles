@@ -188,6 +188,9 @@ applications.
   terminal.
 - **[google-cloud-sdk](https://cloud.google.com/sdk)**: Tools for the Google
   Cloud Platform. _Conditional: work._
+- **[google-cloud-sql-proxy](https://github.com/GoogleCloudPlatform/cloud-sql-proxy)**:
+  Authenticated, encrypted connections to Cloud SQL instances.
+  _Conditional: work._
 - **[jira-cli](https://github.com/ankitpokhrel/jira-cli)**
   (_Only on Work machines_): Feature-rich interactive Jira command line.
 - **[jujutsu](https://github.com/jj-vcs/jj)**
