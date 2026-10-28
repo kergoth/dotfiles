@@ -1,21 +1,21 @@
 ---
 name: find-session
 description: >
-  Find and resume a past Claude Code, Codex, or Cursor Agent conversation by
+  Find and resume a past Pi, Claude Code, Codex, or Cursor Agent conversation by
   searching session history files by keyword. Use this skill whenever the user
   wants to find a previous conversation, can't remember which directory or agent
   they were using, wants to look up work from a past session, needs to resume a
-  session they can't locate with /resume, codex resume, or agent --resume, or
-  says something like "I know we discussed X somewhere" or "where was that
-  session about Y". Infers search scope, agent, and keywords from the user's
-  description and presents matching sessions with summaries before asking which
-  to resume. Always use this skill rather than manually searching ~/.claude/,
-  ~/.codex/, or ~/.cursor/ yourself.
+  session they can't locate with /resume, pi --session, codex resume, or
+  agent --resume, or says something like "I know we discussed X somewhere"
+  or "where was that session about Y". Infers search scope, agent, and keywords
+  from the user's description and presents matching sessions with summaries
+  before asking which to resume. Always use this skill rather than manually
+  searching ~/.claude/, ~/.codex/, ~/.cursor/, or ~/.pi/agent/sessions/ yourself.
 ---
 
 # Find Session
 
-Search past Claude Code, Codex, or Cursor Agent session history by keyword and present matching sessions for resumption.
+Search past Pi, Claude Code, Codex, or Cursor Agent session history by keyword and present matching sessions for resumption.
 
 ## Step 1: Infer scope and extract keywords
 
@@ -30,6 +30,7 @@ From the user's description:
 
 **Agent:**
 
+- User says "Pi" or asks for a Pi session -> `--agent pi`
 - User says "Claude", "Claude Code", or asks for a Claude session -> `--agent claude`
 - User says "Codex" or asks for a Codex session -> `--agent codex`
 - User says "Cursor" or asks for a Cursor Agent session -> `--agent cursor`
@@ -44,7 +45,7 @@ From the user's description:
 
 ```bash
 python ~/.agents/skills/find-session/scripts/search_sessions.py \
-  --agent <claude|codex|cursor|all> \
+  --agent <pi|claude|codex|cursor|all> \
   --scope <project|global> \
   --depth quick \
   --cwd <path> \
@@ -63,7 +64,7 @@ If a result is clearly the current session (the one you're running in right now)
   "total_matching": number,            // total files rg matched (may exceed sessions shown)
   "sessions": [
     {
-      "agent":           "claude" | "codex" | "cursor",
+      "agent":           "pi" | "claude" | "codex" | "cursor",
       "session_id":      string,           // UUID
       "session_name":    string | null,    // explicit /rename title if set; falls back to first prompt from history.jsonl (may be a slash-command when no other entries exist); null if neither available
       "has_custom_name": boolean,          // true only when session_name came from an explicit /rename; false for fallback names
@@ -94,15 +95,17 @@ To fetch thorough context for specific sessions by ID (bypassing keyword search)
 
 ```bash
 python ~/.agents/skills/find-session/scripts/search_sessions.py \
-  --agent <claude|codex|cursor|all> \
+  --agent <pi|claude|codex|cursor|all> \
   --depth thorough \
   --session-ids <id1> --session-ids <id2> \
   <keyword1> [keyword2 ...]
 ```
 
-## Step 3: If the target isn't in the results
+## Step 3: Refine and verify candidates
 
-Work through these in order — don't skip to keyword changes until you've exhausted the earlier steps.
+Run Step 3a after every quick search. Use Steps 3b–3c when the target is still
+missing, then check Step 3d before presenting a Claude or Cursor candidate.
+Don't skip to keyword changes before inspecting the earlier results.
 
 ### Step 3a: Get thorough context for the top candidates
 
@@ -119,7 +122,7 @@ Extract full session IDs from the quick search output — never truncate and the
 
 ```bash
 python ~/.agents/skills/find-session/scripts/search_sessions.py \
-  --agent <claude|codex|cursor|all> \
+  --agent <pi|claude|codex|cursor|all> \
   --depth thorough \
   --session-ids <id1> --session-ids <id2> \
   <same keywords>
@@ -148,6 +151,53 @@ The keywords genuinely didn't match. Try variations:
 - Split compound/hyphenated terms: `app-deploy` → try `app deploy` or `deploy` alone
 - Try synonyms or adjacent terms the session might have used
 - Reduce to a single highly distinctive keyword
+
+### Step 3d: Check for an associated Pi session when relevant
+
+A Claude or Cursor result can be a backing conversation used by a Pi bridge
+or delegated worker, rather than the session the user wants to resume. Do not
+assume that every Claude or Cursor session on a Pi user's machine belongs to Pi.
+
+Skip this check when `~/.pi/agent/sessions/` has no session files. Otherwise,
+look for substantive Pi matches in the search results. If the search excluded
+Pi, or its results were capped, run a targeted `--agent pi` search using a
+distinctive human prompt from the candidate. Use the same scope initially;
+try global scope if the user identifies Pi as the intended interface or the
+candidate shows work across projects. Fetch thorough context for candidates
+as in Step 3a.
+
+If no relevant Pi history is found, continue with the original results and
+resume commands. Do not add bridge warnings, uncertainty notices, or extra
+questions merely because Pi is installed. An unrelated Pi session or an earlier
+session-search conversation does not make a substantive match.
+
+When relevant Pi history exists, check the relationship before presenting:
+
+- Prefer explicit lineage metadata linking the backing session ID to a Pi
+  session ID. Inspect candidate Pi records directly when needed; the search
+  script reads user/assistant messages, not lineage metadata or tool results.
+  Cursor integrations may record `cursor-sdk-agent-lineage` entries. Use such
+  entries only when they identify the candidate's backing conversation.
+- Without an explicit link, compare multiple distinctive exchanges and their
+  timing. Require evidence of the work itself, not just a copied summary, shared
+  instructions, title, topic, or a reference to another session. A backing UUID
+  may be absent from Pi history, so search by conversation text as well.
+- Do not classify a conversation from historical `entrypoint: "cli"` or
+  `"sdk-ts"` fields alone. Reconstructed history can mix both, and a conversation
+  may later be resumed outside Pi.
+
+For a verified association, check where the requested work appears. If it is
+in Pi, lead with the Pi session and its returned resume command; identify the
+backing conversation secondarily instead of listing it as an independent
+choice. If the requested work appears only in later standalone Claude or Cursor
+turns, lead with that interface's resume command and mention Pi secondarily.
+Honor an explicit request to resume the backing conversation instead.
+
+If substantive matches exist in both interfaces but their association or the
+intended continuation is ambiguous, present them as separate candidates. In
+interactive mode, ask which interface to resume; do not silently prefer Pi.
+In non-interactive mode, provide the candidate resume commands without claiming
+an association. Mere failure to verify a link does not require a warning.
 
 ## Step 4: Detect interactive vs. non-interactive mode
 
@@ -191,6 +241,12 @@ Found N sessions matching "<keywords>":
 ## Step 6: Provide resume command(s)
 
 Use `resume_command` from the search output when it is non-empty. Do not invent a `cd` directory. If `resume_command` is empty, do not guess from the prompt, a filename, or `cd .` — Cursor `--resume` is workspace-scoped and a wrong directory silently starts a new session. Tell the user the session was found (`session_id`, `project_slug` if present) but the workspace path could not be resolved uniquely.
+
+Pi example:
+
+```bash
+cd <project_dir> && pi --session <session_id>
+```
 
 Claude example:
 
@@ -239,4 +295,4 @@ Other candidates:
 <resume_command3>
 ```
 
-**Resume argument:** Use `session_name` only when `has_custom_name` is `true` (set via `/rename`). Otherwise always use `session_id` (the full UUID). Session names derived from the first prompt do not work with `--resume`.
+**Resume argument:** Pi uses the returned `pi --session <session_id>` command, not a session name. For other agents, use `session_name` only when `has_custom_name` is `true` (set via `/rename`). Otherwise always use `session_id` (the full UUID). Session names derived from the first prompt do not work with `--resume`.
