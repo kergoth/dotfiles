@@ -22,6 +22,13 @@ use edition-specific evidence where available. Keep ratings separate from counts
 
 ## Discover alternative implementations
 
+For runtime discovery, combine the originating platform and target host with
+terms such as emulator, compatibility layer, fork, release, renderer, and the
+device or GPU name. Follow new-project leads to upstream release notes. Match
+the build used in a performance report to the project's release timeline,
+especially across core/renderer changes that may invalidate an older bottleneck
+explanation. Use this alongside game-specific port discovery below.
+
 - [Quiver Launcher](https://quiverlauncher.com/): community catalog for ports,
   recompilations, and recreations. Follow entries to upstream releases; listing
   and installability alone do not establish completeness or recommendation quality.
