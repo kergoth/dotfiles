@@ -168,7 +168,7 @@ in {
     # Enable directly supported programs
     direnv = {
       enable = true;
-      # direnv.nix-direnv.enable = true;
+      nix-direnv.enable = true;
       # direnv 2.37.1 fish tests get SIGKILL'd in the nix sandbox on macOS;
       # skip checks to unblock builds until upstream fixes it.
       package = pkgs.direnv.overrideAttrs (_: { doCheck = false; });
