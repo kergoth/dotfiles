@@ -48,6 +48,7 @@ __pycache__
 .mypy_cache
 .pytest_cache
 .rumdl_cache
+.direnv
 
 # Vim
 Session.vim
