@@ -16,8 +16,10 @@
 
 ## Web Access Fallback Chain
 - **Search**: WebSearch first. Persistent failure (not a single transient error) → DuckDuckGo MCP.
+- **Forum/discussion threads**: even when WebSearch works, a DuckDuckGo MCP search with the site name in the query (e.g. `reddit <game> <topic>`) finds thread URLs and opening-post excerpts that WebSearch often misses. Excerpts alone are partial evidence.
 - **Kagi MCP**: human-approved per use, never automatic. Suggest it when: product/purchase research prone to SEO-affiliate manipulation, sentiment/discussion queries (scope to forums with `lens_id: "1"` or `include_domains: ["reddit.com"]`; `kagi_extract` then reads pages DuckDuckGo cannot, such as Reddit threads), or DuckDuckGo results just came back thin/spam-heavy.
 - **Fetch**: WebFetch first. Empty/SPA content or 403/challenge page → Firecrawl MCP. Don't default every fetch to Firecrawl — reserve for WebFetch failures or known JS-heavy/anti-bot domains.
+- **Reddit**: WebFetch, Firecrawl (refuses the site), and the DuckDuckGo MCP fetch (even with its `[browser]` backend) cannot read thread bodies. They may return a captcha page or empty stub as a success, not an error, so check that comment text is present. `kagi_extract` is the only configured path that reads full threads with replies; it needs per-use approval.
 - **Interactive**: Playwright MCP for tasks needing real form/click interaction (address-lookup widgets, logins) — a capability tier, not a fallback; invoke when the task requires it.
 {{- end }}
 {{ if eq $agent "pi" }}
