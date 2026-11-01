@@ -20,6 +20,16 @@ supplementary rather than default authorities. Prefer relevant detailed evidence
 over publication reputation. Backloggd may aggregate editions into a parent game;
 use edition-specific evidence where available. Keep ratings separate from counts.
 
+## Reading community threads
+
+Search results often carry only an opening-post excerpt, and plain page fetches
+can fail on forum sites or return a challenge page that looks like a successful
+fetch. Confirm that reply text was actually retrieved. When only excerpts are
+reachable, follow the user's web-access guidance for a configured fallback, and
+ask for approval where that guidance requires it. Read replies in full for
+contested claims or claims that could change a recommendation, and label other
+community evidence as excerpt-only.
+
 ## Discover alternative implementations
 
 For runtime discovery, combine the originating platform and target host with
