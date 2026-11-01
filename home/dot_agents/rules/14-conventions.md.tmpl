@@ -16,7 +16,7 @@
 
 ## Web Access Fallback Chain
 - **Search**: WebSearch first. Persistent failure (not a single transient error) → DuckDuckGo MCP.
-- **Kagi MCP**: human-approved per use, never automatic. Suggest it when: product/purchase research prone to SEO-affiliate manipulation, sentiment/discussion queries (use its Discussions lens), or DuckDuckGo results just came back thin/spam-heavy.
+- **Kagi MCP**: human-approved per use, never automatic. Suggest it when: product/purchase research prone to SEO-affiliate manipulation, sentiment/discussion queries (scope to forums with `lens_id: "1"` or `include_domains: ["reddit.com"]`; `kagi_extract` then reads pages DuckDuckGo cannot, such as Reddit threads), or DuckDuckGo results just came back thin/spam-heavy.
 - **Fetch**: WebFetch first. Empty/SPA content or 403/challenge page → Firecrawl MCP. Don't default every fetch to Firecrawl — reserve for WebFetch failures or known JS-heavy/anti-bot domains.
 - **Interactive**: Playwright MCP for tasks needing real form/click interaction (address-lookup widgets, logins) — a capability tier, not a fallback; invoke when the task requires it.
 {{- end }}
