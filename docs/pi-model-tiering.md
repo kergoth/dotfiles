@@ -127,9 +127,10 @@ available. This warm-provider rule preserves provider-side prompt caches and
 prevents a recovered first-choice model from pulling a large conversation back
 across providers. For a cross-provider switch at 131072 context tokens or
 more, TUI and RPC sessions ask whether to switch, compact through
-`alias/light` before switching, or stop. The prompt times out after 60 seconds.
-The unattended default is compact, but print and JSON modes switch directly
-because those modes cannot finish extension-requested compaction. Subagents
+`alias/light` before switching, stay on the original model, or stop. The prompt
+times out after 60 seconds. The unattended default is compact, but print and
+JSON modes switch directly because those modes cannot finish
+extension-requested compaction. Subagents
 load the same extension through Pi's required-child-extension registry, so
 `alias/*` resolves in their print-mode processes too.
 
@@ -149,10 +150,13 @@ next user-turn boundary; an in-progress tool loop stays warm until the target
 fails. Error classification remains the fallback when usage data is absent or
 stale. User interrupts are not failures and never start a cooldown.
 
-When a preemptive fallback would move a large session to another provider,
-the confirmation prompt offers "Stay on <target>" if that target is only over
-its usage threshold. Staying waives the threshold for that target for the rest
-of the process; a window flagged as limited still forces a switch.
+Every cross-provider confirmation prompt offers "Stay on <target>", including
+when a connection failure, cooldown, or exhausted usage window caused the
+fallback. Staying keeps agent requests on that model for the rest of the
+process while it remains the session's current target, overriding cooldowns
+and usage exclusions without clearing shared records. The provider can still
+reject requests until its limits reset. Direct calls, including compaction,
+keep their normal routing.
 
 The default threshold is `$settings.switchAboveUsedPercent` (95). To reserve
 headroom on a shared account, `$settings.providerSwitchAboveUsedPercent` maps a

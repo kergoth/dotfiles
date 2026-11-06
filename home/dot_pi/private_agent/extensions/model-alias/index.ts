@@ -27,7 +27,7 @@ export default function modelAlias(pi: ExtensionAPI): void {
   let firstEvent = true;
   let pendingTarget: string | undefined;
   let pendingCompaction = false;
-  const waivedThresholds = new Set<string>();
+  const stayedTargets = new Set<string>();
   let compactionInProgress = false;
   let pendingResume = false;
   let resuming = false;
@@ -168,18 +168,22 @@ export default function modelAlias(pi: ExtensionAPI): void {
         const selectInput = { routeReason: request.reason, chain, current: request.state?.current, previous, failed, contextTokens: routeCtx.getContextUsage()?.tokens ?? null, cooldowns: shared.targets, usage: shared.usage, settings: config.settings, nowMs: Date.now() };
         let selected = recoveryTarget
           ? { target: recoveryTarget, origin: undefined, crossesProvider: true, needsConfirmation: false, reason: "pending-recovery" }
-          : selectTarget({ ...selectInput, waivedThresholds: [...waivedThresholds] });
+          : selectTarget(selectInput);
+        const stayedTarget = [request.state?.current, selected.origin].find((target) => target && stayedTargets.has(target));
+        if (!recoveryTarget && ownsSessionState(request.reason) && stayedTarget) {
+          selected = { ...selected, target: stayedTarget, crossesProvider: false, needsConfirmation: false, reason: "user-stay" };
+        }
         if (selected.needsConfirmation && !pendingTarget) {
           const fallback = recoveryAction(config.settings.unattendedSwitch, routeCtx.mode === "tui" ? "interactive" : routeCtx.mode, false);
           let action = fallback;
           if (routeCtx.hasUI) {
-            const stay = selected.origin && selectTarget({ ...selectInput, waivedThresholds: [...waivedThresholds, selected.origin] }).target === selected.origin ? selected.origin : undefined;
-            const options = ["Switch provider", "Compact then switch", ...(stay ? [`Stay on ${stay} (ignore usage threshold)`] : []), "Stop"];
+            const stay = selected.origin!;
+            const options = ["Switch provider", "Compact then switch", `Stay on ${stay}`, "Stop"];
             const answer = await routeCtx.ui.select(`Switch a ${routeCtx.getContextUsage()?.tokens ?? "large"}-token session to ${selected.target}?`, options, { timeout: config.settings.confirmTimeoutMs });
             action = answer === options[0] ? "switch" : answer === options[1] ? "compact" : answer === options.at(-1) ? "stop" : answer === undefined ? fallback : "stay";
-            if (action === "stay" && stay) {
-              waivedThresholds.add(stay);
-              selected = selectTarget({ ...selectInput, waivedThresholds: [...waivedThresholds] });
+            if (action === "stay") {
+              stayedTargets.add(stay);
+              selected = { ...selected, target: stay, crossesProvider: false, needsConfirmation: false, reason: "user-stay" };
             }
           }
           if (action === "stop") throw new Error("model-alias: cross-provider switch declined");
