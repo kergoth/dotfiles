@@ -56,11 +56,13 @@ skill neither requires a cache nor authorizes writing one.
 
 ## Playing context
 
-Prefer emulation when it provides a practical, reliable experience. Otherwise
-consider native releases, compatibility layers, interpreters, source ports,
-and original hardware. Verify feasibility for the particular game; do not
-assume every game on a platform emulates well or require emulation for a
-platform where it is impractical.
+Compare native execution, compatibility layers, interpreters, source ports,
+emulation and original hardware as candidate setups, without a default hierarchy.
+Runtime availability establishes a candidate, not the preferred release or setup.
+Judge release quality and the complete playing experience; do not substitute an
+equivalent release from another platform solely to use emulation. Emulation may
+still win for concrete benefits such as reliable saving, rewind, controls or
+performance. Verify those benefits for the particular game and setup.
 
 Steam Deck and Android handhelds are common contexts, not eligibility filters.
 Do not assume a particular Android device's performance or operating system
@@ -177,7 +179,8 @@ labels alone establish neither quality nor lack of quality.
 Classify alternatives as recommended default, recommended for a specific benefit,
 promising but experimental, not currently recommended, or insufficient evidence.
 Sparse community coverage limits confidence without silently removing a new
-implementation. Compare it against a mature emulated setup before preferring it.
+implementation. Compare it against the strongest practical existing setups,
+including emulation and compatibility layers, before preferring it.
 
 Keep this check proportional to the game recommendation. Report concerns that
 could change the verdict; do not imply a code, security, licensing, or stewardship
