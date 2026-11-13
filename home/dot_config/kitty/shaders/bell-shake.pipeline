@@ -1,8 +1,0 @@
-startgroup
-    animation_start bell-in-window
-    animation_stop 150
-    animation_curve ease-out
-    animation_step 1
-    shaders bell-shake
-    var float max_displacement 15.0
-endgroup

@@ -1,0 +1,8 @@
+startgroup
+    animation_start bell-in-window
+    animation_stop 240
+    animation_curve linear
+    animation_step 16
+    shaders bell-pulse
+    var float max_dimming 0.18
+endgroup
