@@ -23,5 +23,8 @@ sudorun defaults write /Library/Preferences/com.apple.SoftwareUpdate CriticalUpd
 # Enable automatic download and installation of macOS updates (macOS 10.14+)
 sudorun defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates -bool true
 
+# Do not automatically send diagnostic and usage data to Apple
+sudorun defaults write "/Library/Application Support/CrashReporter/DiagnosticMessagesHistory.plist" AutoSubmit -bool false
+
 # Silence Boot chime
 sudorun nvram SystemAudioVolume=" "

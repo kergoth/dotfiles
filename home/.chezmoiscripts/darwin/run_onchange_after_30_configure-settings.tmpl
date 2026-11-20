@@ -22,6 +22,10 @@ defaults write -g PMPrintingExpandedStateForPrint2 -bool true
 # Disable press-and-hold for keys in favor of key repeat
 defaults write -g ApplePressAndHoldEnabled -bool false
 
+# Faster key repeat than the System Settings sliders allow
+defaults write -g InitialKeyRepeat -int 12
+defaults write -g KeyRepeat -int 4
+
 # Always open everything in Finder's list view
 defaults write com.apple.finder FXPreferredViewStyle Nlsv
 
@@ -55,6 +59,10 @@ defaults write com.apple.dock showhidden -bool true
 # Disable scroll gesture with modifier keys to zoom
 defaults write com.apple.AppleMultitouchTrackpad HIDScrollZoomModifierMask -int 0
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad HIDScrollZoomModifierMask -int 0
+
+# Disable three-finger tap to look up
+defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerTapGesture -int 0
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerTapGesture -int 0
 
 # Do not autogather large files when submitting a report
 defaults write com.apple.appleseed.FeedbackAssistant Autogather -bool false
@@ -113,6 +121,11 @@ defaults write com.apple.dock wvous-tr-modifier -int 0
 defaults write com.apple.dock wvous-br-corner -int 1
 defaults write com.apple.dock wvous-br-modifier -int 0
 
+{{ if .personal -}}
+# Automatically delete items from the Trash after 30 days
+defaults write com.apple.finder FXRemoveOldTrashItems -bool true
+
+{{ end -}}
 # Disable font smoothing
 defaults -currentHost write -g AppleFontSmoothing -int 0
 
