@@ -43,8 +43,8 @@ it would play and choose a better construction:
 - **Relative clause** ("This approach reduces complexity — which matters
   for embedded targets.") Use a comma-which clause or a new sentence.
 - **Topic pivot** ("We chose Python for the prototype — Rust remains an
-  option for production.") Two sentences. A semicolon if the thoughts
-  are tightly coupled.
+  option for production.") Use two sentences, or a conjunction that
+  makes the relationship explicit.
 - **Parenthetical aside** ("The config file — usually in /etc — controls
   behavior.") Parentheses or commas serve this role without the AI
   fingerprint.
@@ -76,10 +76,10 @@ followed by a thirty-word one creates rhythm a reader trusts.
 "The..." or "This..." is a recognizable pattern. Questions, blunt
 statements, and dependent clauses all work as openers.
 
-**Use semicolons.** AI underuses them; humans who write well use them
-naturally. Two closely related independent clauses often read better
-joined by a semicolon than split into separate sentences or fused with
-a conjunction.
+**Prefer periods or conjunctions.** Don't introduce semicolons merely to
+vary rhythm, sound sophisticated, or replace em dashes. Use one only when
+it makes the relationship clearer than either alternative. Preserve
+semicolons in code, quotations, and technical syntax.
 
 **Let paragraphs end.** Not every paragraph needs a transition to the
 next. Sometimes the thought is complete and the next paragraph can start
@@ -130,6 +130,7 @@ Plan files, design documents, and conversational responses are exempt.
 Before finalizing any prose artifact, verify:
 
 1. Em dash count is zero (or at most one, justified by the context)?
+   No unnecessary semicolons or mechanical em-dash-to-semicolon swaps?
 2. No three consecutive sentences of similar length?
 3. No sycophantic openers or AI filler phrases?
 4. No hollow intensifiers ("crucial," "pivotal," "seamless")?
