@@ -92,11 +92,13 @@ The run script handles CLI-owned configuration because chezmoi cannot safely
 replace the rest of those files. Cursor and Pi accept declarative JSON and can
 be rendered directly.
 
-Current source configures Context7, DeepWiki, DuckDuckGo, and Playwright where
-the applicable agent and machine conditions allow them. Firecrawl and Kagi
-require personal secret-backed API keys. Work templates may add encrypted
-servers. Cursor also configures Readwise on persistent personal machines. Read
-the templates before changing this list; their conditions are authoritative.
+Current source configures Context7, DeepWiki, DuckDuckGo, Playwright, and Atuin
+where the applicable agent and machine conditions allow them. Atuin's server is
+registered only where its CLI is found, and its own setup commands must not be
+used to register it: `atuin setup` and `atuin mcp install` write agent configs
+directly, bypassing these templates. Firecrawl and Kagi require personal
+secret-backed API keys. Work templates may add encrypted servers. Read the
+templates before changing this list; their conditions are authoritative.
 
 ## Verification
 

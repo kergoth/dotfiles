@@ -39,6 +39,19 @@
 {{- end -}}
 
 {{- /*
+  Atuin's CLI ships an MCP server over the local history database. Register it
+  wherever the CLI is installed, so take the path from the search rather than
+  assuming one package manager's layout.
+*/ -}}
+{{- $atuinCLI := includeTemplate "find-tool" (dict "root" . "tool" "atuin") -}}
+{{- if $atuinCLI -}}
+{{-   $_ := set $servers "atuin" (dict
+        "type" "stdio"
+        "command" $atuinCLI
+        "args" (list "mcp")) -}}
+{{- end -}}
+
+{{- /*
   GoodLinks is only registered where the app is installed, and the cask installs
   it into either application directory.
 */ -}}

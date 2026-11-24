@@ -18,6 +18,13 @@
         "args" (list
           "-y" "@playwright/mcp@latest"
           "--browser" "firefox")) -}}
+{{-   $atuinCLI := includeTemplate "find-tool" (dict "root" . "tool" "atuin") -}}
+{{-   if $atuinCLI -}}
+{{-     $_ := set $servers "atuin" (dict
+          "type" "stdio"
+          "command" $atuinCLI
+          "args" (list "mcp")) -}}
+{{-   end -}}
 
 {{-   if and .work .secrets -}}
 {{-     range $k, $v := (joinPath .chezmoi.workingTree "settings/agents/work-mcp-cursor.json.age"

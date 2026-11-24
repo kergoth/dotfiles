@@ -1,5 +1,6 @@
 {{- $codex := includeTemplate "find-tool" (dict "root" . "tool" "codex") -}}
 {{- $claude := includeTemplate "find-tool" (dict "root" . "tool" "claude") -}}
+{{- $atuin := includeTemplate "find-tool" (dict "root" . "tool" "atuin") -}}
 {{- if or $claude $codex -}}
 #!/usr/bin/env bash
 
@@ -88,6 +89,9 @@ codex_add_mcp_server deepwiki --url https://mcp.deepwiki.com/mcp
 codex_add_mcp_server context7 -- npx -y @upstash/context7-mcp
 codex_add_mcp_server duckduckgo -- uvx duckduckgo-mcp-server
 codex_add_mcp_server playwright -- npx -y @playwright/mcp@latest --browser firefox
+{{ if $atuin -}}
+codex_add_mcp_server atuin -- "{{ $atuin }}" mcp
+{{- end }}
 
 {{ if and .personal .secrets -}}
 codex_add_mcp_server firecrawl --env FIRECRAWL_API_KEY="{{ joinPath .chezmoi.workingTree "settings/agents/firecrawl-api-key.age" | include | decrypt | trim }}" -- npx -y firecrawl-mcp
@@ -107,6 +111,9 @@ claude_add_mcp_server deepwiki --scope user --transport http https://mcp.deepwik
 add_mcp_json context7 '{"type":"stdio","command":"npx","args":["-y","@upstash/context7-mcp"]}' --scope user
 add_mcp_json duckduckgo '{"type":"stdio","command":"uvx","args":["duckduckgo-mcp-server"]}' --scope user
 add_mcp_json playwright '{"type":"stdio","command":"npx","args":["-y","@playwright/mcp@latest","--browser","firefox"]}' --scope user
+{{ if $atuin -}}
+claude_add_mcp_server atuin --scope user -- "{{ $atuin }}" mcp
+{{- end }}
 
 {{ if and .personal .secrets -}}
 claude_add_mcp_server firecrawl --scope user -e FIRECRAWL_API_KEY="{{ joinPath .chezmoi.workingTree "settings/agents/firecrawl-api-key.age" | include | decrypt | trim }}" -- npx -y firecrawl-mcp

@@ -1,4 +1,5 @@
 {{- $claude := includeTemplate "find-tool" (dict "root" . "tool" "claude") -}}
+{{- $atuin := includeTemplate "find-tool" (dict "root" . "tool" "atuin") -}}
 {{- if $claude -}}
 {{-   $github_token := or (env "GITHUB_PERSONAL_ACCESS_TOKEN") (env "GITHUB_TOKEN") -}}
 #requires -Version 7.0
@@ -219,6 +220,9 @@ function Add-Marketplace {
 
 Add-McpServer -Name deepwiki -Url https://mcp.deepwiki.com/mcp -Transport http -Scope user
 Add-McpJson -Name context7 -Json '{"type":"stdio","command":"npx","args":["-y","@upstash/context7-mcp"]}' -Scope user
+{{   if $atuin -}}
+Add-McpJson -Name atuin -Json '{"type":"stdio","command":{{ $atuin | toJson }},"args":["mcp"]}' -Scope user
+{{-   end }}
 
 Add-Marketplace astral-sh/claude-code-plugins
 Install-Plugin -Name astral@astral-sh -Scope user
