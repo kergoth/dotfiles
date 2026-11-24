@@ -97,6 +97,12 @@ standard vocabulary, not neologisms. Name the actual distinction in
 plain language instead: "about participation" beats
 "participation-facing."
 
+**Don't use "hold" to mean have or own.** "Held now," "Not held," and
+"holdings" borrow archival language for plain possession, which reads as a
+machine tell. Write "have," "own," "in the library," or "missing." Treat
+other borrowed-register status words the same way. Literal uses ("hold the
+button," "the cache holds N entries") are fine.
+
 ## Context adjustments
 
 Different artifact types have different norms. Apply the base rules
@@ -134,7 +140,8 @@ Before finalizing any prose artifact, verify:
 2. No three consecutive sentences of similar length?
 3. No sycophantic openers or AI filler phrases?
 4. No hollow intensifiers ("crucial," "pivotal," "seamless")?
-5. Vocabulary fits the context (technical terms fine in technical docs,
+5. No "hold/held" for have or own?
+6. Vocabulary fits the context (technical terms fine in technical docs,
    not in casual emails)?
-6. For markdown documentation: links are descriptive, not bare autolinks
+7. For markdown documentation: links are descriptive, not bare autolinks
    or generic `[here]` text? See `references/markdown.md`.
