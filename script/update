@@ -283,7 +283,7 @@ if [ "$dry_run" -eq 0 ] && [ "$fetch_lock_done" -eq 0 ]; then
 fi
 
 if [ "$dry_run" -eq 1 ]; then
-    "$scriptdir/home-manager-switch" --dry-run --update-inputs "nixpkgs nixpkgs-unstable" "Update Home Manager packages"
+    "$scriptdir/home-manager-switch" --dry-run --update-inputs "nixpkgs nixpkgs-unstable home-manager" "Update Home Manager packages"
 else
-    "$scriptdir/home-manager-switch" --update-inputs "nixpkgs nixpkgs-unstable" "Update Home Manager packages"
+    "$scriptdir/home-manager-switch" --update-inputs "nixpkgs nixpkgs-unstable home-manager" "Update Home Manager packages"
 fi
