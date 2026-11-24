@@ -53,7 +53,7 @@ if ! grep -q '^MAKEFLAGS=.*-j' /etc/makepkg.conf; then
     fi
 fi
 
-pacman_install vi zsh which xz
+pacman_install vi zsh which xz python
 
 {{ if and .use_nix (not .wsl2) -}}
 if pgrep systemd >/dev/null 2>&1; then
