@@ -12,6 +12,7 @@ from pathlib import Path
 import typer
 from rich.console import Console
 from update_review.providers.git import GitProvider
+from update_review.providers.pi import PiProvider
 from update_review.runner import run_review_session
 
 app = typer.Typer(add_completion=False)
@@ -25,7 +26,7 @@ def run(
     no_review: bool = typer.Option(False, "--no-review"),
 ) -> None:
     root = Path(__file__).resolve().parent.parent
-    registry = {"git": GitProvider(root)}
+    registry = {"git": GitProvider(root), "pi": PiProvider(root)}
     selected = []
     for name in providers:
         if name not in registry:

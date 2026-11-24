@@ -246,7 +246,7 @@ PYEOF
 if [ -f "$sourcedir/scripts/update-review.py" ] && command -v uv >/dev/null 2>&1; then
     result_file=$(mktemp "${TMPDIR:-/tmp}/update-review.XXXXXX")
     trap 'rm -f "$result_file"' EXIT INT TERM
-    review_args=(git --result-file "$result_file")
+    review_args=(git pi --result-file "$result_file")
     [ "$dry_run" -eq 1 ] && review_args+=(--dry-run)
     [ "$no_review" -eq 1 ] && review_args+=(--no-review)
     uv run --script "$sourcedir/scripts/update-review.py" "${review_args[@]}"
@@ -255,20 +255,29 @@ if [ -f "$sourcedir/scripts/update-review.py" ] && command -v uv >/dev/null 2>&1
         cancel) exit 0 ;;
         dry-run) ;;
         complete|finish)
-            if ! (cd "$sourcedir" && git diff --quiet -- home/.chezmoidata/git-lock.yml); then
+            git_count=$(jq -r '.providers.git | length' "$result_file")
+            pi_count=$(jq -r '.providers.pi | length' "$result_file")
+            if [ "$git_count" -gt 0 ] || [ "$pi_count" -gt 0 ]; then
                 {
-                    echo 'Update Git lock'
+                    echo 'Update pinned agent stack'
                     echo
-                    echo 'Record approved Git source revisions.'
-                    echo
-                    echo 'Git lock updates:'
-                    jq -r '.providers.git[] | "  \(.id): \(.old_sha) → \(.new_sha)"' "$result_file"
+                    echo 'Record approved agent stack revisions.'
+                    if [ "$git_count" -gt 0 ]; then
+                        echo
+                        echo 'Git lock updates:'
+                        jq -r '.providers.git[] | "  \(.id): \(.old_sha) → \(.new_sha)"' "$result_file"
+                    fi
+                    if [ "$pi_count" -gt 0 ]; then
+                        echo
+                        echo 'Extension pin updates:'
+                        jq -r '.providers.pi[] | "  \(.name): \(.old_version) → \(.new_version)"' "$result_file"
+                    fi
                 } > "$sourcedir/.git/COMMIT_EDITMSG"
                 if [ "$use_jj" -eq 1 ]; then
                     commit_msg=$(cat "$sourcedir/.git/COMMIT_EDITMSG")
-                    (cd "$sourcedir" && jj commit -m "$commit_msg" home/.chezmoidata/git-lock.yml)
+                    (cd "$sourcedir" && jj commit -m "$commit_msg" home/.chezmoidata/git-lock.yml home/.chezmoidata/pi-extensions.yml)
                 else
-                    (cd "$sourcedir" && git commit --no-verify -F .git/COMMIT_EDITMSG home/.chezmoidata/git-lock.yml)
+                    (cd "$sourcedir" && git commit --no-verify -F .git/COMMIT_EDITMSG home/.chezmoidata/git-lock.yml home/.chezmoidata/pi-extensions.yml)
                 fi
             fi
             update_fetch_lock
