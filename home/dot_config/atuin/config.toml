@@ -269,7 +269,7 @@ autostart = true
 filters = [ "global", "host", "session", "workspace", "directory" ]
 
 [threads]
-capture = true
+enabled = true
 
 [pty_proxy]
 enabled = true
