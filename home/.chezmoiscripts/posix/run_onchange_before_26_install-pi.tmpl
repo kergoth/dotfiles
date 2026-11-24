@@ -1,0 +1,26 @@
+{{- if .user_setup -}}
+#!/usr/bin/env bash
+# pi: {{ index .git_lock "pi" }}
+# Stages the pinned Pi release; renders again only when the pin or artifact
+# checksums change.
+
+set -euo pipefail
+
+{{- /* A first apply can run before setup-system provisions python3. */}}
+if ! command -v python3 >/dev/null 2>&1; then
+    echo "warning: skipping pinned Pi install, python3 is not installed" >&2
+    exit 0
+fi
+
+if ! command -v npm >/dev/null 2>&1; then
+    echo "warning: skipping pinned Pi install, npm is not installed" >&2
+    exit 0
+fi
+
+worktree="${CHEZMOI_WORKING_TREE:-{{ .chezmoi.workingTree }}}"
+
+python3 "$worktree/scripts/pi-managed-install.py" \
+    --version "{{ index .git_lock "pi" | trimPrefix "v" }}" \
+    --sha256-package-json "{{ index .fetch_lock "pi_package_json" }}" \
+    --sha256-package-lock "{{ index .fetch_lock "pi_package_lock" }}"
+{{- end -}}

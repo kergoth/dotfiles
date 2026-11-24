@@ -4,6 +4,12 @@ fetch_sources:
   kitty_installer:
     url_template: "https://sw.kovidgoyal.net/kitty/installer.sh?version={version_no_v}"
     version_source: "git_lock.kitty"
+  pi_package_json:
+    url_template: "https://pi.dev/api/installer/releases/{version_no_v}/package.json"
+    version_source: "git_lock.pi"
+  pi_package_lock:
+    url_template: "https://pi.dev/api/installer/releases/{version_no_v}/package-lock.json"
+    version_source: "git_lock.pi"
   codex_macos_arm64_release:
     url_template: "https://github.com/openai/codex/releases/download/{version}/codex-package-aarch64-apple-darwin.tar.gz"
     version_source: "git_lock.codex_cli"

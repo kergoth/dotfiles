@@ -1,0 +1,25 @@
+#!/bin/sh
+# Target: ~/.pi/agent/bin/pi
+# Resolves the release recorded by scripts/pi-managed-install.py. Version
+# selection lives here rather than in the release directory so a bump is a
+# single file change.
+
+set -eu
+
+agent_dir="${PI_CODING_AGENT_DIR:-$HOME/.pi/agent}"
+version_file="$agent_dir/install/current-version"
+
+if [ ! -r "$version_file" ]; then
+    echo "pi: no pinned release installed; run script/update from the dotfiles checkout" >&2
+    exit 1
+fi
+
+version="$(cat "$version_file")"
+binary="$agent_dir/install/releases/$version/node_modules/.bin/pi"
+
+if [ ! -x "$binary" ]; then
+    echo "pi: release $version is missing its executable; run script/update" >&2
+    exit 1
+fi
+
+exec "$binary" "$@"

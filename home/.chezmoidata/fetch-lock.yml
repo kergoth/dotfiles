@@ -9,4 +9,6 @@ fetch_lock:
   codex_windows_arm64_release: "6aa686d9ac16cc171b8207273ac20eb9321bf3963f2801722045e906c00ea804"
   eget_installer: "0e64b8a3c13f531da005096cc364ac77835bda54276fedef6c62f3dbdc1ee919"
   kitty_installer: "ca3e2e4cc5bdaf7b5b5d09f02d362b448fda34ce38cb2cb7750922af6a6d0e83"
+  pi_package_json: "4b61ca991909e436adf8238af90e865314dd32354d58f2e20ebfa8cc419e1baf"
+  pi_package_lock: "11fa077f9cde7b5b2b6c1341dd31dbf1bc88ce5e432c1ad7cd5f84618259d2dd"
   zed_installer: "c42e96c9e3da1fae61ac11b0922ad033e8fcac3c34b44303805ad3796081b502"
