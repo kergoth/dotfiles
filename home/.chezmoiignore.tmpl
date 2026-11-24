@@ -149,6 +149,9 @@ AppData/Roaming/gnupg/openpgp-revocs.d
 !Documents
 Documents/*
 !Documents/PowerShell
+# The shell launcher and its PATH entry are POSIX-only; Windows uses the cmd shim
+.pi/agent/bin/pi
+.local/bin/pi
 {{- end }}
 
 {{- if ne .chezmoi.os "linux" }}

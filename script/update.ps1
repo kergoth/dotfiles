@@ -332,33 +332,41 @@ if (Test-Path $reviewRunner) {
     } else {
         $resultFile = [System.IO.Path]::GetTempFileName()
         try {
-            $reviewArgs = @("--script", $reviewRunner, "git", "--result-file", $resultFile)
+            $reviewArgs = @("--script", $reviewRunner, "git", "pi", "--result-file", $resultFile)
             if ($DryRun) { $reviewArgs += "--dry-run" }
             if ($NoReview) { $reviewArgs += "--no-review" }
             uv run @reviewArgs
             if ($LASTEXITCODE -ne 0) { throw "Git review failed (exit $LASTEXITCODE)" }
             $reviewResult = Get-Content $resultFile -Raw | ConvertFrom-Json
             if ($reviewResult.outcome -eq "cancel") { exit 0 }
-            if (-not $DryRun -and @($reviewResult.providers.git).Count -gt 0) {
+            $gitCount = @($reviewResult.providers.git).Count
+            $piCount = @($reviewResult.providers.pi).Count
+            if (-not $DryRun -and ($gitCount -gt 0 -or $piCount -gt 0)) {
                 Set-Location $repodir
                 $lines = @(
-                    "Update Git lock"
+                    "Update pinned agent stack"
                     ""
-                    "Record approved Git source revisions."
-                    ""
-                    "Git lock updates:"
+                    "Record approved agent stack revisions."
                 )
-                foreach ($change in @($reviewResult.providers.git)) {
-                    $lines += "  $($change.id): $($change.old_sha) -> $($change.new_sha)"
+                if ($gitCount -gt 0) {
+                    $lines += ""
+                    $lines += "Git lock updates:"
+                    foreach ($change in @($reviewResult.providers.git)) {
+                        $lines += "  $($change.id): $($change.old_sha) -> $($change.new_sha)"
+                    }
+                }
+                if ($piCount -gt 0) {
+                    $lines += ""
+                    $lines += "Extension pin updates:"
+                    foreach ($pin in @($reviewResult.providers.pi)) {
+                        $lines += "  $($pin.name): $($pin.old_version) -> $($pin.new_version)"
+                    }
                 }
                 $lines -join "`n" | Out-File -FilePath "$repodir\.git\COMMIT_EDITMSG" -Encoding utf8
-                git diff --quiet -- home/.chezmoidata/git-lock.yml
-                if ($LASTEXITCODE -ne 0) {
-                    if ($use_jj -eq 1) {
-                        jj commit -m (Get-Content "$repodir\.git\COMMIT_EDITMSG" -Raw) home/.chezmoidata/git-lock.yml
-                    } else {
-                        git commit --no-verify -F .git/COMMIT_EDITMSG home/.chezmoidata/git-lock.yml
-                    }
+                if ($use_jj -eq 1) {
+                    jj commit -m (Get-Content "$repodir\.git\COMMIT_EDITMSG" -Raw) home/.chezmoidata/git-lock.yml home/.chezmoidata/pi-extensions.yml
+                } else {
+                    git commit --no-verify -F .git/COMMIT_EDITMSG home/.chezmoidata/git-lock.yml home/.chezmoidata/pi-extensions.yml
                 }
             }
             if (-not $DryRun -and $reviewResult.outcome -in @("complete", "finish")) {

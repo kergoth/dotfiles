@@ -1,0 +1,10 @@
+@echo off
+setlocal
+if not defined PI_CODING_AGENT_DIR set "PI_CODING_AGENT_DIR=%USERPROFILE%\.pi\agent"
+set "PI_MANAGED_INSTALL_ROOT=%PI_CODING_AGENT_DIR%\install"
+set /p PI_VERSION=<"%PI_MANAGED_INSTALL_ROOT%\current-version"
+if not defined PI_VERSION (
+    echo pi: no pinned release installed; run script/update from the dotfiles checkout 1>&2
+    exit /b 1
+)
+"%PI_MANAGED_INSTALL_ROOT%\releases\%PI_VERSION%\node_modules\.bin\pi.cmd" %*

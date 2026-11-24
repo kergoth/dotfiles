@@ -20,9 +20,12 @@ import urllib.error
 import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 DEFAULT_API_BASE = "https://pi.dev/api/installer/releases"
 MARKER_NAME = "managed-install.json"
+PI_BINARY = "pi.cmd" if os.name == "nt" else "pi"
+DEFAULT_NPM = "npm.cmd" if os.name == "nt" else "npm"
 VERSION_RE = re.compile(r"^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$")
 NPM_CI_ARGS = [
     "ci",
@@ -89,13 +92,24 @@ def load_metadata(config: Config) -> dict:
     return metadata
 
 
+def release_binary(release_dir: Path) -> Path:
+    return release_dir / "node_modules" / ".bin" / PI_BINARY
+
+
+def run_platform(
+    command: list[str], *, check: bool = False, **kwargs: Any
+) -> subprocess.CompletedProcess:
+    # Windows resolves npm and the release shim through cmd rather than CreateProcess
+    if os.name == "nt":
+        command = ["cmd", "/c", *command]
+    return subprocess.run(command, check=check, **kwargs)
+
+
 def verify_release(release_dir: Path, version: str) -> None:
-    binary = release_dir / "node_modules" / ".bin" / "pi"
+    binary = release_binary(release_dir)
     if not binary.exists():
         raise RuntimeError(f"managed Pi executable is missing: {binary}")
-    result = subprocess.run(
-        [str(binary), "--version"], check=False, capture_output=True, text=True
-    )
+    result = run_platform([str(binary), "--version"], capture_output=True, text=True)
     installed = result.stdout.strip()
     if result.returncode != 0 or installed != version:
         detail = result.stderr.strip() or f"exit code {result.returncode}"
@@ -107,7 +121,7 @@ def verify_release(release_dir: Path, version: str) -> None:
 def build_release(config: Config) -> Path:
     root = config.agent_dir / "install"
     release_dir = root / "releases" / config.version
-    if (release_dir / "node_modules" / ".bin" / "pi").exists():
+    if release_binary(release_dir).exists():
         verify_release(release_dir, config.version)
         return release_dir
 
@@ -126,7 +140,7 @@ def build_release(config: Config) -> Path:
             digest = fetch(url)
             verify_blob(digest, expected, label)
             (stage / name).write_bytes(digest)
-        subprocess.run([config.npm, *NPM_CI_ARGS], cwd=stage, check=True)
+        run_platform([config.npm, *NPM_CI_ARGS], cwd=stage, check=True)
         verify_release(stage, config.version)
         release_dir.parent.mkdir(parents=True, exist_ok=True)
         stage.rename(release_dir)
@@ -191,7 +205,7 @@ def default_agent_dir() -> Path:
 
 def default_entrypoint(agent_dir: Path) -> Path:
     if os.name == "nt":
-        return agent_dir / "bin" / "pi.cmd"
+        return Path.home() / "AppData" / "Local" / "Programs" / "bin" / "pi.cmd"
     return Path.home() / ".local" / "bin" / "pi"
 
 
@@ -224,7 +238,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--sha256-package-lock", dest="sha256_package_lock", default="")
     parser.add_argument("--agent-dir", default=str(default_agent_dir()))
     parser.add_argument("--api-base", default=DEFAULT_API_BASE)
-    parser.add_argument("--npm", default="npm")
+    parser.add_argument("--npm", default=DEFAULT_NPM)
     parser.add_argument(
         "--check",
         action="store_true",
