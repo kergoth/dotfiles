@@ -22,6 +22,11 @@
 {{- $entries = append $entries (printf "git:github.com/kergoth/pi-claude-bridge@%s" (index .git_lock "pi_claude_bridge") | toJson) -}}
     {{ $entries | join ",\n    " }}
   ],
+  "selfUpdateCommand": [
+    "python3",
+    {{ joinPath .chezmoi.workingTree "scripts/pi-managed-install.py" | toJson }},
+    "--refuse-self-update"
+  ],
   "hideThinkingBlock": true,
   "quietStartup": true,
   "showHardwareCursor": true,

@@ -38,6 +38,9 @@ if (Get-Command fd -ErrorAction SilentlyContinue) {
 
 $env:LESS = '-F -g -i -M -R -w -X -z-4'
 $env:PYTHONWARNINGS = 'ignore:DEPRECATION'
+# The harness is pinned by dotfiles; script/update is the only path that can
+# move the version, so the update notice only wastes attention.
+$env:PI_SKIP_VERSION_CHECK = '1'
 if ($IsWindows) {
   $env:TEALDEER_CONFIG_DIR = "$env:APPDATA\tealdeer"
   $env:RIPGREP_CONFIG_PATH = "$env:USERPROFILE\.config\ripgrep\config"

@@ -200,7 +200,10 @@ applications.
   command-line JSON processor.
 - **[pi](https://pi.dev)**
   ([Open-Source](https://github.com/earendil-works/pi)): Minimal terminal coding
-  agent harness.
+  agent harness. Installed from the release staged by
+  `scripts/pi-managed-install.py` at the `git-lock.yml` pin; its extensions are
+  pinned separately in `pi-extensions.yml`. `script/update` moves both, and
+  `pi update` refuses so the staged release cannot be replaced out of band.
 - **[prek](https://prek.j178.dev/)**: A fast, pre-commit-compatible Git hook
   runner. Installed as a fallback for repositories that do not manage it as a
   project dependency.

@@ -84,6 +84,17 @@ else
     fi
 fi
 
+if [ "$dry_run" -eq 1 ]; then
+    echo >&2 "Dry run: agent stack versions"
+    pi_lock="$sourcedir/home/.chezmoidata/git-lock.yml"
+    if [ -r "$pi_lock" ] && command -v python3 >/dev/null 2>&1; then
+        pi_pin=$(sed -n 's/^  pi: "v\{0,1\}\([^"]*\)"$/\1/p' "$pi_lock")
+        if [ -n "$pi_pin" ]; then
+            python3 "$sourcedir/scripts/pi-managed-install.py" --check --version "$pi_pin" >&2 || :
+        fi
+    fi
+fi
+
 update_op_cli_versions() {
     if ! command -v python3 >/dev/null 2>&1; then
         echo >&2 "Warning: python3 not available; skipping op CLI version update"

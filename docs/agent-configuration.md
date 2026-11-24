@@ -85,7 +85,7 @@ registration mechanism:
 | Claude Code | Idempotent `claude mcp add` or `add-json` calls in `run_onchange_after_50_configure-agents.sh.tmpl`, writing `~/.claude.json` |
 | Codex | Idempotent `codex mcp add` calls in the same run script, writing `~/.codex/config.toml` |
 | Cursor | `home/dot_cursor/private_mcp.json.tmpl` rendered to `~/.cursor/mcp.json` |
-| Pi | `home/dot_pi/private_agent/mcp.json.tmpl` rendered to `~/.pi/agent/mcp.json` for `pi-mcp-adapter` |
+| Pi | `home/dot_pi/private_agent/mcp.json.tmpl` rendered to `~/.pi/agent/mcp.json`, read by Pi's built-in MCP support |
 
 Adding one server to several tools requires editing each applicable mechanism.
 The run script handles CLI-owned configuration because chezmoi cannot safely
