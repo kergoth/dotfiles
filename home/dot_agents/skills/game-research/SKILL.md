@@ -241,3 +241,7 @@ compatibility, and services need current checks.
 Finish with the chosen mode's output, research date and scope, material exclusions
 or unresolved gaps, and limits of the evidence. Verify that recommendations,
 content coverage, readiness claims, and reported counts match the cited evidence.
+
+Before delivering a report, run `clean-prose` over it, status labels, headings,
+and bullet lead-ins included. Structured documents don't look like prose to the
+model, so tells collect in exactly those spots.
