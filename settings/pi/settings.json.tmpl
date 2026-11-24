@@ -1,22 +1,26 @@
 {
   "theme": "catppuccin-latte/dracula",
   "packages": [
-{{- if .work }}
-    "npm:pi-cursor-sdk",
-{{- end }}
-    "npm:@sherif-fanous/pi-catppuccin",
-    "npm:@sherif-fanous/pi-dracula",
-    "git:github.com/kergoth/pi-claude-bridge@context-cap",
-{{- /* extensions/model-alias/index.ts resolves this SDK from agent/npm;
+{{- /* extensions/model-alias/index.ts resolves @anthropic-ai/claude-agent-sdk from agent/npm;
        the Git-installed bridge's dependency tree is not visible there. */}}
-    "npm:@anthropic-ai/claude-agent-sdk",
-    "npm:pi-web-access",
-    {
-      "skills": [
-        "-skills/council-mode/SKILL.md"
-      ],
-      "source": "npm:pi-subagents"
-    }
+{{- $entries := list -}}
+{{- range .pi_packages -}}
+{{-   $when := dig "when" "" . -}}
+{{-   if or (not $when) (and (eq $when "work") $.work) -}}
+{{-     $exclude := dig "skills_exclude" (list) . -}}
+{{-     if $exclude -}}
+{{-       $skills := list -}}
+{{-       range $exclude -}}
+{{-         $skills = append $skills (printf "-%s" .) -}}
+{{-       end -}}
+{{-       $entries = append $entries (dict "skills" $skills "source" .source | toJson) -}}
+{{-     else -}}
+{{-       $entries = append $entries (.source | toJson) -}}
+{{-     end -}}
+{{-   end -}}
+{{- end -}}
+{{- $entries = append $entries (printf "git:github.com/kergoth/pi-claude-bridge@%s" (index .git_lock "pi_claude_bridge") | toJson) -}}
+    {{ $entries | join ",\n    " }}
   ],
   "hideThinkingBlock": true,
   "quietStartup": true,

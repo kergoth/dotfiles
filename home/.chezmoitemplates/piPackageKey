@@ -1,0 +1,24 @@
+{{- /* Template: piPackageKey
+     Description: Normalize a Pi package source to its package identity, dropping the
+       version or ref suffix. Needed because the same package appears in managed
+       settings as a pinned source and in live settings as an unversioned one, and
+       only the identity tells them apart.
+
+     Arguments (dict):
+       - source: string (required) - Package source, e.g. "npm:@scope/name@1.2.3"
+         or "git:github.com/owner/repo@<sha>"
+
+     Returns: string - Identity without the version or ref, e.g. "@scope/name"
+
+     Example usage:
+       {{ includeTemplate "piPackageKey" (dict "source" "npm:pi-web-access@0.47.0") }}
+*/ -}}
+{{- $source := trimPrefix "npm:" .source -}}
+{{- $source = trimPrefix "git:" $source -}}
+{{- $parts := splitList "@" $source -}}
+{{- $suffix := last $parts -}}
+{{- if and (gt (len $parts) 1) $suffix (not (contains "/" $suffix)) -}}
+{{-   join "@" (initial $parts) -}}
+{{- else -}}
+{{-   $source -}}
+{{- end -}}

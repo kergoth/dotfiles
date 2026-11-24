@@ -33,6 +33,7 @@ git_lock:
   madx_moreutils: "5ca552dd82dc3ef5ee0d388716148c5a653b72bb"
   nix_zsh_completions: "0.5.1"
   pi: "v1.6.0"
+  pi_claude_bridge: "53e797fba31c9d04fb5f068c9d4aa0c911543dd7"
   plasma_applet_commandoutput: "b2b5a3f05a5613fd4f57f448c34814f65e18a21f"
   powerlevel10k: "v1.21.0"
   powerlevel10k_media: "145eb9fbc2f42ee408dacd9b22d8e6e0e553f83d"

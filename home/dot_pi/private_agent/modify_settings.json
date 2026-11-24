@@ -2,8 +2,6 @@
 {{- /* Preserve live-only settings while keeping managed values authoritative. */ -}}
 {{- /* Merge package lists because `pi install` appends to packages live. */ -}}
 {{- $persist := list -}}
-{{- $mergePaths := list
-      "packages" -}}
 {{- $removePaths := list
       "statusLine" -}}
 {{- /* @nicknisi/pi-session-name is vendored under extensions/session-name;
@@ -26,10 +24,10 @@
 {{-   $existing := fromJson .chezmoi.stdin -}}
 {{-   $snapshot := $existing | toJson | fromJson -}}
 
-{{-   $managedMerged := includeTemplate "concatValuesAtPath" (dict
+{{-   $managedMerged := includeTemplate "concatPackagesAtPath" (dict
         "dest"       ($managed | toJson | fromJson)
         "src"        $snapshot
-        "paths"      $mergePaths
+        "path"       "packages"
         "omit_empty" true
         ) | fromJson -}}
 

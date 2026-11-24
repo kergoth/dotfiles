@@ -1,0 +1,46 @@
+{{- /* Template: concatPackagesAtPath
+     Description: Merge package lists from dest and src at a path, keeping one entry per
+       package identity instead of one per exact string. `pi install` appends unversioned
+       sources to the live settings, so exact-string concatenation would keep both the
+       managed pin and the live entry. dest wins.
+
+     Arguments (dict):
+       - dest: dict (required) - Destination dictionary, holding managed entries first
+       - src: dict (required) - Source dictionary, typically the live settings snapshot
+       - path: string (required) - Dot-separated path to the package list
+       - omit_empty: bool (optional, default: false) - Delete path when result is empty
+
+     Returns: JSON-encoded destination with the merged list set at path
+
+     Example usage:
+       {{ includeTemplate "concatPackagesAtPath" (dict "dest" $managed "src" $snapshot "path" "packages" "omit_empty" true) | fromJson }}
+*/ -}}
+{{- $args := . -}}
+{{- $path := $args.path -}}
+{{- $parts := splitList "." $path -}}
+{{- $destList := includeTemplate "digArray" (dict "in" $args.dest "path" $parts "default" (list)) | fromJson -}}
+{{- $srcList := includeTemplate "digArray" (dict "in" $args.src "path" $parts "default" (list)) | fromJson -}}
+{{- $keys := list -}}
+{{- range $destList -}}
+{{-   $source := . -}}
+{{-   if kindIs "map" . -}}
+{{-     $source = index . "source" -}}
+{{-   end -}}
+{{-   $keys = append $keys (includeTemplate "piPackageKey" (dict "source" $source)) -}}
+{{- end -}}
+{{- $merged := $destList -}}
+{{- range $srcList -}}
+{{-   $source := . -}}
+{{-   if kindIs "map" . -}}
+{{-     $source = index . "source" -}}
+{{-   end -}}
+{{-   $key := includeTemplate "piPackageKey" (dict "source" $source) -}}
+{{-   if not (has $key $keys) -}}
+{{-     $merged = append $merged . -}}
+{{-   end -}}
+{{- end -}}
+{{- if and (index $args "omit_empty" | default false) (empty $merged) -}}
+{{-   $args.dest | deleteValueAtPath $path | toJson -}}
+{{- else -}}
+{{-   $args.dest | setValueAtPath $path $merged | toJson -}}
+{{- end -}}

@@ -149,6 +149,12 @@ git_sources:
   pi:
     repo: https://github.com/earendil-works/pi
     tagged: true
+  pi_claude_bridge:
+    repo: https://github.com/kergoth/pi-claude-bridge
+    ref: context-cap
+    usage:
+      - artifact: pi-claude-bridge Pi package
+    review_note: "This is a fork under my own account, so the branch ref is under my control. Review changes to the bridge's extension entry point and any provider/model plumbing; skip vendored upstream noise."
   plasma_applet_commandoutput:
     repo: https://github.com/Zren/plasma-applet-commandoutput
     ref: master
