@@ -33,17 +33,21 @@ source_env_if_allowed() {
     if [[ -d $envrc ]]; then
         envrc=$envrc/.envrc
     fi
+    # direnv status reports the .envrc found by searching up from a
+    # directory, so it cannot vouch for a file with any other name.
+    if [[ $(basename "$envrc") != .envrc ]]; then
+        log_error "source_env_if_allowed: can only check .envrc files: $(user_rel_path "$envrc")"
+        exit 1
+    fi
     watch_file "$envrc"
     if [[ ! -e $envrc ]]; then
         return 0
     fi
     dir=$(cd "$(dirname "$envrc")" && pwd -P)
     envrc=$dir/$(basename "$envrc")
-    # direnv status reports the .envrc found by searching up from the
-    # directory, which is only the requested file if that is its name.
     report=$(cd "$dir" && "$direnv" status)
     if ! grep -qxF "Found RC path $envrc" <<<"$report"; then
-        log_error "source_env_if_allowed: can only check .envrc files: $(user_rel_path "$envrc")"
+        log_error "source_env_if_allowed: direnv status did not report $(user_rel_path "$envrc")"
         exit 1
     fi
     if ! grep -qx 'Found RC allowed 0' <<<"$report"; then
