@@ -25,16 +25,39 @@ layout_uv() {
     export VIRTUAL_ENV
 }
 
-# Like source_up_if_exists, but refuse to load an ancestor .envrc unless it is
-# itself allowed. The stdlib source_up bypasses direnv's approval check.
-source_up_if_allowed() {
-    local envrc
-    envrc=$(cd .. && find_up "${1:-.envrc}") || return 0
-    if ! (cd "${envrc%/*}" && "$direnv" status) | grep -qx 'Found RC allowed 0'; then
-        log_error "$(user_rel_path "$envrc") is not allowed; run 'direnv allow ${envrc%/*}'"
+# Like source_env_if_exists, but refuse to load another .envrc unless it is
+# itself allowed. The stdlib source_env bypasses direnv's approval check. A
+# missing file is watched, so creating it reloads and triggers the check.
+source_env_if_allowed() {
+    local envrc=$1 dir report
+    if [[ -d $envrc ]]; then
+        envrc=$envrc/.envrc
+    fi
+    watch_file "$envrc"
+    if [[ ! -e $envrc ]]; then
+        return 0
+    fi
+    dir=$(cd "$(dirname "$envrc")" && pwd -P)
+    envrc=$dir/$(basename "$envrc")
+    # direnv status reports the .envrc found by searching up from the
+    # directory, which is only the requested file if that is its name.
+    report=$(cd "$dir" && "$direnv" status)
+    if ! grep -qxF "Found RC path $envrc" <<<"$report"; then
+        log_error "source_env_if_allowed: can only check .envrc files: $(user_rel_path "$envrc")"
+        exit 1
+    fi
+    if ! grep -qx 'Found RC allowed 0' <<<"$report"; then
+        log_error "$(user_rel_path "$envrc") is not allowed; run 'direnv allow $(user_rel_path "$dir")'"
         exit 1
     fi
     source_env "$envrc"
+}
+
+# Like source_up_if_exists, but with source_env_if_allowed's approval check.
+source_up_if_allowed() {
+    local envrc
+    envrc=$(cd .. && find_up "${1:-.envrc}") || return 0
+    source_env_if_allowed "$envrc"
 }
 
 # Like require_allowed, but tolerate missing files: watch them instead, so
