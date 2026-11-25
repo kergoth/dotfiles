@@ -24,3 +24,15 @@ layout_uv() {
     export UV_ACTIVE=1 # or VENV_ACTIVE=1
     export VIRTUAL_ENV
 }
+
+# Like source_up_if_exists, but refuse to load an ancestor .envrc unless it is
+# itself allowed. The stdlib source_up bypasses direnv's approval check.
+source_up_if_allowed() {
+    local envrc
+    envrc=$(cd .. && find_up "${1:-.envrc}") || return 0
+    if ! (cd "${envrc%/*}" && "$direnv" status) | grep -qx 'Found RC allowed 0'; then
+        log_error "$(user_rel_path "$envrc") is not allowed; run 'direnv allow ${envrc%/*}'"
+        exit 1
+    fi
+    source_env "$envrc"
+}
