@@ -168,7 +168,10 @@ in {
     # Enable directly supported programs
     direnv = {
       enable = true;
-      nix-direnv.enable = true;
+      nix-direnv = {
+        enable = true;
+        package = pkgs-unstable.nix-direnv;
+      };
       package = pkgs-unstable.direnv;
     };
     fzf.enable = true;
