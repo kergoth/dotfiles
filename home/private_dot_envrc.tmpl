@@ -4,13 +4,13 @@ source_up_if_exists >/dev/null 2>&1
 
 # shellcheck disable=SC1091
 if direnv_version 2.38.0 2>/dev/null; then
-    require_allowed "$HOME/.session-env"
-    require_allowed "$HOME/.session-env.local"
-    require_allowed "$HOME/.envrc.local"
+    require_allowed .session-env
+    require_allowed .session-env.local
+    require_allowed .envrc.local
 fi
 
 # shellcheck disable=SC1091
-source_env_if_exists "$HOME/.session-env"
+source_env_if_exists .session-env
 
 # shellcheck disable=SC1091
-source_env_if_exists "$HOME/.envrc.local"
+source_env_if_exists .envrc.local
