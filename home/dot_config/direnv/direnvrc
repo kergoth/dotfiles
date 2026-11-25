@@ -36,3 +36,26 @@ source_up_if_allowed() {
     fi
     source_env "$envrc"
 }
+
+# Like require_allowed, but tolerate missing files: watch them instead, so
+# creating one later triggers a reload that then requires approval. All
+# present files go to a single require_allowed call because a failed check
+# stops evaluation, and `direnv allow` approves only the files it reported.
+require_allowed_if_exists() {
+    local file
+    local -a present=()
+    for file; do
+        if [[ -e $file ]]; then
+            present+=("$file")
+        else
+            watch_file "$file"
+        fi
+    done
+    if [[ ${#present[@]} -eq 0 ]]; then
+        return 0
+    elif direnv_version 2.38.0 2>/dev/null; then
+        require_allowed "${present[@]}"
+    else
+        watch_file "${present[@]}"
+    fi
+}
