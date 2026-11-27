@@ -1,4 +1,4 @@
-import { parsePacingConfig, usagePace, paceDuration } from "./usage-pacing.js";
+import { DEFAULT_PACING_SETTINGS, parsePacingConfig, usagePace, paceDuration } from "./usage-pacing.js";
 
 const SETTINGS = Object.freeze({
   confirmSwitchAboveTokens: 131072,
@@ -224,6 +224,18 @@ function providerUsedPercent(snapshot, nowMs) {
   return Math.max(0, ...windows.map((window) => window.limited && percent(window.usedPercent) === undefined ? 100 : Number(window.usedPercent) || 0));
 }
 
+// A limited window means the next request to that provider fails, so it blocks every route. The percentage
+// threshold is only a pacing preference and stays scoped to user turns. A limit carrying no reset time holds
+// only while its reading is fresh, or an account that recovered would stay excluded after a few failed polls.
+export function providerHardLimited(snapshot, nowMs, staleAfterMs = DEFAULT_PACING_SETTINGS.staleAfterMs) {
+  return (snapshot?.windows ?? []).some((window) => {
+    if (!window.limited) return false;
+    if (window.resetsAt) return window.resetsAt > nowMs;
+    const capturedAt = window.capturedAt ?? snapshot.capturedAt;
+    return !Number.isFinite(capturedAt) || nowMs - capturedAt <= staleAfterMs;
+  });
+}
+
 // A "provider:window" key beats a "provider" key, which beats the global threshold.
 export function windowThreshold(settings, provider, windowId) {
   const overrides = settings.providerSwitchAboveUsedPercent ?? {};
@@ -247,8 +259,9 @@ export function selectTarget(input) {
   if (!Array.isArray(chain) || !chain.length) throw new Error("selectTarget requires a non-empty chain");
   const cooled = (target) => (cooldowns[target]?.nextRetryAt ?? 0) > nowMs;
   const usedPercent = (target) => providerUsedPercent(usage[providerOf(target)], nowMs);
+  const hardLimited = (target) => providerHardLimited(usage[providerOf(target)], nowMs, settings?.usagePacing?.staleAfterMs);
   const overUsage = (target) => routeReason === "user" && providerOverUsage(usage[providerOf(target)], providerOf(target), settings, nowMs, waivedThresholds.includes(target));
-  const available = (target) => !cooled(target) && !overUsage(target);
+  const available = (target) => !cooled(target) && !hardLimited(target) && !overUsage(target);
   const origin = routeReason === "retry" ? failed : (previous ?? current);
   const large = contextTokens !== null && contextTokens >= settings.confirmSwitchAboveTokens;
   const advance = routeReason === "retry" || ((routeReason === "continuation" || routeReason === "direct" || large) && origin && !available(origin));
@@ -262,13 +275,23 @@ export function selectTarget(input) {
   else if (routeReason === "user" && large && current && chain.includes(current) && available(current)) target = current;
   else target = ordered.find(available);
   if (!target) {
-    const notCooled = ordered.filter((candidate) => !cooled(candidate));
+    // When nothing usable is left, prefer a target whose only problem is a cooldown: that ends by itself, while
+    // a provider known to reject requests may not recover until its window resets.
+    const unlimited = ordered.filter((candidate) => !hardLimited(candidate));
+    const pool = unlimited.length ? unlimited : ordered;
+    const notCooled = pool.filter((candidate) => !cooled(candidate));
     target = notCooled.length
       ? [...notCooled].sort((a, b) => usedPercent(a) - usedPercent(b))[0]
-      : [...ordered].sort((a, b) => cooldowns[a].nextRetryAt - cooldowns[b].nextRetryAt)[0];
+      : [...pool].sort((a, b) => (cooldowns[a]?.nextRetryAt ?? 0) - (cooldowns[b]?.nextRetryAt ?? 0))[0];
   }
   const crossesProvider = Boolean(origin && providerOf(origin) !== providerOf(target));
-  return { target, origin, crossesProvider, needsConfirmation: crossesProvider && large, reason: available(target) ? "available" : "least-unavailable" };
+  return { target, origin, crossesProvider, needsConfirmation: routeReason !== "direct" && crossesProvider && large, reason: available(target) ? "available" : "least-unavailable" };
+}
+
+// Mirrors the routing availability rules for callers that must judge a chain without routing a request,
+// such as deciding whether a failed target still has somewhere to fall back to.
+export function availableTargets({ chain, cooldowns, usage, nowMs, staleAfterMs }) {
+  return chain.filter((target) => (cooldowns[target]?.nextRetryAt ?? 0) <= nowMs && !providerHardLimited(usage[providerOf(target)], nowMs, staleAfterMs));
 }
 
 // Direct requests (compaction, side calls such as session titling) run outside the agent turn and must not touch its recovery state.
@@ -276,8 +299,8 @@ export function ownsSessionState(routeReason) {
   return routeReason !== "direct";
 }
 
-export function pendingRecoveryTarget(routeReason, pendingTarget, chain) {
-  return routeReason !== "direct" && pendingTarget && chain.includes(pendingTarget) ? pendingTarget : undefined;
+export function pendingRecoveryTarget(routeReason, pendingTarget, chain, available = chain) {
+  return routeReason !== "direct" && pendingTarget && chain.includes(pendingTarget) && available.includes(pendingTarget) ? pendingTarget : undefined;
 }
 
 export function filterResolvedTargets(chain, resolves) {
@@ -339,6 +362,21 @@ export function branchRoutedTarget(branch) {
     }
   }
   return undefined;
+}
+
+// A reading earns a notice only when the pace already projects past the threshold and the window's floor is met.
+// Limited windows and unknown utilization belong to the failure path, which says more than a projection can.
+export function paceWarning({ window, snapshot, settings, nowMs }) {
+  const used = window.usedPercent;
+  if (window.limited || typeof used !== "number" || !Number.isFinite(used)) return undefined;
+  const threshold = windowThreshold(settings, snapshot.provider, window.id);
+  const pace = usagePace(window, snapshot, nowMs, threshold, settings.usagePacing);
+  if (pace.stale || pace.expired || !pace.overPace || pace.timeToLimitMs === undefined) return undefined;
+  if (used < (pace.warningMinPercent ?? 0)) return undefined;
+  return {
+    key: `${snapshot.provider}:${window.id}:${pace.resetsAt ?? 0}`,
+    message: `${snapshot.provider} ${window.id} at ${Math.round(used)}% is on pace to reach ${threshold}% in ~${paceDuration(pace.timeToLimitMs)}`,
+  };
 }
 
 export function formatStatus({ roles, state, activeTarget, settings, nowMs }) {

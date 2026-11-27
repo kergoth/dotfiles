@@ -4,7 +4,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { join } from "node:path";
 import { clampThinkingLevel, getSupportedThinkingLevels, isRetryableAssistantError, type AssistantMessage, type ModelThinkingLevel } from "@earendil-works/pi-ai";
 import { getAgentDir, type ExtensionAPI, type ExtensionContext } from "@earendil-works/pi-coding-agent";
-import { advanceResume, branchRoutedTarget, classifyFailure, clearCooldowns, configuredTargets, formatStatus, formatUsage, filterResolvedTargets, mergeUsage, parseClaudeRateLimit, parseCodexRateLimits, parseConfig, parseModelRef, ownsSessionState, pendingRecoveryTarget, recordFailure, recordSuccess, recoveryAction, selectTarget, watchdogStillCurrent } from "./model-alias-core.js";
+import { advanceResume, availableTargets, branchRoutedTarget, classifyFailure, clearCooldowns, configuredTargets, formatStatus, formatUsage, filterResolvedTargets, mergeUsage, paceWarning, parseClaudeRateLimit, parseCodexRateLimits, parseConfig, parseModelRef, ownsSessionState, pendingRecoveryTarget, providerHardLimited, recordFailure, recordSuccess, recoveryAction, selectTarget, watchdogStillCurrent } from "./model-alias-core.js";
 import { appendEvent, readState, resolveStatePaths, updateState } from "./model-alias-store.js";
 import { fetchClaudeUsage, fetchCodexUsage, fetchOpenCodeUsage } from "./model-alias-usage.js";
 
@@ -28,6 +28,8 @@ export default function modelAlias(pi: ExtensionAPI): void {
   let pendingTarget: string | undefined;
   let pendingCompaction = false;
   const stayedTargets = new Set<string>();
+  // One notice per condition per process; routing runs on every turn, so repeats would bury the transcript.
+  const announced = new Set<string>();
   let compactionInProgress = false;
   let pendingResume = false;
   let resuming = false;
@@ -73,6 +75,26 @@ export default function modelAlias(pi: ExtensionAPI): void {
 
   for (const warning of config.warnings) console.warn(`[model-alias] ${warning}`);
 
+  // A target only counts when the registry resolves it and its provider holds credentials. Routing would throw
+  // on either, so recovery must not treat one as a fallback it can reach.
+  const eligible = (registry: ExtensionContext["modelRegistry"]) => (target: string) => {
+    const ref = parseModelRef(target);
+    const model = registry.find(ref.provider, ref.modelId);
+    return Boolean(model) && registry.hasConfiguredAuth(model!);
+  };
+
+  // Utilization readings arrive mid-turn, so pace has to be judged when they land rather than only when /alias renders them.
+  const announcePacing = (snapshot: NonNullable<ReturnType<typeof parseClaudeRateLimit> | ReturnType<typeof parseCodexRateLimits>>) => {
+    if (!ctx) return;
+    for (const window of snapshot.windows) {
+      const warning = paceWarning({ window, snapshot, settings: config.settings, nowMs: Date.now() });
+      if (!warning || announced.has(`pace:${warning.key}`)) continue;
+      if (announced.size > 200) announced.clear();
+      announced.add(`pace:${warning.key}`);
+      ctx.ui.notify(`model-alias: ${warning.message}; switch provider with /model`, "warning");
+    }
+  };
+
   async function persistUsage(snapshot: ReturnType<typeof parseClaudeRateLimit> | ReturnType<typeof parseCodexRateLimits>) {
     if (!snapshot) return;
     await updateState(statePaths, (state) => {
@@ -83,6 +105,7 @@ export default function modelAlias(pi: ExtensionAPI): void {
         state.targets[target] = { failCount: Math.max(1, previous?.failCount ?? 0), successCount: 0, nextRetryAt: Math.max(previous?.nextRetryAt ?? 0, ...reset) };
       }
     });
+    announcePacing(snapshot);
   }
 
   async function pollOpenCode(registry: ExtensionContext["modelRegistry"], ref: ReturnType<typeof parseModelRef>) {
@@ -151,7 +174,7 @@ export default function modelAlias(pi: ExtensionAPI): void {
         if (ownsSessionState(request.reason)) resuming = false;
         const routeRole = request.reason === "direct" && compactionInProgress ? config.settings.compactionAlias : role;
         const configuredChain = config.roles.get(routeRole) ?? [];
-        const chain = filterResolvedTargets(configuredChain, (target) => { const ref = parseModelRef(target); return Boolean(routeCtx.modelRegistry.find(ref.provider, ref.modelId)); });
+        const chain = filterResolvedTargets(configuredChain, eligible(routeCtx.modelRegistry));
         let shared = await readState(statePaths.state);
         const chainRefs = chain.map(parseModelRef);
         const openCodeTarget = chainRefs.find((ref) => ref.provider === "opencode-go");
@@ -164,26 +187,45 @@ export default function modelAlias(pi: ExtensionAPI): void {
         if (polled.some(Boolean)) shared = await readState(statePaths.state);
         const previous = request.previous ? `${request.previous.model.provider}/${request.previous.model.id}` : undefined;
         const failed = request.failed ? `${request.failed.model.provider}/${request.failed.model.id}` : undefined;
-        const recoveryTarget = pendingRecoveryTarget(request.reason, pendingTarget, chain);
-        const selectInput = { routeReason: request.reason, chain, current: request.state?.current, previous, failed, contextTokens: routeCtx.getContextUsage()?.tokens ?? null, cooldowns: shared.targets, usage: shared.usage, settings: config.settings, nowMs: Date.now() };
+        const nowMs = Date.now();
+        const available = availableTargets({ chain, cooldowns: shared.targets, usage: shared.usage, nowMs, staleAfterMs: config.settings.usagePacing.staleAfterMs });
+        // A target that became unreachable while the user was being asked must not be forced through later.
+        if (request.reason !== "direct" && pendingTarget && !available.includes(pendingTarget)) { pendingTarget = undefined; pendingCompaction = false; }
+        const recoveryTarget = pendingRecoveryTarget(request.reason, pendingTarget, chain, available);
+        const selectInput = { routeReason: request.reason, chain, current: request.state?.current, previous, failed, contextTokens: routeCtx.getContextUsage()?.tokens ?? null, cooldowns: shared.targets, usage: shared.usage, settings: config.settings, nowMs, waivedThresholds: [...stayedTargets] };
         let selected = recoveryTarget
           ? { target: recoveryTarget, origin: undefined, crossesProvider: true, needsConfirmation: false, reason: "pending-recovery" }
           : selectTarget(selectInput);
-        const stayedTarget = [request.state?.current, selected.origin].find((target) => target && stayedTargets.has(target));
-        if (!recoveryTarget && ownsSessionState(request.reason) && stayedTarget) {
-          selected = { ...selected, target: stayedTarget, crossesProvider: false, needsConfirmation: false, reason: "user-stay" };
+        if (request.reason !== "direct" && selected.reason === "least-unavailable" && ctx) {
+          const key = `blocked:${routeRole}:${selected.target}:${shared.targets[selected.target]?.nextRetryAt ?? 0}`;
+          if (!announced.has(key)) {
+            if (announced.size > 200) announced.clear();
+            announced.add(key);
+            ctx.ui.notify(`model-alias: no ${routeRole} target is available; routing to ${selected.target} anyway`, "warning");
+          }
         }
         if (selected.needsConfirmation && !pendingTarget) {
           const fallback = recoveryAction(config.settings.unattendedSwitch, routeCtx.mode === "tui" ? "interactive" : routeCtx.mode, false);
           let action = fallback;
           if (routeCtx.hasUI) {
-            const stay = selected.origin!;
-            const options = ["Switch provider", "Compact then switch", `Stay on ${stay}`, "Stop"];
+            const stay = selected.origin;
+            // Staying only makes sense while the origin is merely over its pacing threshold. An exhausted,
+            // cooled, or recovered-elsewhere target would fail the request it is kept for.
+            const stayEligible = (state: Awaited<ReturnType<typeof readState>>) => stay !== undefined && !providerHardLimited(state.usage[parseModelRef(stay).provider], Date.now(), config.settings.usagePacing.staleAfterMs) && (state.targets[stay]?.nextRetryAt ?? 0) <= Date.now();
+            const offerStay = stayEligible(shared);
+            const options = offerStay ? ["Switch provider", "Compact then switch", `Stay on ${stay}`, "Stop"] : ["Switch provider", "Compact then switch", "Stop"];
             const answer = await routeCtx.ui.select(`Switch a ${routeCtx.getContextUsage()?.tokens ?? "large"}-token session to ${selected.target}?`, options, { timeout: config.settings.confirmTimeoutMs });
-            action = answer === options[0] ? "switch" : answer === options[1] ? "compact" : answer === options.at(-1) ? "stop" : answer === undefined ? fallback : "stay";
+            // Only an offered option counts; RPC clients can answer with any string, so anything else defers to policy.
+            action = answer === "Switch provider" ? "switch" : answer === "Compact then switch" ? "compact" : answer === "Stop" ? "stop" : answer !== undefined && offerStay && answer === `Stay on ${stay}` ? "stay" : fallback;
             if (action === "stay") {
-              stayedTargets.add(stay);
-              selected = { ...selected, target: stay, crossesProvider: false, needsConfirmation: false, reason: "user-stay" };
+              // Another session can exhaust the origin while the prompt is open.
+              const fresh = await readState(statePaths.state);
+              if (!stayEligible(fresh)) action = "switch";
+              else {
+                shared = fresh;
+                stayedTargets.add(stay!);
+                selected = { ...selected, target: stay!, crossesProvider: false, needsConfirmation: false, reason: "user-stay" };
+              }
             }
           }
           if (action === "stop") throw new Error("model-alias: cross-provider switch declined");
@@ -249,8 +291,14 @@ export default function modelAlias(pi: ExtensionAPI): void {
     if (event.message.role !== "assistant") return;
     const message = event.message as AssistantMessage;
     const target = `${message.provider}/${message.model}`;
-    const chain = [...config.roles.values()].find((targets) => targets.includes(target));
-    if (!chain) return;
+    // The failed target only means anything inside the alias that routed it. Judging it by the first role that
+    // lists the model would credit a foreign role's targets, so recovery uses this alias's eligible chain.
+    const role = ctx?.model?.provider === "alias" ? ctx.model.id : undefined;
+    const configured = role ? config.roles.get(role) : undefined;
+    // The origin is judged by the alias's configured chain, so a failure is still recorded and classified even
+    // if its credentials vanished mid-flight; alternatives additionally have to be reachable right now.
+    if (!configured?.includes(target)) return;
+    const chain = ctx ? configured.filter(eligible(ctx.modelRegistry)) : [];
     if (message.stopReason === "stop" || message.stopReason === "toolUse") {
       await updateState(statePaths, (state) => { const next = recordSuccess(state.targets[target], config.defaults.cooldown.resetSuccesses); if (next) state.targets[target] = next; else delete state.targets[target]; });
       return;
@@ -261,7 +309,7 @@ export default function modelAlias(pi: ExtensionAPI): void {
     let anotherAvailable = false;
     await updateState(statePaths, (state) => {
       state.targets[target] = recordFailure(state.targets[target], failure, config.defaults.cooldown, Date.now());
-      anotherAvailable = chain.some((candidate) => candidate !== target && (state.targets[candidate]?.nextRetryAt ?? 0) <= Date.now());
+      anotherAvailable = availableTargets({ chain, cooldowns: state.targets, usage: state.usage, nowMs: Date.now(), staleAfterMs: config.settings.usagePacing.staleAfterMs }).some((candidate) => candidate !== target);
     });
     await appendEvent(statePaths, { type: "failure", target, kind: failure.kind, reason: message.errorMessage ?? "unknown", timestamp: Date.now() });
     if (failure.kind === "quota" && anotherAvailable && !isRetryableAssistantError(message)) return { message: { ...message, errorMessage: `rate limit: ${message.provider} quota exhausted [model-alias]` } };

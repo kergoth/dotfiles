@@ -144,19 +144,25 @@ Cooldowns and usage windows are shared under
 `~/.pi/agent/state/model-alias/`. Codex stream events and sanitized Claude
 bridge events provide utilization and reset times. OpenCode Go is polled no
 more than every five minutes from its authenticated usage endpoint, which
-reports account-level rolling, weekly, and monthly windows. A provider with
-any window at or above its threshold, or flagged as limited, is avoided at the
-next user-turn boundary; an in-progress tool loop stays warm until the target
-fails. Error classification remains the fallback when usage data is absent or
-stale. User interrupts are not failures and never start a cooldown.
+reports account-level rolling, weekly, and monthly windows. A provider above
+its usage threshold is avoided at the next user-turn boundary, while an
+in-progress tool loop stays warm. A provider whose window is flagged as
+limited is avoided on every route, continuations and direct calls included,
+because the next request there would be rejected. A limit that carries no
+reset time only holds while its reading is fresh, so a recovered account is
+not excluded forever by a few failed polls. Error classification remains the
+fallback when usage data is absent or stale. User interrupts are not failures
+and never start a cooldown.
 
-Every cross-provider confirmation prompt offers "Stay on <target>", including
-when a connection failure, cooldown, or exhausted usage window caused the
-fallback. Staying keeps agent requests on that model for the rest of the
-process while it remains the session's current target, overriding cooldowns
-and usage exclusions without clearing shared records. The provider can still
-reject requests until its limits reset. Direct calls, including compaction,
-keep their normal routing.
+Every cross-provider confirmation prompt offers "Stay on <target>" while the
+origin is only over its usage threshold. Staying waives that threshold for the
+rest of the process, so later turns stay put instead of re-prompting. The
+option is withheld when a cooldown or a window flagged as limited caused the
+fallback: staying would only fail the request it was meant to preserve, so the
+prompt offers switch, compact-then-switch, or stop instead. Usage projections
+that leave a window on pace to hit its threshold before it resets are reported
+once per window and reset. Direct calls, including compaction and session
+titling, keep their normal routing and are never prompted.
 
 The default threshold is `$settings.switchAboveUsedPercent` (95). To reserve
 headroom on a shared account, `$settings.providerSwitchAboveUsedPercent` maps a

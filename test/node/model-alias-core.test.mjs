@@ -12,6 +12,9 @@ import {
   recordSuccess,
   mergeUsage,
   selectTarget,
+  availableTargets,
+  providerHardLimited,
+  paceWarning,
   recoveryAction,
   advanceResume,
   filterResolvedTargets,
@@ -170,6 +173,46 @@ test("all unavailable selects earliest cooldown or lowest usage", () => {
 test("compaction direct routes cannot consume pending recovery target", () => {
   assert.equal(pendingRecoveryTarget("direct", "openai/b", ["openai/b"]), undefined);
   assert.equal(pendingRecoveryTarget("continuation", "openai/b", ["openai/b"]), "openai/b");
+  assert.equal(pendingRecoveryTarget("continuation", "openai/b", ["openai/b"], []), undefined);
+});
+
+test("a limit without a reset time stops blocking once its reading goes stale", () => {
+  const fresh = { provider: "claude", capturedAt: 1000, windows: [{ id: "spend", usedPercent: 100, limited: true, capturedAt: 1000 }] };
+  assert.equal(providerHardLimited(fresh, 1000, 30_000), true);
+  assert.equal(providerHardLimited(fresh, 1000 + 30_001, 30_000), false);
+  const dated = { ...fresh, windows: [{ id: "five_hour", usedPercent: 100, limited: true, capturedAt: 1000, resetsAt: 90_000 }] };
+  assert.equal(providerHardLimited(dated, 80_000, 30_000), true);
+  assert.equal(providerHardLimited(dated, 90_000, 30_000), false);
+});
+
+test("an exhausted target ranks below a cooled one when nothing is available", () => {
+  const usage = usageOf("claude", [{ id: "five_hour", usedPercent: 40, limited: true, resetsAt: 5000 }]);
+  const selected = selectTarget({ ...selectBase, chain: ["claude/a", "openai/b"], routeReason: "user", cooldowns: { "openai/b": { nextRetryAt: 2000 } }, usage });
+  assert.equal(selected.target, "openai/b");
+  assert.equal(selected.reason, "least-unavailable");
+});
+
+test("direct routes never ask for confirmation", () => {
+  const input = { ...selectBase, chain: ["a/1", "b/2"], current: "a/1", previous: "a/1", contextTokens: 200000, routeReason: "direct" };
+  const selected = selectTarget({ ...input, cooldowns: { "a/1": { nextRetryAt: 2000 } } });
+  assert.equal(selected.target, "b/2");
+  assert.equal(selected.crossesProvider, true);
+  assert.equal(selected.needsConfirmation, false);
+});
+
+test("pace warnings need a projection past the threshold above the window floor", () => {
+  const settings = { switchAboveUsedPercent: 95, usagePacing: { monthlyTimeZones: {}, warningMinPercent: { fiveHour: 30, sevenDay: 20, monthly: 20 }, staleAfterMs: 1_800_000 } };
+  const snapshot = (windows) => ({ provider: "claude-bridge", capturedAt: 1_000_000, windows });
+  // 5-hour window: an hour in, 40% used projects far past 95% before the reset.
+  const hot = snapshot([{ id: "five_hour", usedPercent: 40, capturedAt: 1_000_000, resetsAt: 1_000_000 + 4 * 3_600_000 }]);
+  assert.match(paceWarning({ window: hot.windows[0], snapshot: hot, settings, nowMs: 1_000_000 }).message, /five_hour at 40%/);
+  assert.equal(paceWarning({ window: hot.windows[0], snapshot: hot, settings, nowMs: 1_000_000 + 1_800_001 }), undefined);
+  const cool = snapshot([{ id: "five_hour", usedPercent: 2, capturedAt: 1_000_000, resetsAt: 1_000_000 + 4 * 3_600_000 }]);
+  assert.equal(paceWarning({ window: cool.windows[0], snapshot: cool, settings, nowMs: 1_000_000 }), undefined);
+  const limited = snapshot([{ id: "five_hour", usedPercent: 40, limited: true, capturedAt: 1_000_000, resetsAt: 1_000_000 + 3_600_000 }]);
+  assert.equal(paceWarning({ window: limited.windows[0], snapshot: limited, settings, nowMs: 1_000_000 }), undefined);
+  const unknown = snapshot([{ id: "spend", usedPercent: null, capturedAt: 1_000_000 }]);
+  assert.equal(paceWarning({ window: unknown.windows[0], snapshot: unknown, settings, nowMs: 1_000_000 }), undefined);
 });
 
 test("unresolved targets are filtered while preserving order", () => {
@@ -285,6 +328,32 @@ test("waiving a threshold keeps the target but never overrides a limited window"
   assert.equal(stayed.needsConfirmation, false);
   const limited = usageOf("claude", [{ id: "five_hour", usedPercent: 97, limited: true }]);
   assert.equal(selectTarget({ ...input, usage: limited, waivedThresholds: ["claude/a"] }).target, "openai/b");
+});
+
+test("a stay waiver never survives the target's cooldown", () => {
+  const input = { ...selectBase, routeReason: "user", contextTokens: 200000, waivedThresholds: ["claude/a"] };
+  assert.equal(selectTarget(input).target, "claude/a");
+  assert.equal(selectTarget({ ...input, cooldowns: { "claude/a": { nextRetryAt: 2000 } } }).target, "openai/b");
+  // The incident path: the retry after a quota failure advances past the target a stay had pinned.
+  const retry = { ...input, routeReason: "retry", failed: "claude/a", cooldowns: { "claude/a": { nextRetryAt: 2000 } } };
+  assert.equal(selectTarget(retry).target, "openai/b");
+});
+
+test("a limited window blocks every route reason, not only user turns", () => {
+  const usage = usageOf("claude", [{ id: "five_hour", usedPercent: 100, limited: true, resetsAt: 5000 }]);
+  for (const routeReason of ["user", "continuation", "retry", "direct"]) {
+    assert.equal(selectTarget({ ...selectBase, routeReason, failed: "claude/a", usage }).target, "openai/b");
+  }
+  assert.equal(providerHardLimited(usage.claude, 1000), true);
+  assert.equal(providerHardLimited(usage.claude, 5000), false);
+});
+
+test("availableTargets mirrors routing eligibility for recovery decisions", () => {
+  const chain = ["claude/a", "openai/b", "opencode/c"];
+  const cooldowns = { "claude/a": { nextRetryAt: 2000 } };
+  const usage = usageOf("openai", [{ id: "weekly", usedPercent: 100, limited: true, resetsAt: 5000 }]);
+  assert.deepEqual(availableTargets({ chain, cooldowns, usage, nowMs: 1000 }), ["opencode/c"]);
+  assert.deepEqual(availableTargets({ chain, cooldowns: {}, usage: {}, nowMs: 1000 }), chain);
 });
 
 test("formatStatus applies per-provider usage thresholds", () => {
